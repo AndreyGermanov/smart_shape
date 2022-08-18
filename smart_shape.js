@@ -6,9 +6,11 @@ function SmartShape() {
             return
         }
         this.root = root;
+        this.root.style.position = "relative";
         this.svg = null;
         this.points = [];
         this.draggedPoint = null;
+        this.dragStarted = false;
 
         this.options = {
             name: "Unnamed shape",
@@ -18,8 +20,10 @@ function SmartShape() {
             fill: "none",
             logEvents: true,
             canDragPoints: true,
-            canAddPoints: true,
-            canDeletePoints: true
+            canAddPoints: false,
+            canDeletePoints: false,
+            offsetX: 0,
+            offsetY: 0
         }
 
         if (typeof(options) === "object") {
@@ -29,6 +33,8 @@ function SmartShape() {
         this.onmousemove = this.root.addEventListener("mousemove",(event) => {
             if (this.draggedPoint) {
                 this.draggedPoint.mousemove(event);
+            } else if (this.dragStarted) {
+                this.mousemove(event)
             }
         })
 
@@ -49,7 +55,7 @@ function SmartShape() {
     }
 
     this.addPoints = (points) => {
-        points.forEach(point => this.putPoint(point[0],point[1]));
+        points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY));
         this.drawPolygon();
     }
 
@@ -108,6 +114,7 @@ function SmartShape() {
         this.calcPosition();
         this.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         this.svg.style.position = 'absolute';
+        this.svg.style.cursor = 'crosshair';
         this.svg.style.left = this.left;
         this.svg.style.top = this.top;
         this.svg.setAttribute("width",this.width);
@@ -123,6 +130,7 @@ function SmartShape() {
         polygon.setAttribute("fill",this.options.fill);
         this.svg.appendChild(polygon);
         this.root.appendChild(this.svg);
+        this.svg.addEventListener("mousedown",this.mousedown)
     }
 
     this.calcPosition = () => {
@@ -151,6 +159,21 @@ function SmartShape() {
                 this.addPoint(event.clientX-this.root.offsetLeft, event.clientY-this.root.offsetTop)
             }
         }
+        this.dragStarted = false;
+        this.draggedPoint = null;
+    }
+
+    this.mousedown = (event) => {
+        this.dragStarted = true;
+    }
+
+    this.mousemove = (event) => {
+        for (let index in this.points) {
+            this.points[index].x += event.movementX;
+            this.points[index].y += event.movementY;
+            this.points[index].redrawPoint();
+        }
+        this.drawPolygon()
     }
 }
 
@@ -159,8 +182,8 @@ function SmartPoint(shape) {
         this.x = x;
         this.y = y;
         this.options = {
-            width:10,
-            height:10,
+            width:5,
+            height:5,
             cssClass:"",
             borderColor: 'black',
             borderWidth: 1,
@@ -171,8 +194,8 @@ function SmartPoint(shape) {
         if (typeof(options) === "object") {
             Object.assign(this.options,options);
         }
-        this.element = this.createPointUI();
         this.shape = shape;
+        this.element = this.createPointUI();
         this.addEventListeners();
         this.shape.onPointEvent("point_added",this)
         return this;
@@ -180,6 +203,9 @@ function SmartPoint(shape) {
 
     this.createPointUI = () => {
         const element = document.createElement("div")
+        if (!this.shape.options.canDragPoints) {
+            return element;
+        }
         element.className = this.options.cssClass;
         element.style.width = this.options.width+"px";
         element.style.height = this.options.height+"px";
@@ -191,9 +217,15 @@ function SmartPoint(shape) {
         element.style.backgroundColor = this.options.backgroundColor;
         element.style.position = 'absolute';
         element.style.zIndex = '1000';
-        element.style.left = (this.x-5)+"px";
-        element.style.top = (this.y-5)+"px";
-        return element
+        element.style.left = (this.x-parseInt(this.options.width/2))+"px";
+        element.style.top = (this.y-parseInt(this.options.height/2))+"px";
+        return element;
+    }
+
+    this.redrawPoint =() => {
+        this.element.style.left = (this.x-parseInt(this.options.width/2))+"px";
+        this.element.style.top = (this.y-parseInt(this.options.height/2))+"px";
+
     }
 
     this.addEventListeners = () => {

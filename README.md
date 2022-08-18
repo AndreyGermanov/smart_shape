@@ -1,2 +1,2 @@
 # smart_shape
-Interactive vector shapes for web
+Interactive vector shapes for Web
