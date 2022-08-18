@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Shape Demo Page</title>
+  </head>
+  <body>
+    <div id="app" style="padding-top:100px" align="center">
+        <div id="container" style="width:900px;height:200px;background-color:#cccccc;position:relative"></div>
+    </div>
+    <script src="./smart_shape.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded",()=>{
+        const figure = new SmartShape().init(document.getElementById("container"),
+                {maxPoints:10,strokeWidth:1},[[20,20],[50,25],[50,55],[20,60]]
+        );
+      })
+    </script>
+  </body>
+</html>
