@@ -58,7 +58,7 @@ You can use mouse to drag and drop this shape to any place inside container. Als
 
 The full code of this demo is available [here](./demo.html).
 
-Also, you can create many more complex shapes and add them to the same or to different containers. See the demo [here](./index.html)
+Also, you can create many more complex shapes and add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/index.html)
 
 # Options
 
@@ -80,11 +80,11 @@ You can provide different options in a second parameter of `init` function to ch
 
 # Plans and Contribution
 
-This is a very new component, that I pushed today. A lot of new features to come. Follow this repository to get updates as soon as I will push them. 
+This is a very new component, that I pushed today. A lot of new features to come. Follow this repository to get updates as soon as I push them. 
 
-If you are interested to use it in your project, just fork this repository and use. If you modify the code by adding some great features to it, I will be more than happy if you share your code with my repository. 
+If you are interested to use it in your project, just fork this repository and use. If you modify the code by adding some great features to these shapes, I will be more than happy if you share your code with my repository. 
 
-If you find bugs or have additional ideas, feel free to write a message on `Disussions` tabs of this repo and perhaps I will include it to development plan.
+If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of this repo. Perhaps I will include it to development plan.
 
 The development plan is public and available here: https://github.com/users/AndreyGermanov/projects/1/views/1 .
 
