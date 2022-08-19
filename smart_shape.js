@@ -18,7 +18,6 @@ function SmartShape() {
             stroke: "rgb(0,0,0)",
             strokeWidth: "2",
             fill: "none",
-            logEvents: true,
             canDragPoints: true,
             canAddPoints: false,
             canDeletePoints: false,
