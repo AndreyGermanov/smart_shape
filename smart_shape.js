@@ -168,6 +168,18 @@ function SmartShape() {
     }
 
     this.mousemove = (event) => {
+        if (event.buttons !== 1) {
+            return
+        }
+        this.calcPosition()
+        const newX = this.left + event.movementX;
+        const newY = this.top + event.movementY;
+        if (newX < 0 || newX > this.root.clientLeft + this.root.clientWidth) {
+            return
+        }
+        if (newY < 0 || newY > this.root.clientTop + this.root.clientHeight) {
+            return
+        }
         for (let index in this.points) {
             this.points[index].x += event.movementX;
             this.points[index].y += event.movementY;
@@ -251,19 +263,18 @@ function SmartPoint(shape) {
         const root = this.shape.root;
 
         if (newX < 0 || newX > root.clientLeft + root.clientWidth) {
+            this.shape.draggedPoint = null;
             return;
         }
         if (newY < 0 || newY > root.clientTop + root.clientHeight) {
+            this.shape.draggedPoint = null;
             return;
         }
-
-        if (event.buttons === 1 && this.shape.options.canDragPoints) {
-            this.x += event.movementX;
-            this.y += event.movementY;
-            this.element.style.left = (this.x-5)+"px";
-            this.element.style.top = (this.y-5)+"px";
-            this.shape.onPointEvent("point_drag",this);
-        }
+        this.x += event.movementX;
+        this.y += event.movementY;
+        this.element.style.left = (this.x-5)+"px";
+        this.element.style.top = (this.y-5)+"px";
+        this.shape.onPointEvent("point_drag",this);
     }
 
     this.mouseup = (event) => {
