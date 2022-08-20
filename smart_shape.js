@@ -10,7 +10,7 @@ function SmartShape() {
         this.svg = null;
         this.points = [];
         this.draggedPoint = null;
-        this.dragStarted = false;
+        this.root.draggedFigure = null;
 
         this.options = {
             name: "Unnamed shape",
@@ -28,14 +28,21 @@ function SmartShape() {
         if (typeof(options) === "object") {
             Object.assign(this.options,options);
         }
-
-        this.onmousemove = this.root.addEventListener("mousemove",(event) => {
-            if (this.draggedPoint) {
-                this.draggedPoint.mousemove(event);
-            } else if (this.dragStarted) {
-                this.mousemove(event)
-            }
-        })
+        if (root.getAttribute("sh_listeners") !== "true") {
+            root.setAttribute("sh_listeners","true");
+            this.root.addEventListener("mousemove", (event) => {
+                if (this.draggedPoint) {
+                    this.draggedPoint.mousemove(event);
+                } else if (this.root.draggedFigure) {
+                    this.root.draggedFigure.mousemove(event);
+                }
+            })
+            this.root.addEventListener("mouseenter", (event) => {
+                if (this.root.draggedFigure) {
+                    this.root.draggedFigure.mouseenter(event);
+                }
+            })
+        }
 
         this.nocontextmenu = this.root.addEventListener("contextmenu", event => event.preventDefault())
 
@@ -145,7 +152,6 @@ function SmartShape() {
         this.points.forEach(point => {
             this.root.removeChild(point.element)
         })
-        this.root.removeEventListener("mousemove",this.onmousemove);
         this.root.removeEventListener("contextmenu",this.nocontextmenu);
         this.root.removeEventListener("mouseup",this.onmouseup);
         this.points = [];
@@ -158,12 +164,23 @@ function SmartShape() {
                 this.addPoint(event.clientX-this.root.offsetLeft, event.clientY-this.root.offsetTop)
             }
         }
-        this.dragStarted = false;
+        this.root.draggedFigure = null;
         this.draggedPoint = null;
     }
 
     this.mousedown = (event) => {
-        this.dragStarted = true;
+        this.root.draggedFigure = this;
+    }
+
+    function getOffset( el ) {
+        var _x = 0;
+        var _y = 0;
+        while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+            _x += el.offsetLeft - el.scrollLeft;
+            _y += el.offsetTop - el.scrollTop;
+            el = el.offsetParent;
+        }
+        return { top: _y, left: _x };
     }
 
     this.mousemove = (event) => {
@@ -171,20 +188,37 @@ function SmartShape() {
             return
         }
         this.calcPosition()
-        const newX = this.left + event.movementX;
-        const newY = this.top + event.movementY;
-        if (newX < 0 || newX > this.root.clientLeft + this.root.clientWidth) {
+        let stepX = event.movementX;
+        let stepY = event.movementY;
+        let newX = this.left + stepX;
+        const newY = this.top + stepY;
+        const offset = getOffset(this.root);
+        const rect = this.root.getBoundingClientRect();
+        if (newX < 0 || newX+this.width > this.root.clientLeft + this.root.clientWidth) {
             return
         }
-        if (newY < 0 || newY > this.root.clientTop + this.root.clientHeight) {
+        if (newY < 0 || newY+this.height > this.root.clientTop + this.root.clientHeight) {
             return
+        }
+        if (event.clientX>newX+this.width+offset.left) {
+            stepX = event.clientX -  (this.width+offset.left+this.left);
+        }
+        if (event.clientY>newY+this.height+offset.right) {
+            stepY = event.clientY -  (this.height+offset.top+this.top);
         }
         for (let index in this.points) {
-            this.points[index].x += event.movementX;
-            this.points[index].y += event.movementY;
+            this.points[index].x += stepX;
+            this.points[index].y += stepY;
             this.points[index].redrawPoint();
         }
         this.drawPolygon()
+    }
+
+    this.mouseenter = (event) => {
+        if (event.buttons !== 1) {
+            return
+        }
+        this.calcPosition()
     }
 }
 
