@@ -5,13 +5,22 @@ function SmartShape() {
             console.error("Root HTML node not specified. Could not create shape.")
             return
         }
+
         this.root = root;
         this.root.style.position = "relative";
         this.svg = null;
         this.points = [];
         this.draggedPoint = null;
-        this.dragStarted = false;
+        this.root.draggedShape = null;
 
+        this.setOptions(options);
+        this.addEventListeners();
+        this.setupPoints(points);
+
+        return this;
+    }
+
+    this.setOptions = (options) => {
         this.options = {
             name: "Unnamed shape",
             maxPoints: -1,
@@ -24,38 +33,38 @@ function SmartShape() {
             offsetX: 0,
             offsetY: 0
         }
-
         if (typeof(options) === "object") {
             Object.assign(this.options,options);
         }
+    }
 
-        this.onmousemove = this.root.addEventListener("mousemove",(event) => {
-            if (this.draggedPoint) {
-                this.draggedPoint.mousemove(event);
-            } else if (this.dragStarted) {
-                this.mousemove(event)
-            }
-        })
-
+    this.addEventListeners = () => {
+        if (this.root.getAttribute("sh_listeners") !== "true") {
+            this.root.setAttribute("sh_listeners","true");
+            this.root.addEventListener("mousemove", (event) => {
+                if (this.root.draggedShape) {
+                    this.root.draggedShape.mousemove(event);
+                }
+            })
+            this.root.addEventListener("mouseup",this.mouseup);
+        }
         this.nocontextmenu = this.root.addEventListener("contextmenu", event => event.preventDefault())
+    }
 
-        this.onmouseup = this.root.addEventListener("mouseup",this.mouseup);
-
+    this.setupPoints = (points) => {
         if (typeof(points) === "object") {
             this.addPoints(points);
         }
-
-        return this;
     }
 
     this.addPoint = (x,y) => {
         this.putPoint(x, y);
-        this.drawPolygon();
+        this.redraw();
     }
 
     this.addPoints = (points) => {
         points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY));
-        this.drawPolygon();
+        this.redraw();
     }
 
     this.putPoint = (x,y) => {
@@ -90,20 +99,22 @@ function SmartShape() {
             case "point_destroyed":
                 this.points.splice(this.points.indexOf(point), 1);
                 this.root.removeChild(point.element);
-                this.drawPolygon()
+                this.redraw()
                 break;
             case "point_drag":
-                this.drawPolygon()
+                this.redraw()
                 break;
             case "point_dragstart":
+                this.root.draggedShape = this;
                 this.draggedPoint = point;
                 break;
             case "point_dragend":
+                this.root.draggedShape = null;
                 this.draggedPoint = null;
         }
     }
 
-    this.drawPolygon = () => {
+    this.redraw = () => {
         if (this.svg) {
             this.root.removeChild(this.svg);
         }
@@ -145,46 +156,74 @@ function SmartShape() {
         this.points.forEach(point => {
             this.root.removeChild(point.element)
         })
-        this.root.removeEventListener("mousemove",this.onmousemove);
         this.root.removeEventListener("contextmenu",this.nocontextmenu);
         this.root.removeEventListener("mouseup",this.onmouseup);
         this.points = [];
-        this.drawPolygon();
+        this.redraw();
     }
 
     this.mouseup = (event) => {
-        if (event.button === 0 && this.options.canAddPoints && !this.draggedPoint) {
+        if (event.buttons === 1 && this.options.canAddPoints && !this.draggedPoint) {
             if (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) {
                 this.addPoint(event.clientX-this.root.offsetLeft, event.clientY-this.root.offsetTop)
             }
         }
-        this.dragStarted = false;
-        this.draggedPoint = null;
+        if (this.root.draggedShape) {
+            this.root.draggedShape.draggedPoint = null;
+            this.root.draggedShape = null;
+        }
     }
 
     this.mousedown = (event) => {
-        this.dragStarted = true;
+        this.root.draggedShape = this;
     }
 
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
             return
         }
-        this.calcPosition()
-        const newX = this.left + event.movementX;
-        const newY = this.top + event.movementY;
-        if (newX < 0 || newX > this.root.clientLeft + this.root.clientWidth) {
+        if (this.draggedPoint) {
+            this.draggedPoint.mousemove(event);
             return
         }
-        if (newY < 0 || newY > this.root.clientTop + this.root.clientHeight) {
+        const [stepX, stepY] = this.calcMovementOffset(event);
+        if (stepX === null || stepY === null) {
             return
         }
         for (let index in this.points) {
-            this.points[index].x += event.movementX;
-            this.points[index].y += event.movementY;
+            this.points[index].x += stepX;
+            this.points[index].y += stepY;
             this.points[index].redrawPoint();
         }
-        this.drawPolygon()
+        this.redraw()
+    }
+
+    this.calcMovementOffset = (event) => {
+        this.calcPosition();
+        let stepX = event.movementX;
+        let stepY = event.movementY;
+        let newX = this.left + stepX;
+        const newY = this.top + stepY;
+        const offset = getOffset(this.root);
+        if (newX < 0 || newX+this.width > this.root.clientLeft + this.root.clientWidth) {
+            return [null, null]
+        }
+        if (newY < 0 || newY+this.height > this.root.clientTop + this.root.clientHeight) {
+            return [null, null]
+        }
+        if (event.clientX<newX+offset.left) {
+            stepX = event.clientX - (newX+offset.left);
+        }
+        if (event.clientY<newY+offset.top) {
+            stepY = event.clientY - (newY+offset.top);
+        }
+        if (event.clientX>newX+this.width+offset.left) {
+            stepX = event.clientX -  (this.width+offset.left+this.left);
+        }
+        if (event.clientY>newY+this.height+offset.right) {
+            stepY = event.clientY -  (this.height+offset.top+this.top);
+        }
+        return [stepX, stepY];
     }
 }
 
@@ -236,7 +275,6 @@ function SmartPoint(shape) {
     this.redrawPoint =() => {
         this.element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         this.element.style.top = (this.y-parseInt(this.options.height/2))+"px";
-
     }
 
     this.addEventListeners = () => {
@@ -245,7 +283,7 @@ function SmartPoint(shape) {
     }
 
     this.mousedown = (event) => {
-        if (event.button === 0 && this.shape.options.canDragPoints) {
+        if (event.buttons === 1 && this.shape.options.canDragPoints) {
             event.preventDefault = true;
             event.stopPropagation();
             this.shape.onPointEvent("point_dragstart", this);
@@ -280,7 +318,7 @@ function SmartPoint(shape) {
         this.shape.onPointEvent("point_dragend", this);
         event.preventDefault = true;
         event.stopPropagation();
-        if (event.button === 2 && this.shape.options.canDeletePoints) {
+        if (event.buttons === 2 && this.shape.options.canDeletePoints) {
             this.destroy();
         }
     }
@@ -292,4 +330,15 @@ function SmartPoint(shape) {
     }
 
     return this;
+}
+
+function getOffset( el ) {
+    let _x = 0;
+    let _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
 }
