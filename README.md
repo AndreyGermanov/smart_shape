@@ -8,10 +8,10 @@ Smart shape is a polygon (array of connected points) which can be attached to sp
 
 # Install
 
-To start using SmartShape, need to include `smart_shape.js` script to a web page:
+To start using SmartShape, need to include `smart_shape.umd.cjs` script to a web page:
 
 ```html
-<script src="<path-to-file>/smart_shape.js"></script>
+<script src="<path-to-file>/smart_shape.umd.cjs"></script>
 ```
 
 This will add `SmartShape` object, that can be used to create figures.
@@ -19,7 +19,7 @@ This will add `SmartShape` object, that can be used to create figures.
 Also, if you use a JavaScript framework with loadable module support, then you can load SmartShape as a module in a Javascript file the following way:
 
 ```javascript
-import SmartShape from "<path-to-file>/smart_shape_module.js";
+import SmartShape from "<path-to-file>/smart_shape.js";
 ```
 
 # Use
@@ -56,9 +56,9 @@ You can use mouse to drag and drop this shape to any place inside container. Als
 
 ![demo2](./assets/demo2.png)
 
-The full code of this demo is available [here](./demo.html).
+The full code of this demo is available [here](./tests/prod/demo.html).
 
-Also, you can create many more complex shapes and add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/index.html)
+Also, you can create many more complex shapes and add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/tests/prod/index.html)
 
 # Options
 
