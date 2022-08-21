@@ -1,9 +1,14 @@
 {
   "name": "smart_shape",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "license": "MIT",
+  "author": "Andrey Germanov <andrey@germanov.dev> (https://germanov.dev)",
   "type": "module",
-  "files": ["smart_shape.js","smart_shape.umd.cjs"],
+  "files": [
+    "smart_shape.js",
+    "smart_shape.umd.cjs"
+  ],
   "module": "./smart_shape.js",
   "main": "./smart_shape.umd.cjs",
   "scripts": {
@@ -21,5 +26,24 @@
   "devDependencies": {
     "cypress": "^10.6.0",
     "vite": "^3.0.7"
-  }
+  },
+  "description": "Interactive vector shapes for Web",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndreyGermanov/smart_shape.git"
+  },
+  "keywords": [
+    "interactive",
+    "html",
+    "widget",
+    "vector",
+    "graphics"
+  ],
+  "bugs": {
+    "url": "https://github.com/AndreyGermanov/smart_shape/issues"
+  },
+  "homepage": "https://github.com/AndreyGermanov/smart_shape#readme"
 }
