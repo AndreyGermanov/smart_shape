@@ -120,6 +120,7 @@ function SmartShape() {
     this.redraw = () => {
         if (this.svg) {
             this.root.removeChild(this.svg);
+            this.svg = null;
         }
         if (this.points.length <= 1) {
             return
