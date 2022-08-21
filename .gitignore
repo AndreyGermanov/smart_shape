@@ -19,3 +19,4 @@ dist-ssr
 *.sln
 *.sw?
 package-lock.json
+deploy.sh

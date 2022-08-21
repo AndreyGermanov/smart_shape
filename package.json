@@ -1,13 +1,22 @@
 {
-  "name": "smart_shapes",
+  "name": "smart_shape",
   "private": false,
   "version": "1.0.0",
   "type": "module",
+  "files": ["smart_shape.js","smart_shape.umd.cjs"],
+  "module": "./smart_shape.js",
+  "main": "./smart_shape.umd.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "cypress:open": "node_modules/cypress/bin/cypress open"
+  },
+  "exports": {
+    ".": {
+      "import": "./smart_shape.js",
+      "require": "./smart_shape.umd.cjs"
+    }
   },
   "devDependencies": {
     "cypress": "^10.6.0",
