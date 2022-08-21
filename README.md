@@ -80,9 +80,9 @@ You can provide different options in a second parameter of `init` function to ch
 
 # Plans and Contribution
 
-This is a very new component, that I pushed today. A lot of new features to come. Follow this repository to get updates as soon as I push them. 
+This is a new component on early stage of development. A lot of new features to come. Follow this repository to get updates as soon as I push them. 
 
-If you are interested to use it in your project, just fork this repository and use. If you modify the code by adding some great features to these shapes, I will be more than happy if you share your code with my repository. 
+If you are interested to use it in your project, just fork this repository and use. As an early stage project, be careful by using it in production. Test all features that you use properly, before pushing to production. If you modify the code by adding new features to these shapes, I will be more than happy if you share your code with my repository. 
 
 If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of this repo. Perhaps I will include it to development plan.
 
