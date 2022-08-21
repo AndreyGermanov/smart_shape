@@ -1,36 +1,46 @@
-# smart_shape
+# SmartShape
 
-Interactive vector shapes for Web
+Interactive vector shapes for the Web.
 
-# Intro
-
-Smart shape is a polygon (array of connected points) which can be attached to specified HTML node and displayed on top of it container. These figures are interactive and user can move them inside the container or edit them by moving points to change a shape of figure.
+Smart shape is a polygon (array of connected points) which can be attached to any HTML node and displayed on top of it. These figures are interactive and user can move them inside specified HTML container element or edit them by moving points to change a shape of figure.
 
 # Install
 
-To start using SmartShape, need to include `smart_shape.umd.cjs` script to a web page:
+## As a module
+
+You can install and use SmartShape from NPM as a module in any web framework:
+
+```bash
+npm install smart_shape
+```
+
+Then, you can import SmartShape class to your project:
+
+```javascript
+import SmartShape from "smart_shape";
+```
+
+## On a Web page
+
+If you do not use a framework with module support, then you can find compiled SmartShape javascript file `smart_shape.umd.cjs` in the root folder of this package and include it to an HTML page:
 
 ```html
 <script src="<path-to-file>/smart_shape.umd.cjs"></script>
 ```
 
-This will add `SmartShape` object, that can be used to create figures.
+That's all. It's self-contained and does not have any other dependencies.
 
-Also, if you use a JavaScript framework with loadable module support, then you can load SmartShape as a module in a Javascript file the following way:
-
-```javascript
-import SmartShape from "<path-to-file>/smart_shape.js";
-```
+This will add `SmartShape` object to a global namespace automatically, and you can start using it to create interactive shapes.
 
 # Use
 
-When script is loaded, you have a `SmartShape` class, that is ready to be used. However, smart shapes can be added only inside a container. Container is any html element, that should exist on a web page.
+When the script is loaded, you have the `SmartShape` class, that is ready to be used. However, smart shapes can be added only inside a container. Container is any html element, that should exist on a web page.
 
 ```html
 <div id="surface" style="width:100%;height:400px"></div>
 ```
 
-Then you can construct your first shape and add it to existing container:
+Then you can construct your first shape and add it to the existing container:
 
 ```javascript
 const div = document.getElementById("surface");
@@ -38,31 +48,31 @@ const shape = new SmartShape();
 shape.init(div,{fill:"#00ff00"},[ [0,100],[100,0],[200,100],[100,200] ]);
 ```
 
-This code creates new `shape` object and initializes it by `init` method:
+This code creates new `shape` object and initializes it by `init` method, which has the following signature:
 
 ```javascript
 SmartShape.init(container_node,options,array_of_points);
 ```
 
-* `container-node` - HTML DOM element to inject figure into
-* `options` - Javascript object with options, that defines look and behavior of shape. For exampe, {fill:'#00ff00'} means that shape must be filled with light green color
-* `array_of_points` - array of points of polygon where each point is a subarray of it's coordinates [x,y].
+* `container_node` - HTML DOM element to inject figure into
+* `options` - Javascript object with options, that defines look and behavior of shape. For example, {fill:'#00ff00'} means that shape must be filled with light green color
+* `array_of_points` - array of points of polygon where each point is a subarray of coordinates [x,y].
 
 After running HTML page with code above, you should see this:
 
-![demo1](./assets/demo1.png)
+![demo1](https://code.germanov.dev/smart_shape/assets/demo1.png)
 
-You can use mouse to drag and drop this shape to any place inside container. Also, the points marked by red circles. You can drag these circles to change a shape of figure. For example, like this:
+You can not only see this shape, but use mouse to drag and drop it to any place inside container. Also, the points of a shape marked by red circles and you can drag these circles to change a shape of figure. For example, like this:
 
-![demo2](./assets/demo2.png)
+![demo2](https://code.germanov.dev/smart_shape/assets/demo2.png)
 
-The full code of this demo is available [here](./tests/prod/demo.html).
+The full code of this demo is available [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/demo.html).
 
-Also, you can create many more complex shapes and add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/tests/prod/index.html)
+You can create many shapes and each of them can be much more complex. Then you can add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/tests/prod/index.html)
 
 # Options
 
-You can provide different options in a second parameter of `init` function to change look and behavior of the shape. This is a list of options, which is available to change now
+There are different options can be provided in a second parameter of `init` function to change look and behavior of the shape. This is a list of options, which is available to use now.
 
 
 | Option          | Description                                                                            | Default         |
@@ -80,12 +90,10 @@ You can provide different options in a second parameter of `init` function to ch
 
 # Plans and Contribution
 
-This is a new component on early stage of development. A lot of new features to come. Follow this repository to get updates as soon as I push them. 
+This is a new component on early stage of development. A lot of new features to come. Follow this repository to get updates as soon as I push them. Also, this project is open source, so you can clone SmartShape GitHub repository and modify source code to add any features, that still does not exist here. 
 
-If you are interested to use it in your project, just fork this repository and use. As an early stage project, be careful by using it in production. Test all features that you use properly, before pushing to production. If you modify the code by adding new features to these shapes, I will be more than happy if you share your code with my repository. 
+As an early stage software, be careful by using it in real world projects. Test all features of shapes that you use properly, before pushing to production. If you modify the code by adding new features to these shapes, I will be more than happy if you share your code with my GitHub repository. 
 
-If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of this repo. Perhaps I will include it to development plan.
+If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of GitHub repository of SmartShape project. Perhaps I will include it to development plan.
 
 The development plan is public and available here: https://github.com/users/AndreyGermanov/projects/1/views/1 .
-
-
