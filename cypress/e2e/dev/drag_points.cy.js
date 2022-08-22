@@ -1,6 +1,6 @@
 import SmartShape from "../../../src/smart_shape.js";
 describe('Test drag points', () => {
-  it('open demo page', async() => {
+  it('Should not go beyond container element', async() => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const div = document.createElement("div");
       div.style.width = "500px";
