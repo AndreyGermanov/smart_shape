@@ -69,7 +69,8 @@ function d() {
   }, this.setupPoints = (t) => {
     typeof t == "object" && this.addPoints(t);
   }, this.addPoint = (t, s) => {
-    this.putPoint(t, s), this.redraw();
+    const i = this.putPoint(t, s);
+    return this.redraw(), i;
   }, this.addPoints = (t) => {
     t.forEach((s) => this.putPoint(s[0] + this.options.offsetX, s[1] + this.options.offsetY)), this.redraw();
   }, this.putPoint = (t, s) => {
@@ -98,7 +99,7 @@ function d() {
         this.root.draggedShape = null, this.draggedPoint = null;
     }
   }, this.redraw = () => {
-    if (this.svg && this.root.removeChild(this.svg), this.points.length <= 1)
+    if (this.svg && (this.root.removeChild(this.svg), this.svg = null), this.points.length <= 1)
       return;
     this.calcPosition(), this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), this.svg.style.position = "absolute", this.svg.style.cursor = "crosshair", this.svg.style.left = this.left, this.svg.style.top = this.top, this.svg.setAttribute("width", this.width), this.svg.setAttribute("height", this.height);
     let t = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
@@ -114,7 +115,7 @@ function d() {
   }, this.mouseup = (t) => {
     t.buttons === 1 && this.options.canAddPoints && !this.draggedPoint && (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) && this.addPoint(t.clientX - this.root.offsetLeft, t.clientY - this.root.offsetTop), this.root.draggedShape && (this.root.draggedShape.draggedPoint = null, this.root.draggedShape = null);
   }, this.mousedown = (t) => {
-    this.root.draggedShape = this;
+    alert("MOUSE DOWN SHAPE"), this.root.draggedShape = this;
   }, this.mousemove = (t) => {
     if (t.buttons !== 1)
       return;
