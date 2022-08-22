@@ -17,23 +17,23 @@ describe('Test drag points', () => {
       const point3 = shape.addPoint(200,100);
       point3.element.id = "point3"
       cy.get("#point1").trigger("mousedown",2,2,{buttons:1,bubbles:false}).then(() => {
-        cy.get("#container").trigger("mousemove",{buttons:1,movementX:35,movementY:25}).then((elem)=> {
+        cy.get("#container").trigger("mousemove",{buttons:1,movementX:35,movementY:25}).then(()=> {
           assert.equal(point1.x,35)
           assert.equal(point1.y,125)
-          cy.get("#container").trigger("mouseup",{buttons:1}).then(el => {
-            cy.get("#container").trigger("mousemove",{buttons:1,movementX:35,movementY:25}).then((elem)=> {
+          cy.get("#container").trigger("mouseup",{buttons:1}).then(() => {
+            cy.get("#container").trigger("mousemove",{buttons:1,movementX:35,movementY:25}).then(()=> {
               assert.equal(point1.x,35)
               assert.equal(point1.y,125)
               cy.get("#point2").trigger("mousedown",2,2,{buttons:1,bubbles:false}).then(()=>{
-                cy.get("#container").trigger("mousemove",{buttons:1,movementX:-40,movementY:350}).then((elem)=> {
+                cy.get("#container").trigger("mousemove",{buttons:1,movementX:-40,movementY:350}).then(()=> {
                   assert.equal(point1.x,35)
                   assert.equal(point1.y,125)
                   assert.equal(point2.x,60)
                   assert.equal(point2.y,350)
-                  cy.get("#container").trigger("mousemove",{buttons:1,movementX:0,movementY:60}).then((elem)=> {
+                  cy.get("#container").trigger("mousemove",{buttons:1,movementX:0,movementY:60}).then(()=> {
                     assert.equal(point2.x,60)
                     assert.equal(point2.y,350)
-                    cy.get("#container").trigger("mousemove",{buttons:1,movementX:550,movementY:0}).then((elem)=> {
+                    cy.get("#container").trigger("mousemove",{buttons:1,movementX:550,movementY:0}).then(()=> {
                       assert.equal(point2.x,60)
                       assert.equal(point2.y,350)
                     })
