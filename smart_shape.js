@@ -77,7 +77,7 @@ function d() {
     if (this.findPoint(t, s))
       return console.error(`Point with x=${t} and y=${s} already exists`), null;
     const i = new h(this).init(t, s, {});
-    return this.points.push(i), this.root.appendChild(i.element), i.addEventListeners(), i;
+    return this.points.push(i), this.root.appendChild(i.element), i;
   }, this.deletePoint = (t, s) => {
     const i = this.findPoint(t, s);
     i && i.destroy();

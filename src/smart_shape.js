@@ -79,7 +79,6 @@ function SmartShape() {
         const point = new SmartPoint(this).init(x, y, {})
         this.points.push(point);
         this.root.appendChild(point.element);
-        point.addEventListeners();
         return point;
     }
 
