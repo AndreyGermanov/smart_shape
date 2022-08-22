@@ -7,9 +7,6 @@ describe('Test drag points', () => {
       div.style.height = "400px";
       div.style.border = "1px;solid";
       div.id = "container";
-      console.log(cy.get("#app").then(el => {
-        console.log(el);
-      }))
       const app = Cypress.$("#app").toArray()[0]
       app.appendChild(div)
       const shape = new SmartShape().init(div,{stroke:"#000000"},[]);
