@@ -180,7 +180,6 @@ function SmartShape() {
     }
 
     this.mousedown = (event) => {
-        alert("MOUSE DOWN SHAPE");
         this.root.draggedShape = this;
     }
 

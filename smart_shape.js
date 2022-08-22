@@ -115,7 +115,7 @@ function d() {
   }, this.mouseup = (t) => {
     t.buttons === 1 && this.options.canAddPoints && !this.draggedPoint && (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) && this.addPoint(t.clientX - this.root.offsetLeft, t.clientY - this.root.offsetTop), this.root.draggedShape && (this.root.draggedShape.draggedPoint = null, this.root.draggedShape = null);
   }, this.mousedown = (t) => {
-    alert("MOUSE DOWN SHAPE"), this.root.draggedShape = this;
+    this.root.draggedShape = this;
   }, this.mousemove = (t) => {
     if (t.buttons !== 1)
       return;
