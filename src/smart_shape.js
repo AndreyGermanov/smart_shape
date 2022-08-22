@@ -61,8 +61,9 @@ function SmartShape() {
     }
 
     this.addPoint = (x,y) => {
-        this.putPoint(x, y);
+        const point = this.putPoint(x, y);
         this.redraw();
+        return point;
     }
 
     this.addPoints = (points) => {
@@ -179,6 +180,7 @@ function SmartShape() {
     }
 
     this.mousedown = (event) => {
+        alert("MOUSE DOWN SHAPE");
         this.root.draggedShape = this;
     }
 
