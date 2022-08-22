@@ -207,7 +207,7 @@ function SmartShape() {
         this.calcPosition();
         let stepX = event.movementX;
         let stepY = event.movementY;
-        let newX = this.left + stepX;
+        const newX = this.left + stepX;
         const newY = this.top + stepY;
         const offset = getOffset(this.root);
         if (newX < 0 || newX+this.width > this.root.clientLeft + this.root.clientWidth) {

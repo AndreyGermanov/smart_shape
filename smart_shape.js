@@ -131,8 +131,8 @@ function d() {
     }
   }, this.calcMovementOffset = (t) => {
     this.calcPosition();
-    let s = t.movementX, i = t.movementY, e = this.left + s;
-    const o = this.top + i, n = r(this.root);
+    let s = t.movementX, i = t.movementY;
+    const e = this.left + s, o = this.top + i, n = r(this.root);
     return e < 0 || e + this.width > this.root.clientLeft + this.root.clientWidth ? [null, null] : o < 0 || o + this.height > this.root.clientTop + this.root.clientHeight ? [null, null] : (t.clientX < e + n.left && (s = t.clientX - (e + n.left)), t.clientY < o + n.top && (i = t.clientY - (o + n.top)), t.clientX > e + this.width + n.left && (s = t.clientX - (this.width + n.left + this.left)), t.clientY > o + this.height + n.right && (i = t.clientY - (this.height + n.top + this.top)), [s, i]);
   };
 }
