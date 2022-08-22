@@ -67,7 +67,6 @@ function SmartPoint(shape) {
         }
         const newX = this.x + event.movementX;
         const newY = this.y + event.movementY;
-
         const root = this.shape.root;
 
         if (newX < 0 || newX > root.clientLeft + root.clientWidth) {
