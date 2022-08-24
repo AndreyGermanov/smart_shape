@@ -3,23 +3,38 @@ function SmartPoint(shape) {
         this.x = x;
         this.y = y;
         this.options = {
-            width:5,
-            height:5,
-            cssClass:"",
-            borderColor: 'black',
-            borderWidth: 1,
-            borderStyle: 'solid',
-            borderRadius: 25,
-            backgroundColor: 'red',
-        }
-        if (typeof(options) === "object") {
-            Object.assign(this.options,options);
+            width:10,
+            height:10,
+            classes: "",
+            style: {
+                borderWidth:"1px",
+                borderStyle:"solid",
+                borderColor:"black",
+                borderRadius: "25px",
+                position:'absolute',
+                zIndex:1000,
+                cursor:'pointer',
+                backgroundColor: "red",
+            },
+            canDrag: true,
+            canDelete: true
         }
         this.shape = shape;
         this.element = this.createPointUI();
+        this.setOptions(options);
         this.addEventListeners();
         this.shape.onPointEvent("point_added",this)
         return this;
+    }
+
+    this.setOptions = (options) => {
+        if (options && typeof(options) === "object") {
+            if (options.style && typeof(options.style) === "object") {
+                options.style = Object.assign(this.options.style, options.style)
+            }
+            Object.assign(this.options,options);
+        }
+        this.element = this.setPointStyles(this.element);
     }
 
     this.createPointUI = () => {
@@ -27,20 +42,22 @@ function SmartPoint(shape) {
         if (!this.shape.options.canDragPoints) {
             return element;
         }
-        element.className = this.options.cssClass;
+        return this.setPointStyles(element);
+    }
+
+    this.setPointStyles = (element) => {
+        element.className = this.options.classes;
+        element.style = this.options.style;
+        if (typeof(this.options.style) === "object") {
+            for (let cssName in this.options.style) {
+                element.style[cssName] = this.options.style[cssName]
+            }
+        }
         element.style.width = this.options.width+"px";
         element.style.height = this.options.height+"px";
-        element.style.cursor = 'pointer';
-        element.style.borderColor = this.options.borderColor;
-        element.style.borderWidth = this.options.borderWidth+"px";
-        element.style.borderStyle = this.options.borderStyle;
-        element.style.borderRadius = this.options.borderRadius+"px";
-        element.style.backgroundColor = this.options.backgroundColor;
-        element.style.position = 'absolute';
-        element.style.zIndex = '1000';
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
-        return element;
+        return element
     }
 
     this.redrawPoint =() => {
@@ -54,7 +71,7 @@ function SmartPoint(shape) {
     }
 
     this.mousedown = (event) => {
-        if (event.buttons === 1 && this.shape.options.canDragPoints) {
+        if (event.buttons === 1 && this.shape.options.canDragPoints && this.options.canDrag) {
             event.preventDefault = true;
             event.stopPropagation();
             this.shape.onPointEvent("point_dragstart", this);
@@ -62,18 +79,19 @@ function SmartPoint(shape) {
     }
 
     this.mousemove = (event) => {
-        if (event.buttons !== 1 || !this.shape.options.canDragPoints) {
+        if (event.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag) {
             return
         }
         const newX = this.x + event.movementX;
         const newY = this.y + event.movementY;
         const root = this.shape.root;
-
         if (newX < 0 || newX > root.clientLeft + root.clientWidth) {
+            this.shape.onPointEvent("point_drag",this);
             this.shape.draggedPoint = null;
             return;
         }
         if (newY < 0 || newY > root.clientTop + root.clientHeight) {
+            this.shape.onPointEvent("point_drag",this);
             this.shape.draggedPoint = null;
             return;
         }
@@ -86,9 +104,7 @@ function SmartPoint(shape) {
 
     this.mouseup = (event) => {
         this.shape.onPointEvent("point_dragend", this);
-        event.preventDefault = true;
-        event.stopPropagation();
-        if (event.buttons === 2 && this.shape.options.canDeletePoints) {
+        if (event.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete) {
             this.destroy();
         }
     }
