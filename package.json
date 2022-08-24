@@ -15,7 +15,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "cypress:open": "node_modules/cypress/bin/cypress open"
+    "cypress:open": "node_modules/cypress/bin/cypress open",
+    "apidoc": "node_modules/.bin/jsdoc2md src/*.js > docs/API.md"
   },
   "exports": {
     ".": {
@@ -25,7 +26,8 @@
   },
   "devDependencies": {
     "cypress": "^10.6.0",
-    "vite": "^3.0.7"
+    "vite": "^3.0.7",
+    "jsdoc-to-markdown": "^7.1.1"
   },
   "description": "Interactive vector shapes for Web",
   "directories": {
