@@ -9,7 +9,7 @@ describe('Test drag points', () => {
       div.id = "container";
       const app = Cypress.$("#app").toArray()[0]
       app.appendChild(div)
-      const shape = new SmartShape().init(div,{stroke:"#000000"},[]);
+      const shape = new SmartShape().init(div,{stroke:"#000000",fill:"lightgreen",fillOpacity:'0.5'},[]);
       const point1 = shape.addPoint(0,100);
       point1.element.id = "point1"
       const point2 = shape.addPoint(100,0);
