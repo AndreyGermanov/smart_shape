@@ -55,7 +55,7 @@ SmartShape.init(container_node,options,array_of_points);
 ```
 
 * `container_node` - HTML DOM element to inject figure into
-* `options` - Javascript object with options, that defines look and behavior of shape. For example, {fill:'#00ff00'} means that shape must be filled with light green color
+* `options` - Javascript object with options, that defines look and behavior of shape. For example, {fill:'#00ff00'} means that shape must be filled with light green color. All shape and points options described in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartShape+options).
 * `array_of_points` - array of points of polygon where each point is a subarray of coordinates [x,y].
 
 After running HTML page with code above, you should see this:
@@ -70,40 +70,12 @@ The full code of this demo is available [here](https://github.com/AndreyGermanov
 
 You can create many shapes and each of them can be much more complex. Then you can add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/tests/prod/index.html)
 
-# Options
+# SmartShape API
 
-There are different options can be provided in a second parameter of `init` function to change look and behavior of the shape. This is a list of options, which is available to use now.
+`SmartShape` object contains the shape itself and array of points, each of them is an object of `SmartPoint` class.
+After `SmartShape` object created, you can add new points, change various options and read various properties of the shape and points using properties and methods of public API.
 
-
-| Option          | Description                                                                            | Default         |
-|-----------------|----------------------------------------------------------------------------------------|-----------------|
-| name            | Name of shape                                                                          | `Unnamed shape` |
-| fill            | Background color of shape                                                              | `none`          |
-| stroke          | Border color of shape                                                                  | `rgb(0,0,0)`    |
-| strokeWidth     | Line thickness of shape border                                                         | 2               |
-| offsetX         | Number of pixels added to X coordinate of each point to move whole shape to the right  | 0               |
-| offsetY         | Number of pixels added to Y coordinate of each point to move whole shape to the bottom | 0               |
-| maxPoints       | Maximum number of points that can be visually added to the shape                       | -1 (unlimited)  |
-| canDragShape    | Is it allowed to drag shape                                                            | true            |
-| canDragPoints   | Is it allowed to drag each point to change the shape                                   | true            |
-| canAddPoints    | Is it allowed to add new points to the shape by double mouse click                     | false           |
-| canDeletePoints | Is it allowed to delete points from the shape by right mouse click                     | false           |
-| pointOptions    | An object, that defines default options for shape point (see below)                    | see below       |
-
-## Point options
-
-Here is a list of options for look and behavior of each point. You can use `pointOptions` of SmartShape `init` constructor to define default options for all points. Then, you can use API to define unique options for each point individually.
-
-| Option    | Description                                                                                                                                                 | Default                                                                                                                                                         |
-|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| width     | Width of a point(pixels)                                                                                                                                    | 10                                                                                                                                                              |
-| height    | Height of a point(pixels)                                                                                                                                   | 10                                                                                                                                                              |
-| classes   | String of CSS classes to apply to the point (The same as a "class" HTML attribute)                                                                          |                                                                                                                                                                 |
-| style     | CSS styles, that override classes. Must be provided as an object (The same as "style" HTML attribute, https://www.w3schools.com/jsref/prop_html_style.asp). | { borderWidth:"1px", borderStyle:"solid", borderColor:"black", borderRadius:"25px", position:'absolute', zIndex:1000, cursor:'pointer', backgroundColor: "red"} |
-| canDrag   | Is it allowed to drag the point                                                                                                                             | true                                                                                                                                                            |
-| canDelete | Is it allowed to delete the point using right mouse click                                                                                                   | true                                                                                                                                                            |
-
-All these default options for all points can be overrided for any point by using `SmartPoint.setOptions` method.
+[Read API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).   
 
 # Plans and Contribution
 
