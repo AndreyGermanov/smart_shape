@@ -84,15 +84,32 @@ There are different options can be provided in a second parameter of `init` func
 | offsetX         | Number of pixels added to X coordinate of each point to move whole shape to the right  | 0               |
 | offsetY         | Number of pixels added to Y coordinate of each point to move whole shape to the bottom | 0               |
 | maxPoints       | Maximum number of points that can be visually added to the shape                       | -1 (unlimited)  |
+| canDragShape    | Is it allowed to drag shape                                                            | true            |
 | canDragPoints   | Is it allowed to drag each point to change the shape                                   | true            |
 | canAddPoints    | Is it allowed to add new points to the shape by double mouse click                     | false           |
 | canDeletePoints | Is it allowed to delete points from the shape by right mouse click                     | false           |
+| pointOptions    | An object, that defines default options for shape point (see below)                    | see below       |
+
+## Point options
+
+Here is a list of options for look and behavior of each point. You can use `pointOptions` of SmartShape `init` constructor to define default options for all points. Then, you can use API to define unique options for each point individually.
+
+| Option    | Description                                                                                                                                                 | Default                                                                                                                                                         |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| width     | Width of a point(pixels)                                                                                                                                    | 10                                                                                                                                                              |
+| height    | Height of a point(pixels)                                                                                                                                   | 10                                                                                                                                                              |
+| classes   | String of CSS classes to apply to the point (The same as a "class" HTML attribute)                                                                          |                                                                                                                                                                 |
+| style     | CSS styles, that override classes. Must be provided as an object (The same as "style" HTML attribute, https://www.w3schools.com/jsref/prop_html_style.asp). | { borderWidth:"1px", borderStyle:"solid", borderColor:"black", borderRadius:"25px", position:'absolute', zIndex:1000, cursor:'pointer', backgroundColor: "red"} |
+| canDrag   | Is it allowed to drag the point                                                                                                                             | true                                                                                                                                                            |
+| canDelete | Is it allowed to delete the point using right mouse click                                                                                                   | true                                                                                                                                                            |
+
+All these default options for all points can be overrided for any point by using `SmartPoint.setOptions` method.
 
 # Plans and Contribution
 
-This is a new component on early stage of development. A lot of new features to come. Follow this repository to get updates as soon as I push them. Also, this project is open source, so you can clone SmartShape GitHub repository and modify source code to add any features, that still does not exist here. 
+This is a new component on early stage of development. A lot of new features to come. Follow this repository to get updates as soon as I push them. Also, this project is open source, so you can clone SmartShape GitHub repository and modify source code to add any features, that still does not exist here.
 
-As an early stage software, be careful by using it in real world projects. Test all features of shapes that you use properly, before pushing to production. If you modify the code by adding new features to these shapes, I will be more than happy if you share your code with my GitHub repository. 
+As an early stage software, be careful by using it in real world projects. Test all features of shapes that you use properly, before pushing to production. If you modify the code by adding new features to these shapes, I will be more than happy if you share your code with my GitHub repository.
 
 If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of GitHub repository of SmartShape project. Perhaps I will include it to development plan.
 

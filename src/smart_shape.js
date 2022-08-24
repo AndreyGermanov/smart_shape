@@ -18,7 +18,7 @@ function SmartShape() {
 
         this.setOptions(options);
         this.addEventListeners();
-        this.setupPoints(points);
+        this.setupPoints(points,this.options.pointOptions);
 
         return this;
     }
@@ -30,13 +30,18 @@ function SmartShape() {
             stroke: "rgb(0,0,0)",
             strokeWidth: "2",
             fill: "none",
+            canDragShape: true,
             canDragPoints: true,
             canAddPoints: false,
             canDeletePoints: false,
             offsetX: 0,
-            offsetY: 0
+            offsetY: 0,
+            pointOptions:{}
         }
-        if (typeof(options) === "object") {
+        if (options && typeof(options) === "object") {
+            if (options.pointOptions && typeof(options.pointOptions) === "object") {
+                options.pointOptions = Object.assign(this.options.pointOptions, options.pointOptions)
+            }
             Object.assign(this.options,options);
         }
     }
@@ -50,33 +55,34 @@ function SmartShape() {
                 }
             })
             this.root.addEventListener("mouseup",this.mouseup);
+            this.root.addEventListener("dblclick",this.doubleclick);
         }
         this.nocontextmenu = this.root.addEventListener("contextmenu", event => event.preventDefault())
     }
 
-    this.setupPoints = (points) => {
+    this.setupPoints = (points,pointOptions) => {
         if (typeof(points) === "object") {
-            this.addPoints(points);
+            this.addPoints(points,pointOptions);
         }
     }
 
-    this.addPoint = (x,y) => {
-        const point = this.putPoint(x, y);
+    this.addPoint = (x,y,pointOptions=null) => {
+        const point = this.putPoint(x, y,pointOptions);
         this.redraw();
         return point;
     }
 
-    this.addPoints = (points) => {
-        points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY));
+    this.addPoints = (points,pointOptions=null) => {
+        points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,pointOptions));
         this.redraw();
     }
 
-    this.putPoint = (x,y) => {
+    this.putPoint = (x,y,pointOptions=null) => {
         if (this.findPoint(x,y)) {
             console.error(`Point with x=${x} and y=${y} already exists`);
             return null;
         }
-        const point = new SmartPoint(this).init(x, y, {})
+        const point = new SmartPoint(this).init(x, y, pointOptions)
         this.points.push(point);
         this.root.appendChild(point.element);
         point.addEventListeners();
@@ -179,6 +185,15 @@ function SmartShape() {
         }
     }
 
+    this.doubleclick = (event) => {
+        event.stopPropagation();
+        if (this.options.canAddPoints && !this.draggedPoint) {
+            if (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) {
+                this.addPoint(event.clientX-this.root.offsetLeft, event.clientY-this.root.offsetTop)
+            }
+        }
+    }
+
     this.mousedown = (event) => {
         this.root.draggedShape = this;
     }
@@ -189,6 +204,9 @@ function SmartShape() {
         }
         if (this.draggedPoint) {
             this.draggedPoint.mousemove(event);
+            return
+        }
+        if (!this.options.canDragShape) {
             return
         }
         const [stepX, stepY] = this.calcMovementOffset(event);
@@ -207,26 +225,28 @@ function SmartShape() {
         this.calcPosition();
         let stepX = event.movementX;
         let stepY = event.movementY;
-        let newX = this.left + stepX;
+        let clientX = event.clientX;
+        let clientY = event.clientY;
+        const newX = this.left + stepX;
         const newY = this.top + stepY;
-        const offset = getOffset(this.root);
+        const offset = getOffset(this.root, true);
         if (newX < 0 || newX+this.width > this.root.clientLeft + this.root.clientWidth) {
             return [null, null]
         }
         if (newY < 0 || newY+this.height > this.root.clientTop + this.root.clientHeight) {
             return [null, null]
         }
-        if (event.clientX<newX+offset.left) {
-            stepX = event.clientX - (newX+offset.left);
+        if (clientX<newX+offset.left) {
+            stepX = clientX - (newX+offset.left);
         }
-        if (event.clientY<newY+offset.top) {
-            stepY = event.clientY - (newY+offset.top);
+        if (clientY<newY+offset.top) {
+            stepY = clientY - (newY+offset.top);
         }
-        if (event.clientX>newX+this.width+offset.left) {
-            stepX = event.clientX -  (this.width+offset.left+this.left);
+        if (clientX>newX+this.width+offset.left) {
+            stepX = clientX -  (this.width+offset.left+this.left);
         }
-        if (event.clientY>newY+this.height+offset.right) {
-            stepY = event.clientY -  (this.height+offset.top+this.top);
+        if (clientY>newY+this.height+offset.right) {
+            stepY = clientY -  (this.height+offset.top+this.top);
         }
         return [stepX, stepY];
     }
