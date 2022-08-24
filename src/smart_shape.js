@@ -31,30 +31,72 @@ function SmartShape() {
     /**
      * Options of shape as an object. Can have the following parameters.
      * @param name {string} Name of shape. By default, `Unnamed shape`
-     * @param maxPoints {int} Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited
-     * @param stroke {string} Color of shape lines. Accepts the same values as &nbsp; [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)`
-     * @param strokeWidth {string} Thickness of shape lines. Accepts the same values as &nbsp; [SVG stroke-width](https://www.w3schools.com/graphics/svg_stroking.asp) property. Default - `2`
-     * @param strokeLinecap {string} Type of endings of shape lines. Accepts the same values as &nbsp; [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property.
-     * @param strokeDasharray {string} Used to create dashed shape lines. Accepts the same values as &nbsp; [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property.
-     * @param fill {string} Fill color of shape polygon. Accepts the same values as &nbsp; [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
-     * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as &nbsp; [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property. Default `1`.
-     * @param offsetX {int} Number of pixels to add to X coordinate of each point to move entire figure to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`.
-     * @param offsetY {int} Number of pixels to add to Y coordinate of each point to move entire figure to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
+     * @param maxPoints {number} Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited
+     * @param stroke {string} Color of shape lines. Accepts the same values as  [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)`
+     * @param strokeWidth {string} Thickness of shape lines. Accepts the same values as  [SVG stroke-width](https://www.w3schools.com/graphics/svg_stroking.asp) property. Default - `2`
+     * @param strokeLinecap {string} Type of endings of shape lines. Accepts the same values as  [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property.
+     * @param strokeDasharray {string} Used to create dashed shape lines. Accepts the same values as  [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property.
+     * @param fill {string} Fill color of shape polygon. Accepts the same values as  [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
+     * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as  [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property. Default `1`.
+     * @param offsetX {number} Number of pixels to add to X coordinate of each point to move entire figure to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`.
+     * @param offsetY {number} Number of pixels to add to Y coordinate of each point to move entire figure to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
      * @param canDragShape {boolean} Is it allowed to drag shape. Default `true`.
      * @param canDragPoints {boolean} Is it allowed to drag points of shape. Default `true`.
      * @param canAddPoints {boolean} Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`.
      * @param canDeletePoints {boolean} Is it allowed to delete points from the shape interactively, by right mouse click on points. Default `false`.
-     * @param pointOptions {object}. Default options for created points. See &nbsp; [options](#SmartPoint+options) property of `SmartPoint` object.
+     * @param pointOptions {object}. Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object.
      * @type {{}}
      */
     this.options = {};
 
     /**
+     * Left position of the shape relative to container top left.
+     * (Read-only, calculated automatically based on points coordinates)
+     * @type {number}
+     */
+    this.left = 0;
+
+    /**
+     * Top position of the shape relative to container top left.
+     * (Read-only, calculated automatically based on points coordinates)
+     * @type {number}
+     */
+    this.top = 0;
+
+    /**
+     * Right position of the shape relative to container top left.
+     * (Read-only, calculated automatically based on points coordinates)
+     * @type {number}
+     */
+    this.right = 0;
+
+    /**
+     * Bottom position of the shape relative to container top left.
+     * (Read-only, calculated automatically based on points coordinates)
+     * @type {number}
+     */
+    this.bottom = 0;
+
+    /**
+     * Width of shape
+     * (Read-only, calculated automatically based on points coordinates)
+     * @type {number}
+     */
+    this.width = 0;
+
+    /**
+     * Height of shape
+     * (Read-only, calculated automatically based on points coordinates)
+     * @type {number}
+     */
+    this.height = 0;
+
+    /**
      * Method used to construct SmartShape object with specified from specified `points` and with specified `options`.
      * Then it binds this object to specified `root` HTML node and displays it
-     * @param root - HTML DOM node af a container element
-     * @param options - Options object to construct this shape ([see above](#SmartShape+options))
-     * @param points - 2D Array of points for shape polygon. Each element is [x,y] coordinate array ([see above](#SmartShape+points))
+     * @param root {HTMLElement} HTML DOM node af a container element
+     * @param options {object} Options object to construct this shape ([see above](#SmartShape+options))
+     * @param points {array} 2D Array of points for shape polygon. Each element is [x,y] coordinate array ([see above](#SmartShape+points))
      * @returns {object} constructed SmartShape object
      */
     this.init = (root,options=null,points=null) => {
@@ -77,7 +119,7 @@ function SmartShape() {
 
     /**
      * Set specified options to shape and redraws it with new options
-     * @param options {object}. Options object, &nbsp; [described above][#SmartShape+options)
+     * @param options {object} Options object, [described above](#SmartShape+options)
      */
     this.setOptions = (options) => {
         this.options = {
@@ -125,7 +167,7 @@ function SmartShape() {
       * @ignore
       * Internal function that set points of figure
       * @param points {array} 2D array of points to add. Each point is array of [x,y] coordinates
-     * @param pointOptions {object} Array of points options. Described in &nbsp; [SmartPoint.options](#SmartPoint+options). Can be empty,
+     * @param pointOptions {object} Array of points options. Described in  [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself.
      */
     this.setupPoints = (points,pointOptions) => {
@@ -137,11 +179,11 @@ function SmartShape() {
 
     /**
      * Add point to shape.
-     * @param x {int} X coordinate relative to container left corner
-     * @param y {int} Y coordinate relative to container top corner
-     * @param pointOptions - Array of point options. Described in &nbsp; [SmartPoint.options](#SmartPoint+options). Can be empty,
+     * @param x {number} X coordinate relative to container left corner
+     * @param y {number} Y coordinate relative to container top corner
+     * @param pointOptions {object} Array of point options. Described in  [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself.
-     * @returns {object} &nbsp;[SmartPoint](#SmartPoint) object of added point
+     * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.addPoint = (x,y,pointOptions=null) => {
         const point = this.putPoint(x, y,pointOptions);
@@ -152,7 +194,7 @@ function SmartShape() {
     /**
      * Adds specified points to shape.
      * @param points {array} 2D array of points to add. Each point is array of [x,y] coordinates
-     * @param pointOptions {object} Array of points options. Described in &nbsp; [SmartPoint.options](#SmartPoint+options). Can be empty,
+     * @param pointOptions {object} Array of points options. Described in  [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself.
      * */
     this.addPoints = (points,pointOptions=null) => {
@@ -163,11 +205,11 @@ function SmartShape() {
     /**
      * @ignore
      * Internal method that used to add point to the shape
-     * @param x {int} X coordinate relative to container left corner
-     * @param y {int} Y coordinate relative to container top corner
-     * @param pointOptions - Array of point options. Described in &nbsp; [SmartPoint.options](#SmartPoint+options). Can be empty,
+     * @param x {number} X coordinate relative to container left corner
+     * @param y {number} Y coordinate relative to container top corner
+     * @param pointOptions - Array of point options. Described in  [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself.
-     * @returns {object} &nbsp;[SmartPoint](#SmartPoint) object of added point
+     * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.putPoint = (x,y,pointOptions=null) => {
         if (this.findPoint(x,y)) {
@@ -183,8 +225,8 @@ function SmartShape() {
     /**
      * Method used to delete point with specified coordinates. If point with specified coordinates not found than just
      * do nothing
-     * @param x {int} X coordinate of point
-     * @param y {int} Y coordinate of point
+     * @param x {number} X coordinate of point
+     * @param y {number} Y coordinate of point
      */
     this.deletePoint = (x,y) => {
         const point = this.findPoint(x,y);
@@ -195,9 +237,9 @@ function SmartShape() {
 
     /**
      * Method returns SmartPoint object of point with specified coordinates or null, if point not found
-     * @param x {int} X coordinate of point
-     * @param y {int} Y coordinate of point
-     * @returns {null|object} &nbsp; [SmartPoint](#SmartPoint) object instance of point or null in point does not exist
+     * @param x {number} X coordinate of point
+     * @param y {number} Y coordinate of point
+     * @returns {null|object}  [SmartPoint](#SmartPoint) object instance of point or null if point does not exist
      */
     this.findPoint = (x,y) => {
         const point = this.points.find(point => point.x === x && point.y === y)

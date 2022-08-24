@@ -23,13 +23,13 @@
 <a name="new_SmartPoint_new"></a>
 
 ### new SmartPoint(shape)
-Class that represents a single point of SmartShape. Usually points constructed not directly, but using `addPoint`, `addPoints` methods of &nbsp;[SmartShape](#SmartShape) class or interactively when user double-clicks on shape's container.
+Class that represents a single point of SmartShape. Usually points constructed not directly, but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when user double-clicks on shape's container.
 
 **Returns**: <code>object</code> - SmartPoint object that should be initialized by `init` method.  
 
 | Param | Description |
 | --- | --- |
-| shape | &nbsp; [SmartShape](#SmartShape) object to which this point belongs |
+| shape | [SmartShape](#SmartShape) object to which this point belongs |
 
 <a name="SmartPoint+options"></a>
 
@@ -40,12 +40,12 @@ Point HTML element options. Defines look and behavior of point.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| width | <code>int</code> | Width of point in pixels |
-| height | <code>int</code> | Height of point in pixels |
+| width | <code>number</code> | Width of point in pixels |
+| height | <code>number</code> | Height of point in pixels |
 | classes | <code>string</code> | CSS class or classes of point, delimited by comma |
-| style | <code>object</code> | CSS styles, that override classes. Must be provided as an object (The same as &nbsp; ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
+| style | <code>object</code> | CSS styles, that override classes. Must be provided as an object (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
 | canDrag | <code>boolean</code> | Is it allowed to drag this point by mouse to change it positions. Default `true` |
-| canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If &nbsp; [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
+| canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
 
 <a name="SmartPoint+init"></a>
 
@@ -57,9 +57,9 @@ Initializes new point and displays it on the screen.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>int</code> | X coordinate of point relative to shape's container left |
-| y | <code>int</code> | Y coordinate of point relative to shape's container top |
-| options |  | Point options, described &nbsp; [above](#SmartPoint+options]. If not specified, then&nbsp; [SmartShape.options.pointOptions](#SmartShape+options) used or global default options for point. |
+| x | <code>number</code> | X coordinate of point relative to shape's container left |
+| y | <code>number</code> | Y coordinate of point relative to shape's container top |
+| options | <code>object</code> | Point options, described [above](#SmartPoint+options). If not specified, then [SmartShape.options.pointOptions](#SmartShape+options) used or global default options for point. |
 
 <a name="SmartPoint+setOptions"></a>
 
@@ -70,7 +70,7 @@ Method used to set specified options to point and redraw it with new options.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>object</code> | Point options object, described &nbsp; [above](#SmartPoint+options). |
+| options | <code>object</code> | Point options object, described [above](#SmartPoint+options). |
 
 <a name="SmartPoint+redrawPoint"></a>
 
@@ -82,7 +82,7 @@ Method used to redraw the point. Usually used after change point position on the
 
 ### smartPoint.destroy()
 Method used to destroy the point. Removes event listeners from point element and
-raises "point_destroyed" event. This event then intercepted by owner shape. Then owner shape
+raises the `point_destroyed` event. This event then intercepted by owner shape. Then owner shape
 removes this point from shape's points array.
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
@@ -97,6 +97,12 @@ removes this point from shape's points array.
     * [.points](#SmartShape+points) : <code>array</code>
     * [.svg](#SmartShape+svg) : <code>object</code>
     * [.options](#SmartShape+options) : <code>Object</code>
+    * [.left](#SmartShape+left) : <code>number</code>
+    * [.top](#SmartShape+top) : <code>number</code>
+    * [.right](#SmartShape+right) : <code>number</code>
+    * [.bottom](#SmartShape+bottom) : <code>number</code>
+    * [.width](#SmartShape+width) : <code>number</code>
+    * [.height](#SmartShape+height) : <code>number</code>
     * [.init(root, options, points)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
@@ -142,21 +148,63 @@ Options of shape as an object. Can have the following parameters.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | Name of shape. By default, `Unnamed shape` |
-| maxPoints | <code>int</code> | Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited |
-| stroke | <code>string</code> | Color of shape lines. Accepts the same values as &nbsp; [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)` |
-| strokeWidth | <code>string</code> | Thickness of shape lines. Accepts the same values as &nbsp; [SVG stroke-width](https://www.w3schools.com/graphics/svg_stroking.asp) property. Default - `2` |
-| strokeLinecap | <code>string</code> | Type of endings of shape lines. Accepts the same values as &nbsp; [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
-| strokeDasharray | <code>string</code> | Used to create dashed shape lines. Accepts the same values as &nbsp; [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
-| fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as &nbsp; [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
-| fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as &nbsp; [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property. Default `1`. |
-| offsetX | <code>int</code> | Number of pixels to add to X coordinate of each point to move entire figure to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
-| offsetY | <code>int</code> | Number of pixels to add to Y coordinate of each point to move entire figure to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
+| maxPoints | <code>number</code> | Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited |
+| stroke | <code>string</code> | Color of shape lines. Accepts the same values as  [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)` |
+| strokeWidth | <code>string</code> | Thickness of shape lines. Accepts the same values as  [SVG stroke-width](https://www.w3schools.com/graphics/svg_stroking.asp) property. Default - `2` |
+| strokeLinecap | <code>string</code> | Type of endings of shape lines. Accepts the same values as  [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
+| strokeDasharray | <code>string</code> | Used to create dashed shape lines. Accepts the same values as  [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
+| fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as  [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
+| fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as  [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property. Default `1`. |
+| offsetX | <code>number</code> | Number of pixels to add to X coordinate of each point to move entire figure to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
+| offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire figure to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
 | canDragPoints | <code>boolean</code> | Is it allowed to drag points of shape. Default `true`. |
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
 | canDeletePoints | <code>boolean</code> | Is it allowed to delete points from the shape interactively, by right mouse click on points. Default `false`. |
-| pointOptions | <code>object</code> | . Default options for created points. See &nbsp; [options](#SmartPoint+options) property of `SmartPoint` object. |
+| pointOptions | <code>object</code> | . Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 
+<a name="SmartShape+left"></a>
+
+### smartShape.left : <code>number</code>
+Left position of the shape relative to container top left.
+(Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+top"></a>
+
+### smartShape.top : <code>number</code>
+Top position of the shape relative to container top left.
+(Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+right"></a>
+
+### smartShape.right : <code>number</code>
+Right position of the shape relative to container top left.
+(Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+bottom"></a>
+
+### smartShape.bottom : <code>number</code>
+Bottom position of the shape relative to container top left.
+(Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+width"></a>
+
+### smartShape.width : <code>number</code>
+Width of shape
+(Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+height"></a>
+
+### smartShape.height : <code>number</code>
+Height of shape
+(Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
 
 ### smartShape.init(root, options, points) ⇒ <code>object</code>
@@ -166,11 +214,11 @@ Then it binds this object to specified `root` HTML node and displays it
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>object</code> - constructed SmartShape object  
 
-| Param | Description |
-| --- | --- |
-| root | HTML DOM node af a container element |
-| options | Options object to construct this shape ([see above](#SmartShape+options)) |
-| points | 2D Array of points for shape polygon. Each element is [x,y] coordinate array ([see above](#SmartShape+points)) |
+| Param | Type | Description |
+| --- | --- | --- |
+| root | <code>HTMLElement</code> | HTML DOM node af a container element |
+| options | <code>object</code> | Options object to construct this shape ([see above](#SmartShape+options)) |
+| points | <code>array</code> | 2D Array of points for shape polygon. Each element is [x,y] coordinate array ([see above](#SmartShape+points)) |
 
 <a name="SmartShape+setOptions"></a>
 
@@ -181,7 +229,7 @@ Set specified options to shape and redraws it with new options
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>object</code> | . Options object, &nbsp; [described above][#SmartShape+options) |
+| options | <code>object</code> | Options object, [described above](#SmartShape+options) |
 
 <a name="SmartShape+addPoint"></a>
 
@@ -189,13 +237,13 @@ Set specified options to shape and redraws it with new options
 Add point to shape.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-**Returns**: <code>object</code> - &nbsp;[SmartPoint](#SmartPoint) object of added point  
+**Returns**: <code>object</code> - [SmartPoint](#SmartPoint) object of added point  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>int</code> | X coordinate relative to container left corner |
-| y | <code>int</code> | Y coordinate relative to container top corner |
-| pointOptions |  | Array of point options. Described in &nbsp; [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
+| x | <code>number</code> | X coordinate relative to container left corner |
+| y | <code>number</code> | Y coordinate relative to container top corner |
+| pointOptions | <code>object</code> | Array of point options. Described in  [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
 
 <a name="SmartShape+addPoints"></a>
 
@@ -207,7 +255,7 @@ Adds specified points to shape.
 | Param | Type | Description |
 | --- | --- | --- |
 | points | <code>array</code> | 2D array of points to add. Each point is array of [x,y] coordinates |
-| pointOptions | <code>object</code> | Array of points options. Described in &nbsp; [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
+| pointOptions | <code>object</code> | Array of points options. Described in  [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
 
 <a name="SmartShape+deletePoint"></a>
 
@@ -219,8 +267,8 @@ do nothing
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>int</code> | X coordinate of point |
-| y | <code>int</code> | Y coordinate of point |
+| x | <code>number</code> | X coordinate of point |
+| y | <code>number</code> | Y coordinate of point |
 
 <a name="SmartShape+findPoint"></a>
 
@@ -228,12 +276,12 @@ do nothing
 Method returns SmartPoint object of point with specified coordinates or null, if point not found
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-**Returns**: <code>null</code> \| <code>object</code> - &nbsp; [SmartPoint](#SmartPoint) object instance of point or null in point does not exist  
+**Returns**: <code>null</code> \| <code>object</code> - [SmartPoint](#SmartPoint) object instance of point or null if point does not exist  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>int</code> | X coordinate of point |
-| y | <code>int</code> | Y coordinate of point |
+| x | <code>number</code> | X coordinate of point |
+| y | <code>number</code> | Y coordinate of point |
 
 <a name="SmartShape+redraw"></a>
 
