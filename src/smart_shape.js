@@ -378,8 +378,6 @@ function SmartShape() {
         })
     }
 
-    this.set
-
     /**
      * @ignore
      * Internal method that used to calculate shape dimensions, based on point coordinates.
