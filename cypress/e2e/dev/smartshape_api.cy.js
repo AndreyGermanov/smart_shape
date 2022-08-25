@@ -157,4 +157,17 @@ describe('SmartShape API tests', () => {
     })
   })
 
+  it("getPointsArray", () => {
+    const [app, shape] = initShape();
+    let cords = shape.getPointsArray();
+    assert.deepEqual(cords, [[0,100],[100,0],[200,100]])
+    shape.addPoint(200,200);
+    shape.addPoint(300,300);
+    cords = shape.getPointsArray();
+    assert.deepEqual(cords, [[0,100],[100,0],[200,100],[200,200],[300,300]])
+    shape.deletePoint(100,0);
+    cords = shape.getPointsArray();
+    assert.deepEqual(cords, [[0,100],[200,100],[200,200],[300,300]])
+  })
+
 })
