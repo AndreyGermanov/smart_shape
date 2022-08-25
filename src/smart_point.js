@@ -26,6 +26,9 @@ function SmartPoint(shape) {
      * @param canDelete {boolean} Is it allowed to delete this point by right mouse click. Default `true`.
      * (If [options.canDeletePoints](#SmartShape+options) option is set to `false`,
      * then all points can not be removed regardless of this setting)
+     * @param zIndex {number} Order of element in a stack of HTML elements
+     * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
+     * If [SmartShape.options.zIndex](#SmartShape+options) specified, then shape's z-index will be used instead of this
      * @type {{}}
      */
     this.options = {
@@ -39,12 +42,12 @@ function SmartPoint(shape) {
             borderColor:"black",
             borderRadius: "25px",
             position:'absolute',
-            zIndex:1000,
             cursor:'pointer',
             backgroundColor: "red",
         },
         canDrag: true,
-        canDelete: true
+        canDelete: true,
+        zIndex:1000
     };
 
     /**
@@ -99,6 +102,9 @@ function SmartPoint(shape) {
         if (this.options.id) {
             this.element.id = this.options.id;
         }
+        if (this.shape.options.zIndex) {
+            this.options.zIndex = this.shape.options.zIndex;
+        }
         this.element = this.setPointStyles(this.element);
     }
 
@@ -139,6 +145,7 @@ function SmartPoint(shape) {
         element.style.height = this.options.height+"px";
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
+        element.style.zIndex = this.options.zIndex;
         return element
     }
 

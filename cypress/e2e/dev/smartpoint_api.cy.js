@@ -33,7 +33,8 @@ describe('SmartPoint API tests', () => {
           borderRadius: "0"
         },
         canDrag: false,
-        canDelete: false
+        canDelete: false,
+        zIndex: 1010,
       })
       cy.get("#point2").should("have.class","newPoint").then(()=> {
         cy.get("#point2").should("have.css","width","100px").then(()=> {
@@ -41,8 +42,10 @@ describe('SmartPoint API tests', () => {
             cy.get("#point2").should("have.css","background-color","rgb(0, 255, 0)").then(()=> {
               cy.get("#point2").should("have.css","border-width","5px").then(()=> {
                 cy.get("#point2").should("have.css","border-radius","0px").then(()=> {
-                  assert.equal(point1.options.canDrag, false);
-                  assert.equal(point1.options.canDelete, false);
+                  cy.get("#point2").should("have.css","z-index","1010").then(()=> {
+                    assert.equal(point1.options.canDrag, false);
+                    assert.equal(point1.options.canDelete, false);
+                  });
                 });
               })
             })
