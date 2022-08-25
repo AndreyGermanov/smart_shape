@@ -63,6 +63,8 @@ function SmartShape() {
      * by right mouse click on points. Default `false`.
      * @param pointOptions {object} Default options for created points. See  [options](#SmartPoint+options)
      * property of `SmartPoint` object.
+     * @param zIndex {number} Order of element in a stack of HTML elements
+     * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
      * @type {{}}
      */
     this.options = {
@@ -83,7 +85,8 @@ function SmartShape() {
         offsetY: 0,
         classes: "",
         style: {},
-        pointOptions:{}
+        pointOptions:{},
+        zIndex: 1000,
     };
 
     /**
@@ -155,7 +158,8 @@ function SmartShape() {
     }
 
     /**
-     * Set specified options to the shape
+     * Set specified options to the shape. You may not set all options, that exist, but only what you want to change.
+     * Options that you set by this method will be merged with already active options.
      * @param options {object} Options object, [described above](#SmartShape+options)
      */
     this.setOptions = (options) => {
@@ -362,6 +366,7 @@ function SmartShape() {
                 polygon.style[cssName] = this.options.style[cssName]
             }
         }
+        polygon.style.zIndex = this.options.zIndex;
         this.svg.appendChild(polygon);
         this.root.appendChild(this.svg);
         this.svg.addEventListener("mousedown",this.mousedown)

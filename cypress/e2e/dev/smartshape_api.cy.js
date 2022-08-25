@@ -136,7 +136,8 @@ describe('SmartShape API tests', () => {
           classes: "myShape",
           style: {
             strokeOpacity: 0.0,
-          }
+          },
+          zIndex: 1010
         })
         shape.redraw();
         cy.get("#shape1").should("not.exist").then(() => {
@@ -148,10 +149,14 @@ describe('SmartShape API tests', () => {
                     cy.get("#shape2 > polygon").should("have.attr", "stroke-linecap", "round").then(() => {
                       cy.get("#shape2 > polygon").should("have.class", "myShape").then(() => {
                         cy.get("#shape2 > polygon").should("have.css", "stroke-opacity", "0").then(() => {
-                          const point1 = shape.findPoint(100, 0)
-                          point1.element.id = "point1";
-                          assert.equal(shape.options.name, "Cool shape");
-                          cy.get("#point1").should("have.css", "border-color", "rgb(0, 255, 0)");
+                          cy.get("#shape2 > polygon").should("have.css","z-index","1010").then(() => {
+                            const point1 = shape.findPoint(100, 0)
+                            point1.element.id = "point1";
+                            assert.equal(shape.options.name, "Cool shape");
+                            cy.get("#point1").should("have.css", "border-color", "rgb(0, 255, 0)").then(() => {
+                              cy.get("#point1").should("have.css","z-index","1010");
+                            });
+                          })
                         })
                       })
                     })
