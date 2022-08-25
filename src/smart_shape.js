@@ -126,7 +126,7 @@ function SmartShape() {
      * @param root {HTMLElement} HTML DOM node af a container element
      * @param options {object} Options object to construct this shape ([see above](#SmartShape+options))
      * @param points {array} 2D Array of points for shape polygon.
-     * Each element is [x,y] coordinate array ([see above](#SmartShape+points))
+     * Each element is [x,y] coordinate array
      * @returns {object} constructed SmartShape object
      */
     this.init = (root,options=null,points=null) => {

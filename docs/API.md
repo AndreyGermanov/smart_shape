@@ -249,7 +249,7 @@ Then it binds this object to specified `root` HTML node and displays it
 | --- | --- | --- |
 | root | <code>HTMLElement</code> | HTML DOM node af a container element |
 | options | <code>object</code> | Options object to construct this shape ([see above](#SmartShape+options)) |
-| points | <code>array</code> | 2D Array of points for shape polygon. Each element is [x,y] coordinate array ([see above](#SmartShape+points)) |
+| points | <code>array</code> | 2D Array of points for shape polygon. Each element is [x,y] coordinate array |
 
 <a name="SmartShape+setOptions"></a>
 
