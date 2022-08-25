@@ -59,6 +59,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | style | <code>object</code> | CSS styles, that override classes. Must be provided as an object. Default see in code. (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
 | canDrag | <code>boolean</code> | Is it allowed to drag this point by mouse to change it positions. Default `true` |
 | canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
+| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. If [SmartShape.options.zIndex](#SmartShape+options) specified, then shape's z-index will be used instead of this |
 
 <a name="SmartPoint+x"></a>
 
@@ -197,6 +198,7 @@ Options of shape as an object. Can have the following parameters.
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
 | canDeletePoints | <code>boolean</code> | Is it allowed to delete points from the shape interactively, by right mouse click on points. Default `false`. |
 | pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
+| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 
 <a name="SmartShape+left"></a>
 
@@ -259,7 +261,8 @@ Then it binds this object to specified `root` HTML node and displays it
 <a name="SmartShape+setOptions"></a>
 
 ### smartShape.setOptions(options)
-Set specified options to the shape
+Set specified options to the shape. You may not set all options, that exist, but only what you want to change.
+Options that you set by this method will be merged with already active options.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 

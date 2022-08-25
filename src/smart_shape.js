@@ -367,6 +367,7 @@ function SmartShape() {
             }
         }
         polygon.style.zIndex = this.options.zIndex;
+        this.svg.style.zIndex = this.options.zIndex;
         this.svg.appendChild(polygon);
         this.root.appendChild(this.svg);
         this.svg.addEventListener("mousedown",this.mousedown)
