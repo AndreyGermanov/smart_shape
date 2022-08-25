@@ -22,8 +22,8 @@ function SmartShape() {
     this.points = [];
 
     /**
-     * [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape. SmartShape constructs SVG element based on provided point
-     * coordinates and options.
+     * [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
+     * SmartShape constructs SVG element based on provided point coordinates and options.
      * @type {object}
      */
     this.svg = null;
@@ -31,7 +31,8 @@ function SmartShape() {
     /**
      * Options of shape as an object. Can have the following parameters.
      * @param name {string} Name of shape. By default, `Unnamed shape`
-     * @param maxPoints {number} Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited
+     * @param maxPoints {number} Number of points, which possible to add to the shape interactively. By default `-1`,
+     * which means Unlimited
      * @param stroke {string} Color of shape lines. Accepts the same values as
      * [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)`
      * @param strokeWidth {string} Thickness of shape lines. Accepts the same values as
@@ -43,7 +44,7 @@ function SmartShape() {
      * @param fill {string} Fill color of shape polygon. Accepts the same values as
      * [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
      * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as
-     * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property. Default `1`.
+     * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`.
      * @param offsetX {number} Number of pixels to add to X coordinate of each point to move entire shape
      * to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`.
      * @param offsetY {number} Number of pixels to add to Y coordinate of each point to move entire shape

@@ -164,8 +164,8 @@ that can have children (div,span etc.)
 <a name="SmartShape+svg"></a>
 
 ### smartShape.svg : <code>object</code>
-[SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape. SmartShape constructs SVG element based on provided point
-coordinates and options.
+[SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
+SmartShape constructs SVG element based on provided point coordinates and options.
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+options"></a>
@@ -184,7 +184,7 @@ Options of shape as an object. Can have the following parameters.
 | strokeLinecap | <code>string</code> | Type of endings of shape lines. Accepts the same values as [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
 | strokeDasharray | <code>string</code> | Used to create dashed shape lines. Accepts the same values as [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
 | fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
-| fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property. Default `1`. |
+| fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`. |
 | offsetX | <code>number</code> | Number of pixels to add to X coordinate of each point to move entire shape to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
 | offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire shape to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
