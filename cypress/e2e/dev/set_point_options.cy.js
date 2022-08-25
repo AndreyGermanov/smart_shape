@@ -46,7 +46,6 @@ describe('Point options', () => {
                     backgroundColor: "rgb(0, 255, 0)",
                 }
             })
-            //shape.redraw();
             cy.get("#point1").should("have.class", "uniquePoint").then(() => {
                 cy.get("#point1").should("have.css", "width", "50px").then(() => {
                     cy.get("#point1").should("have.css", "height", "50px").then(()=> {

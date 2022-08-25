@@ -56,7 +56,7 @@ function SmartShape() {
      * by mouse double-click on the screen. Default `false`.
      * @param canDeletePoints {boolean} Is it allowed to delete points from the shape interactively,
      * by right mouse click on points. Default `false`.
-     * @param pointOptions {object}. Default options for created points. See  [options](#SmartPoint+options)
+     * @param pointOptions {object} Default options for created points. See  [options](#SmartPoint+options)
      * property of `SmartPoint` object.
      * @type {{}}
      */
