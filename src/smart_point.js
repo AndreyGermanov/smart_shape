@@ -123,6 +123,7 @@ function SmartPoint(shape) {
         if (element == null) {
             element = this.element;
         }
+        element.id = this.options.id;
         element.className = this.options.classes;
         element.style = this.options.style;
         if (typeof(this.options.style) === "object") {
@@ -141,6 +142,7 @@ function SmartPoint(shape) {
      * Method used to redraw the point. Usually used after change point position on the screen.
      */
     this.redraw =() => {
+        this.setPointStyles();
         this.element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         this.element.style.top = (this.y-parseInt(this.options.height/2))+"px";
     }

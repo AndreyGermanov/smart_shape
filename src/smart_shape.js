@@ -216,6 +216,9 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      * */
     this.addPoints = (points,pointOptions=null) => {
+        if (!points || typeof(points) !== "object") {
+            return
+        }
         points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,pointOptions));
         this.redraw();
     }
@@ -305,7 +308,7 @@ function SmartShape() {
             this.root.removeChild(this.svg);
             this.svg = null;
         }
-        if (this.points.length <= 1) {
+        if (this.points.length < 1) {
             return
         }
         this.calcPosition();
@@ -363,7 +366,7 @@ function SmartShape() {
             this.root.removeChild(point.element)
         })
         this.root.removeEventListener("contextmenu",this.nocontextmenu);
-        this.root.removeEventListener("mouseup",this.onmouseup);
+        this.root.removeEventListener("mouseup",this.mouseup);
         this.points = [];
         this.redraw();
     }

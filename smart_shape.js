@@ -17,17 +17,17 @@ function p(t) {
     canDrag: !0,
     canDelete: !0
   }, this.x = 0, this.y = 0, this.element = null, this.init = (s, i, e = null) => (this.x = s, this.y = i, this.shape = t, this.element = this.createPointUI(), this.setOptions(this.shape.options.pointOptions), this.setOptions(e), this.addEventListeners(), this.shape.onPointEvent("point_added", this), this), this.setOptions = (s) => {
-    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.element.id = this.options.id, this.element = this.setPointStyles(this.element);
+    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s), console.log(this.options)), this.element.id = this.options.id, this.element = this.setPointStyles(this.element);
   }, this.createPointUI = () => {
     const s = document.createElement("div");
     return this.shape.options.canDragPoints ? this.setPointStyles(s) : s;
   }, this.setPointStyles = (s = null) => {
-    if (s == null && (s = this.element), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
+    if (s == null && (s = this.element), s.id = this.options.id, s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
       for (let i in this.options.style)
         s.style[i] = this.options.style[i];
     return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s;
   }, this.redraw = () => {
-    this.element.style.left = this.x - parseInt(this.options.width / 2) + "px", this.element.style.top = this.y - parseInt(this.options.height / 2) + "px";
+    this.setPointStyles(), this.element.style.left = this.x - parseInt(this.options.width / 2) + "px", this.element.style.top = this.y - parseInt(this.options.height / 2) + "px";
   }, this.addEventListeners = () => {
     this.element.addEventListener("mouseup", this.mouseup), this.element.addEventListener("mousedown", this.mousedown);
   }, this.mousedown = (s) => {
@@ -95,7 +95,7 @@ function a() {
     const e = this.putPoint(t, s, i);
     return this.redraw(), e;
   }, this.addPoints = (t, s = null) => {
-    t.forEach((i) => this.putPoint(i[0] + this.options.offsetX, i[1] + this.options.offsetY, s)), this.redraw();
+    !t || typeof t != "object" || (t.forEach((i) => this.putPoint(i[0] + this.options.offsetX, i[1] + this.options.offsetY, s)), this.redraw());
   }, this.putPoint = (t, s, i = null) => {
     if (this.findPoint(t, s))
       return console.error(`Point with x=${t} and y=${s} already exists`), null;
@@ -122,7 +122,7 @@ function a() {
         this.root.draggedShape = null, this.draggedPoint = null;
     }
   }, this.redraw = () => {
-    if (this.svg && (this.root.removeChild(this.svg), this.svg = null), this.points.length <= 1)
+    if (this.svg && (this.root.removeChild(this.svg), this.svg = null), this.points.length < 1)
       return;
     this.calcPosition(), this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), this.svg.id = this.options.id, this.svg.style.position = "absolute", this.svg.style.cursor = "crosshair", this.svg.style.left = this.left, this.svg.style.top = this.top, this.svg.setAttribute("width", this.width), this.svg.setAttribute("height", this.height);
     let t = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
