@@ -14,7 +14,11 @@
 
 * [SmartPoint](#SmartPoint)
     * [new SmartPoint(shape)](#new_SmartPoint_new)
+    * [.shape](#SmartPoint+shape) : [<code>SmartShape</code>](#SmartShape)
     * [.options](#SmartPoint+options) : <code>Object</code>
+    * [.x](#SmartPoint+x) : <code>number</code>
+    * [.y](#SmartPoint+y) : <code>number</code>
+    * [.element](#SmartPoint+element) : <code>HTMLElement</code>
     * [.init(x, y, options)](#SmartPoint+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartPoint+setOptions)
     * [.redrawPoint()](#SmartPoint+redrawPoint)
@@ -31,10 +35,16 @@ Class that represents a single point of SmartShape. Usually points constructed n
 | --- | --- |
 | shape | [SmartShape](#SmartShape) object to which this point belongs |
 
+<a name="SmartPoint+shape"></a>
+
+### smartPoint.shape : [<code>SmartShape</code>](#SmartShape)
+[SmartShape](#SmartShape) object, to which this point belongs
+
+**Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
 <a name="SmartPoint+options"></a>
 
 ### smartPoint.options : <code>Object</code>
-Point HTML element options. Defines look and behavior of point.
+Point HTML element options. Defines look and behavior of point. Has the following parameters.
 
 **Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
 
@@ -47,6 +57,24 @@ Point HTML element options. Defines look and behavior of point.
 | canDrag | <code>boolean</code> | Is it allowed to drag this point by mouse to change it positions. Default `true` |
 | canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
 
+<a name="SmartPoint+x"></a>
+
+### smartPoint.x : <code>number</code>
+X coordinate of point, relative to a corner of shape's container
+
+**Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+y"></a>
+
+### smartPoint.y : <code>number</code>
+Y coordinate of point, relative to a corner of shape's container
+
+**Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+element"></a>
+
+### smartPoint.element : <code>HTMLElement</code>
+HTML DOM node of element, which used to display the point. This is styled DIV element.
+
+**Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
 <a name="SmartPoint+init"></a>
 
 ### smartPoint.init(x, y, options) ⇒ <code>object</code>

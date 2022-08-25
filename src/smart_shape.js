@@ -47,7 +47,23 @@ function SmartShape() {
      * @param pointOptions {object}. Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object.
      * @type {{}}
      */
-    this.options = {};
+    this.options = {
+        name: "Unnamed shape",
+        maxPoints: -1,
+        stroke: "rgb(0,0,0)",
+        strokeWidth: "2",
+        strokeLinecap: "",
+        strokeDasharray: "",
+        fill: "none",
+        fillOpacity: "1",
+        canDragShape: true,
+        canDragPoints: true,
+        canAddPoints: false,
+        canDeletePoints: false,
+        offsetX: 0,
+        offsetY: 0,
+        pointOptions:{}
+    };
 
     /**
      * Left position of the shape relative to container top left.
@@ -122,23 +138,6 @@ function SmartShape() {
      * @param options {object} Options object, [described above](#SmartShape+options)
      */
     this.setOptions = (options) => {
-        this.options = {
-            name: "Unnamed shape",
-            maxPoints: -1,
-            stroke: "rgb(0,0,0)",
-            strokeWidth: "2",
-            strokeLinecap: "",
-            strokeDasharray: "",
-            fill: "none",
-            fillOpacity: "1",
-            canDragShape: true,
-            canDragPoints: true,
-            canAddPoints: false,
-            canDeletePoints: false,
-            offsetX: 0,
-            offsetY: 0,
-            pointOptions:{}
-        }
         if (options && typeof(options) === "object") {
             if (options.pointOptions && typeof(options.pointOptions) === "object") {
                 options.pointOptions = Object.assign(this.options.pointOptions, options.pointOptions)

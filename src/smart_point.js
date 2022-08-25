@@ -7,7 +7,13 @@
 function SmartPoint(shape) {
 
     /**
-     * Point HTML element options. Defines look and behavior of point.
+     * [SmartShape](#SmartShape) object, to which this point belongs
+     * @type {SmartShape}
+     */
+    this.shape = null;
+
+    /**
+     * Point HTML element options. Defines look and behavior of point. Has the following parameters.
      * @param width {number} Width of point in pixels
      * @param height {number} Height of point in pixels
      * @param classes {string} CSS class or classes of point, delimited by comma
@@ -16,7 +22,41 @@ function SmartPoint(shape) {
      * @param canDelete {boolean} Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting)
      * @type {{}}
      */
-    this.options = {};
+    this.options = {
+        width:10,
+        height:10,
+        classes: "",
+        style: {
+            borderWidth:"1px",
+            borderStyle:"solid",
+            borderColor:"black",
+            borderRadius: "25px",
+            position:'absolute',
+            zIndex:1000,
+            cursor:'pointer',
+            backgroundColor: "red",
+        },
+        canDrag: true,
+        canDelete: true
+    };
+
+    /**
+     * X coordinate of point, relative to a corner of shape's container
+     * @type {number}
+     */
+    this.x = 0;
+
+    /**
+     * Y coordinate of point, relative to a corner of shape's container
+     * @type {number}
+     */
+    this.y = 0;
+
+    /**
+     * HTML DOM node of element, which used to display the point. This is styled DIV element.
+     * @type {HTMLElement}
+     */
+    this.element = null;
 
     /**
      * Initializes new point and displays it on the screen.
@@ -28,23 +68,6 @@ function SmartPoint(shape) {
     this.init = (x,y,options = null) => {
         this.x = x;
         this.y = y;
-        this.options = {
-            width:10,
-            height:10,
-            classes: "",
-            style: {
-                borderWidth:"1px",
-                borderStyle:"solid",
-                borderColor:"black",
-                borderRadius: "25px",
-                position:'absolute',
-                zIndex:1000,
-                cursor:'pointer',
-                backgroundColor: "red",
-            },
-            canDrag: true,
-            canDelete: true
-        }
         this.shape = shape;
         this.element = this.createPointUI();
         this.setOptions(this.shape.options.pointOptions);
