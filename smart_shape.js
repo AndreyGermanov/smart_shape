@@ -134,7 +134,7 @@ function a() {
     if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && t.setAttribute("fill", this.options.fill), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
       for (let i in this.options.style)
         t.style[i] = this.options.style[i];
-    t.style.zIndex = this.options.zIndex, this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown), this.points.forEach((i) => {
+    t.style.zIndex = this.options.zIndex, this.svg.style.zIndex = this.options.zIndex, this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown), this.points.forEach((i) => {
       i.setOptions(this.options.pointOptions), i.setPointStyles(), i.redraw();
     });
   }, this.set, this.calcPosition = () => {
