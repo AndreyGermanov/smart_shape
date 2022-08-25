@@ -132,6 +132,10 @@ describe('SmartShape API tests', () => {
             style: {
               borderColor: "rgb(0, 255, 0)"
             }
+          },
+          classes: "myShape",
+          style: {
+            strokeOpacity: 0.0,
           }
         })
         shape.redraw();
@@ -142,10 +146,14 @@ describe('SmartShape API tests', () => {
                 cy.get("#shape2 > polygon").should("have.attr", "stroke-width", "5").then(() => {
                   cy.get("#shape2 > polygon").should("have.attr", "stroke-dasharray", "10,20,10").then(() => {
                     cy.get("#shape2 > polygon").should("have.attr", "stroke-linecap", "round").then(() => {
-                      const point1 = shape.findPoint(100,0)
-                      point1.element.id = "point1";
-                      assert.equal(shape.options.name,"Cool shape");
-                      cy.get("#point1").should("have.css","border-color","rgb(0, 255, 0)");
+                      cy.get("#shape2 > polygon").should("have.class", "myShape").then(() => {
+                        cy.get("#shape2 > polygon").should("have.css", "stroke-opacity", "0").then(() => {
+                          const point1 = shape.findPoint(100, 0)
+                          point1.element.id = "point1";
+                          assert.equal(shape.options.name, "Cool shape");
+                          cy.get("#point1").should("have.css", "border-color", "rgb(0, 255, 0)");
+                        })
+                      })
                     })
                   });
                 })
@@ -158,16 +166,18 @@ describe('SmartShape API tests', () => {
   })
 
   it("getPointsArray", () => {
-    const [app, shape] = initShape();
-    let cords = shape.getPointsArray();
-    assert.deepEqual(cords, [[0,100],[100,0],[200,100]])
-    shape.addPoint(200,200);
-    shape.addPoint(300,300);
-    cords = shape.getPointsArray();
-    assert.deepEqual(cords, [[0,100],[100,0],[200,100],[200,200],[300,300]])
-    shape.deletePoint(100,0);
-    cords = shape.getPointsArray();
-    assert.deepEqual(cords, [[0,100],[200,100],[200,200],[300,300]])
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app, shape] = initShape();
+      let cords = shape.getPointsArray();
+      assert.deepEqual(cords, [[0, 100], [100, 0], [200, 100]]);
+      shape.addPoint(200, 200);
+      shape.addPoint(300, 300);
+      cords = shape.getPointsArray();
+      assert.deepEqual(cords, [[0, 100], [100, 0], [200, 100], [200, 200], [300, 300]]);
+      shape.deletePoint(100, 0);
+      cords = shape.getPointsArray();
+      assert.deepEqual(cords, [[0, 100], [200, 100], [200, 200], [300, 300]]);
+    })
   })
 
 })
