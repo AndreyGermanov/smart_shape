@@ -256,7 +256,7 @@ Then it binds this object to specified `root` HTML node and displays it
 <a name="SmartShape+setOptions"></a>
 
 ### smartShape.setOptions(options)
-Set specified options to shape and redraws it with new options, including points
+Set specified options to the shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 

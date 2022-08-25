@@ -148,7 +148,7 @@ function SmartShape() {
     }
 
     /**
-     * Set specified options to shape and redraws it with new options, including points
+     * Set specified options to the shape
      * @param options {object} Options object, [described above](#SmartShape+options)
      */
     this.setOptions = (options) => {
@@ -158,12 +158,6 @@ function SmartShape() {
             }
             Object.assign(this.options,options);
         }
-        this.points.forEach(point => {
-            point.setOptions(this.options.pointOptions);
-            point.setPointStyles();
-            point.redraw();
-        })
-        this.redraw();
     }
 
     // Internal method that installs HTML DOM event listeners to shape, and it's container
@@ -338,6 +332,11 @@ function SmartShape() {
         this.svg.appendChild(polygon);
         this.root.appendChild(this.svg);
         this.svg.addEventListener("mousedown",this.mousedown)
+        this.points.forEach(point => {
+            point.setOptions(this.options.pointOptions);
+            point.setPointStyles();
+            point.redraw();
+        })
     }
 
     /**

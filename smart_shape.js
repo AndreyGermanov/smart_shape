@@ -84,9 +84,7 @@ function a() {
     }
     return this.root = t, this.root.style.position = "relative", this.draggedPoint = null, this.root.draggedShape = null, this.setOptions(s), this.addEventListeners(), this.setupPoints(i, this.options.pointOptions), this;
   }, this.setOptions = (t) => {
-    t && typeof t == "object" && (t.pointOptions && typeof t.pointOptions == "object" && (t.pointOptions = Object.assign(this.options.pointOptions, t.pointOptions)), Object.assign(this.options, t)), this.points.forEach((s) => {
-      s.setOptions(this.options.pointOptions), s.setPointStyles(), s.redraw();
-    }), this.redraw();
+    t && typeof t == "object" && (t.pointOptions && typeof t.pointOptions == "object" && (t.pointOptions = Object.assign(this.options.pointOptions, t.pointOptions)), Object.assign(this.options, t));
   }, this.addEventListeners = () => {
     this.root.getAttribute("sh_listeners") !== "true" && (this.root.setAttribute("sh_listeners", "true"), this.root.addEventListener("mousemove", (t) => {
       this.root.draggedShape && this.root.draggedShape.mousemove(t);
@@ -130,7 +128,9 @@ function a() {
     let t = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     this.points.length > 2 && (t = document.createElementNS("http://www.w3.org/2000/svg", "polygon"));
     const s = this.points.map((i) => "" + (i.x - this.left) + "," + (i.y - this.top)).join(" ");
-    t.setAttribute("points", s), t.setAttribute("stroke", this.options.stroke), t.setAttribute("stroke-width", this.options.strokeWidth), t.setAttribute("stroke-linecap", this.options.strokeLinecap), t.setAttribute("stroke-dasharray", this.options.strokeDasharray), t.setAttribute("fill", this.options.fill), t.setAttribute("fill-opacity", this.options.fillOpacity), this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown);
+    t.setAttribute("points", s), t.setAttribute("stroke", this.options.stroke), t.setAttribute("stroke-width", this.options.strokeWidth), t.setAttribute("stroke-linecap", this.options.strokeLinecap), t.setAttribute("stroke-dasharray", this.options.strokeDasharray), t.setAttribute("fill", this.options.fill), t.setAttribute("fill-opacity", this.options.fillOpacity), this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown), this.points.forEach((i) => {
+      i.setOptions(this.options.pointOptions), i.setPointStyles(), i.redraw();
+    });
   }, this.calcPosition = () => {
     this.left = this.points.map((t) => t.x).reduce((t, s) => s < t ? s : t), this.top = this.points.map((t) => t.y).reduce((t, s) => s < t ? s : t), this.right = this.points.map((t) => t.x).reduce((t, s) => s > t ? s : t), this.bottom = this.points.map((t) => t.y).reduce((t, s) => s > t ? s : t), this.width = this.right - this.left, this.height = this.bottom - this.top;
   }, this.destroy = () => {

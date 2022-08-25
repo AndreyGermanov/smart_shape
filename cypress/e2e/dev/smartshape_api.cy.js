@@ -134,6 +134,7 @@ describe('SmartShape API tests', () => {
             }
           }
         })
+        shape.redraw();
         cy.get("#shape1").should("not.exist").then(() => {
           cy.get("#shape2").should("exist").then(() => {
             cy.get("#shape2 > polygon").should("have.attr", "fill", "rgb(0, 255, 0)").then(() => {
