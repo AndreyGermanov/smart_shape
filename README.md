@@ -70,8 +70,6 @@ The full code of this demo is available [here](https://github.com/AndreyGermanov
 
 You can create many shapes and each of them can be much more complex. Then you can add them to the same or to different containers. See the demo [here](https://code.germanov.dev/smart_shape/tests/prod/index.html)
 
-# SmartShape API
-
 `SmartShape` object contains the shape itself and array of points, each of them is an object of `SmartPoint` class.
 After `SmartShape` object created, you can add new points, change various options and read various properties of the shape and points using properties and methods of public API.
 
