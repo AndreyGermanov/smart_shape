@@ -142,6 +142,7 @@ removes this point from shape's points array.
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.redraw()](#SmartShape+redraw)
     * [.destroy()](#SmartShape+destroy)
+    * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -193,7 +194,7 @@ Options of shape as an object. Can have the following parameters.
 | canDragPoints | <code>boolean</code> | Is it allowed to drag points of shape. Default `true`. |
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
 | canDeletePoints | <code>boolean</code> | Is it allowed to delete points from the shape interactively, by right mouse click on points. Default `false`. |
-| pointOptions | <code>object</code> | . Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
+| pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 
 <a name="SmartShape+left"></a>
 
@@ -330,5 +331,11 @@ Method used to redraw shape polygon. Used automatically when add/remove points o
 Destroys the shape. Destroys all points, removes event listeners and removes the shape from screen.
 But variable continue existing. To completely remove the shape,
 set variable to 'null' after calling this method.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+getPointsArray"></a>
+
+### smartShape.getPointsArray() ⇒ <code>array</code>
+Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  

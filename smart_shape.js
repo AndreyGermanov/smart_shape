@@ -163,6 +163,9 @@ function a() {
     let s = t.movementX, i = t.movementY, e = t.clientX, o = t.clientY;
     const h = this.left + s, r = this.top + i, n = l(this.root, !0);
     return h < 0 || h + this.width > this.root.clientLeft + this.root.clientWidth ? [null, null] : r < 0 || r + this.height > this.root.clientTop + this.root.clientHeight ? [null, null] : (e < h + n.left && (s = e - (h + n.left)), o < r + n.top && (i = o - (r + n.top)), e > h + this.width + n.left && (s = e - (this.width + n.left + this.left)), o > r + this.height + n.right && (i = o - (this.height + n.top + this.top)), [s, i]);
+  }, this.getPointsArray = () => {
+    let t = [];
+    return this.points && typeof this.points == "object" && this.points.length && (t = this.points.map((s) => [s.x, s.y])), t;
   };
 }
 export {

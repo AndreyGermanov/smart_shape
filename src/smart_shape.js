@@ -476,6 +476,18 @@ function SmartShape() {
         }
         return [stepX, stepY];
     }
+
+    /**
+     * Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
+     * @returns {array}
+     */
+    this.getPointsArray = () => {
+        let result = [];
+        if (this.points && typeof(this.points) === "object" && this.points.length) {
+            result = this.points.map(point => [point.x,point.y])
+        }
+        return result;
+    }
 }
 
 export default SmartShape;
