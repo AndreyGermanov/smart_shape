@@ -16,10 +16,11 @@ function SmartPoint(shape) {
 
     /**
      * Point HTML element options. Defines look and behavior of point. Has the following parameters.
-     * @param width {number} Width of point in pixels
-     * @param height {number} Height of point in pixels
-     * @param classes {string} CSS class or classes of point, delimited by comma
-     * @param style {object} CSS styles, that override classes. Must be provided as an object
+     * @param id {string} Id of point HTML element. Default empty.
+     * @param width {number} Width of point in pixels. Default: `10`.
+     * @param height {number} Height of point in pixels. Default `10`.
+     * @param classes {string} CSS class or classes of point, delimited by comma. Default empty.
+     * @param style {object} CSS styles, that override classes. Must be provided as an object. Default see in code.
      * (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp))
      * @param canDrag {boolean} Is it allowed to drag this point by mouse to change it positions. Default `true`
      * @param canDelete {boolean} Is it allowed to delete this point by right mouse click. Default `true`.
@@ -28,6 +29,7 @@ function SmartPoint(shape) {
      * @type {{}}
      */
     this.options = {
+        id:"",
         width:10,
         height:10,
         classes: "",
@@ -94,6 +96,9 @@ function SmartPoint(shape) {
             }
             Object.assign(this.options,options);
         }
+        if (this.options.id) {
+            this.element.id = this.options.id;
+        }
         this.element = this.setPointStyles(this.element);
     }
 
@@ -116,7 +121,13 @@ function SmartPoint(shape) {
      * @param element {HTMLDivElement} Input HTML element
      * @returns {HTMLDivElement} HTML element with applied styles
      */
-    this.setPointStyles = (element) => {
+    this.setPointStyles = (element=null) => {
+        if (element == null) {
+            element = this.element;
+        }
+        if (this.options.id) {
+            element.id = this.options.id;
+        }
         element.className = this.options.classes;
         element.style = this.options.style;
         if (typeof(this.options.style) === "object") {
@@ -134,7 +145,8 @@ function SmartPoint(shape) {
     /**
      * Method used to redraw the point. Usually used after change point position on the screen.
      */
-    this.redrawPoint =() => {
+    this.redraw =() => {
+        this.setPointStyles();
         this.element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         this.element.style.top = (this.y-parseInt(this.options.height/2))+"px";
     }
