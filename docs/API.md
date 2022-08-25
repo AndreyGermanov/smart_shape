@@ -188,6 +188,8 @@ Options of shape as an object. Can have the following parameters.
 | strokeDasharray | <code>string</code> | Used to create dashed shape lines. Accepts the same values as [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
 | fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
 | fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`. |
+| classes | <code>string</code> | CSS class names, that will be applied to underlying polygon SVG element. |
+| style | <code>object</code> | CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and classes is an alternative way to specify options of SVG elements: https://jenkov.com/tutorials/svg/svg-and-css.html, https://css-tricks.com/svg-properties-and-css/ |
 | offsetX | <code>number</code> | Number of pixels to add to X coordinate of each point to move entire shape to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
 | offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire shape to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
@@ -339,3 +341,4 @@ set variable to 'null' after calling this method.
 Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  

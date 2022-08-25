@@ -46,6 +46,11 @@ function SmartShape() {
      * [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
      * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as
      * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`.
+     * @param classes {string} CSS class names, that will be applied to underlying polygon SVG element.
+     * @param style {object} CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and
+     * classes is an alternative way to specify options of SVG elements:
+     * https://jenkov.com/tutorials/svg/svg-and-css.html,
+     * https://css-tricks.com/svg-properties-and-css/
      * @param offsetX {number} Number of pixels to add to X coordinate of each point to move entire shape
      * to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`.
      * @param offsetY {number} Number of pixels to add to Y coordinate of each point to move entire shape
@@ -76,6 +81,8 @@ function SmartShape() {
         canDeletePoints: false,
         offsetX: 0,
         offsetY: 0,
+        classes: "",
+        style: {},
         pointOptions:{}
     };
 
@@ -156,12 +163,15 @@ function SmartShape() {
             if (options.pointOptions && typeof(options.pointOptions) === "object") {
                 options.pointOptions = Object.assign(this.options.pointOptions, options.pointOptions)
             }
+            if (options.style && typeof(options.style) === "object") {
+                options.style = Object.assign(this.options.style, options.style);
+            }
             Object.assign(this.options,options);
         }
     }
 
     // Internal method that installs HTML DOM event listeners to shape, and it's container
-    // to handle mouse events propely
+    // to handle mouse events properly
     this.addEventListeners = () => {
         if (this.root.getAttribute("sh_listeners") !== "true") {
             this.root.setAttribute("sh_listeners","true");
@@ -326,12 +336,32 @@ function SmartShape() {
         }
         const points = this.points.map(point => ""+(point.x-this.left)+","+(point.y-this.top)).join(" ");
         polygon.setAttribute("points",points);
-        polygon.setAttribute("stroke",this.options.stroke);
-        polygon.setAttribute("stroke-width",this.options.strokeWidth);
-        polygon.setAttribute("stroke-linecap",this.options.strokeLinecap);
-        polygon.setAttribute("stroke-dasharray",this.options.strokeDasharray);
-        polygon.setAttribute("fill",this.options.fill);
-        polygon.setAttribute("fill-opacity",this.options.fillOpacity);
+        if (this.options.stroke) {
+            polygon.setAttribute("stroke", this.options.stroke);
+        }
+        if (this.options.strokeWidth) {
+            polygon.setAttribute("stroke-width",this.options.strokeWidth);
+        }
+        if (this.options.strokeLinecap) {
+            polygon.setAttribute("stroke-linecap",this.options.strokeLinecap);
+        }
+        if (this.options.strokeDasharray) {
+            polygon.setAttribute("stroke-dasharray",this.options.strokeDasharray);
+        }
+        if (this.options.fill) {
+            polygon.setAttribute("fill",this.options.fill);
+        }
+        if (this.options.fillOpacity) {
+            polygon.setAttribute("fill-opacity",this.options.fillOpacity);
+        }
+        if (this.options.classes) {
+            polygon.setAttribute("class",this.options.classes);
+        }
+        if (this.options.style) {
+            for (let cssName in this.options.style) {
+                polygon.style[cssName] = this.options.style[cssName]
+            }
+        }
         this.svg.appendChild(polygon);
         this.root.appendChild(this.svg);
         this.svg.addEventListener("mousedown",this.mousedown)
@@ -341,6 +371,8 @@ function SmartShape() {
             point.redraw();
         })
     }
+
+    this.set
 
     /**
      * @ignore
@@ -479,7 +511,7 @@ function SmartShape() {
 
     /**
      * Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
-     * @returns {array}
+     * @returns {array} 2D array of points in format [ [x,y], [x,y], [x,y] ... ]
      */
     this.getPointsArray = () => {
         let result = [];
