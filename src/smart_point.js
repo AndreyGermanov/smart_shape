@@ -1,5 +1,7 @@
 /**
- * Class that represents a single point of SmartShape. Usually points constructed not directly, but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when user double-clicks on shape's container.
+ * Class that represents a single point of SmartShape. Usually points constructed not directly,
+ * but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when
+ * user double-clicks on shape's container.
  * @param shape [SmartShape](#SmartShape) object to which this point belongs
  * @returns {object} SmartPoint object that should be initialized by `init` method.
  * @constructor
@@ -17,9 +19,12 @@ function SmartPoint(shape) {
      * @param width {number} Width of point in pixels
      * @param height {number} Height of point in pixels
      * @param classes {string} CSS class or classes of point, delimited by comma
-     * @param style {object} CSS styles, that override classes. Must be provided as an object (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp))
+     * @param style {object} CSS styles, that override classes. Must be provided as an object
+     * (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp))
      * @param canDrag {boolean} Is it allowed to drag this point by mouse to change it positions. Default `true`
-     * @param canDelete {boolean} Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting)
+     * @param canDelete {boolean} Is it allowed to delete this point by right mouse click. Default `true`.
+     * (If [options.canDeletePoints](#SmartShape+options) option is set to `false`,
+     * then all points can not be removed regardless of this setting)
      * @type {{}}
      */
     this.options = {
@@ -62,7 +67,8 @@ function SmartPoint(shape) {
      * Initializes new point and displays it on the screen.
      * @param x {number} X coordinate of point relative to shape's container left
      * @param y {number} Y coordinate of point relative to shape's container top
-     * @param options {object} Point options, described [above](#SmartPoint+options). If not specified, then [SmartShape.options.pointOptions](#SmartShape+options) used or global default options for point.
+     * @param options {object} Point options, described [above](#SmartPoint+options). If not specified,
+     * then [SmartShape.options.pointOptions](#SmartShape+options) used or global default options for point.
      * @returns {object} constructed SmartPoint object
      */
     this.init = (x,y,options = null) => {
