@@ -25,7 +25,7 @@ function p(t) {
     if (s == null && (s = this.element), this.options.id && (s.id = this.options.id), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
       for (let i in this.options.style)
         s.style[i] = this.options.style[i];
-    return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s.style.zIndex = this.options.zIndex, s;
+    return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s.style.zIndex = this.options.zIndex + 1, s;
   }, this.redraw = () => {
     this.setPointStyles(), this.element.style.left = this.x - parseInt(this.options.width / 2) + "px", this.element.style.top = this.y - parseInt(this.options.height / 2) + "px";
   }, this.addEventListeners = () => {

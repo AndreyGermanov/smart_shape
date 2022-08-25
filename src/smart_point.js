@@ -145,7 +145,7 @@ function SmartPoint(shape) {
         element.style.height = this.options.height+"px";
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
-        element.style.zIndex = this.options.zIndex;
+        element.style.zIndex = this.options.zIndex+1;
         return element
     }
 
