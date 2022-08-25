@@ -10,14 +10,14 @@ function p(t) {
       borderColor: "black",
       borderRadius: "25px",
       position: "absolute",
-      zIndex: 1e3,
       cursor: "pointer",
       backgroundColor: "red"
     },
     canDrag: !0,
-    canDelete: !0
+    canDelete: !0,
+    zIndex: 1e3
   }, this.x = 0, this.y = 0, this.element = null, this.init = (s, i, e = null) => (this.x = s, this.y = i, this.shape = t, this.element = this.createPointUI(), this.setOptions(this.shape.options.pointOptions), this.setOptions(e), this.addEventListeners(), this.shape.onPointEvent("point_added", this), this), this.setOptions = (s) => {
-    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.options.id && (this.element.id = this.options.id), this.element = this.setPointStyles(this.element);
+    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.options.id && (this.element.id = this.options.id), this.shape.options.zIndex && (this.options.zIndex = this.shape.options.zIndex), this.element = this.setPointStyles(this.element);
   }, this.createPointUI = () => {
     const s = document.createElement("div");
     return this.shape.options.canDragPoints ? this.setPointStyles(s) : s;
@@ -25,7 +25,7 @@ function p(t) {
     if (s == null && (s = this.element), this.options.id && (s.id = this.options.id), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
       for (let i in this.options.style)
         s.style[i] = this.options.style[i];
-    return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s;
+    return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s.style.zIndex = this.options.zIndex, s;
   }, this.redraw = () => {
     this.setPointStyles(), this.element.style.left = this.x - parseInt(this.options.width / 2) + "px", this.element.style.top = this.y - parseInt(this.options.height / 2) + "px";
   }, this.addEventListeners = () => {
@@ -78,7 +78,8 @@ function a() {
     offsetY: 0,
     classes: "",
     style: {},
-    pointOptions: {}
+    pointOptions: {},
+    zIndex: 1e3
   }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.init = (t, s = null, i = null) => {
     if (!t) {
       console.error("Root HTML node not specified. Could not create shape.");
@@ -133,7 +134,7 @@ function a() {
     if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && t.setAttribute("fill", this.options.fill), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
       for (let i in this.options.style)
         t.style[i] = this.options.style[i];
-    this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown), this.points.forEach((i) => {
+    t.style.zIndex = this.options.zIndex, this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown), this.points.forEach((i) => {
       i.setOptions(this.options.pointOptions), i.setPointStyles(), i.redraw();
     });
   }, this.set, this.calcPosition = () => {
