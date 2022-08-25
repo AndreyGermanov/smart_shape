@@ -96,7 +96,9 @@ function SmartPoint(shape) {
             }
             Object.assign(this.options,options);
         }
-        this.element.id = this.options.id;
+        if (this.options.id) {
+            this.element.id = this.options.id;
+        }
         this.element = this.setPointStyles(this.element);
     }
 
@@ -123,7 +125,9 @@ function SmartPoint(shape) {
         if (element == null) {
             element = this.element;
         }
-        element.id = this.options.id;
+        if (this.options.id) {
+            element.id = this.options.id;
+        }
         element.className = this.options.classes;
         element.style = this.options.style;
         if (typeof(this.options.style) === "object") {

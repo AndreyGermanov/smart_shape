@@ -1,5 +1,6 @@
 import SmartShape from "../../../src/smart_shape.js";
 describe('Point options', () => {
+
     const pointOptions = {
         width:20,
         height:20,
@@ -11,6 +12,7 @@ describe('Point options', () => {
             borderWidth:'3px',
         }
     }
+
     it('should correctly merge default point options with point options, passed from SmartShape.init constructor for all points', () => {
         cy.visit('http://localhost:5173/tests/empty.html').then(()=>{
             const app = Cypress.$("#app").toArray()[0]
@@ -27,6 +29,7 @@ describe('Point options', () => {
             cy.get("#point1").should("have.css","borderStyle","solid");
         })
     })
+
     it("test options override for specified point", () => {
         cy.visit('http://localhost:5173/tests/empty.html').then(() => {
             const app = Cypress.$("#app").toArray()[0]
@@ -43,18 +46,27 @@ describe('Point options', () => {
                     backgroundColor: "rgb(0, 255, 0)",
                 }
             })
-            cy.get("#point1").should("have.class", "uniquePoint");
-            cy.get("#point1").should("have.css", "width", "50px");
-            cy.get("#point1").should("have.css", "height", "50px");
-            cy.get("#point1").should("have.css", "background-color", "rgb(0, 255, 0)")
-            const point2 = shape.findPoint(200, 100)
-            point2.element.id = "point2";
-            cy.get("#point2").should("have.class", "newPoint");
-            cy.get("#point2").should("have.css", "width", "20px");
-            cy.get("#point2").should("have.css", "height", "20px");
-            cy.get("#point2").should("have.css", "background-color", "rgb(255, 128, 0)")
+            //shape.redraw();
+            cy.get("#point1").should("have.class", "uniquePoint").then(() => {
+                cy.get("#point1").should("have.css", "width", "50px").then(() => {
+                    cy.get("#point1").should("have.css", "height", "50px").then(()=> {
+                        cy.get("#point1").should("have.css", "background-color", "rgb(0, 255, 0)").then(()=> {
+                            const point2 = shape.findPoint(200, 100)
+                            point2.element.id = "point2";
+                            cy.get("#point2").should("have.class", "newPoint").then(()=> {
+                                cy.get("#point2").should("have.css", "width", "20px").then(() => {
+                                    cy.get("#point2").should("have.css", "height", "20px").then(()=> {
+                                        cy.get("#point2").should("have.css", "background-color", "rgb(255, 128, 0)")
+                                    });
+                                });
+                            });
+                        })
+                    });
+                });
+            })
         })
     })
+
     it("should not drag or delete point if this feature is disabled", () => {
         cy.visit('http://localhost:5173/tests/empty.html').then(() => {
             const app = Cypress.$("#app").toArray()[0]

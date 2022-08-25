@@ -17,12 +17,12 @@ function p(t) {
     canDrag: !0,
     canDelete: !0
   }, this.x = 0, this.y = 0, this.element = null, this.init = (s, i, e = null) => (this.x = s, this.y = i, this.shape = t, this.element = this.createPointUI(), this.setOptions(this.shape.options.pointOptions), this.setOptions(e), this.addEventListeners(), this.shape.onPointEvent("point_added", this), this), this.setOptions = (s) => {
-    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.element.id = this.options.id, this.element = this.setPointStyles(this.element);
+    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.options.id && (this.element.id = this.options.id), this.element = this.setPointStyles(this.element);
   }, this.createPointUI = () => {
     const s = document.createElement("div");
     return this.shape.options.canDragPoints ? this.setPointStyles(s) : s;
   }, this.setPointStyles = (s = null) => {
-    if (s == null && (s = this.element), s.id = this.options.id, s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
+    if (s == null && (s = this.element), this.options.id && (s.id = this.options.id), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
       for (let i in this.options.style)
         s.style[i] = this.options.style[i];
     return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s;
