@@ -17,7 +17,7 @@ function p(t) {
     canDrag: !0,
     canDelete: !0
   }, this.x = 0, this.y = 0, this.element = null, this.init = (s, i, e = null) => (this.x = s, this.y = i, this.shape = t, this.element = this.createPointUI(), this.setOptions(this.shape.options.pointOptions), this.setOptions(e), this.addEventListeners(), this.shape.onPointEvent("point_added", this), this), this.setOptions = (s) => {
-    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s), console.log(this.options)), this.element.id = this.options.id, this.element = this.setPointStyles(this.element);
+    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.element.id = this.options.id, this.element = this.setPointStyles(this.element);
   }, this.createPointUI = () => {
     const s = document.createElement("div");
     return this.shape.options.canDragPoints ? this.setPointStyles(s) : s;
@@ -136,7 +136,7 @@ function a() {
   }, this.destroy = () => {
     this.points.forEach((t) => {
       this.root.removeChild(t.element);
-    }), this.root.removeEventListener("contextmenu", this.nocontextmenu), this.root.removeEventListener("mouseup", this.onmouseup), this.points = [], this.redraw();
+    }), this.root.removeEventListener("contextmenu", this.nocontextmenu), this.root.removeEventListener("mouseup", this.mouseup), this.points = [], this.redraw();
   }, this.mouseup = (t) => {
     t.buttons === 1 && this.options.canAddPoints && !this.draggedPoint && (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) && this.addPoint(t.clientX - this.root.offsetLeft, t.clientY - this.root.offsetTop), this.root.draggedShape && (this.root.draggedShape.draggedPoint = null, this.root.draggedShape = null);
   }, this.doubleclick = (t) => {
