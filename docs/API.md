@@ -59,7 +59,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | style | <code>object</code> | CSS styles, that override classes. Must be provided as an object. Default see in code. (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
 | canDrag | <code>boolean</code> | Is it allowed to drag this point by mouse to change it positions. Default `true` |
 | canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
-| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. If [SmartShape.options.zIndex](#SmartShape+options) specified, then shape's z-index will be used instead of this |
+| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. If [SmartShape.options.zIndex](#SmartShape+options) specified, then `shape's z-index, increased by 1` will be used instead of this |
 
 <a name="SmartPoint+x"></a>
 

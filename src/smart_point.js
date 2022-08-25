@@ -28,7 +28,8 @@ function SmartPoint(shape) {
      * then all points can not be removed regardless of this setting)
      * @param zIndex {number} Order of element in a stack of HTML elements
      * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
-     * If [SmartShape.options.zIndex](#SmartShape+options) specified, then shape's z-index will be used instead of this
+     * If [SmartShape.options.zIndex](#SmartShape+options) specified, then `shape's z-index, increased by 1`
+     * will be used instead of this
      * @type {{}}
      */
     this.options = {
@@ -103,7 +104,7 @@ function SmartPoint(shape) {
             this.element.id = this.options.id;
         }
         if (this.shape.options.zIndex) {
-            this.options.zIndex = this.shape.options.zIndex;
+            this.options.zIndex = this.shape.options.zIndex+1;
         }
         this.element = this.setPointStyles(this.element);
     }
@@ -145,7 +146,7 @@ function SmartPoint(shape) {
         element.style.height = this.options.height+"px";
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
-        element.style.zIndex = this.options.zIndex+1;
+        element.style.zIndex = this.options.zIndex;
         return element
     }
 

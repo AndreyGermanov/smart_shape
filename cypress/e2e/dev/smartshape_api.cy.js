@@ -155,7 +155,7 @@ describe('SmartShape API tests', () => {
                               point1.element.id = "point1";
                               assert.equal(shape.options.name, "Cool shape");
                               cy.get("#point1").should("have.css", "border-color", "rgb(0, 255, 0)").then(() => {
-                                cy.get("#point1").should("have.css", "z-index", "1010");
+                                cy.get("#point1").should("have.css", "z-index", "1011");
                               });
                             })
                           })
