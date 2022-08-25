@@ -30,6 +30,7 @@ function SmartShape() {
 
     /**
      * Options of shape as an object. Can have the following parameters.
+     * @param id {string} Unique ID of shape's SVG HTML element. By default empty.
      * @param name {string} Name of shape. By default, `Unnamed shape`
      * @param maxPoints {number} Number of points, which possible to add to the shape interactively. By default `-1`,
      * which means Unlimited
@@ -60,6 +61,7 @@ function SmartShape() {
      * @type {{}}
      */
     this.options = {
+        id: "",
         name: "Unnamed shape",
         maxPoints: -1,
         stroke: "rgb(0,0,0)",
@@ -134,12 +136,10 @@ function SmartShape() {
             console.error("Root HTML node not specified. Could not create shape.")
             return
         }
-
         this.root = root;
         this.root.style.position = "relative";
         this.draggedPoint = null;
         this.root.draggedShape = null;
-
         this.setOptions(options);
         this.addEventListeners();
         this.setupPoints(points,this.options.pointOptions);
@@ -148,7 +148,7 @@ function SmartShape() {
     }
 
     /**
-     * Set specified options to shape and redraws it with new options
+     * Set specified options to shape and redraws it with new options, including points
      * @param options {object} Options object, [described above](#SmartShape+options)
      */
     this.setOptions = (options) => {
@@ -158,6 +158,12 @@ function SmartShape() {
             }
             Object.assign(this.options,options);
         }
+        this.points.forEach(point => {
+            point.setOptions(this.options.pointOptions);
+            point.setPointStyles();
+            point.redraw();
+        })
+        this.redraw();
     }
 
     // Internal method that installs HTML DOM event listeners to shape, and it's container
@@ -310,6 +316,7 @@ function SmartShape() {
         }
         this.calcPosition();
         this.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+        this.svg.id = this.options.id;
         this.svg.style.position = 'absolute';
         this.svg.style.cursor = 'crosshair';
         this.svg.style.left = this.left;
@@ -322,10 +329,10 @@ function SmartShape() {
         }
         const points = this.points.map(point => ""+(point.x-this.left)+","+(point.y-this.top)).join(" ");
         polygon.setAttribute("points",points);
-        polygon.style.stroke = this.options.stroke;
-        polygon.style.strokeWidth = this.options.strokeWidth;
-        polygon.style.strokeLinecap = this.options.strokeLinecap;
-        polygon.style.strokeDasharray = this.options.strokeDasharray;
+        polygon.setAttribute("stroke",this.options.stroke);
+        polygon.setAttribute("stroke-width",this.options.strokeWidth);
+        polygon.setAttribute("stroke-linecap",this.options.strokeLinecap);
+        polygon.setAttribute("stroke-dasharray",this.options.strokeDasharray);
         polygon.setAttribute("fill",this.options.fill);
         polygon.setAttribute("fill-opacity",this.options.fillOpacity);
         this.svg.appendChild(polygon);
@@ -425,7 +432,7 @@ function SmartShape() {
         for (let index in this.points) {
             this.points[index].x += stepX;
             this.points[index].y += stepY;
-            this.points[index].redrawPoint();
+            this.points[index].redraw();
         }
         this.redraw()
     }

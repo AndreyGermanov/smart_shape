@@ -21,7 +21,7 @@
     * [.element](#SmartPoint+element) : <code>HTMLElement</code>
     * [.init(x, y, options)](#SmartPoint+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartPoint+setOptions)
-    * [.redrawPoint()](#SmartPoint+redrawPoint)
+    * [.redraw()](#SmartPoint+redraw)
     * [.destroy()](#SmartPoint+destroy)
 
 <a name="new_SmartPoint_new"></a>
@@ -52,10 +52,11 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 
 | Param | Type | Description |
 | --- | --- | --- |
-| width | <code>number</code> | Width of point in pixels |
-| height | <code>number</code> | Height of point in pixels |
-| classes | <code>string</code> | CSS class or classes of point, delimited by comma |
-| style | <code>object</code> | CSS styles, that override classes. Must be provided as an object (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
+| id | <code>string</code> | Id of point HTML element. Default empty. |
+| width | <code>number</code> | Width of point in pixels. Default: `10`. |
+| height | <code>number</code> | Height of point in pixels. Default `10`. |
+| classes | <code>string</code> | CSS class or classes of point, delimited by comma. Default empty. |
+| style | <code>object</code> | CSS styles, that override classes. Must be provided as an object. Default see in code. (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
 | canDrag | <code>boolean</code> | Is it allowed to drag this point by mouse to change it positions. Default `true` |
 | canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
 
@@ -102,9 +103,9 @@ Method used to set specified options to point and redraw it with new options.
 | --- | --- | --- |
 | options | <code>object</code> | Point options object, described [above](#SmartPoint+options). |
 
-<a name="SmartPoint+redrawPoint"></a>
+<a name="SmartPoint+redraw"></a>
 
-### smartPoint.redrawPoint()
+### smartPoint.redraw()
 Method used to redraw the point. Usually used after change point position on the screen.
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
@@ -177,6 +178,7 @@ Options of shape as an object. Can have the following parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
+| id | <code>string</code> | Unique ID of shape's SVG HTML element. By default empty. |
 | name | <code>string</code> | Name of shape. By default, `Unnamed shape` |
 | maxPoints | <code>number</code> | Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited |
 | stroke | <code>string</code> | Color of shape lines. Accepts the same values as [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)` |
@@ -254,7 +256,7 @@ Then it binds this object to specified `root` HTML node and displays it
 <a name="SmartShape+setOptions"></a>
 
 ### smartShape.setOptions(options)
-Set specified options to shape and redraws it with new options
+Set specified options to shape and redraws it with new options, including points
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 
