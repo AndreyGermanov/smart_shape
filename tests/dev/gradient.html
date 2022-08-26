@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Shape Demo Page</title>
+  </head>
+  <body>
+    <div id="app">
+        <div id="surface" style="left:150px;width:500px;height:400px;border: 1px solid"></div>
+    </div>
+    <script type="module">
+      import SmartShape from "../../src/smart_shape.js";
+      const div = document.getElementById("surface");
+      const shape = new SmartShape();
+      shape.init(div,{fillGradient:{
+          type:"linear",
+          gradientTransform: "rotate(90)",
+          steps: [
+            {
+              offset: "30%",
+              stopColor: "#ffaa00",
+              stopOpacity: "1"
+            },
+            {
+              offset: "60%",
+              stopColor: "#ff0000",
+              stopOpacity: "0.5"
+            },
+            {
+              offset: "100%",
+              stopColor: "#ffaa00",
+              stopOpacity: "1"
+            }
+          ],
+        }},[ [0,100],[100,0],[200,100],[100,200] ]);
+    </script>
+  </body>
+</html>

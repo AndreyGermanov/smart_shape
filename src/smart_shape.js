@@ -45,6 +45,8 @@ function SmartShape() {
      * @param fill {string} Fill color of shape polygon. Accepts the same values as
      * [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
      * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as
+     * @param fillGradient {object} Defines gradient object, that should be used to fill the shape. This could be either
+     * linear gradient or radial gradient. Overrides `fill` property.
      * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`.
      * @param classes {string} CSS class names, that will be applied to underlying polygon SVG element.
      * @param style {object} CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and
@@ -76,6 +78,7 @@ function SmartShape() {
         strokeLinecap: "",
         strokeDasharray: "",
         fill: "none",
+        fillGradient: null,
         fillOpacity: "1",
         canDragShape: true,
         canDragPoints: true,
@@ -334,6 +337,31 @@ function SmartShape() {
         this.svg.style.top = this.top;
         this.svg.setAttribute("width",this.width);
         this.svg.setAttribute("height",this.height);
+        if (this.options.fillGradient && typeof(this.options.fillGradient === "object") &&
+            ["linear","radial"].indexOf(this.options.fillGradient.type) !== -1) {
+            const defs = document.createElementNS(this.svg.namespaceURI,"defs");
+            const gradient = this.createGradient(this.options.fillGradient);
+            defs.appendChild(gradient);
+            this.svg.appendChild(defs);
+        }
+        this.svg.style.zIndex = this.options.zIndex;
+        const polygon = this.drawPolygon();
+        this.svg.appendChild(polygon);
+        this.root.appendChild(this.svg);
+        this.svg.addEventListener("mousedown",this.mousedown)
+        this.points.forEach(point => {
+            point.setOptions(this.options.pointOptions);
+            point.setPointStyles();
+            point.redraw();
+        })
+    }
+
+    /**
+     * @ignore
+     * Internal method that used to construct actual shape SVG polygon during shape redraw process
+     * @returns {object} SVG <polygon> object
+     */
+    this.drawPolygon = () => {
         let polygon = document.createElementNS("http://www.w3.org/2000/svg","polyline");
         if (this.points.length > 2) {
             polygon = document.createElementNS("http://www.w3.org/2000/svg","polygon");
@@ -353,7 +381,12 @@ function SmartShape() {
             polygon.setAttribute("stroke-dasharray",this.options.strokeDasharray);
         }
         if (this.options.fill) {
-            polygon.setAttribute("fill",this.options.fill);
+            if (this.options.fillGradient && typeof(this.options.fillGradient === "object") &&
+                ["linear","radial"].indexOf(this.options.fillGradient.type) !== -1) {
+                polygon.setAttribute("fill",'url("#'+this.options.id+'_gradient'+'")');
+            } else {
+                polygon.setAttribute("fill", this.options.fill);
+            }
         }
         if (this.options.fillOpacity) {
             polygon.setAttribute("fill-opacity",this.options.fillOpacity);
@@ -367,16 +400,46 @@ function SmartShape() {
             }
         }
         polygon.style.zIndex = this.options.zIndex;
-        this.svg.style.zIndex = this.options.zIndex;
-        this.svg.appendChild(polygon);
-        this.root.appendChild(this.svg);
-        this.svg.addEventListener("mousedown",this.mousedown)
-        this.points.forEach(point => {
-            point.setOptions(this.options.pointOptions);
-            point.setPointStyles();
-            point.redraw();
-        })
+        return polygon;
     }
+
+    /**
+     * Method, used to create gradient fill for shape, if `options.fillGradient` specified.
+     * Triggered automatically when redraw the shape Should not be called directly.
+     * @param gradientOptions {object} Javascript object that describes gradient. Must have `type` property which
+     * equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept.
+     * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/gradient.html)
+     * @returns {HTMLOrSVGElement} SVG element that defines gradient: either `linearGradient` or
+     * `radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient
+     */
+    this.createGradient = (gradientOptions) => {
+        let gradient = document.createElementNS(this.svg.namespaceURI,"linearGradient");
+        if (gradientOptions.type === "radial") {
+            gradient = document.createElementNS(this.svg.namespaceURI,"radialGradient");
+        }
+        gradient.id = this.options.id+"_gradient";
+        let foundSteps = false;
+        for (let index in gradientOptions) {
+            if (index === "type") { continue }
+            if (index === "steps") {
+                foundSteps = true;
+                continue;
+            }
+            gradient.setAttribute(index,gradientOptions[index])
+        }
+        if (!foundSteps) {
+            return gradient;
+        }
+        for (let step of gradientOptions.steps) {
+            const stepNode = document.createElementNS(this.svg.namespaceURI,"stop");
+            stepNode.setAttribute("offset",step.offset);
+            stepNode.setAttribute("stop-color",step.stopColor);
+            stepNode.setAttribute("stop-opacity",step.stopOpacity);
+            gradient.appendChild(stepNode);
+        }
+        return gradient;
+    }
+
 
     /**
      * @ignore
