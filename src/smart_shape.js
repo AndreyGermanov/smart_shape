@@ -233,7 +233,7 @@ function SmartShape() {
     /**
      * Adds specified points to shape.
      * @param points {array} 2D array of points to add. Each point is array of [x,y] coordinates
-     * @param pointOptions {object} Array of points options. Described in
+     * @param pointOptions {object} Points options. Described in
      * [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used,
      * or default options of SmartPoint class itself.
@@ -251,7 +251,7 @@ function SmartShape() {
      * Internal method that used to add point to the shape
      * @param x {number} X coordinate relative to container left corner
      * @param y {number} Y coordinate relative to container top corner
-     * @param pointOptions - Array of point options. Described in
+     * @param pointOptions - Points options. Described in
      * [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used,
      * or default options of SmartPoint class itself.
@@ -270,7 +270,7 @@ function SmartShape() {
 
     /**
      * Method used to delete point with specified coordinates.
-     * If point with specified coordinates not found than just
+     * If point with specified coordinates not found then just
      * do nothing
      * @param x {number} X coordinate of point
      * @param y {number} Y coordinate of point
@@ -299,7 +299,7 @@ function SmartShape() {
 
     /**
      * @ignore
-     * Internal method that receives events from point objects and react on them
+     * Internal method that receives events from point objects and reacts on them
      * @param event_type - Type of event
      * @param point - [SmartPoint](#SmartPoint) object which raised that event
      */
@@ -324,7 +324,7 @@ function SmartShape() {
     }
 
     /**
-     * Method used to redraw shape polygon. Used automatically when add/remove points or change their properties.
+     * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
     this.redraw = () => {
         if (this.svg) {
@@ -420,7 +420,7 @@ function SmartShape() {
 
     /**
      * Method, used to create gradient fill for shape, if `options.fillGradient` specified.
-     * Triggered automatically when redraw the shape Should not be called directly.
+     * Triggered automatically when redraw the shape. Should not be called directly.
      * @param gradientOptions {object} Javascript object that describes gradient. Must have `type` property which
      * equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept.
      * @returns {HTMLOrSVGElement} SVG element that defines gradient: either `linearGradient` or
@@ -460,12 +460,12 @@ function SmartShape() {
      * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
      * and `image` SVG node inside it.
      * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-     * Triggered automatically when redraw the shape, if `options.fillGradient` specified.
+     * Triggered automatically when redraw the shape, if `options.fillImage` specified.
      * Should not be called directly.
      * @param imageFillOptions {object} Options that define image filling pattern. Must
      * contain `href`, `width` and `height` of image. Also, accepts any other options, that
      * `pattern` SVG tag.
-     * @returns {object} Constructed `pattern` SVG tag or null, in case of errors
+     * @returns {HTMLOrSVGElement} Constructed `pattern` SVG tag or null, in case of errors
      */
     this.createImageFill = (imageFillOptions) => {
         if (!imageFillOptions.href || !imageFillOptions.width || !imageFillOptions.height) {
@@ -506,7 +506,7 @@ function SmartShape() {
     /**
      * Destroys the shape. Destroys all points, removes event listeners and removes the shape from screen.
      * But variable continue existing. To completely remove the shape,
-     * set variable to 'null' after calling this method.
+     * set the variable to 'null' after calling this method.
      */
     this.destroy = () => {
         this.points.forEach(point => {
@@ -520,7 +520,7 @@ function SmartShape() {
 
     /**
      * @ignore
-     * OnMouseUp event handler, triggered when user release mouse button on shape or on shape container element
+     * OnMouseUp event handler, triggered when user releases mouse button on shape or on shape container element
      * @param event {MouseEvent} Event object
      */
     this.mouseup = (event) => {
@@ -537,7 +537,7 @@ function SmartShape() {
 
     /**
      * @ignore
-     * odDblClick event handler, triggered when user double-clicks on shape or on shape container element
+     * OnDblClick event handler, triggered when user double-clicks on shape or on shape container element
      * @param event {MouseEvent} Event object
      */
     this.doubleclick = (event) => {
@@ -551,7 +551,7 @@ function SmartShape() {
 
     /**
      * @ignore
-     * onMouseDown event handler, triggered when user press mouse button on the shape or on container element.
+     * onMouseDown event handler, triggered when user presses mouse button on the shape or on container element.
      * @param event {MouseEvent} Event object
      */
     this.mousedown = (event) => {

@@ -143,7 +143,7 @@ removes this point from shape's points array.
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.redraw()](#SmartShape+redraw)
     * [.createGradient(gradientOptions)](#SmartShape+createGradient) ⇒ <code>HTMLOrSVGElement</code>
-    * [.createImageFill(imageFillOptions)](#SmartShape+createImageFill) ⇒ <code>object</code>
+    * [.createImageFill(imageFillOptions)](#SmartShape+createImageFill) ⇒ <code>HTMLOrSVGElement</code>
     * [.destroy()](#SmartShape+destroy)
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
 
@@ -298,13 +298,13 @@ Adds specified points to shape.
 | Param | Type | Description |
 | --- | --- | --- |
 | points | <code>array</code> | 2D array of points to add. Each point is array of [x,y] coordinates |
-| pointOptions | <code>object</code> | Array of points options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
+| pointOptions | <code>object</code> | Points options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
 
 <a name="SmartShape+deletePoint"></a>
 
 ### smartShape.deletePoint(x, y)
 Method used to delete point with specified coordinates.
-If point with specified coordinates not found than just
+If point with specified coordinates not found then just
 do nothing
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -331,14 +331,14 @@ or null if point does not exist
 <a name="SmartShape+redraw"></a>
 
 ### smartShape.redraw()
-Method used to redraw shape polygon. Used automatically when add/remove points or change their properties.
+Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+createGradient"></a>
 
 ### smartShape.createGradient(gradientOptions) ⇒ <code>HTMLOrSVGElement</code>
 Method, used to create gradient fill for shape, if `options.fillGradient` specified.
-Triggered automatically when redraw the shape Should not be called directly.
+Triggered automatically when redraw the shape. Should not be called directly.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>HTMLOrSVGElement</code> - SVG element that defines gradient: either `linearGradient` or
@@ -350,17 +350,17 @@ Triggered automatically when redraw the shape Should not be called directly.
 
 <a name="SmartShape+createImageFill"></a>
 
-### smartShape.createImageFill(imageFillOptions) ⇒ <code>object</code>
+### smartShape.createImageFill(imageFillOptions) ⇒ <code>HTMLOrSVGElement</code>
 Method used to construct SVG pattern to fill the shape with an image. Consists of
 `pattern` SVG node:
 https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
 and `image` SVG node inside it.
 https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-Triggered automatically when redraw the shape, if `options.fillGradient` specified.
+Triggered automatically when redraw the shape, if `options.fillImage` specified.
 Should not be called directly.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-**Returns**: <code>object</code> - Constructed `pattern` SVG tag or null, in case of errors  
+**Returns**: <code>HTMLOrSVGElement</code> - Constructed `pattern` SVG tag or null, in case of errors  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -371,7 +371,7 @@ Should not be called directly.
 ### smartShape.destroy()
 Destroys the shape. Destroys all points, removes event listeners and removes the shape from screen.
 But variable continue existing. To completely remove the shape,
-set variable to 'null' after calling this method.
+set the variable to 'null' after calling this method.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+getPointsArray"></a>
