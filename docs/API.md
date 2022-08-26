@@ -142,6 +142,7 @@ removes this point from shape's points array.
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.redraw()](#SmartShape+redraw)
+    * [.createGradient(gradientOptions)](#SmartShape+createGradient) ⇒ <code>HTMLOrSVGElement</code>
     * [.destroy()](#SmartShape+destroy)
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
 
@@ -188,7 +189,8 @@ Options of shape as an object. Can have the following parameters.
 | strokeLinecap | <code>string</code> | Type of endings of shape lines. Accepts the same values as [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
 | strokeDasharray | <code>string</code> | Used to create dashed shape lines. Accepts the same values as [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
 | fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
-| fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`. |
+| fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as |
+| fillGradient | <code>object</code> | Defines gradient object, that should be used to fill the shape. This could be either linear gradient or radial gradient. Overrides `fill` property. [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`. |
 | classes | <code>string</code> | CSS class names, that will be applied to underlying polygon SVG element. |
 | style | <code>object</code> | CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and classes is an alternative way to specify options of SVG elements: https://jenkov.com/tutorials/svg/svg-and-css.html, https://css-tricks.com/svg-properties-and-css/ |
 | offsetX | <code>number</code> | Number of pixels to add to X coordinate of each point to move entire shape to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
@@ -330,6 +332,20 @@ or null if point does not exist
 Method used to redraw shape polygon. Used automatically when add/remove points or change their properties.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+createGradient"></a>
+
+### smartShape.createGradient(gradientOptions) ⇒ <code>HTMLOrSVGElement</code>
+Method, used to create gradient fill for shape, if `options.fillGradient` specified.
+Triggered automatically when redraw the shape Should not be called directly.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>HTMLOrSVGElement</code> - SVG element that defines gradient: either `linearGradient` or
+`radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gradientOptions | <code>object</code> | Javascript object that describes gradient. Must have `type` property which equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept. See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/gradient.html) |
+
 <a name="SmartShape+destroy"></a>
 
 ### smartShape.destroy()
