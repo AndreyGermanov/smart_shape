@@ -182,7 +182,7 @@ Options of shape as an object. Can have the following parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| id | <code>string</code> | Unique ID of shape's SVG HTML element. By default empty. |
+| id | <code>string</code> | Unique ID of shape's SVG HTML element. By default, empty. |
 | name | <code>string</code> | Name of shape. By default, `Unnamed shape` |
 | maxPoints | <code>number</code> | Number of points, which possible to add to the shape interactively. By default `-1`, which means Unlimited |
 | stroke | <code>string</code> | Color of shape lines. Accepts the same values as [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)` |
@@ -356,7 +356,8 @@ Method used to construct SVG pattern to fill the shape with an image. Consists o
 https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
 and `image` SVG node inside it.
 https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-Triggered automatically when redraw the shape Should not be called directly.
+Triggered automatically when redraw the shape, if `options.fillGradient` specified.
+Should not be called directly.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>object</code> - Constructed `pattern` SVG tag or null, in case of errors  

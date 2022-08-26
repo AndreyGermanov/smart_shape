@@ -30,7 +30,7 @@ function SmartShape() {
 
     /**
      * Options of shape as an object. Can have the following parameters.
-     * @param id {string} Unique ID of shape's SVG HTML element. By default empty.
+     * @param id {string} Unique ID of shape's SVG HTML element. By default, empty.
      * @param name {string} Name of shape. By default, `Unnamed shape`
      * @param maxPoints {number} Number of points, which possible to add to the shape interactively. By default `-1`,
      * which means Unlimited
@@ -460,7 +460,8 @@ function SmartShape() {
      * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
      * and `image` SVG node inside it.
      * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-     * Triggered automatically when redraw the shape Should not be called directly.
+     * Triggered automatically when redraw the shape, if `options.fillGradient` specified.
+     * Should not be called directly.
      * @param imageFillOptions {object} Options that define image filling pattern. Must
      * contain `href`, `width` and `height` of image. Also, accepts any other options, that
      * `pattern` SVG tag.
