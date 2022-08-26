@@ -16,7 +16,7 @@ function SmartShape() {
     this.root = null
 
     /**
-     * 2D array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint) object.
+     * Array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint) object.
      * @type {array}
      */
     this.points = [];

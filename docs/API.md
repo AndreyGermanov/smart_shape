@@ -163,7 +163,7 @@ that can have children (div,span etc.)
 <a name="SmartShape+points"></a>
 
 ### smartShape.points : <code>array</code>
-2D array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint) object.
+Array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint) object.
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+svg"></a>
