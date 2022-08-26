@@ -45,9 +45,10 @@ function SmartShape() {
      * @param fill {string} Fill color of shape polygon. Accepts the same values as
      * [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
      * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as
-     * @param fillGradient {object} Defines gradient object, that should be used to fill the shape. This could be either
-     * linear gradient or radial gradient. Overrides `fill` property.
      * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`.
+     * @param fillGradient {object} Defines gradient object, that should be used to fill the shape. This could be either
+     * linear gradient or radial gradient. See [createGradient](#SmartShape+createGradient) method description.
+     * Overrides `fill` property.
      * @param classes {string} CSS class names, that will be applied to underlying polygon SVG element.
      * @param style {object} CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and
      * classes is an alternative way to specify options of SVG elements:
@@ -408,7 +409,7 @@ function SmartShape() {
      * Triggered automatically when redraw the shape Should not be called directly.
      * @param gradientOptions {object} Javascript object that describes gradient. Must have `type` property which
      * equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept.
-     * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/gradient.html)
+     * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html)
      * @returns {HTMLOrSVGElement} SVG element that defines gradient: either `linearGradient` or
      * `radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient
      */
