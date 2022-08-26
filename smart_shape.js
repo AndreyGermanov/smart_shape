@@ -22,7 +22,9 @@ function p(t) {
     const s = document.createElement("div");
     return this.shape.options.canDragPoints ? this.setPointStyles(s) : s;
   }, this.setPointStyles = (s = null) => {
-    if (s == null && (s = this.element), this.options.id && (s.id = this.options.id), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
+    if (s == null && (s = this.element), !this.shape.options.canDragPoints)
+      return s;
+    if (this.options.id && (s.id = this.options.id), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
       for (let i in this.options.style)
         s.style[i] = this.options.style[i];
     return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s.style.zIndex = this.options.zIndex, s;
@@ -172,7 +174,7 @@ function a() {
     if (!t.href || !t.width || !t.height)
       return console.error("Image HREF, width and height must be specified for Image Fill"), null;
     const s = document.createElementNS(this.svg.namespaceURI, "pattern");
-    s.setAttribute("id", this.options.id + "_pattern"), s.setAttribute("patternUnits", "userSpaceOnUse"), s.setAttribute("preserveAspectRatio", !0);
+    s.setAttribute("id", this.options.id + "_pattern"), s.setAttribute("patternUnits", "userSpaceOnUse");
     for (let e in t)
       e !== "href" && s.setAttribute(e, t[e]);
     const i = document.createElementNS(this.svg.namespaceURI, "image");
