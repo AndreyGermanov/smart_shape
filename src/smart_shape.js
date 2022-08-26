@@ -141,7 +141,7 @@ function SmartShape() {
     this.height = 0;
 
     /**
-     * Method used to construct SmartShape object with specified from specified `points` and
+     * Method used to construct SmartShape object with specified `points` and
      * with specified `options`.
      * Then it binds this object to specified `root` HTML node and displays it
      * @param root {HTMLElement} HTML DOM node af a container element

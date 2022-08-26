@@ -249,7 +249,7 @@ Height of shape
 <a name="SmartShape+init"></a>
 
 ### smartShape.init(root, options, points) ⇒ <code>object</code>
-Method used to construct SmartShape object with specified from specified `points` and
+Method used to construct SmartShape object with specified `points` and
 with specified `options`.
 Then it binds this object to specified `root` HTML node and displays it
 
