@@ -132,6 +132,9 @@ function SmartPoint(shape) {
         if (element == null) {
             element = this.element;
         }
+        if (!this.shape.options.canDragPoints) {
+            return element;
+        }
         if (this.options.id) {
             element.id = this.options.id;
         }

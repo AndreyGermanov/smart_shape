@@ -474,7 +474,6 @@ function SmartShape() {
         const pattern = document.createElementNS(this.svg.namespaceURI, "pattern");
         pattern.setAttribute("id",this.options.id+"_pattern");
         pattern.setAttribute("patternUnits","userSpaceOnUse");
-        pattern.setAttribute("preserveAspectRatio",true);
         for (let index in imageFillOptions) {
             if (index === "href") {
                 continue;
