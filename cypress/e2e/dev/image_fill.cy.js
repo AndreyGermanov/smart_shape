@@ -4,7 +4,7 @@ function initShape() {
   const shape = new SmartShape().init(app,{id:"shape1"},[[0,100],[100,0],[200,100]]);
   return [app,shape]
 }
-describe('Imga fill tests', () => {
+describe('Image fill tests', () => {
   it('Should add image fill correctly', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = initShape();
