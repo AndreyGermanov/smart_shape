@@ -15,7 +15,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "cypress:open": "node_modules/cypress/bin/cypress open",
+    "test": "node_modules/cypress/bin/cypress open",
     "apidoc": "node_modules/.bin/jsdoc2md src/*.js > docs/API.md"
   },
   "exports": {
