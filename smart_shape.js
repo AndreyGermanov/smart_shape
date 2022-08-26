@@ -70,6 +70,7 @@ function a() {
     strokeDasharray: "",
     fill: "none",
     fillGradient: null,
+    fillImage: null,
     fillOpacity: "1",
     canDragShape: !0,
     canDragPoints: !0,
@@ -128,7 +129,10 @@ function a() {
   }, this.redraw = () => {
     if (this.svg && (this.root.removeChild(this.svg), this.svg = null), this.points.length < 1)
       return;
-    if (this.calcPosition(), this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), this.svg.id = this.options.id, this.svg.style.position = "absolute", this.svg.style.cursor = "crosshair", this.svg.style.left = this.left, this.svg.style.top = this.top, this.svg.setAttribute("width", this.width), this.svg.setAttribute("height", this.height), this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1) {
+    if (this.calcPosition(), this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), this.svg.id = this.options.id, this.svg.style.position = "absolute", this.svg.style.cursor = "crosshair", this.svg.style.left = this.left, this.svg.style.top = this.top, this.svg.setAttribute("width", this.width), this.svg.setAttribute("height", this.height), this.options.fillImage && typeof (this.options.fillImage === "object")) {
+      const s = document.createElementNS(this.svg.namespaceURI, "defs"), i = this.createImageFill(this.options.fillImage);
+      i && s.appendChild(i), this.svg.appendChild(s);
+    } else if (this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1) {
       const s = document.createElementNS(this.svg.namespaceURI, "defs"), i = this.createGradient(this.options.fillGradient);
       s.appendChild(i), this.svg.appendChild(s);
     }
@@ -141,7 +145,7 @@ function a() {
     let t = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     this.points.length > 2 && (t = document.createElementNS("http://www.w3.org/2000/svg", "polygon"));
     const s = this.points.map((i) => "" + (i.x - this.left) + "," + (i.y - this.top)).join(" ");
-    if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && (this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1 ? t.setAttribute("fill", 'url("#' + this.options.id + '_gradient")') : t.setAttribute("fill", this.options.fill)), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
+    if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && (this.options.fillImage && typeof this.options.fillImage == "object" ? t.setAttribute("fill", 'url("#' + this.options.id + '_pattern")') : this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1 ? t.setAttribute("fill", 'url("#' + this.options.id + '_gradient")') : t.setAttribute("fill", this.options.fill)), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
       for (let i in this.options.style)
         t.style[i] = this.options.style[i];
     return t.style.zIndex = this.options.zIndex, t;
@@ -164,6 +168,15 @@ function a() {
       o.setAttribute("offset", e.offset), o.setAttribute("stop-color", e.stopColor), o.setAttribute("stop-opacity", e.stopOpacity), s.appendChild(o);
     }
     return s;
+  }, this.createImageFill = (t) => {
+    if (!t.href || !t.width || !t.height)
+      return console.error("Image HREF, width and height must be specified for Image Fill"), null;
+    const s = document.createElementNS(this.svg.namespaceURI, "pattern");
+    s.setAttribute("id", this.options.id + "_pattern"), s.setAttribute("patternUnits", "userSpaceOnUse"), s.setAttribute("preserveAspectRatio", !0);
+    for (let e in t)
+      e !== "href" && s.setAttribute(e, t[e]);
+    const i = document.createElementNS(this.svg.namespaceURI, "image");
+    return i.setAttribute("href", t.href), i.setAttribute("width", t.width), i.setAttribute("height", t.height), s.appendChild(i), s;
   }, this.calcPosition = () => {
     this.left = this.points.map((t) => t.x).reduce((t, s) => s < t ? s : t), this.top = this.points.map((t) => t.y).reduce((t, s) => s < t ? s : t), this.right = this.points.map((t) => t.x).reduce((t, s) => s > t ? s : t), this.bottom = this.points.map((t) => t.y).reduce((t, s) => s > t ? s : t), this.width = this.right - this.left, this.height = this.bottom - this.top;
   }, this.destroy = () => {
