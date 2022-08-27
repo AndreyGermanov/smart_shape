@@ -5,6 +5,8 @@
 <dd></dd>
 <dt><a href="#SmartShape">SmartShape</a></dt>
 <dd></dd>
+<dt><a href="#SmartShapeDrawHelper">SmartShapeDrawHelper</a></dt>
+<dd></dd>
 </dl>
 
 <a name="SmartPoint"></a>
@@ -143,8 +145,6 @@ removes this point from shape's points array.
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.redraw()](#SmartShape+redraw)
-    * [.createGradient(gradientOptions)](#SmartShape+createGradient) ⇒ <code>HTMLOrSVGElement</code>
-    * [.createImageFill(imageFillOptions)](#SmartShape+createImageFill) ⇒ <code>HTMLOrSVGElement</code>
     * [.destroy()](#SmartShape+destroy)
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
 
@@ -192,7 +192,7 @@ Options of shape as an object. Can have the following parameters.
 | strokeDasharray | <code>string</code> | Used to create dashed shape lines. Accepts the same values as [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property. |
 | fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
 | fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`. |
-| fillGradient | <code>object</code> | Defines gradient object, that should be used to fill the shape. This could be either linear gradient or radial gradient. See [createGradient](#SmartShape+createGradient) method description. Overrides `fill` property. See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html). |
+| fillGradient | <code>object</code> | Defines gradient object, that should be used to fill the shape. This could be either linear gradient or radial gradient. Overrides `fill` property. See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html). |
 | fillImage | <code>object</code> | Defines image fill object to fill the shape with image. Should contain following fields: `url` - URL to image, `width` - width of image, `height` - height of image See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html). |
 | classes | <code>string</code> | CSS class names, that will be applied to underlying polygon SVG element. |
 | style | <code>object</code> | CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and classes is an alternative way to specify options of SVG elements: https://jenkov.com/tutorials/svg/svg-and-css.html, https://css-tricks.com/svg-properties-and-css/ |
@@ -341,38 +341,6 @@ or null if point does not exist
 Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-<a name="SmartShape+createGradient"></a>
-
-### smartShape.createGradient(gradientOptions) ⇒ <code>HTMLOrSVGElement</code>
-Method, used to create gradient fill for shape, if `options.fillGradient` specified.
-Triggered automatically when redraw the shape. Should not be called directly.
-
-**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-**Returns**: <code>HTMLOrSVGElement</code> - SVG element that defines gradient: either `linearGradient` or
-`radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| gradientOptions | <code>object</code> | Javascript object that describes gradient. Must have `type` property which equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept. |
-
-<a name="SmartShape+createImageFill"></a>
-
-### smartShape.createImageFill(imageFillOptions) ⇒ <code>HTMLOrSVGElement</code>
-Method used to construct SVG pattern to fill the shape with an image. Consists of
-`pattern` SVG node:
-https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
-and `image` SVG node inside it.
-https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-Triggered automatically when redraw the shape, if `options.fillImage` specified.
-Should not be called directly.
-
-**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-**Returns**: <code>HTMLOrSVGElement</code> - Constructed `pattern` SVG tag or null, in case of errors  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| imageFillOptions | <code>object</code> | Options that define image filling pattern. Must contain `href`, `width` and `height` of image. Also, accepts any other options, that `pattern` SVG tag. |
-
 <a name="SmartShape+destroy"></a>
 
 ### smartShape.destroy()
@@ -388,3 +356,64 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
+<a name="SmartShapeDrawHelper"></a>
+
+## SmartShapeDrawHelper
+**Kind**: global class  
+
+* [SmartShapeDrawHelper](#SmartShapeDrawHelper)
+    * [new SmartShapeDrawHelper()](#new_SmartShapeDrawHelper_new)
+    * [.draw(shape)](#SmartShapeDrawHelper+draw)
+    * [.createGradient(shape)](#SmartShapeDrawHelper+createGradient) ⇒ <code>HTMLOrSVGElement</code>
+    * [.createImageFill(shape)](#SmartShapeDrawHelper+createImageFill) ⇒ <code>HTMLOrSVGElement</code>
+
+<a name="new_SmartShapeDrawHelper_new"></a>
+
+### new SmartShapeDrawHelper()
+Internal helper class that used to draw shape.
+Should not be used directly. SmartShape objects execute methods
+of this object when need to draw shapes.
+
+<a name="SmartShapeDrawHelper+draw"></a>
+
+### smartShapeDrawHelper.draw(shape)
+Method that implements drawing for provided shape.
+
+**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>SmartShape</code>](#SmartShape) | Shape object to draw |
+
+<a name="SmartShapeDrawHelper+createGradient"></a>
+
+### smartShapeDrawHelper.createGradient(shape) ⇒ <code>HTMLOrSVGElement</code>
+Method, used to create gradient fill for shape, if `options.fillGradient` specified.
+Triggered automatically when redraw the shape. Should not be called directly.
+
+**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
+**Returns**: <code>HTMLOrSVGElement</code> - SVG element that defines gradient: either `linearGradient` or
+`radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>SmartShape</code>](#SmartShape) | Shape for which gradient should be created equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept. |
+
+<a name="SmartShapeDrawHelper+createImageFill"></a>
+
+### smartShapeDrawHelper.createImageFill(shape) ⇒ <code>HTMLOrSVGElement</code>
+Method used to construct SVG pattern to fill the shape with an image. Consists of
+`pattern` SVG node:
+https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
+and `image` SVG node inside it.
+https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
+Triggered automatically when redraw the shape, if `options.fillImage` specified.
+Should not be called directly.
+
+**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
+**Returns**: <code>HTMLOrSVGElement</code> - Constructed `pattern` SVG tag or null, in case of errors  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | <code>object</code> | Shape for which image fill should be created |
+

@@ -1,4 +1,5 @@
 import SmartPoint from "./smart_point.js";
+import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
 import {getOffset, uuid} from "./utils.js";
 
 /**
@@ -47,8 +48,7 @@ function SmartShape() {
      * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as
      * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`.
      * @param fillGradient {object} Defines gradient object, that should be used to fill the shape. This could be either
-     * linear gradient or radial gradient. See [createGradient](#SmartShape+createGradient) method description.
-     * Overrides `fill` property.
+     * linear gradient or radial gradient. Overrides `fill` property.
      * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html).
      * @param fillImage {object} Defines image fill object to fill the shape with image. Should contain following fields:
      * `url` - URL to image, `width` - width of image, `height` - height of image
@@ -332,166 +332,7 @@ function SmartShape() {
      * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
     this.redraw = () => {
-        if (this.svg) {
-            this.root.removeChild(this.svg);
-            this.svg = null;
-        }
-        if (this.points.length < 1) {
-            return
-        }
-        this.calcPosition();
-        this.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-        this.svg.id = this.options.id;
-        this.svg.style.position = 'absolute';
-        this.svg.style.cursor = 'crosshair';
-        this.svg.style.left = this.left;
-        this.svg.style.top = this.top;
-        this.svg.setAttribute("width",this.width);
-        this.svg.setAttribute("height",this.height);
-        if (this.options.fillImage && typeof(this.options.fillImage === "object")) {
-            const defs = document.createElementNS(this.svg.namespaceURI,"defs");
-            const pattern = this.createImageFill(this.options.fillImage);
-            if (pattern) {
-                defs.appendChild(pattern)
-            }
-            this.svg.appendChild(defs);
-        } else if (this.options.fillGradient && typeof(this.options.fillGradient === "object") &&
-            ["linear","radial"].indexOf(this.options.fillGradient.type) !== -1) {
-            const defs = document.createElementNS(this.svg.namespaceURI,"defs");
-            const gradient = this.createGradient(this.options.fillGradient);
-            defs.appendChild(gradient);
-            this.svg.appendChild(defs);
-        }
-        this.svg.style.zIndex = this.options.zIndex;
-        const polygon = this.drawPolygon();
-        this.svg.appendChild(polygon);
-        this.root.appendChild(this.svg);
-        this.svg.addEventListener("mousedown",this.mousedown)
-        this.points.forEach(point => {
-            point.setOptions(this.options.pointOptions);
-            point.setPointStyles();
-            point.redraw();
-        })
-    }
-
-    /**
-     * @ignore
-     * Internal method that used to construct actual shape SVG polygon during shape redraw process
-     * @returns {object} SVG <polygon> object
-     */
-    this.drawPolygon = () => {
-        let polygon = document.createElementNS("http://www.w3.org/2000/svg","polyline");
-        if (this.points.length > 2) {
-            polygon = document.createElementNS("http://www.w3.org/2000/svg","polygon");
-        }
-        const points = this.points.map(point => ""+(point.x-this.left)+","+(point.y-this.top)).join(" ");
-        polygon.setAttribute("points",points);
-        if (this.options.stroke) {
-            polygon.setAttribute("stroke", this.options.stroke);
-        }
-        if (this.options.strokeWidth) {
-            polygon.setAttribute("stroke-width",this.options.strokeWidth);
-        }
-        if (this.options.strokeLinecap) {
-            polygon.setAttribute("stroke-linecap",this.options.strokeLinecap);
-        }
-        if (this.options.strokeDasharray) {
-            polygon.setAttribute("stroke-dasharray",this.options.strokeDasharray);
-        }
-        if (this.options.fill) {
-            if (this.options.fillImage && typeof(this.options.fillImage) === "object") {
-                polygon.setAttribute("fill",'url("#'+this.guid+'_pattern'+'")');
-            }  else if (this.options.fillGradient && typeof(this.options.fillGradient === "object") &&
-                ["linear","radial"].indexOf(this.options.fillGradient.type) !== -1) {
-                polygon.setAttribute("fill",'url("#'+this.guid+'_gradient'+'")');
-            } else {
-                polygon.setAttribute("fill", this.options.fill);
-            }
-        }
-        if (this.options.fillOpacity) {
-            polygon.setAttribute("fill-opacity",this.options.fillOpacity);
-        }
-        if (this.options.classes) {
-            polygon.setAttribute("class",this.options.classes);
-        }
-        if (this.options.style) {
-            for (let cssName in this.options.style) {
-                polygon.style[cssName] = this.options.style[cssName]
-            }
-        }
-        polygon.style.zIndex = this.options.zIndex;
-        return polygon;
-    }
-
-    /**
-     * Method, used to create gradient fill for shape, if `options.fillGradient` specified.
-     * Triggered automatically when redraw the shape. Should not be called directly.
-     * @param gradientOptions {object} Javascript object that describes gradient. Must have `type` property which
-     * equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept.
-     * @returns {HTMLOrSVGElement} SVG element that defines gradient: either `linearGradient` or
-     * `radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient
-     */
-    this.createGradient = (gradientOptions) => {
-        let gradient = document.createElementNS(this.svg.namespaceURI,"linearGradient");
-        if (gradientOptions.type === "radial") {
-            gradient = document.createElementNS(this.svg.namespaceURI,"radialGradient");
-        }
-        gradient.id = this.guid+"_gradient";
-        let foundSteps = false;
-        for (let index in gradientOptions) {
-            if (index === "type") { continue }
-            if (index === "steps") {
-                foundSteps = true;
-                continue;
-            }
-            gradient.setAttribute(index,gradientOptions[index])
-        }
-        if (!foundSteps) {
-            return gradient;
-        }
-        for (let step of gradientOptions.steps) {
-            const stepNode = document.createElementNS(this.svg.namespaceURI,"stop");
-            stepNode.setAttribute("offset",step.offset);
-            stepNode.setAttribute("stop-color",step.stopColor);
-            stepNode.setAttribute("stop-opacity",step.stopOpacity);
-            gradient.appendChild(stepNode);
-        }
-        return gradient;
-    }
-
-    /**
-     * Method used to construct SVG pattern to fill the shape with an image. Consists of
-     * `pattern` SVG node:
-     * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
-     * and `image` SVG node inside it.
-     * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-     * Triggered automatically when redraw the shape, if `options.fillImage` specified.
-     * Should not be called directly.
-     * @param imageFillOptions {object} Options that define image filling pattern. Must
-     * contain `href`, `width` and `height` of image. Also, accepts any other options, that
-     * `pattern` SVG tag.
-     * @returns {HTMLOrSVGElement} Constructed `pattern` SVG tag or null, in case of errors
-     */
-    this.createImageFill = (imageFillOptions) => {
-        if (!imageFillOptions.href || !imageFillOptions.width || !imageFillOptions.height) {
-            console.error("Image HREF, width and height must be specified for Image Fill");
-            return null;
-        }
-        const pattern = document.createElementNS(this.svg.namespaceURI, "pattern");
-        pattern.setAttribute("id",this.guid+"_pattern");
-        pattern.setAttribute("patternUnits","userSpaceOnUse");
-        for (let index in imageFillOptions) {
-            if (index === "href") {
-                continue;
-            }
-            pattern.setAttribute(index,imageFillOptions[index])
-        }
-        const image = document.createElementNS(this.svg.namespaceURI, "image");
-        image.setAttribute("href",imageFillOptions.href);
-        image.setAttribute("width",imageFillOptions.width);
-        image.setAttribute("height",imageFillOptions.height);
-        pattern.appendChild(image);
-        return pattern;
+        SmartShapeDrawHelper.draw(this);
     }
 
     /**
