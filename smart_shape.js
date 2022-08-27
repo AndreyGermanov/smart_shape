@@ -60,8 +60,11 @@ const l = (t, s = !0) => {
   for (; t && !isNaN(t.offsetLeft) && !isNaN(t.offsetTop); )
     i += t.offsetLeft - t.scrollLeft, e += t.offsetTop - t.scrollTop, t = t.offsetParent;
   return { top: e, left: i };
-};
-function a() {
+}, a = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
+  var s = Math.random() * 16 | 0, i = t == "x" ? s : s & 3 | 8;
+  return i.toString(16);
+}).replace(/\-/g, "");
+function d() {
   this.root = null, this.points = [], this.svg = null, this.options = {
     id: "",
     name: "Unnamed shape",
@@ -84,7 +87,7 @@ function a() {
     style: {},
     pointOptions: {},
     zIndex: 1e3
-  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.init = (t, s = null, i = null) => {
+  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = a(), this.init = (t, s = null, i = null) => {
     if (!t) {
       console.error("Root HTML node not specified. Could not create shape.");
       return;
@@ -147,13 +150,13 @@ function a() {
     let t = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     this.points.length > 2 && (t = document.createElementNS("http://www.w3.org/2000/svg", "polygon"));
     const s = this.points.map((i) => "" + (i.x - this.left) + "," + (i.y - this.top)).join(" ");
-    if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && (this.options.fillImage && typeof this.options.fillImage == "object" ? t.setAttribute("fill", 'url("#' + this.options.id + '_pattern")') : this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1 ? t.setAttribute("fill", 'url("#' + this.options.id + '_gradient")') : t.setAttribute("fill", this.options.fill)), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
+    if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && (this.options.fillImage && typeof this.options.fillImage == "object" ? t.setAttribute("fill", 'url("#' + this.guid + '_pattern")') : this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1 ? t.setAttribute("fill", 'url("#' + this.guid + '_gradient")') : t.setAttribute("fill", this.options.fill)), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
       for (let i in this.options.style)
         t.style[i] = this.options.style[i];
     return t.style.zIndex = this.options.zIndex, t;
   }, this.createGradient = (t) => {
     let s = document.createElementNS(this.svg.namespaceURI, "linearGradient");
-    t.type === "radial" && (s = document.createElementNS(this.svg.namespaceURI, "radialGradient")), s.id = this.options.id + "_gradient";
+    t.type === "radial" && (s = document.createElementNS(this.svg.namespaceURI, "radialGradient")), s.id = this.guid + "_gradient";
     let i = !1;
     for (let e in t)
       if (e !== "type") {
@@ -174,7 +177,7 @@ function a() {
     if (!t.href || !t.width || !t.height)
       return console.error("Image HREF, width and height must be specified for Image Fill"), null;
     const s = document.createElementNS(this.svg.namespaceURI, "pattern");
-    s.setAttribute("id", this.options.id + "_pattern"), s.setAttribute("patternUnits", "userSpaceOnUse");
+    s.setAttribute("id", this.guid + "_pattern"), s.setAttribute("patternUnits", "userSpaceOnUse");
     for (let e in t)
       e !== "href" && s.setAttribute(e, t[e]);
     const i = document.createElementNS(this.svg.namespaceURI, "image");
@@ -217,5 +220,5 @@ function a() {
   };
 }
 export {
-  a as default
+  d as default
 };
