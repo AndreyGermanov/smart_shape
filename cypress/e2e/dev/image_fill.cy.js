@@ -19,7 +19,7 @@ describe('Image fill tests', () => {
       shape.redraw();
       cy.get("#shape1 > defs").should("exist").then(() => {
         cy.get("#shape1 > defs > pattern").should("exist").then(() => {
-          cy.get("#shape1 > defs > pattern").should("have.attr","id","shape1_pattern").then(() => {
+          cy.get("#shape1 > defs > pattern").should("have.attr","id",shape.guid+"_pattern").then(() => {
             cy.get("#shape1 > defs > pattern").should("have.attr","width","200").then(() => {
               cy.get("#shape1 > defs > pattern").should("have.attr","height","133").then(() => {
                 cy.get("#shape1 > defs > pattern > image").should("exist").then(() => {

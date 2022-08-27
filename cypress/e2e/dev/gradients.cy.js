@@ -36,7 +36,7 @@ describe('Gradient fill tests', () => {
       shape.redraw();
       cy.get("#shape1 > defs").should("exist").then(() => {
         cy.get("#shape1 > defs > linearGradient").should("exist").then(() => {
-          cy.get("#shape1 > defs > linearGradient").should("have.attr","id","shape1_gradient").then(() => {
+          cy.get("#shape1 > defs > linearGradient").should("have.attr","id",shape.guid+"_gradient").then(() => {
             cy.get("#shape1 > defs > linearGradient").should("have.attr","gradientTransform","rotate(90)").then(() => {
               const steps = Cypress.$("#shape1 > defs > linearGradient > stop").toArray();
               assert.equal(steps.length,3);

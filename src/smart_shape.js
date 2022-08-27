@@ -1,5 +1,5 @@
 import SmartPoint from "./smart_point.js";
-import {getOffset} from "./utils.js";
+import {getOffset, uuid} from "./utils.js";
 
 /**
  * SmartShape class. Used to construct shapes.
@@ -141,6 +141,12 @@ function SmartShape() {
     this.height = 0;
 
     /**
+     * Internal global unique identifier of shape. Generated automatically.
+     * @type {string}
+     */
+    this.guid = uuid();
+
+    /**
      * Method used to construct SmartShape object with specified `points` and
      * with specified `options`.
      * Then it binds this object to specified `root` HTML node and displays it
@@ -162,7 +168,6 @@ function SmartShape() {
         this.setOptions(options);
         this.addEventListeners();
         this.setupPoints(points,this.options.pointOptions);
-
         return this;
     }
 
@@ -395,10 +400,10 @@ function SmartShape() {
         }
         if (this.options.fill) {
             if (this.options.fillImage && typeof(this.options.fillImage) === "object") {
-                polygon.setAttribute("fill",'url("#'+this.options.id+'_pattern'+'")');
+                polygon.setAttribute("fill",'url("#'+this.guid+'_pattern'+'")');
             }  else if (this.options.fillGradient && typeof(this.options.fillGradient === "object") &&
                 ["linear","radial"].indexOf(this.options.fillGradient.type) !== -1) {
-                polygon.setAttribute("fill",'url("#'+this.options.id+'_gradient'+'")');
+                polygon.setAttribute("fill",'url("#'+this.guid+'_gradient'+'")');
             } else {
                 polygon.setAttribute("fill", this.options.fill);
             }
@@ -431,7 +436,7 @@ function SmartShape() {
         if (gradientOptions.type === "radial") {
             gradient = document.createElementNS(this.svg.namespaceURI,"radialGradient");
         }
-        gradient.id = this.options.id+"_gradient";
+        gradient.id = this.guid+"_gradient";
         let foundSteps = false;
         for (let index in gradientOptions) {
             if (index === "type") { continue }
@@ -473,7 +478,7 @@ function SmartShape() {
             return null;
         }
         const pattern = document.createElementNS(this.svg.namespaceURI, "pattern");
-        pattern.setAttribute("id",this.options.id+"_pattern");
+        pattern.setAttribute("id",this.guid+"_pattern");
         pattern.setAttribute("patternUnits","userSpaceOnUse");
         for (let index in imageFillOptions) {
             if (index === "href") {

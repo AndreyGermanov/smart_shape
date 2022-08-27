@@ -135,6 +135,7 @@ removes this point from shape's points array.
     * [.bottom](#SmartShape+bottom) : <code>number</code>
     * [.width](#SmartShape+width) : <code>number</code>
     * [.height](#SmartShape+height) : <code>number</code>
+    * [.guid](#SmartShape+guid) : <code>string</code>
     * [.init(root, options, points)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
@@ -244,6 +245,12 @@ Width of shape
 ### smartShape.height : <code>number</code>
 Height of shape
 (Read-only, calculated automatically based on points coordinates)
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+guid"></a>
+
+### smartShape.guid : <code>string</code>
+Internal global unique identifier of shape. Generated automatically.
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
