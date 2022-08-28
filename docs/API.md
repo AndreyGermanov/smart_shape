@@ -373,11 +373,6 @@ of this object when need to draw shapes.
 
 ## SmartShapeEventListener
 **Kind**: global class  
-
-* [SmartShapeEventListener](#SmartShapeEventListener)
-    * [new SmartShapeEventListener(shape)](#new_SmartShapeEventListener_new)
-    * [.addEventListeners()](#SmartShapeEventListener+addEventListeners)
-
 <a name="new_SmartShapeEventListener_new"></a>
 
 ### new SmartShapeEventListener(shape)
@@ -390,9 +385,3 @@ this class automatically during init process
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
 
-<a name="SmartShapeEventListener+addEventListeners"></a>
-
-### smartShapeEventListener.addEventListeners()
-Internal method that installs HTML DOM event listeners to the shape, and it's container
-
-**Kind**: instance method of [<code>SmartShapeEventListener</code>](#SmartShapeEventListener)  
