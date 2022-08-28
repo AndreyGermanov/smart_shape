@@ -188,22 +188,6 @@ function SmartShape() {
         }
     }
 
-    // Internal method that installs HTML DOM event listeners to shape, and it's container
-    // to handle mouse events properly
-    this.addEventListeners = () => {
-        if (this.root.getAttribute("sh_listeners") !== "true") {
-            this.root.setAttribute("sh_listeners","true");
-            this.root.addEventListener("mousemove", (event) => {
-                if (this.root.draggedShape) {
-                    this.root.draggedShape.mousemove(event);
-                }
-            })
-            this.root.addEventListener("mouseup",this.mouseup);
-            this.root.addEventListener("dblclick",this.doubleclick);
-        }
-        this.nocontextmenu = this.root.addEventListener("contextmenu", event => event.preventDefault())
-    }
-
     /**
      * @ignore
      * Internal function that set points of figure
@@ -364,6 +348,23 @@ function SmartShape() {
         this.redraw();
     }
 
+    // Internal method that installs HTML DOM event listeners to shape, and it's container
+    // to handle mouse events properly
+    this.addEventListeners = () => {
+        if (this.root.getAttribute("sh_listeners") !== "true") {
+            this.root.setAttribute("sh_listeners","true");
+            this.root.addEventListener("mousemove", (event) => {
+                if (this.root.draggedShape) {
+                    this.root.draggedShape.mousemove(event);
+                }
+            })
+            this.root.addEventListener("mouseup",this.mouseup);
+            this.root.addEventListener("dblclick",this.doubleclick);
+            this.root.addEventListener("mouseenter", this.mouseenter);
+            this.nocontextmenu = this.root.addEventListener("contextmenu", event => event.preventDefault())
+        }
+    }
+
     /**
      * @ignore
      * OnMouseUp event handler, triggered when user releases mouse button on shape or on shape container element
@@ -411,6 +412,10 @@ function SmartShape() {
      */
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
+            if (this.root.draggedShape) {
+                this.root.draggedShape.draggedPoint = null;
+                this.root.draggedShape = null;
+            }
             return
         }
         if (this.draggedPoint) {
@@ -430,6 +435,15 @@ function SmartShape() {
             this.points[index].redraw();
         }
         this.redraw()
+    }
+
+    this.mouseenter = (event) => {
+        if (event.buttons !== 1) {
+            if (this.root.draggedShape) {
+                this.root.draggedShape.draggedPoint = null;
+            }
+            this.root.draggedShape = null;
+        }
     }
 
     /**
