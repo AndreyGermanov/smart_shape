@@ -7,6 +7,8 @@
 <dd></dd>
 <dt><a href="#SmartShapeDrawHelper">SmartShapeDrawHelper</a></dt>
 <dd></dd>
+<dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
+<dd></dd>
 </dl>
 
 <a name="SmartPoint"></a>
@@ -144,9 +146,9 @@ removes this point from shape's points array.
     * [.addPoints(points, pointOptions)](#SmartShape+addPoints)
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
+    * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
     * [.redraw()](#SmartShape+redraw)
     * [.destroy()](#SmartShape+destroy)
-    * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -335,6 +337,13 @@ or null if point does not exist
 | x | <code>number</code> | X coordinate of point |
 | y | <code>number</code> | Y coordinate of point |
 
+<a name="SmartShape+getPointsArray"></a>
+
+### smartShape.getPointsArray() ⇒ <code>array</code>
+Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
 <a name="SmartShape+redraw"></a>
 
 ### smartShape.redraw()
@@ -349,24 +358,10 @@ But variable continue existing. To completely remove the shape,
 set the variable to 'null' after calling this method.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-<a name="SmartShape+getPointsArray"></a>
-
-### smartShape.getPointsArray() ⇒ <code>array</code>
-Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
-
-**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-**Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
 <a name="SmartShapeDrawHelper"></a>
 
 ## SmartShapeDrawHelper
 **Kind**: global class  
-
-* [SmartShapeDrawHelper](#SmartShapeDrawHelper)
-    * [new SmartShapeDrawHelper()](#new_SmartShapeDrawHelper_new)
-    * [.draw(shape)](#SmartShapeDrawHelper+draw)
-    * [.createGradient(shape)](#SmartShapeDrawHelper+createGradient) ⇒ <code>HTMLOrSVGElement</code>
-    * [.createImageFill(shape)](#SmartShapeDrawHelper+createImageFill) ⇒ <code>HTMLOrSVGElement</code>
-
 <a name="new_SmartShapeDrawHelper_new"></a>
 
 ### new SmartShapeDrawHelper()
@@ -374,46 +369,30 @@ Internal helper class that used to draw shape.
 Should not be used directly. SmartShape objects execute methods
 of this object when need to draw shapes.
 
-<a name="SmartShapeDrawHelper+draw"></a>
+<a name="SmartShapeEventListener"></a>
 
-### smartShapeDrawHelper.draw(shape)
-Method that implements drawing for provided shape.
+## SmartShapeEventListener
+**Kind**: global class  
 
-**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
+* [SmartShapeEventListener](#SmartShapeEventListener)
+    * [new SmartShapeEventListener(shape)](#new_SmartShapeEventListener_new)
+    * [.addEventListeners()](#SmartShapeEventListener+addEventListeners)
 
-| Param | Type | Description |
-| --- | --- | --- |
-| shape | [<code>SmartShape</code>](#SmartShape) | Shape object to draw |
+<a name="new_SmartShapeEventListener_new"></a>
 
-<a name="SmartShapeDrawHelper+createGradient"></a>
+### new SmartShapeEventListener(shape)
+Internal helper class, that contains all event listening logic for the shape.
+This class should not be used directly. Each shape creates an instance of
+this class automatically during init process
 
-### smartShapeDrawHelper.createGradient(shape) ⇒ <code>HTMLOrSVGElement</code>
-Method, used to create gradient fill for shape, if `options.fillGradient` specified.
-Triggered automatically when redraw the shape. Should not be called directly.
-
-**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
-**Returns**: <code>HTMLOrSVGElement</code> - SVG element that defines gradient: either `linearGradient` or
-`radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| shape | [<code>SmartShape</code>](#SmartShape) | Shape for which gradient should be created equal to `linear` or `radial`. Accepts all options, that SVG linear gradient or SVG radial gradient accept. |
+| shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
 
-<a name="SmartShapeDrawHelper+createImageFill"></a>
+<a name="SmartShapeEventListener+addEventListeners"></a>
 
-### smartShapeDrawHelper.createImageFill(shape) ⇒ <code>HTMLOrSVGElement</code>
-Method used to construct SVG pattern to fill the shape with an image. Consists of
-`pattern` SVG node:
-https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern.
-and `image` SVG node inside it.
-https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
-Triggered automatically when redraw the shape, if `options.fillImage` specified.
-Should not be called directly.
+### smartShapeEventListener.addEventListeners()
+Internal method that installs HTML DOM event listeners to the shape, and it's container
 
-**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
-**Returns**: <code>HTMLOrSVGElement</code> - Constructed `pattern` SVG tag or null, in case of errors  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| shape | <code>object</code> | Shape for which image fill should be created |
-
+**Kind**: instance method of [<code>SmartShapeEventListener</code>](#SmartShapeEventListener)  

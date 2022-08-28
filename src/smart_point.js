@@ -85,6 +85,9 @@ function SmartPoint(shape) {
         this.setOptions(this.shape.options.pointOptions);
         this.setOptions(options);
         this.addEventListeners();
+        if (!this.shape.onPointEvent) {
+            this.shape.onPointEvent = () => {};
+        }
         this.shape.onPointEvent("point_added",this)
         return this;
     }
