@@ -1,4 +1,4 @@
-function p(t) {
+function l(t) {
   return this.shape = null, this.options = {
     id: "",
     width: 10,
@@ -16,55 +16,111 @@ function p(t) {
     canDrag: !0,
     canDelete: !0,
     zIndex: 1e3
-  }, this.x = 0, this.y = 0, this.element = null, this.init = (s, i, e = null) => (this.x = s, this.y = i, this.shape = t, this.element = this.createPointUI(), this.setOptions(this.shape.options.pointOptions), this.setOptions(e), this.addEventListeners(), this.shape.onPointEvent("point_added", this), this), this.setOptions = (s) => {
-    s && typeof s == "object" && (s.style && typeof s.style == "object" && (s.style = Object.assign(this.options.style, s.style)), Object.assign(this.options, s)), this.options.id && (this.element.id = this.options.id), this.shape.options.zIndex && (this.options.zIndex = this.shape.options.zIndex + 1), this.element = this.setPointStyles(this.element);
+  }, this.x = 0, this.y = 0, this.element = null, this.init = (i, e, s = null) => (this.x = i, this.y = e, this.shape = t, this.element = this.createPointUI(), this.setOptions(this.shape.options.pointOptions), this.setOptions(s), this.addEventListeners(), this.shape.onPointEvent("point_added", this), this), this.setOptions = (i) => {
+    i && typeof i == "object" && (i.style && typeof i.style == "object" && (i.style = Object.assign(this.options.style, i.style)), Object.assign(this.options, i)), this.options.id && (this.element.id = this.options.id), this.shape.options.zIndex && (this.options.zIndex = this.shape.options.zIndex + 1), this.element = this.setPointStyles(this.element);
   }, this.createPointUI = () => {
-    const s = document.createElement("div");
-    return this.shape.options.canDragPoints ? this.setPointStyles(s) : s;
-  }, this.setPointStyles = (s = null) => {
-    if (s == null && (s = this.element), !this.shape.options.canDragPoints)
-      return s;
-    if (this.options.id && (s.id = this.options.id), s.className = this.options.classes, s.style = this.options.style, typeof this.options.style == "object")
-      for (let i in this.options.style)
-        s.style[i] = this.options.style[i];
-    return s.style.width = this.options.width + "px", s.style.height = this.options.height + "px", s.style.left = this.x - parseInt(this.options.width / 2) + "px", s.style.top = this.y - parseInt(this.options.height / 2) + "px", s.style.zIndex = this.options.zIndex, s;
+    const i = document.createElement("div");
+    return this.shape.options.canDragPoints ? this.setPointStyles(i) : i;
+  }, this.setPointStyles = (i = null) => {
+    if (i == null && (i = this.element), !this.shape.options.canDragPoints)
+      return i;
+    if (this.options.id && (i.id = this.options.id), i.className = this.options.classes, i.style = this.options.style, typeof this.options.style == "object")
+      for (let e in this.options.style)
+        i.style[e] = this.options.style[e];
+    return i.style.width = this.options.width + "px", i.style.height = this.options.height + "px", i.style.left = this.x - parseInt(this.options.width / 2) + "px", i.style.top = this.y - parseInt(this.options.height / 2) + "px", i.style.zIndex = this.options.zIndex, i;
   }, this.redraw = () => {
     this.setPointStyles(), this.element.style.left = this.x - parseInt(this.options.width / 2) + "px", this.element.style.top = this.y - parseInt(this.options.height / 2) + "px";
   }, this.addEventListeners = () => {
     this.element.addEventListener("mouseup", this.mouseup), this.element.addEventListener("mousedown", this.mousedown);
-  }, this.mousedown = (s) => {
-    s.buttons === 1 && this.shape.options.canDragPoints && this.options.canDrag && (s.preventDefault = !0, s.stopPropagation(), this.shape.onPointEvent("point_dragstart", this));
-  }, this.mousemove = (s) => {
-    if (s.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag)
+  }, this.mousedown = (i) => {
+    i.buttons === 1 && this.shape.options.canDragPoints && this.options.canDrag && (i.preventDefault = !0, i.stopPropagation(), this.shape.onPointEvent("point_dragstart", this));
+  }, this.mousemove = (i) => {
+    if (i.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag)
       return;
-    const i = this.x + s.movementX, e = this.y + s.movementY, o = this.shape.root;
-    if (i < 0 || i > o.clientLeft + o.clientWidth) {
+    const e = this.x + i.movementX, s = this.y + i.movementY, o = this.shape.root;
+    if (e < 0 || e > o.clientLeft + o.clientWidth) {
       this.shape.onPointEvent("point_drag", this), this.shape.draggedPoint = null;
       return;
     }
-    if (e < 0 || e > o.clientTop + o.clientHeight) {
+    if (s < 0 || s > o.clientTop + o.clientHeight) {
       this.shape.onPointEvent("point_drag", this), this.shape.draggedPoint = null;
       return;
     }
-    this.x += s.movementX, this.y += s.movementY, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
-  }, this.mouseup = (s) => {
-    this.shape.onPointEvent("point_dragend", this), s.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete && this.destroy();
+    this.x += i.movementX, this.y += i.movementY, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
+  }, this.mouseup = (i) => {
+    this.shape.onPointEvent("point_dragend", this), i.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete && this.destroy();
   }, this.destroy = () => {
     this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), this.shape.onPointEvent("point_destroyed", this);
   }, this;
 }
-const l = (t, s = !0) => {
-  let i = 0, e = 0;
-  if (!s)
+function d() {
+  this.draw = (t) => {
+    if (t.svg && (t.root.removeChild(t.svg), t.svg = null), t.points.length < 1)
+      return;
+    if (t.calcPosition(), t.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), t.svg.id = t.options.id, t.svg.style.position = "absolute", t.svg.style.cursor = "crosshair", t.svg.style.left = t.left, t.svg.style.top = t.top, t.svg.setAttribute("width", t.width), t.svg.setAttribute("height", t.height), t.options.fillImage && typeof (t.options.fillImage === "object")) {
+      const e = document.createElementNS(t.svg.namespaceURI, "defs"), s = this.createImageFill(t);
+      s && e.appendChild(s), t.svg.appendChild(e);
+    } else if (t.options.fillGradient && typeof (t.options.fillGradient === "object") && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1) {
+      const e = document.createElementNS(t.svg.namespaceURI, "defs"), s = this.createGradient(t);
+      e.appendChild(s), t.svg.appendChild(e);
+    }
+    t.svg.style.zIndex = t.options.zIndex;
+    const i = this.drawPolygon(t);
+    t.svg.appendChild(i), t.root.appendChild(t.svg), t.svg.addEventListener("mousedown", t.mousedown), t.points.forEach((e) => {
+      e.setOptions(t.options.pointOptions), e.setPointStyles(), e.redraw();
+    });
+  }, this.drawPolygon = (t) => {
+    let i = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    t.points.length > 2 && (i = document.createElementNS("http://www.w3.org/2000/svg", "polygon"));
+    const e = t.points.map((s) => "" + (s.x - t.left) + "," + (s.y - t.top)).join(" ");
+    if (i.setAttribute("points", e), t.options.stroke && i.setAttribute("stroke", t.options.stroke), t.options.strokeWidth && i.setAttribute("stroke-width", t.options.strokeWidth), t.options.strokeLinecap && i.setAttribute("stroke-linecap", t.options.strokeLinecap), t.options.strokeDasharray && i.setAttribute("stroke-dasharray", t.options.strokeDasharray), t.options.fill && (t.options.fillImage && typeof t.options.fillImage == "object" ? i.setAttribute("fill", 'url("#' + t.guid + '_pattern")') : t.options.fillGradient && typeof (t.options.fillGradient === "object") && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1 ? i.setAttribute("fill", 'url("#' + t.guid + '_gradient")') : i.setAttribute("fill", t.options.fill)), t.options.fillOpacity && i.setAttribute("fill-opacity", t.options.fillOpacity), t.options.classes && i.setAttribute("class", t.options.classes), t.options.style)
+      for (let s in t.options.style)
+        i.style[s] = t.options.style[s];
+    return i.style.zIndex = t.options.zIndex, i;
+  }, this.createGradient = (t) => {
+    let i = document.createElementNS(t.svg.namespaceURI, "linearGradient");
+    const e = t.options.fillGradient;
+    e.type === "radial" && (i = document.createElementNS(t.svg.namespaceURI, "radialGradient")), i.id = t.guid + "_gradient";
+    let s = !1;
+    for (let o in e)
+      if (o !== "type") {
+        if (o === "steps") {
+          s = !0;
+          continue;
+        }
+        i.setAttribute(o, e[o]);
+      }
+    if (!s)
+      return i;
+    for (let o of e.steps) {
+      const n = document.createElementNS(t.svg.namespaceURI, "stop");
+      n.setAttribute("offset", o.offset), n.setAttribute("stop-color", o.stopColor), n.setAttribute("stop-opacity", o.stopOpacity), i.appendChild(n);
+    }
+    return i;
+  }, this.createImageFill = (t) => {
+    const i = t.options.fillImage;
+    if (!i.href || !i.width || !i.height)
+      return console.error("Image HREF, width and height must be specified for Image Fill"), null;
+    const e = document.createElementNS(t.svg.namespaceURI, "pattern");
+    e.setAttribute("id", t.guid + "_pattern"), e.setAttribute("patternUnits", "userSpaceOnUse");
+    for (let o in i)
+      o !== "href" && e.setAttribute(o, i[o]);
+    const s = document.createElementNS(t.svg.namespaceURI, "image");
+    return s.setAttribute("href", i.href), s.setAttribute("width", i.width), s.setAttribute("height", i.height), e.appendChild(s), e;
+  };
+}
+const a = new d(), p = (t, i = !0) => {
+  let e = 0, s = 0;
+  if (!i)
     return { top: t.offsetTop - t.scrollTop, left: t.offsetLeft - t.scrollLeft };
   for (; t && !isNaN(t.offsetLeft) && !isNaN(t.offsetTop); )
-    i += t.offsetLeft - t.scrollLeft, e += t.offsetTop - t.scrollTop, t = t.offsetParent;
-  return { top: e, left: i };
-}, a = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
-  var s = Math.random() * 16 | 0, i = t == "x" ? s : s & 3 | 8;
-  return i.toString(16);
+    e += t.offsetLeft - t.scrollLeft, s += t.offsetTop - t.scrollTop, t = t.offsetParent;
+  return { top: s, left: e };
+}, f = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
+  var i = Math.random() * 16 | 0, e = t == "x" ? i : i & 3 | 8;
+  return e.toString(16);
 }).replace(/\-/g, "");
-function d() {
+function u() {
   this.root = null, this.points = [], this.svg = null, this.options = {
     id: "",
     name: "Unnamed shape",
@@ -87,107 +143,58 @@ function d() {
     style: {},
     pointOptions: {},
     zIndex: 1e3
-  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = a(), this.init = (t, s = null, i = null) => {
+  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = f(), this.init = (t, i = null, e = null) => {
     if (!t) {
       console.error("Root HTML node not specified. Could not create shape.");
       return;
     }
-    return this.root = t, this.root.style.position = "relative", this.draggedPoint = null, this.root.draggedShape = null, this.setOptions(s), this.addEventListeners(), this.setupPoints(i, this.options.pointOptions), this;
+    return this.root = t, this.root.style.position = "relative", this.draggedPoint = null, this.root.draggedShape = null, this.setOptions(i), this.addEventListeners(), this.setupPoints(e, this.options.pointOptions), this;
   }, this.setOptions = (t) => {
     t && typeof t == "object" && (t.pointOptions && typeof t.pointOptions == "object" && (t.pointOptions = Object.assign(this.options.pointOptions, t.pointOptions)), t.style && typeof t.style == "object" && (t.style = Object.assign(this.options.style, t.style)), Object.assign(this.options, t));
-  }, this.addEventListeners = () => {
-    this.root.getAttribute("sh_listeners") !== "true" && (this.root.setAttribute("sh_listeners", "true"), this.root.addEventListener("mousemove", (t) => {
-      this.root.draggedShape && this.root.draggedShape.mousemove(t);
-    }), this.root.addEventListener("mouseup", this.mouseup), this.root.addEventListener("dblclick", this.doubleclick)), this.nocontextmenu = this.root.addEventListener("contextmenu", (t) => t.preventDefault());
-  }, this.setupPoints = (t, s) => {
-    typeof t == "object" && (this.points = [], this.addPoints(t, s));
-  }, this.addPoint = (t, s, i = null) => {
-    const e = this.putPoint(t, s, i);
-    return this.redraw(), e;
-  }, this.addPoints = (t, s = null) => {
-    !t || typeof t != "object" || (t.forEach((i) => this.putPoint(i[0] + this.options.offsetX, i[1] + this.options.offsetY, s)), this.redraw());
-  }, this.putPoint = (t, s, i = null) => {
-    if (this.findPoint(t, s))
-      return console.error(`Point with x=${t} and y=${s} already exists`), null;
-    const e = new p(this).init(t, s, i);
-    return this.points.push(e), this.root.appendChild(e.element), e;
-  }, this.deletePoint = (t, s) => {
-    const i = this.findPoint(t, s);
-    i && i.destroy();
-  }, this.findPoint = (t, s) => {
-    const i = this.points.find((e) => e.x === t && e.y === s);
-    return typeof i > "u" || !i ? null : i;
-  }, this.onPointEvent = (t, s) => {
+  }, this.setupPoints = (t, i) => {
+    typeof t == "object" && (this.points = [], this.addPoints(t, i));
+  }, this.addPoint = (t, i, e = null) => {
+    const s = this.putPoint(t, i, e);
+    return this.redraw(), s;
+  }, this.addPoints = (t, i = null) => {
+    !t || typeof t != "object" || (t.forEach((e) => this.putPoint(e[0] + this.options.offsetX, e[1] + this.options.offsetY, i)), this.redraw());
+  }, this.putPoint = (t, i, e = null) => {
+    if (this.findPoint(t, i))
+      return console.error(`Point with x=${t} and y=${i} already exists`), null;
+    const s = new l(this).init(t, i, e);
+    return this.points.push(s), this.root.appendChild(s.element), s;
+  }, this.deletePoint = (t, i) => {
+    const e = this.findPoint(t, i);
+    e && e.destroy();
+  }, this.findPoint = (t, i) => {
+    const e = this.points.find((s) => s.x === t && s.y === i);
+    return typeof e > "u" || !e ? null : e;
+  }, this.onPointEvent = (t, i) => {
     switch (t) {
       case "point_destroyed":
-        this.points.splice(this.points.indexOf(s), 1), this.root.removeChild(s.element), this.redraw();
+        this.points.splice(this.points.indexOf(i), 1), this.root.removeChild(i.element), this.redraw();
         break;
       case "point_drag":
         this.redraw();
         break;
       case "point_dragstart":
-        this.root.draggedShape = this, this.draggedPoint = s;
+        this.root.draggedShape = this, this.draggedPoint = i;
         break;
       case "point_dragend":
         this.root.draggedShape = null, this.draggedPoint = null;
     }
   }, this.redraw = () => {
-    if (this.svg && (this.root.removeChild(this.svg), this.svg = null), this.points.length < 1)
-      return;
-    if (this.calcPosition(), this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), this.svg.id = this.options.id, this.svg.style.position = "absolute", this.svg.style.cursor = "crosshair", this.svg.style.left = this.left, this.svg.style.top = this.top, this.svg.setAttribute("width", this.width), this.svg.setAttribute("height", this.height), this.options.fillImage && typeof (this.options.fillImage === "object")) {
-      const s = document.createElementNS(this.svg.namespaceURI, "defs"), i = this.createImageFill(this.options.fillImage);
-      i && s.appendChild(i), this.svg.appendChild(s);
-    } else if (this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1) {
-      const s = document.createElementNS(this.svg.namespaceURI, "defs"), i = this.createGradient(this.options.fillGradient);
-      s.appendChild(i), this.svg.appendChild(s);
-    }
-    this.svg.style.zIndex = this.options.zIndex;
-    const t = this.drawPolygon();
-    this.svg.appendChild(t), this.root.appendChild(this.svg), this.svg.addEventListener("mousedown", this.mousedown), this.points.forEach((s) => {
-      s.setOptions(this.options.pointOptions), s.setPointStyles(), s.redraw();
-    });
-  }, this.drawPolygon = () => {
-    let t = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    this.points.length > 2 && (t = document.createElementNS("http://www.w3.org/2000/svg", "polygon"));
-    const s = this.points.map((i) => "" + (i.x - this.left) + "," + (i.y - this.top)).join(" ");
-    if (t.setAttribute("points", s), this.options.stroke && t.setAttribute("stroke", this.options.stroke), this.options.strokeWidth && t.setAttribute("stroke-width", this.options.strokeWidth), this.options.strokeLinecap && t.setAttribute("stroke-linecap", this.options.strokeLinecap), this.options.strokeDasharray && t.setAttribute("stroke-dasharray", this.options.strokeDasharray), this.options.fill && (this.options.fillImage && typeof this.options.fillImage == "object" ? t.setAttribute("fill", 'url("#' + this.guid + '_pattern")') : this.options.fillGradient && typeof (this.options.fillGradient === "object") && ["linear", "radial"].indexOf(this.options.fillGradient.type) !== -1 ? t.setAttribute("fill", 'url("#' + this.guid + '_gradient")') : t.setAttribute("fill", this.options.fill)), this.options.fillOpacity && t.setAttribute("fill-opacity", this.options.fillOpacity), this.options.classes && t.setAttribute("class", this.options.classes), this.options.style)
-      for (let i in this.options.style)
-        t.style[i] = this.options.style[i];
-    return t.style.zIndex = this.options.zIndex, t;
-  }, this.createGradient = (t) => {
-    let s = document.createElementNS(this.svg.namespaceURI, "linearGradient");
-    t.type === "radial" && (s = document.createElementNS(this.svg.namespaceURI, "radialGradient")), s.id = this.guid + "_gradient";
-    let i = !1;
-    for (let e in t)
-      if (e !== "type") {
-        if (e === "steps") {
-          i = !0;
-          continue;
-        }
-        s.setAttribute(e, t[e]);
-      }
-    if (!i)
-      return s;
-    for (let e of t.steps) {
-      const o = document.createElementNS(this.svg.namespaceURI, "stop");
-      o.setAttribute("offset", e.offset), o.setAttribute("stop-color", e.stopColor), o.setAttribute("stop-opacity", e.stopOpacity), s.appendChild(o);
-    }
-    return s;
-  }, this.createImageFill = (t) => {
-    if (!t.href || !t.width || !t.height)
-      return console.error("Image HREF, width and height must be specified for Image Fill"), null;
-    const s = document.createElementNS(this.svg.namespaceURI, "pattern");
-    s.setAttribute("id", this.guid + "_pattern"), s.setAttribute("patternUnits", "userSpaceOnUse");
-    for (let e in t)
-      e !== "href" && s.setAttribute(e, t[e]);
-    const i = document.createElementNS(this.svg.namespaceURI, "image");
-    return i.setAttribute("href", t.href), i.setAttribute("width", t.width), i.setAttribute("height", t.height), s.appendChild(i), s;
+    a.draw(this);
   }, this.calcPosition = () => {
-    this.left = this.points.map((t) => t.x).reduce((t, s) => s < t ? s : t), this.top = this.points.map((t) => t.y).reduce((t, s) => s < t ? s : t), this.right = this.points.map((t) => t.x).reduce((t, s) => s > t ? s : t), this.bottom = this.points.map((t) => t.y).reduce((t, s) => s > t ? s : t), this.width = this.right - this.left, this.height = this.bottom - this.top;
+    this.left = this.points.map((t) => t.x).reduce((t, i) => i < t ? i : t), this.top = this.points.map((t) => t.y).reduce((t, i) => i < t ? i : t), this.right = this.points.map((t) => t.x).reduce((t, i) => i > t ? i : t), this.bottom = this.points.map((t) => t.y).reduce((t, i) => i > t ? i : t), this.width = this.right - this.left, this.height = this.bottom - this.top;
   }, this.destroy = () => {
     this.points.forEach((t) => {
       this.root.removeChild(t.element);
     }), this.root.removeEventListener("contextmenu", this.nocontextmenu), this.root.removeEventListener("mouseup", this.mouseup), this.points = [], this.redraw();
+  }, this.addEventListeners = () => {
+    this.root.getAttribute("sh_listeners") !== "true" && (this.root.setAttribute("sh_listeners", "true"), this.root.addEventListener("mousemove", (t) => {
+      this.root.draggedShape && this.root.draggedShape.mousemove(t);
+    }), this.root.addEventListener("mouseup", this.mouseup), this.root.addEventListener("dblclick", this.doubleclick), this.root.addEventListener("mouseenter", this.mouseenter), this.nocontextmenu = this.root.addEventListener("contextmenu", (t) => t.preventDefault()));
   }, this.mouseup = (t) => {
     t.buttons === 1 && this.options.canAddPoints && !this.draggedPoint && (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) && this.addPoint(t.clientX - this.root.offsetLeft, t.clientY - this.root.offsetTop), this.root.draggedShape && (this.root.draggedShape.draggedPoint = null, this.root.draggedShape = null);
   }, this.doubleclick = (t) => {
@@ -195,30 +202,34 @@ function d() {
   }, this.mousedown = (t) => {
     this.root.draggedShape = this;
   }, this.mousemove = (t) => {
-    if (t.buttons !== 1)
+    if (t.buttons !== 1) {
+      this.root.draggedShape && (this.root.draggedShape.draggedPoint = null, this.root.draggedShape = null);
       return;
+    }
     if (this.draggedPoint) {
       this.draggedPoint.mousemove(t);
       return;
     }
     if (!this.options.canDragShape)
       return;
-    const [s, i] = this.calcMovementOffset(t);
-    if (!(s === null || i === null)) {
-      for (let e in this.points)
-        this.points[e].x += s, this.points[e].y += i, this.points[e].redraw();
+    const [i, e] = this.calcMovementOffset(t);
+    if (!(i === null || e === null)) {
+      for (let s in this.points)
+        this.points[s].x += i, this.points[s].y += e, this.points[s].redraw();
       this.redraw();
     }
+  }, this.mouseenter = (t) => {
+    t.buttons !== 1 && (this.root.draggedShape && (this.root.draggedShape.draggedPoint = null), this.root.draggedShape = null);
   }, this.calcMovementOffset = (t) => {
     this.calcPosition();
-    let s = t.movementX, i = t.movementY, e = t.clientX, o = t.clientY;
-    const h = this.left + s, r = this.top + i, n = l(this.root, !0);
-    return h < 0 || h + this.width > this.root.clientLeft + this.root.clientWidth ? [null, null] : r < 0 || r + this.height > this.root.clientTop + this.root.clientHeight ? [null, null] : (e < h + n.left && (s = e - (h + n.left)), o < r + n.top && (i = o - (r + n.top)), e > h + this.width + n.left && (s = e - (this.width + n.left + this.left)), o > r + this.height + n.right && (i = o - (this.height + n.top + this.top)), [s, i]);
+    let i = t.movementX, e = t.movementY, s = t.clientX, o = t.clientY;
+    const n = this.left + i, h = this.top + e, r = p(this.root, !0);
+    return n < 0 || n + this.width > this.root.clientLeft + this.root.clientWidth ? [null, null] : h < 0 || h + this.height > this.root.clientTop + this.root.clientHeight ? [null, null] : (s < n + r.left && (i = s - (n + r.left)), o < h + r.top && (e = o - (h + r.top)), s > n + this.width + r.left && (i = s - (this.width + r.left + this.left)), o > h + this.height + r.right && (e = o - (this.height + r.top + this.top)), [i, e]);
   }, this.getPointsArray = () => {
     let t = [];
-    return this.points && typeof this.points == "object" && this.points.length && (t = this.points.map((s) => [s.x, s.y])), t;
+    return this.points && typeof this.points == "object" && this.points.length && (t = this.points.map((i) => [i.x, i.y])), t;
   };
 }
 export {
-  d as default
+  u as default
 };
