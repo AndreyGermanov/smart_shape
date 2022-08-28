@@ -1,3 +1,5 @@
+import {getOffset} from "./utils.js";
+
 /**
  * Class that represents a single point of SmartShape. Usually points constructed not directly,
  * but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when
@@ -196,21 +198,9 @@ function SmartPoint(shape) {
         if (event.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag) {
             return
         }
-        const newX = this.x + event.movementX;
-        const newY = this.y + event.movementY;
-        const root = this.shape.root;
-        if (newX < 0 || newX > root.clientLeft + root.clientWidth) {
-            this.shape.onPointEvent("point_drag",this);
-            this.shape.draggedPoint = null;
-            return;
-        }
-        if (newY < 0 || newY > root.clientTop + root.clientHeight) {
-            this.shape.onPointEvent("point_drag",this);
-            this.shape.draggedPoint = null;
-            return;
-        }
-        this.x += event.movementX;
-        this.y += event.movementY;
+        const offset = getOffset(this.shape.root, true);
+        this.y = event.clientY - offset.top + this.options.height/2;
+        this.x = event.clientX - offset.left + this.options.width/2;
         this.element.style.left = (this.x-5)+"px";
         this.element.style.top = (this.y-5)+"px";
         this.shape.onPointEvent("point_drag",this);
@@ -238,8 +228,6 @@ function SmartPoint(shape) {
         this.element.removeEventListener("mousedown", this.mousedown)
         this.shape.onPointEvent("point_destroyed",this)
     }
-
-    return this;
 }
 
 export default SmartPoint;

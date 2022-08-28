@@ -80,7 +80,7 @@ describe('Point options', () => {
             })
             shape.options.canDeletePoints = true;
             cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
-                cy.get("#app").trigger("mousemove",{buttons:1,movementX:10,movementY:10}).then(() => {
+                cy.get("#app").trigger("mousemove",{buttons:1,clientX:110,clientY:10}).then(() => {
                     assert.equal(point1.x, 100);
                     assert.equal(point1.y, 0)
                     cy.get("#point1").trigger("mouseup",{button:2}).then( () => {
@@ -90,9 +90,9 @@ describe('Point options', () => {
                             canDelete: true
                         })
                         cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
-                            cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 10, movementY: 10}).then(() => {
-                                assert.equal(point1.x, 110);
-                                assert.equal(point1.y, 10)
+                            cy.get("#app").trigger("mousemove", {buttons: 1, clientX: 110, clientY: 10}).then(() => {
+                                assert.equal(point1.x, 112);
+                                assert.equal(point1.y, 12)
                                 cy.get("#point1").trigger("mouseup", {button: 2}).then(() => {
                                     assert.isNull(shape.findPoint(100, 0))
                                 })
