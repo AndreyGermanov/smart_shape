@@ -21,6 +21,9 @@ function SmartShapeDrawHelper() {
         }
         shape.calcPosition();
         shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+        shape.svg.ondragstart = function() {
+            return false;
+        }
         shape.svg.id = shape.options.id;
         shape.svg.style.position = 'absolute';
         shape.svg.style.cursor = 'crosshair';
