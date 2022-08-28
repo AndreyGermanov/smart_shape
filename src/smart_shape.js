@@ -1,7 +1,7 @@
 import SmartPoint from "./smart_point.js";
 import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
 import SmartShapeEventListener from "./smart_shape_event_listener.js";
-import {getOffset, uuid} from "./utils.js";
+import {uuid} from "./utils.js";
 
 /**
  * SmartShape class. Used to construct shapes.
