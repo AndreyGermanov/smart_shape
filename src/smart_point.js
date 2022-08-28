@@ -199,8 +199,14 @@ function SmartPoint(shape) {
             return
         }
         const offset = getOffset(this.shape.root, true);
-        this.y = event.clientY - offset.top;
-        this.x = event.clientX - offset.left;
+        if (event.movementX+this.x < 0 || event.movementX+this.x > this.shape.root.clientLeft + this.shape.root.clientWidth) {
+            return;
+        }
+        if (event.movementY+this.y < 0 || event.movementY + this.y > this.shape.root.clientTop + this.shape.root.clientHeight) {
+            return;
+        }
+        this.y = event.clientY - offset.top + this.options.height/2;
+        this.x = event.clientX - offset.left + this.options.width/2;
         this.element.style.left = (this.x-5)+"px";
         this.element.style.top = (this.y-5)+"px";
         this.shape.onPointEvent("point_drag",this);
@@ -228,6 +234,8 @@ function SmartPoint(shape) {
         this.element.removeEventListener("mousedown", this.mousedown)
         this.shape.onPointEvent("point_destroyed",this)
     }
+
+    return this;
 }
 
 export default SmartPoint;

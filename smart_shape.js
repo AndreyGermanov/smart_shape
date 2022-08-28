@@ -10,7 +10,7 @@ const l = (t, e = !0) => {
   return i.toString(16);
 }).replace(/\-/g, "");
 function d(t) {
-  this.shape = null, this.options = {
+  return this.shape = null, this.options = {
     id: "",
     width: 10,
     height: 10,
@@ -50,12 +50,12 @@ function d(t) {
     if (e.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag)
       return;
     const i = l(this.shape.root, !0);
-    this.y = e.clientY - i.top, this.x = e.clientX - i.left, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
+    e.movementX + this.x < 0 || e.movementX + this.x > this.shape.root.clientLeft + this.shape.root.clientWidth || e.movementY + this.y < 0 || e.movementY + this.y > this.shape.root.clientTop + this.shape.root.clientHeight || (this.y = e.clientY - i.top + this.options.height / 2, this.x = e.clientX - i.left + this.options.width / 2, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this));
   }, this.mouseup = (e) => {
     this.shape.onPointEvent("point_dragend", this), e.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete && this.destroy();
   }, this.destroy = () => {
     this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), this.shape.onPointEvent("point_destroyed", this);
-  };
+  }, this;
 }
 function f() {
   this.draw = (t) => {
