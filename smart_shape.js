@@ -1,11 +1,11 @@
-const l = (t, e = !0) => {
+const p = (t, e = !0) => {
   let i = 0, s = 0;
   if (!e)
     return { top: t.offsetTop - t.scrollTop, left: t.offsetLeft - t.scrollLeft };
   for (; t && !isNaN(t.offsetLeft) && !isNaN(t.offsetTop); )
     i += t.offsetLeft - t.scrollLeft, s += t.offsetTop - t.scrollTop, t = t.offsetParent;
   return { top: s, left: i };
-}, p = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
+}, l = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
   var e = Math.random() * 16 | 0, i = t == "x" ? e : e & 3 | 8;
   return i.toString(16);
 }).replace(/\-/g, "");
@@ -49,7 +49,7 @@ function d(t) {
   }, this.mousemove = (e) => {
     if (e.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag)
       return;
-    const i = l(this.shape.root, !0);
+    const i = p(this.shape.root, !0);
     e.movementX + this.x < 0 || e.movementX + this.x > this.shape.root.clientLeft + this.shape.root.clientWidth || e.movementY + this.y < 0 || e.movementY + this.y > this.shape.root.clientTop + this.shape.root.clientHeight || (this.y = e.clientY - i.top + this.options.height / 2, this.x = e.clientX - i.left + this.options.width / 2, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this));
   }, this.mouseup = (e) => {
     this.shape.onPointEvent("point_dragend", this), e.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete && this.destroy();
@@ -120,7 +120,7 @@ function c(t) {
   this.shape = t, this.run = () => (this.shape = t, this.addEventListeners(), this), this.addEventListeners = () => {
     this.shape.root.getAttribute("sh_listeners") !== "true" && (this.shape.root.setAttribute("sh_listeners", "true"), this.shape.root.addEventListener("mousemove", (e) => {
       this.shape.root.draggedShape && this.shape.root.draggedShape.eventListener.mousemove(e);
-    }), this.shape.root.addEventListener("mouseup", this.mouseup), this.shape.root.addEventListener("dblclick", this.doubleclick), this.shape.root.addEventListener("mouseenter", this.mouseenter), this.nocontextmenu = this.shape.root.addEventListener("contextmenu", (e) => e.preventDefault()));
+    }), this.shape.root.addEventListener("mouseup", this.mouseup), this.shape.root.addEventListener("dblclick", this.doubleclick), this.shape.root.addEventListener("mouseenter", this.mouseenter), this.shape.options.canDeletePoints && (this.nocontextmenu = this.shape.root.addEventListener("contextmenu", (e) => e.preventDefault())));
   }, this.mouseup = (e) => {
     e.buttons === 1 && this.shape.options.canAddPoints && !this.shape.draggedPoint && (this.shape.options.maxPoints === -1 || this.shape.points.length < this.shape.options.maxPoints) && this.shape.addPoint(e.clientX - this.shape.root.offsetLeft, e.clientY - this.shape.root.offsetTop), this.shape.root.draggedShape && (this.shape.root.draggedShape.draggedPoint = null, this.shape.root.draggedShape = null);
   }, this.doubleclick = (e) => {
@@ -149,7 +149,7 @@ function c(t) {
   }, this.calcMovementOffset = (e) => {
     this.shape.calcPosition();
     let i = e.movementX, s = e.movementY, o = e.clientX, n = e.clientY;
-    const h = this.shape.left + i, a = this.shape.top + s, r = l(this.shape.root, !0);
+    const h = this.shape.left + i, a = this.shape.top + s, r = p(this.shape.root, !0);
     return h < 0 || h + this.shape.width > this.shape.root.clientLeft + this.shape.root.clientWidth ? [null, null] : a < 0 || a + this.shape.height > this.shape.root.clientTop + this.shape.root.clientHeight ? [null, null] : (o < h + r.left && (i = o - (h + r.left)), n < a + r.top && (s = n - (a + r.top)), o > h + this.shape.width + r.left && (i = o - (this.shape.width + r.left + this.shape.left)), n > a + this.shape.height + r.right && (s = n - (this.shape.height + r.top + this.shape.top)), [i, s]);
   }, this.onPointEvent = (e, i) => {
     switch (e) {
@@ -166,7 +166,7 @@ function c(t) {
         this.shape.root.draggedShape = null, this.shape.draggedPoint = null;
     }
   }, this.destroy = () => {
-    this.shape.root.removeEventListener("contextmenu", this.nocontextmenu), this.shape.root.removeEventListener("mouseup", this.mouseup);
+    this.shape.options.canDeletePoints && this.shape.root.removeEventListener("contextmenu", this.nocontextmenu), this.shape.root.removeEventListener("mouseup", this.mouseup);
   };
 }
 function g() {
@@ -192,7 +192,7 @@ function g() {
     style: {},
     pointOptions: {},
     zIndex: 1e3
-  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = p(), this.init = (t, e = null, i = null) => {
+  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = l(), this.init = (t, e = null, i = null) => {
     if (!t) {
       console.error("Root HTML node not specified. Could not create shape.");
       return;

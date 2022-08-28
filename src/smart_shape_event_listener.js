@@ -42,7 +42,9 @@ function SmartShapeEventListener(shape) {
             this.shape.root.addEventListener("mouseup",this.mouseup);
             this.shape.root.addEventListener("dblclick",this.doubleclick);
             this.shape.root.addEventListener("mouseenter", this.mouseenter);
-            this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
+            if (this.shape.options.canDeletePoints) {
+                this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
+            }
         }
     }
 
@@ -202,7 +204,9 @@ function SmartShapeEventListener(shape) {
      * Used to remove all event listeners when destroy the object
      */
     this.destroy = () => {
-        this.shape.root.removeEventListener("contextmenu",this.nocontextmenu);
+        if (this.shape.options.canDeletePoints) {
+            this.shape.root.removeEventListener("contextmenu", this.nocontextmenu);
+        }
         this.shape.root.removeEventListener("mouseup",this.mouseup);
     }
 }
