@@ -28,6 +28,7 @@ function SmartShapeEventListener(shape) {
     }
 
     /**
+     * @ignore
      * Internal method that installs HTML DOM event listeners to the shape, and it's container
      */
     this.addEventListeners = () => {
