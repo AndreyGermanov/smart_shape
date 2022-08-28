@@ -199,8 +199,8 @@ function SmartPoint(shape) {
             return
         }
         const offset = getOffset(this.shape.root, true);
-        this.y = event.clientY - offset.top + this.options.height/2;
-        this.x = event.clientX - offset.left + this.options.width/2;
+        this.y = event.clientY - offset.top;
+        this.x = event.clientX - offset.left;
         this.element.style.left = (this.x-5)+"px";
         this.element.style.top = (this.y-5)+"px";
         this.shape.onPointEvent("point_drag",this);

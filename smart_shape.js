@@ -50,7 +50,7 @@ function d(t) {
     if (e.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag)
       return;
     const i = l(this.shape.root, !0);
-    this.y = e.clientY - i.top + this.options.height / 2, this.x = e.clientX - i.left + this.options.width / 2, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
+    this.y = e.clientY - i.top, this.x = e.clientX - i.left, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
   }, this.mouseup = (e) => {
     this.shape.onPointEvent("point_dragend", this), e.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete && this.destroy();
   }, this.destroy = () => {
