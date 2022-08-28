@@ -1,5 +1,16 @@
-function l(t) {
-  return this.shape = null, this.options = {
+const l = (t, e = !0) => {
+  let i = 0, s = 0;
+  if (!e)
+    return { top: t.offsetTop - t.scrollTop, left: t.offsetLeft - t.scrollLeft };
+  for (; t && !isNaN(t.offsetLeft) && !isNaN(t.offsetTop); )
+    i += t.offsetLeft - t.scrollLeft, s += t.offsetTop - t.scrollTop, t = t.offsetParent;
+  return { top: s, left: i };
+}, p = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
+  var e = Math.random() * 16 | 0, i = t == "x" ? e : e & 3 | 8;
+  return i.toString(16);
+}).replace(/\-/g, "");
+function d(t) {
+  this.shape = null, this.options = {
     id: "",
     width: 10,
     height: 10,
@@ -38,23 +49,15 @@ function l(t) {
   }, this.mousemove = (e) => {
     if (e.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag)
       return;
-    const i = this.x + e.movementX, s = this.y + e.movementY, o = this.shape.root;
-    if (i < 0 || i > o.clientLeft + o.clientWidth) {
-      this.shape.onPointEvent("point_drag", this), this.shape.draggedPoint = null;
-      return;
-    }
-    if (s < 0 || s > o.clientTop + o.clientHeight) {
-      this.shape.onPointEvent("point_drag", this), this.shape.draggedPoint = null;
-      return;
-    }
-    this.x += e.movementX, this.y += e.movementY, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
+    const i = l(this.shape.root, !0);
+    this.y = e.clientY - i.top + this.options.height / 2, this.x = e.clientX - i.left + this.options.width / 2, this.element.style.left = this.x - 5 + "px", this.element.style.top = this.y - 5 + "px", this.shape.onPointEvent("point_drag", this);
   }, this.mouseup = (e) => {
     this.shape.onPointEvent("point_dragend", this), e.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete && this.destroy();
   }, this.destroy = () => {
     this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), this.shape.onPointEvent("point_destroyed", this);
-  }, this;
+  };
 }
-function p() {
+function f() {
   this.draw = (t) => {
     if (t.svg && (t.root.removeChild(t.svg), t.svg = null), t.points.length < 1)
       return;
@@ -112,17 +115,7 @@ function p() {
     return s.setAttribute("href", e.href), s.setAttribute("width", e.width), s.setAttribute("height", e.height), i.appendChild(s), i;
   };
 }
-const d = new p(), f = (t, e = !0) => {
-  let i = 0, s = 0;
-  if (!e)
-    return { top: t.offsetTop - t.scrollTop, left: t.offsetLeft - t.scrollLeft };
-  for (; t && !isNaN(t.offsetLeft) && !isNaN(t.offsetTop); )
-    i += t.offsetLeft - t.scrollLeft, s += t.offsetTop - t.scrollTop, t = t.offsetParent;
-  return { top: s, left: i };
-}, u = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(t) {
-  var e = Math.random() * 16 | 0, i = t == "x" ? e : e & 3 | 8;
-  return i.toString(16);
-}).replace(/\-/g, "");
+const u = new f();
 function c(t) {
   this.shape = t, this.run = () => (this.shape = t, this.addEventListeners(), this), this.addEventListeners = () => {
     this.shape.root.getAttribute("sh_listeners") !== "true" && (this.shape.root.setAttribute("sh_listeners", "true"), this.shape.root.addEventListener("mousemove", (e) => {
@@ -156,7 +149,7 @@ function c(t) {
   }, this.calcMovementOffset = (e) => {
     this.shape.calcPosition();
     let i = e.movementX, s = e.movementY, o = e.clientX, n = e.clientY;
-    const h = this.shape.left + i, a = this.shape.top + s, r = f(this.shape.root, !0);
+    const h = this.shape.left + i, a = this.shape.top + s, r = l(this.shape.root, !0);
     return h < 0 || h + this.shape.width > this.shape.root.clientLeft + this.shape.root.clientWidth ? [null, null] : a < 0 || a + this.shape.height > this.shape.root.clientTop + this.shape.root.clientHeight ? [null, null] : (o < h + r.left && (i = o - (h + r.left)), n < a + r.top && (s = n - (a + r.top)), o > h + this.shape.width + r.left && (i = o - (this.shape.width + r.left + this.shape.left)), n > a + this.shape.height + r.right && (s = n - (this.shape.height + r.top + this.shape.top)), [i, s]);
   }, this.onPointEvent = (e, i) => {
     switch (e) {
@@ -199,7 +192,7 @@ function g() {
     style: {},
     pointOptions: {},
     zIndex: 1e3
-  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = u(), this.init = (t, e = null, i = null) => {
+  }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = p(), this.init = (t, e = null, i = null) => {
     if (!t) {
       console.error("Root HTML node not specified. Could not create shape.");
       return;
@@ -217,7 +210,7 @@ function g() {
   }, this.putPoint = (t, e, i = null) => {
     if (this.findPoint(t, e))
       return console.error(`Point with x=${t} and y=${e} already exists`), null;
-    const s = new l(this).init(t, e, i);
+    const s = new d(this).init(t, e, i);
     return this.points.push(s), this.root.appendChild(s.element), s;
   }, this.deletePoint = (t, e) => {
     const i = this.findPoint(t, e);
@@ -229,7 +222,7 @@ function g() {
     let t = [];
     return this.points && typeof this.points == "object" && this.points.length && (t = this.points.map((e) => [e.x, e.y])), t;
   }, this.redraw = () => {
-    d.draw(this);
+    u.draw(this);
   }, this.calcPosition = () => {
     this.left = this.points.map((t) => t.x).reduce((t, e) => e < t ? e : t), this.top = this.points.map((t) => t.y).reduce((t, e) => e < t ? e : t), this.right = this.points.map((t) => t.x).reduce((t, e) => e > t ? e : t), this.bottom = this.points.map((t) => t.y).reduce((t, e) => e > t ? e : t), this.width = this.right - this.left, this.height = this.bottom - this.top;
   }, this.destroy = () => {
