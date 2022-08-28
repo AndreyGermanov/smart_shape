@@ -49,7 +49,7 @@ function SmartShapeDrawHelper() {
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
         shape.root.appendChild(shape.svg);
-        shape.svg.addEventListener("mousedown",shape.mousedown)
+        shape.svg.addEventListener("mousedown",shape.eventListener.mousedown)
         shape.points.forEach(point => {
             point.setOptions(shape.options.pointOptions);
             point.setPointStyles();

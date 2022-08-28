@@ -1,6 +1,7 @@
 import SmartPoint from "./smart_point.js";
 import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
-import {getOffset, uuid} from "./utils.js";
+import SmartShapeEventListener from "./smart_shape_event_listener.js";
+import {uuid} from "./utils.js";
 
 /**
  * SmartShape class. Used to construct shapes.
@@ -166,7 +167,8 @@ function SmartShape() {
         this.draggedPoint = null;
         this.root.draggedShape = null;
         this.setOptions(options);
-        this.addEventListeners();
+        this.eventListener = new SmartShapeEventListener(this).run()
+        this.onPointEvent = this.eventListener.onPointEvent;
         this.setupPoints(points,this.options.pointOptions);
         return this;
     }
@@ -287,29 +289,15 @@ function SmartShape() {
     }
 
     /**
-     * @ignore
-     * Internal method that receives events from point objects and reacts on them
-     * @param event_type - Type of event
-     * @param point - [SmartPoint](#SmartPoint) object which raised that event
+     * Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
+     * @returns {array} 2D array of points in format [ [x,y], [x,y], [x,y] ... ]
      */
-    this.onPointEvent = (event_type, point) => {
-        switch (event_type) {
-            case "point_destroyed":
-                this.points.splice(this.points.indexOf(point), 1);
-                this.root.removeChild(point.element);
-                this.redraw()
-                break;
-            case "point_drag":
-                this.redraw()
-                break;
-            case "point_dragstart":
-                this.root.draggedShape = this;
-                this.draggedPoint = point;
-                break;
-            case "point_dragend":
-                this.root.draggedShape = null;
-                this.draggedPoint = null;
+    this.getPointsArray = () => {
+        let result = [];
+        if (this.points && typeof(this.points) === "object" && this.points.length) {
+            result = this.points.map(point => [point.x,point.y])
         }
+        return result;
     }
 
     /**
@@ -342,158 +330,10 @@ function SmartShape() {
         this.points.forEach(point => {
             this.root.removeChild(point.element)
         })
-        this.root.removeEventListener("contextmenu",this.nocontextmenu);
-        this.root.removeEventListener("mouseup",this.mouseup);
+        this.eventListener.destroy();
+        this.onPointEvent = null;
         this.points = [];
         this.redraw();
-    }
-
-    // Internal method that installs HTML DOM event listeners to shape, and it's container
-    // to handle mouse events properly
-    this.addEventListeners = () => {
-        if (this.root.getAttribute("sh_listeners") !== "true") {
-            this.root.setAttribute("sh_listeners","true");
-            this.root.addEventListener("mousemove", (event) => {
-                if (this.root.draggedShape) {
-                    this.root.draggedShape.mousemove(event);
-                }
-            })
-            this.root.addEventListener("mouseup",this.mouseup);
-            this.root.addEventListener("dblclick",this.doubleclick);
-            this.root.addEventListener("mouseenter", this.mouseenter);
-            this.nocontextmenu = this.root.addEventListener("contextmenu", event => event.preventDefault())
-        }
-    }
-
-    /**
-     * @ignore
-     * OnMouseUp event handler, triggered when user releases mouse button on shape or on shape container element
-     * @param event {MouseEvent} Event object
-     */
-    this.mouseup = (event) => {
-        if (event.buttons === 1 && this.options.canAddPoints && !this.draggedPoint) {
-            if (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) {
-                this.addPoint(event.clientX-this.root.offsetLeft, event.clientY-this.root.offsetTop)
-            }
-        }
-        if (this.root.draggedShape) {
-            this.root.draggedShape.draggedPoint = null;
-            this.root.draggedShape = null;
-        }
-    }
-
-    /**
-     * @ignore
-     * OnDblClick event handler, triggered when user double-clicks on shape or on shape container element
-     * @param event {MouseEvent} Event object
-     */
-    this.doubleclick = (event) => {
-        event.stopPropagation();
-        if (this.options.canAddPoints && !this.draggedPoint) {
-            if (this.options.maxPoints === -1 || this.points.length < this.options.maxPoints) {
-                this.addPoint(event.clientX-this.root.offsetLeft, event.clientY-this.root.offsetTop)
-            }
-        }
-    }
-
-    /**
-     * @ignore
-     * onMouseDown event handler, triggered when user presses mouse button on the shape or on container element.
-     * @param event {MouseEvent} Event object
-     */
-    this.mousedown = (event) => {
-        this.root.draggedShape = this;
-    }
-
-    /**
-     * @ignore
-     * onMouseMove event handler, triggered when user moves mouse over the shape or container element.
-     * @param event {MouseEvent} Event object
-     */
-    this.mousemove = (event) => {
-        if (event.buttons !== 1) {
-            if (this.root.draggedShape) {
-                this.root.draggedShape.draggedPoint = null;
-                this.root.draggedShape = null;
-            }
-            return
-        }
-        if (this.draggedPoint) {
-            this.draggedPoint.mousemove(event);
-            return
-        }
-        if (!this.options.canDragShape) {
-            return
-        }
-        const [stepX, stepY] = this.calcMovementOffset(event);
-        if (stepX === null || stepY === null) {
-            return
-        }
-        for (let index in this.points) {
-            this.points[index].x += stepX;
-            this.points[index].y += stepY;
-            this.points[index].redraw();
-        }
-        this.redraw()
-    }
-
-    this.mouseenter = (event) => {
-        if (event.buttons !== 1) {
-            if (this.root.draggedShape) {
-                this.root.draggedShape.draggedPoint = null;
-            }
-            this.root.draggedShape = null;
-        }
-    }
-
-    /**
-     * @ignore
-     * Internal method that used to calculate to which amount of pixels the shape should be moved when dragging it,
-     * depending on position of mouse cursor and bounds of container element.
-     * @param event {MouseEvent} event object
-     * @returns {array} Returns object with [x,y] coordinates or [null,null]
-     * if impossible to move (out of container bounds)
-     */
-    this.calcMovementOffset = (event) => {
-        this.calcPosition();
-        let stepX = event.movementX;
-        let stepY = event.movementY;
-        let clientX = event.clientX;
-        let clientY = event.clientY;
-        const newX = this.left + stepX;
-        const newY = this.top + stepY;
-        const offset = getOffset(this.root, true);
-        if (newX < 0 || newX+this.width > this.root.clientLeft + this.root.clientWidth) {
-            return [null, null]
-        }
-        if (newY < 0 || newY+this.height > this.root.clientTop + this.root.clientHeight) {
-            return [null, null]
-        }
-        if (clientX<newX+offset.left) {
-            stepX = clientX - (newX+offset.left);
-        }
-        if (clientY<newY+offset.top) {
-            stepY = clientY - (newY+offset.top);
-        }
-        if (clientX>newX+this.width+offset.left) {
-            stepX = clientX -  (this.width+offset.left+this.left);
-        }
-        if (clientY>newY+this.height+offset.right) {
-            stepY = clientY -  (this.height+offset.top+this.top);
-        }
-        return [stepX, stepY];
-    }
-
-    /**
-     * Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
-     * @returns {array} 2D array of points in format [ [x,y], [x,y], [x,y] ... ]
-     */
-    this.getPointsArray = () => {
-        let result = [];
-        if (this.points && typeof(this.points) === "object" && this.points.length) {
-            result = this.points.map(point => [point.x,point.y])
-        }
-        return result;
     }
 }
 
