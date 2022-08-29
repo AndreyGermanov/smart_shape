@@ -1,22 +1,22 @@
 import EventsManager from "../../../src/events/EventsManager.js"
 describe('EventsManager tests', () => {
   it('subscribe', () => {
-    EventsManager.events = [];
+    EventsManager.subscriptions = {};
     const handler = (event) => {};
     const h1 = EventsManager.subscribe("event1",handler);
     assert.equal(h1, handler,"Should return pointer to event handler that stored to events manager");
-    assert.equal(EventsManager.events["event1"].length,1,"Should add new handler properly");
+    assert.equal(EventsManager.subscriptions["event1"].length,1,"Should add new handler properly");
     const h2 = EventsManager.subscribe("event1",handler);
     assert.isNull(h2,"Should return null if event handler haven't stored to events manager");
-    assert.equal(EventsManager.events["event1"].length,1,"Should not add the same handler for the same event twice");
+    assert.equal(EventsManager.subscriptions["event1"].length,1,"Should not add the same handler for the same event twice");
     const h3 = EventsManager.subscribe("event2",handler);
     assert.equal(h3, handler,"Should return pointer to event handler that stored to events manager");
-    assert.equal(EventsManager.events["event1"].length,1,"Should correctly place events to the array");
-    assert.equal(EventsManager.events['event2'].length,1,"Should correctly place events to the array");
+    assert.equal(EventsManager.subscriptions["event1"].length,1,"Should correctly place events to the array");
+    assert.equal(EventsManager.subscriptions['event2'].length,1,"Should correctly place events to the array");
   });
 
   it("emit", () => {
-    EventsManager.events = [];
+    EventsManager.subscriptions = {};
     let event1Passes = 0;
     let event2Passes = 0;
 
@@ -62,7 +62,7 @@ describe('EventsManager tests', () => {
   })
 
   it("unsubscribe", () => {
-    EventsManager.events = [];
+    EventsManager.subscriptions = {};
     let event1Passes = 0;
 
     let obj1 = null;
@@ -86,19 +86,18 @@ describe('EventsManager tests', () => {
     obj1 = new Class3();
     obj2 = new Class4();
 
-
     const handler = EventsManager.subscribe("event1",obj1.event1handler);
-    assert.equal(EventsManager.events["event1"].length,1,"Should add event handler to the manager");
+    assert.equal(EventsManager.subscriptions["event1"].length,1,"Should add event handler to the manager");
     EventsManager.emit("event1",obj2,{param1:"param1"});
     assert.equal(event1Passes,1,"Should correctly call the handler");
     EventsManager.unsubscribe("event1",handler);
-    assert.equal(EventsManager.events["event1"].length,0,"Should remove event handler from the manager");
+    assert.equal(EventsManager.subscriptions["event1"].length,0,"Should remove event handler from the manager");
     EventsManager.emit("event1",obj2,{param1:"param1"});
     assert.equal(event1Passes,1,"Should not call the handler after it unsubscribed");
   })
 
   it("clear", () => {
-    EventsManager.events = [];
+    EventsManager.subscriptions = {};
     let event1Passes = 0;
     let event2Passes = 0;
 
@@ -127,7 +126,6 @@ describe('EventsManager tests', () => {
     EventsManager.subscribe("event1",obj2.event1Handler);
     EventsManager.subscribe("event2",obj2.event2Handler);
     EventsManager.clear();
-    assert.equal(EventsManager.events.length,0,"Should clear events queue");
     EventsManager.emit("event1",obj2,{param1:"param1"});
     EventsManager.emit("event2",obj1,{param2:"param2"});
     assert.equal(event1Passes,0, "Should not trigger any handlers if EventManager is cleared");
