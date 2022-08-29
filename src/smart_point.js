@@ -1,5 +1,5 @@
 import {getOffset} from "./utils.js";
-
+import EventsManager from "./events/EventsManager.js";
 /**
  * Class that represents a single point of SmartShape. Usually points constructed not directly,
  * but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when
@@ -163,8 +163,6 @@ function SmartPoint(shape) {
      */
     this.redraw =() => {
         this.setPointStyles();
-        this.element.style.left = (this.x-parseInt(this.options.width/2))+"px";
-        this.element.style.top = (this.y-parseInt(this.options.height/2))+"px";
     }
 
     /**
@@ -199,17 +197,22 @@ function SmartPoint(shape) {
             return
         }
         const offset = getOffset(this.shape.root, true);
+        const oldX = this.x;
+        const oldY = this.y;
         if (event.movementX+this.x < 0 || event.movementX+this.x > this.shape.root.clientLeft + this.shape.root.clientWidth) {
+            EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
         if (event.movementY+this.y < 0 || event.movementY + this.y > this.shape.root.clientTop + this.shape.root.clientHeight) {
+            EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
-        this.y = event.clientY - offset.top + this.options.height/2;
-        this.x = event.clientX - offset.left + this.options.width/2;
-        this.element.style.left = (this.x-5)+"px";
-        this.element.style.top = (this.y-5)+"px";
+        this.x = event.clientX - offset.left - this.options.width/2;
+        this.y = event.clientY - offset.top - this.options.height/2;
+        this.element.style.left = (this.x)+"px";
+        this.element.style.top = (this.y)+"px";
         this.shape.onPointEvent("point_drag",this);
+        EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
     }
 
     /**
@@ -236,6 +239,17 @@ function SmartPoint(shape) {
     }
 
     return this;
+}
+
+/**
+ * @enum
+ * Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) object.
+ * @param POINT_DRAG_MOVE - This event emitted when user drags point by a mouse. As an arguments to event passed
+ * `oldX` and `oldY` coordinates, which was before event start.
+ * @type {string}
+ */
+export const PointEvents = {
+    POINT_DRAG_MOVE: "POINT_DRAG_MOVE"
 }
 
 export default SmartPoint;

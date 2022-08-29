@@ -26,7 +26,7 @@ function EventsManager() {
         if (typeof(this.events[eventType]) === "undefined" || !this.events[eventType]) {
             this.events[eventType] = [];
         }
-        if (typeof(this.events[eventType].find(h => h == handler)) !== "undefined") {
+        if (typeof(this.events[eventType].find(h => h === handler)) !== "undefined") {
             return null;
         }
         this.events[eventType].push(handler);
@@ -41,7 +41,7 @@ function EventsManager() {
      * @param eventType {string} Type of event to emit.
      * @param target {object} Which object emitted this event.
      * @param params {object} Event specific params. Can be any number of params.
-     * @returns {boolean} True if this event triggered at least of one handlers, or false if does not.
+     * @returns {boolean} True if this event triggered at least of one handler, or false if it does not.
      */
     this.emit = (eventType,target,params=null) => {
         if (!params || typeof(params) !== "object") {
@@ -61,7 +61,7 @@ function EventsManager() {
      * @param eventType {string} Type of event
      * @param handler {function} Pointer to a function to remove. (This pointer returned from `subscribe` method and
      * can be used here to unsubscribe
-     * @returns {boolean} True if really removed the handler or false if could not remove because it does not exist
+     * @returns {boolean} True if really removed the handler or false if you could not remove because it does not exist
      */
     this.unsubscribe = (eventType, handler) => {
         if (typeof(this.events[eventType]) === "undefined" || !this.events[eventType]) {

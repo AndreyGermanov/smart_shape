@@ -62,7 +62,7 @@ that received from `params` argument. Then, all subscribers will receive this `e
 functions.
 
 **Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
-**Returns**: <code>boolean</code> - True if this event triggered at least of one handlers, or false if does not.  
+**Returns**: <code>boolean</code> - True if this event triggered at least of one handler, or false if it does not.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ functions.
 Removes specified handler from specified type of event.
 
 **Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
-**Returns**: <code>boolean</code> - True if really removed the handler or false if could not remove because it does not exist  
+**Returns**: <code>boolean</code> - True if really removed the handler or false if you could not remove because it does not exist  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -462,4 +462,13 @@ this class automatically during init process
 | Param | Type | Description |
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
+
+<a name="PointEvents"></a>
+
+## PointEvents : <code>enum</code>
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| POINT_DRAG_MOVE | This event emitted when user drags point by a mouse. As an arguments to event passed `oldX` and `oldY` coordinates, which was before event start. |
 

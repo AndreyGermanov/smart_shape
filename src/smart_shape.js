@@ -281,7 +281,7 @@ function SmartShape() {
      * or null if point does not exist
      */
     this.findPoint = (x,y) => {
-        const point = this.points.find(point => point.x === x && point.y === y)
+        const point = this.points.find(item => item.x === x && item.y === y)
         if (typeof(point) === "undefined" || !point) {
             return null;
         }
