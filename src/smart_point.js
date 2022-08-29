@@ -163,8 +163,6 @@ function SmartPoint(shape) {
      */
     this.redraw =() => {
         this.setPointStyles();
-        this.element.style.left = (this.x-parseInt(this.options.width/2))+"px";
-        this.element.style.top = (this.y-parseInt(this.options.height/2))+"px";
     }
 
     /**
@@ -205,10 +203,12 @@ function SmartPoint(shape) {
         if (event.movementY+this.y < 0 || event.movementY + this.y > this.shape.root.clientTop + this.shape.root.clientHeight) {
             return;
         }
-        this.y = event.clientY - offset.top + this.options.height/2;
-        this.x = event.clientX - offset.left + this.options.width/2;
-        this.element.style.left = (this.x-5)+"px";
-        this.element.style.top = (this.y-5)+"px";
+        const oldX = this.x;
+        const oldY = this.y;
+        this.x = event.clientX - offset.left - this.options.width/2;
+        this.y = event.clientY - offset.top - this.options.height/2;
+        this.element.style.left = (this.x)+"px";
+        this.element.style.top = (this.y)+"px";
         this.shape.onPointEvent("point_drag",this);
     }
 
@@ -236,6 +236,10 @@ function SmartPoint(shape) {
     }
 
     return this;
+}
+
+export const PointEvents = {
+    POINT_POSITION_CHANGED: "POINT_POSITION_CHANGED"
 }
 
 export default SmartPoint;
