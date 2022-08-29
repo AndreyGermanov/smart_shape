@@ -18,24 +18,24 @@ describe('Test drag points', () => {
       point3.element.id = "point3"
       cy.get("#point1").trigger("mousedown",2,2,{buttons:1,bubbles:false}).then(() => {
         cy.get("#container").trigger("mousemove",{buttons:1,clientX:35,clientY:125}).then(()=> {
-          assert.equal(point1.x,32)
-          assert.equal(point1.y,122)
+          assert.equal(point1.x,22)
+          assert.equal(point1.y,112)
           cy.get("#container").trigger("mouseup",{buttons:1}).then(() => {
             cy.get("#container").trigger("mousemove",{buttons:1,clientX:35,clientY:125}).then(()=> {
-              assert.equal(point1.x,32)
-              assert.equal(point1.y,122)
+              assert.equal(point1.x,22)
+              assert.equal(point1.y,112)
               cy.get("#point2").trigger("mousedown",2,2,{buttons:1,bubbles:false}).then(()=>{
                 cy.get("#container").trigger("mousemove",{buttons:1,clientX:60,clientY:350}).then(()=> {
-                  assert.equal(point1.x,32)
-                  assert.equal(point1.y,122)
-                  assert.equal(point2.x,57)
-                  assert.equal(point2.y,347)
+                  assert.equal(point1.x,22)
+                  assert.equal(point1.y,112)
+                  assert.equal(point2.x,47)
+                  assert.equal(point2.y,337)
                   cy.get("#container").trigger("mousemove",{buttons:1,clientX:57,clientY:60}).then(()=> {
-                    assert.equal(point2.x,54)
-                    assert.equal(point2.y,57)
+                    assert.equal(point2.x,44)
+                    assert.equal(point2.y,47)
                     cy.get("#container").trigger("mousemove",{buttons:1,clientX:550,clientY:60}).then(()=> {
-                      assert.equal(point2.x,547)
-                      assert.equal(point2.y,57)
+                      assert.equal(point2.x,537)
+                      assert.equal(point2.y,47)
                     })
                   })
                 })

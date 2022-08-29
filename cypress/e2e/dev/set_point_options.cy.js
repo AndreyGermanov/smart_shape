@@ -91,8 +91,8 @@ describe('Point options', () => {
                         })
                         cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
                             cy.get("#app").trigger("mousemove", {buttons: 1, clientX: 110, clientY: 10}).then(() => {
-                                assert.equal(point1.x, 112);
-                                assert.equal(point1.y, 12)
+                                assert.equal(point1.x, 92);
+                                assert.equal(point1.y, -8)
                                 cy.get("#point1").trigger("mouseup", {button: 2}).then(() => {
                                     assert.isNull(shape.findPoint(100, 0))
                                 })
