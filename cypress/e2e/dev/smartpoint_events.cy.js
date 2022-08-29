@@ -7,7 +7,7 @@ function getShape() {
   return [app,shape]
 }
 describe('SmartPoint events tests', () => {
-  it('POINT_POSITION_CHANGED event', () => {
+  it('POINT_DRAG_MOVE event', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = getShape();
       const left_top = shape.addPoint(0,0,{id:"left_top"});
