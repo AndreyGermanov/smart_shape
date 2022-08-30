@@ -49,11 +49,11 @@ function SmartShapeEventListener(shape) {
             }
             window.addEventListener("resize", this.onWindowResize);
         }
-        EventsManager.subscribe(PointEvents.POINT_ADDED, (event) => this.onPointAdded(event))
-        EventsManager.subscribe(PointEvents.POINT_DRAG_START, (event) => this.onPointDragStart(event));
-        EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, (event) => this.onPointDragMove(event));
-        EventsManager.subscribe(PointEvents.POINT_DRAG_END, (event) => this.onPointDragEnd(event));
-        EventsManager.subscribe(PointEvents.POINT_DESTROYED, (event) => this.onPointDestroyed(event))
+        EventsManager.subscribe(PointEvents.POINT_ADDED, this.onPointAdded);
+        EventsManager.subscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
+        EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
+        EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
+        EventsManager.subscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
     }
 
     /**
@@ -261,6 +261,12 @@ function SmartShapeEventListener(shape) {
             this.shape.root.removeEventListener("contextmenu", this.nocontextmenu);
         }
         this.shape.root.removeEventListener("mouseup",this.mouseup);
+        window.removeEventListener("window.resize",this.onWindowResize);
+        EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
+        EventsManager.unsubscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
+        EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
+        EventsManager.unsubscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
+        EventsManager.unsubscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
     }
 }
 

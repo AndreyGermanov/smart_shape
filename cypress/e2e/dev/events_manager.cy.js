@@ -86,11 +86,11 @@ describe('EventsManager tests', () => {
     obj1 = new Class3();
     obj2 = new Class4();
 
-    const handler = EventsManager.subscribe("event1",obj1.event1handler);
+    EventsManager.subscribe("event1",obj1.event1handler);
     assert.equal(EventsManager.subscriptions["event1"].length,1,"Should add event handler to the manager");
     EventsManager.emit("event1",obj2,{param1:"param1"});
     assert.equal(event1Passes,1,"Should correctly call the handler");
-    EventsManager.unsubscribe("event1",handler);
+    EventsManager.unsubscribe("event1",obj1.event1handler);
     assert.equal(EventsManager.subscriptions["event1"].length,0,"Should remove event handler from the manager");
     EventsManager.emit("event1",obj2,{param1:"param1"});
     assert.equal(event1Passes,1,"Should not call the handler after it unsubscribed");
