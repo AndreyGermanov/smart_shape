@@ -13,7 +13,7 @@ describe('SmartPoint API tests', () => {
       cy.get("#point1").should("exist").then(() => {
         const point2 = shape.findPoint(100,100)
         assert.isNotNull(point2);
-        assert.equal(point2.shape,shape)
+        assert.isTrue(shape.isShapePoint(point2))
       });
     })
   })
@@ -36,6 +36,7 @@ describe('SmartPoint API tests', () => {
         canDelete: false,
         zIndex: 1001,
       })
+      point1.redraw();
       cy.get("#point2").should("have.class","newPoint").then(()=> {
         cy.get("#point2").should("have.css","width","100px").then(()=> {
           cy.get("#point2").should("have.css","height","200px").then(()=> {

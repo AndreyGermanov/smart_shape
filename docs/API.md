@@ -11,6 +11,8 @@
 <dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
+<dt><a href="#ContainerEvents">ContainerEvents</a></dt>
+<dd></dd>
 </dl>
 
 <a name="EventsManager"></a>
@@ -97,8 +99,7 @@ Method removes all subscriptions to events.
 **Kind**: global class  
 
 * [SmartPoint](#SmartPoint)
-    * [new SmartPoint(shape)](#new_SmartPoint_new)
-    * [.shape](#SmartPoint+shape) : [<code>SmartShape</code>](#SmartShape)
+    * [new SmartPoint()](#new_SmartPoint_new)
     * [.options](#SmartPoint+options) : <code>Object</code>
     * [.x](#SmartPoint+x) : <code>number</code>
     * [.y](#SmartPoint+y) : <code>number</code>
@@ -110,23 +111,13 @@ Method removes all subscriptions to events.
 
 <a name="new_SmartPoint_new"></a>
 
-### new SmartPoint(shape)
-Class that represents a single point of SmartShape. Usually points constructed not directly,
-but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when
+### new SmartPoint()
+Class that represents a single point on the screen.
+Can be created directly using class constructor, but more often they added by using `addPoint`, `addPoints`
+methods of [SmartShape](#SmartShape) class or interactively when
 user double-clicks on shape's container.
 
 **Returns**: <code>object</code> - SmartPoint object that should be initialized by `init` method.  
-
-| Param | Description |
-| --- | --- |
-| shape | [SmartShape](#SmartShape) object to which this point belongs |
-
-<a name="SmartPoint+shape"></a>
-
-### smartPoint.shape : [<code>SmartShape</code>](#SmartShape)
-[SmartShape](#SmartShape) object, to which this point belongs
-
-**Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
 <a name="SmartPoint+options"></a>
 
 ### smartPoint.options : <code>Object</code>
@@ -142,8 +133,9 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | classes | <code>string</code> | CSS class or classes of point, delimited by comma. Default empty. |
 | style | <code>object</code> | CSS styles, that override classes. Must be provided as an object. Default see in code. (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp)) |
 | canDrag | <code>boolean</code> | Is it allowed to drag this point by mouse to change it positions. Default `true` |
-| canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. (If [options.canDeletePoints](#SmartShape+options) option is set to `false`, then all points can not be removed regardless of this setting) |
-| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. If [SmartShape.options.zIndex](#SmartShape+options) specified, then `shape's z-index, increased by 1` will be used instead of this |
+| canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. |
+| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
+| bounds | <code>object</code> | Bounds for point movement. If setup, then it's impossible to drag point beyond bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`. If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container. |
 
 <a name="SmartPoint+x"></a>
 
@@ -180,7 +172,7 @@ Initializes new point and displays it on the screen.
 <a name="SmartPoint+setOptions"></a>
 
 ### smartPoint.setOptions(options)
-Method used to set specified options to point and redraw it with new options.
+Method used to set specified options to point.
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
 
@@ -228,6 +220,8 @@ removes this point from shape's points array.
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
     * [.redraw()](#SmartShape+redraw)
+    * [.getBounds()](#SmartShape+getBounds) ⇒ <code>Object</code>
+    * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
     * [.destroy()](#SmartShape+destroy)
 
 <a name="new_SmartShape_new"></a>
@@ -281,9 +275,7 @@ Options of shape as an object. Can have the following parameters.
 | offsetX | <code>number</code> | Number of pixels to add to X coordinate of each point to move entire shape to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
 | offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire shape to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
-| canDragPoints | <code>boolean</code> | Is it allowed to drag points of shape. Default `true`. |
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
-| canDeletePoints | <code>boolean</code> | Is it allowed to delete points from the shape interactively, by right mouse click on points. Default `false`. |
 | pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 
@@ -430,6 +422,24 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+getBounds"></a>
+
+### smartShape.getBounds() ⇒ <code>Object</code>
+Method returns the coordinates of container, to which this shape connected.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+isShapePoint"></a>
+
+### smartShape.isShapePoint(point) ⇒ <code>boolean</code>
+Method returns true if specified point exists in the array of this shape or false if not.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>boolean</code> - True if this point exists and false if not  
+
+| Param | Description |
+| --- | --- |
+| point | [SmartPoint](#SmartPoint) object of point to search |
+
 <a name="SmartShape+destroy"></a>
 
 ### smartShape.destroy()
@@ -465,12 +475,21 @@ this class automatically during init process
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
 
-<a name="PointEvents"></a>
+<a name="ContainerEvents"></a>
 
-## PointEvents : <code>enum</code>
-**Kind**: global enum  
+## ContainerEvents
+**Kind**: global class  
+<a name="new_ContainerEvents_new"></a>
+
+### new exports.ContainerEvents(CONTAINER_BOUNDS_CHANGED)
+Enumeration of event names, that can be emitted by shape
+
 
 | Param | Description |
 | --- | --- |
-| POINT_DRAG_MOVE | This event emitted when user drags point by a mouse. As an arguments to event passed `oldX` and `oldY` coordinates, which was before event start. |
+| CONTAINER_BOUNDS_CHANGED | Emitted by shape when dimensions of container changed, e.g. browser window resized. Sends the event with the following fields: `bounds` -an object with the following fields: left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects) with array of all points of this shape, which could be affected by this bounds change. |
 
+<a name="PointEvents"></a>
+
+## PointEvents
+**Kind**: global enum  

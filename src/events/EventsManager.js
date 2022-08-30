@@ -51,7 +51,8 @@ function EventsManager() {
         }
         params["type"] = eventName;
         params["target"] = target;
-        if (typeof(this.subscriptions[eventName]) !== "undefined" && this.subscriptions[eventName] && this.subscriptions[eventName].length) {
+        if (typeof(this.subscriptions[eventName]) !== "undefined" && this.subscriptions[eventName] &&
+            this.subscriptions[eventName].length) {
             this.subscriptions[eventName].forEach(handler => handler(params));
             return true;
         }

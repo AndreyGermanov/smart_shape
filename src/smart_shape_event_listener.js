@@ -1,4 +1,6 @@
+import EventsManager from "./events/EventsManager.js";
 import {getOffset} from "./utils.js";
+import {PointEvents} from "./smart_point.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the shape.
@@ -45,7 +47,13 @@ function SmartShapeEventListener(shape) {
             if (this.shape.options.canDeletePoints) {
                 this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
             }
+            window.addEventListener("resize", this.onWindowResize);
         }
+        EventsManager.subscribe(PointEvents.POINT_ADDED, (event) => this.onPointAdded(event))
+        EventsManager.subscribe(PointEvents.POINT_DRAG_START, (event) => this.onPointDragStart(event));
+        EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, (event) => this.onPointDragMove(event));
+        EventsManager.subscribe(PointEvents.POINT_DRAG_END, (event) => this.onPointDragEnd(event));
+        EventsManager.subscribe(PointEvents.POINT_DESTROYED, (event) => this.onPointDestroyed(event))
     }
 
     /**
@@ -174,30 +182,75 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
-     * Internal method that receives events from point objects and reacts on them
-     * @param event_type - Type of event
-     * @param point - [SmartPoint](#SmartPoint) object which raised that event
+     * Internal method, that triggered when new point added
+     * @param event Custom event object
      */
-    this.onPointEvent = (event_type, point) => {
-        switch (event_type) {
-            case "point_destroyed":
-                this.shape.points.splice(this.shape.points.indexOf(point), 1);
-                this.shape.root.removeChild(point.element);
-                this.shape.redraw()
-                break;
-            case "point_drag":
-                this.shape.redraw()
-                break;
-            case "point_dragstart":
-                this.shape.root.draggedShape = this.shape;
-                this.shape.draggedPoint = point;
-                break;
-            case "point_dragend":
-                this.shape.root.draggedShape = null;
-                this.shape.draggedPoint = null;
+    this.onPointAdded = (event) => { /* Temporary empty */ }
+
+    /**
+     * @ignore
+     * Internal method, that triggered when user started to drag the point
+     * @param event Custom event object. Contains SmartPoint object as an event.target
+     */
+    this.onPointDragStart = (event) => {
+        if (!this.shape.isShapePoint(event.target)) {
+            return;
         }
+        this.shape.root.draggedShape = this.shape;
+        this.shape.draggedPoint = event.target;
     }
 
+    /**
+     * @ignore
+     * Internal method, that triggered when user drags the point
+     * @param event Custom event object. Contains SmartPoint object as an `event.target`,
+     * `event.oldX` and `event.oldY` as a previous point coordinates before previous drag event.
+     */
+    this.onPointDragMove = (event) => {
+        if (!this.shape.isShapePoint(event.target)) {
+            return;
+        }
+        this.shape.redraw();
+    }
+
+    /**
+     * @ignore
+     * Internal method, that triggered when user finished dragging the point
+     * @param event Custom event object. Contains SmartPoint object as an `event.target`,
+     * `event.oldX` and `event.oldY` as a previous point coordinates before previous drag event.
+     **/
+    this.onPointDragEnd = (event) => {
+        if (!this.shape.isShapePoint(event.target)) {
+            return;
+        }
+        this.shape.root.draggedShape = null;
+        this.shape.draggedPoint = null;
+    }
+
+    /**
+     * @ignore
+     * Internal method, that triggered when point is destroyed
+     * @param event Custom event object. Contains SmartPoint object as an event.target
+     **/
+    this.onPointDestroyed = (event) => {
+        if (!this.shape.isShapePoint(event.target)) {
+            return;
+        }
+        this.shape.points.splice(this.shape.points.indexOf(event.target), 1);
+        this.shape.root.removeChild(event.target.element);
+        this.shape.redraw()
+    }
+
+    /**
+     * @ignore
+     * Internal method, triggered when browser window resized.
+     * @param event Window resize event - [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent).
+     */
+    this.onWindowResize = (/** event **/) => {
+        EventsManager.emit(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.shape,
+            {bounds:this.shape.getBounds(),points:this.shape.points}
+        )
+    }
 
     /**
      * @ignore
@@ -209,6 +262,18 @@ function SmartShapeEventListener(shape) {
         }
         this.shape.root.removeEventListener("mouseup",this.mouseup);
     }
+}
+
+/**
+ * Enumeration of event names, that can be emitted by shape
+ * @param CONTAINER_BOUNDS_CHANGED Emitted by shape when dimensions of container changed, e.g. browser
+ * window resized. Sends the event with the following fields: `bounds` -an object with the following fields:
+ * left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)
+ * with array of all points of this shape, which could be affected by this bounds change.
+ * @constructor
+ */
+export const ContainerEvents = {
+    CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
 }
 
 export default SmartShapeEventListener;

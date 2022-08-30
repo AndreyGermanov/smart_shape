@@ -46,6 +46,7 @@ describe('Point options', () => {
                     backgroundColor: "rgb(0, 255, 0)",
                 }
             })
+            point1.redraw();
             cy.get("#point1").should("have.class", "uniquePoint").then(() => {
                 cy.get("#point1").should("have.css", "width", "50px").then(() => {
                     cy.get("#point1").should("have.css", "height", "50px").then(()=> {
@@ -78,9 +79,8 @@ describe('Point options', () => {
                 canDrag: false,
                 canDelete: false,
             })
-            shape.options.canDeletePoints = true;
             cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
-                cy.get("#app").trigger("mousemove",{buttons:1,clientX:110,clientY:10}).then(() => {
+                cy.get("#app").trigger("mousemove",{buttons:1,clientX:120,clientY:20}).then(() => {
                     assert.equal(point1.x, 100);
                     assert.equal(point1.y, 0)
                     cy.get("#point1").trigger("mouseup",{button:2}).then( () => {
@@ -90,9 +90,9 @@ describe('Point options', () => {
                             canDelete: true
                         })
                         cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
-                            cy.get("#app").trigger("mousemove", {buttons: 1, clientX: 110, clientY: 10}).then(() => {
-                                assert.equal(point1.x, 92);
-                                assert.equal(point1.y, -8)
+                            cy.get("#app").trigger("mousemove", {buttons: 1, clientX: 120, clientY: 20}).then(() => {
+                                assert.equal(point1.x, 102);
+                                assert.equal(point1.y, 2)
                                 cy.get("#point1").trigger("mouseup", {button: 2}).then(() => {
                                     assert.isNull(shape.findPoint(100, 0))
                                 })
