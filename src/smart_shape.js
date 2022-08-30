@@ -64,11 +64,8 @@ function SmartShape() {
      * @param offsetY {number} Number of pixels to add to Y coordinate of each point to move entire shape
      * to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
      * @param canDragShape {boolean} Is it allowed to drag shape. Default `true`.
-     * @param canDragPoints {boolean} Is it allowed to drag points of shape. Default `true`.
      * @param canAddPoints {boolean} Is it allowed to add points to the shape interactively,
      * by mouse double-click on the screen. Default `false`.
-     * @param canDeletePoints {boolean} Is it allowed to delete points from the shape interactively,
-     * by right mouse click on points. Default `false`.
      * @param pointOptions {object} Default options for created points. See  [options](#SmartPoint+options)
      * property of `SmartPoint` object.
      * @param zIndex {number} Order of element in a stack of HTML elements
@@ -88,9 +85,7 @@ function SmartShape() {
         fillImage: null,
         fillOpacity: "1",
         canDragShape: true,
-        canDragPoints: true,
         canAddPoints: false,
-        canDeletePoints: false,
         offsetX: 0,
         offsetY: 0,
         classes: "",
@@ -168,7 +163,6 @@ function SmartShape() {
         this.root.draggedShape = null;
         this.setOptions(options);
         this.eventListener = new SmartShapeEventListener(this).run()
-        this.onPointEvent = this.eventListener.onPointEvent;
         this.setupPoints(points,this.options.pointOptions);
         return this;
     }
@@ -187,6 +181,14 @@ function SmartShape() {
                 options.style = Object.assign(this.options.style, options.style);
             }
             Object.assign(this.options,options);
+            this.points.forEach(point=>{
+                point.setOptions(this.options.pointOptions);
+                point.options.bounds = this.getBounds();
+                if (point.options.zIndex <= this.options.zIndex) {
+                    point.options.zIndex = this.options.zIndex+1;
+                }
+                point.redraw();
+            })
         }
     }
 
@@ -253,7 +255,12 @@ function SmartShape() {
             console.error(`Point with x=${x} and y=${y} already exists`);
             return null;
         }
-        const point = new SmartPoint(this).init(x, y, pointOptions)
+        if (!pointOptions) {
+            pointOptions = this.options.pointOptions || {};
+        }
+        pointOptions.bounds = this.getBounds();
+        pointOptions.zIndex = this.options.zIndex+1;
+        const point = new SmartPoint().init(x, y, pointOptions)
         this.points.push(point);
         this.root.appendChild(point.element);
         return point;
@@ -322,6 +329,28 @@ function SmartShape() {
     }
 
     /**
+     * Method returns the coordinates of container, to which this shape connected.
+     * @returns {{top: number, left: number, bottom: number, right: number}}
+     */
+    this.getBounds = () => {
+        return {
+            left: this.root.clientLeft,
+            top: this.root.clientTop,
+            right: this.root.clientLeft+ this.root.clientWidth,
+            bottom: this.root.clientTop+this.root.clientHeight
+        }
+    };
+
+    /**
+     * Method returns true if specified point exists in the array of this shape or false if not.
+     * @param point [SmartPoint](#SmartPoint) object of point to search
+     * @returns {boolean} True if this point exists and false if not
+     */
+    this.isShapePoint = (point) => {
+        return !!this.points.find(item => item === point);
+    }
+
+    /**
      * Destroys the shape. Destroys all points, removes event listeners and removes the shape from screen.
      * But variable continue existing. To completely remove the shape,
      * set the variable to 'null' after calling this method.
@@ -331,7 +360,6 @@ function SmartShape() {
             this.root.removeChild(point.element)
         })
         this.eventListener.destroy();
-        this.onPointEvent = null;
         this.points = [];
         this.redraw();
     }

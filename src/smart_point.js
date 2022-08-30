@@ -1,21 +1,15 @@
 import {getOffset} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
+import {ContainerEvents} from "./smart_shape_event_listener.js";
 /**
- * Class that represents a single point of SmartShape. Usually points constructed not directly,
- * but using `addPoint`, `addPoints` methods of [SmartShape](#SmartShape) class or interactively when
+ * Class that represents a single point on the screen.
+ * Can be created directly using class constructor, but more often they added by using `addPoint`, `addPoints`
+ * methods of [SmartShape](#SmartShape) class or interactively when
  * user double-clicks on shape's container.
- * @param shape [SmartShape](#SmartShape) object to which this point belongs
  * @returns {object} SmartPoint object that should be initialized by `init` method.
  * @constructor
  */
-function SmartPoint(shape) {
-
-    /**
-     * [SmartShape](#SmartShape) object, to which this point belongs
-     * @type {SmartShape}
-     */
-    this.shape = null;
-
+function SmartPoint() {
     /**
      * Point HTML element options. Defines look and behavior of point. Has the following parameters.
      * @param id {string} Id of point HTML element. Default empty.
@@ -26,12 +20,11 @@ function SmartPoint(shape) {
      * (The same as ["style" HTML attribute](https://www.w3schools.com/jsref/prop_html_style.asp))
      * @param canDrag {boolean} Is it allowed to drag this point by mouse to change it positions. Default `true`
      * @param canDelete {boolean} Is it allowed to delete this point by right mouse click. Default `true`.
-     * (If [options.canDeletePoints](#SmartShape+options) option is set to `false`,
-     * then all points can not be removed regardless of this setting)
      * @param zIndex {number} Order of element in a stack of HTML elements
      * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
-     * If [SmartShape.options.zIndex](#SmartShape+options) specified, then `shape's z-index, increased by 1`
-     * will be used instead of this
+     * @param bounds {object} Bounds for point movement. If setup, then it's impossible to drag point beyond
+     * bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`.
+     * If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container.
      * @type {{}}
      */
     this.options = {
@@ -50,7 +43,8 @@ function SmartPoint(shape) {
         },
         canDrag: true,
         canDelete: true,
-        zIndex:1000
+        zIndex:1000,
+        bounds:{},
     };
 
     /**
@@ -82,20 +76,15 @@ function SmartPoint(shape) {
     this.init = (x,y,options = null) => {
         this.x = x;
         this.y = y;
-        this.shape = shape;
         this.element = this.createPointUI();
-        this.setOptions(this.shape.options.pointOptions);
         this.setOptions(options);
         this.addEventListeners();
-        if (!this.shape.onPointEvent) {
-            this.shape.onPointEvent = () => {};
-        }
-        this.shape.onPointEvent("point_added",this)
+        EventsManager.emit(PointEvents.POINT_ADDED,this);
         return this;
     }
 
     /**
-     * Method used to set specified options to point and redraw it with new options.
+     * Method used to set specified options to point.
      * @param options {object} Point options object, described [above](#SmartPoint+options).
      */
     this.setOptions = (options) => {
@@ -108,10 +97,6 @@ function SmartPoint(shape) {
         if (this.options.id) {
             this.element.id = this.options.id;
         }
-        if (this.shape.options.zIndex) {
-            this.options.zIndex = this.shape.options.zIndex+1;
-        }
-        this.element = this.setPointStyles(this.element);
     }
 
     /**
@@ -121,7 +106,7 @@ function SmartPoint(shape) {
      */
     this.createPointUI = () => {
         const element = document.createElement("div")
-        if (!this.shape.options.canDragPoints) {
+        if (!this.options.canDrag) {
             return element;
         }
         return this.setPointStyles(element);
@@ -137,13 +122,11 @@ function SmartPoint(shape) {
         if (element == null) {
             element = this.element;
         }
-        if (!this.shape.options.canDragPoints) {
-            return element;
-        }
         if (this.options.id) {
-            element.id = this.options.id;
+            this.element.id = this.options.id;
         }
         element.className = this.options.classes;
+
         element.style = this.options.style;
         if (typeof(this.options.style) === "object") {
             for (let cssName in this.options.style) {
@@ -155,6 +138,11 @@ function SmartPoint(shape) {
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
         element.style.zIndex = this.options.zIndex;
+        if (!this.options.canDrag) {
+            element.style.display = 'none';
+        } else {
+            element.style.display = '';
+        }
         return element
     }
 
@@ -162,7 +150,7 @@ function SmartPoint(shape) {
      * Method used to redraw the point. Usually used after change point position on the screen.
      */
     this.redraw =() => {
-        this.setPointStyles();
+        this.element = this.setPointStyles();
     }
 
     /**
@@ -170,8 +158,9 @@ function SmartPoint(shape) {
      * Internal method used to attach HTML event listeners to point.
      */
     this.addEventListeners = () => {
-        this.element.addEventListener("mouseup",this.mouseup)
-        this.element.addEventListener("mousedown", this.mousedown)
+        this.element.addEventListener("mouseup",this.mouseup);
+        this.element.addEventListener("mousedown", this.mousedown);
+        EventsManager.subscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
     }
 
     /**
@@ -180,10 +169,10 @@ function SmartPoint(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mousedown = (event) => {
-        if (event.buttons === 1 && this.shape.options.canDragPoints && this.options.canDrag) {
+        if (event.buttons === 1 && this.options.canDrag) {
             event.preventDefault = true;
             event.stopPropagation();
-            this.shape.onPointEvent("point_dragstart", this);
+            EventsManager.emit(PointEvents.POINT_DRAG_START,this);
         }
     }
 
@@ -193,17 +182,17 @@ function SmartPoint(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
-        if (event.buttons !== 1 || !this.shape.options.canDragPoints || !this.options.canDrag) {
+        if (event.buttons !== 1 || !this.options.canDrag) {
             return
         }
-        const offset = getOffset(this.shape.root, true);
         const oldX = this.x;
         const oldY = this.y;
-        if (event.movementX+this.x < 0 || event.movementX+this.x > this.shape.root.clientLeft + this.shape.root.clientWidth) {
+        const offset = getOffset(this.element.parentNode,true);
+        if (event.movementX+this.x < this.options.bounds.left || event.movementX+this.x > this.options.bounds.right) {
             EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
-        if (event.movementY+this.y < 0 || event.movementY + this.y > this.shape.root.clientTop + this.shape.root.clientHeight) {
+        if (event.movementY+this.y < this.options.bounds.top || event.movementY + this.y > this.options.bounds.bottom) {
             EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
@@ -211,7 +200,6 @@ function SmartPoint(shape) {
         this.y = event.clientY - offset.top - this.options.height/2;
         this.element.style.left = (this.x)+"px";
         this.element.style.top = (this.y)+"px";
-        this.shape.onPointEvent("point_drag",this);
         EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
     }
 
@@ -221,9 +209,21 @@ function SmartPoint(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mouseup = (event) => {
-        this.shape.onPointEvent("point_dragend", this);
-        if (event.button === 2 && this.shape.options.canDeletePoints && this.options.canDelete) {
+        EventsManager.emit(PointEvents.POINT_DRAG_END,this);
+        if (event.button === 2 && this.options.canDelete) {
             this.destroy();
+        }
+    }
+
+    /**
+     * @ignore
+     * The handler, that reacts on container dimensions change event.
+     * @param event - custom event object, which contains new bounds in `event.bounds` field
+     * and array of points, which this change could affect in `event.points` field.
+     */
+    this.onBoundsChange = (event) => {
+        if (event.points.find(item => item === this)) {
+            this.options.bounds = event.bounds;
         }
     }
 
@@ -235,7 +235,7 @@ function SmartPoint(shape) {
     this.destroy = () => {
         this.element.removeEventListener("mouseup",this.mouseup)
         this.element.removeEventListener("mousedown", this.mousedown)
-        this.shape.onPointEvent("point_destroyed",this)
+        EventsManager.emit(PointEvents.POINT_DESTROYED,this);
     }
 
     return this;
@@ -244,12 +244,21 @@ function SmartPoint(shape) {
 /**
  * @enum
  * Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) object.
- * @param POINT_DRAG_MOVE - This event emitted when user drags point by a mouse. As an arguments to event passed
+ * @param POINT_ADDED Emitted when point created
+ * @param POINT_DRAG_START Emitted when user press mouse button on point before start dragging it
+ * @param POINT_DRAG_MOVE Emitted when user drags point by a mouse. As an arguments to event passed
  * `oldX` and `oldY` coordinates, which was before event start.
- * @type {string}
+ * @param POINT_DRAG_END Emitted when user releases mouse button after pressing it
+ * @param POINT_DESTROYED Emitted when point destroyed point (by pressing right mouse button on it or
+ * programmatically using `destroy` method)
+ * @constructor
  */
 export const PointEvents = {
-    POINT_DRAG_MOVE: "POINT_DRAG_MOVE"
+    POINT_ADDED: "POINT_ADDED",
+    POINT_DESTROYED: "POINT_DESTROYED",
+    POINT_DRAG_START: "POINT_DRAG_START",
+    POINT_DRAG_MOVE: "POINT_DRAG_MOVE",
+    POINT_DRAG_END: "POINT_DRAG_END",
 }
 
 export default SmartPoint;
