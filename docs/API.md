@@ -134,6 +134,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | canDelete | <code>boolean</code> | Is it allowed to delete this point by right mouse click. Default `true`. |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 | bounds | <code>object</code> | Bounds for point movement. If setup, then it's impossible to drag point beyond bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`. If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container. |
+| moveDirections | <code>array</code> | . Defines in which directions point can move. Can contain values from [PointMoveDirections](#PointMoveDirections) enumeration. By default, all directions allowed. Default value is: `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`. To restrict movement in any direction, need to remove some directions from this array. |
 
 <a name="SmartPoint+x"></a>
 
@@ -488,6 +489,14 @@ Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) obj
 | POINT_DRAG_END | Emitted when user releases mouse button after pressing it |
 | POINT_DESTROYED | Emitted when point destroyed point (by pressing right mouse button on it or programmatically using `destroy` method) |
 
+<a name="PointMoveDirections"></a>
+
+## PointMoveDirections : <code>enum</code>
+Enumeration that defines point move directions. Values from this enumeration should be used
+in point option `moveDirection` to specify in which directions point can be moved.
+Members of enumeration: `LEFT`, `TOP`, `RIGHT`, `BOTTOM`
+
+**Kind**: global enum  
 <a name="ContainerEvents"></a>
 
 ## ContainerEvents : <code>enum</code>

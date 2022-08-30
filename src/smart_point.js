@@ -25,6 +25,11 @@ function SmartPoint() {
      * @param bounds {object} Bounds for point movement. If setup, then it's impossible to drag point beyond
      * bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`.
      * If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container.
+     * @param moveDirections {array}. Defines in which directions point can move. Can contain
+     * values from [PointMoveDirections](#PointMoveDirections) enumeration. By default, all directions allowed. Default
+     * value is:
+     * `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`.
+     * To restrict movement in any direction, need to remove some directions from this array.
      * @type {{}}
      */
     this.options = {
@@ -45,6 +50,12 @@ function SmartPoint() {
         canDelete: true,
         zIndex:1000,
         bounds:{},
+        moveDirections: [
+            PointMoveDirections.LEFT,
+            PointMoveDirections.TOP,
+            PointMoveDirections.RIGHT,
+            PointMoveDirections.BOTTOM
+        ]
     };
 
     /**
@@ -196,11 +207,40 @@ function SmartPoint() {
             EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
-        this.x = event.clientX - offset.left - this.options.width/2;
-        this.y = event.clientY - offset.top - this.options.height/2;
+        let newX = event.clientX - offset.left - this.options.width/2;
+        let newY = event.clientY - offset.top - this.options.height/2;
+        [newX,newY] = this.applyMoveRestrictions(newX,newY,oldX,oldY);
+        this.x = newX;
+        this.y = newY;
         this.element.style.left = (this.x)+"px";
         this.element.style.top = (this.y)+"px";
         EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
+    }
+
+    /**
+     * @ignore
+     * Method that check movement restrictions based on directions, to which point moved
+     * from old position to new. Returns new coordinates, after apply movement restrictions
+     * @param newX - X after move
+     * @param newY - Y after move
+     * @param oldX - X before move
+     * @param oldY - Y before move
+     * @returns {array} [x,y] array of coordinates after check movement restrictions
+     */
+    this.applyMoveRestrictions = (newX,newY,oldX,oldY) => {
+        if (newY>oldY && this.options.moveDirections.indexOf(PointMoveDirections.BOTTOM) === -1) {
+            newY = oldY;
+        }
+        if (newY<oldY && this.options.moveDirections.indexOf(PointMoveDirections.TOP) === -1) {
+            newY = oldY;
+        }
+        if (newX>oldX && this.options.moveDirections.indexOf(PointMoveDirections.RIGHT) === -1) {
+            newX = oldX;
+        }
+        if (newX<oldX && this.options.moveDirections.indexOf(PointMoveDirections.LEFT) === -1) {
+            newX = oldX;
+        }
+        return [newX,newY];
     }
 
     /**
@@ -259,5 +299,18 @@ export const PointEvents = {
     POINT_DRAG_MOVE: "POINT_DRAG_MOVE",
     POINT_DRAG_END: "POINT_DRAG_END",
 };
+
+/**
+ * Enumeration that defines point move directions. Values from this enumeration should be used
+ * in point option `moveDirection` to specify in which directions point can be moved.
+ * Members of enumeration: `LEFT`, `TOP`, `RIGHT`, `BOTTOM`
+ * @enum {int}
+ */
+export const PointMoveDirections = {
+    TOP: 0,
+    LEFT: 1,
+    RIGHT: 2,
+    BOTTOM: 3
+}
 
 export default SmartPoint;
