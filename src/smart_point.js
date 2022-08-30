@@ -242,7 +242,6 @@ function SmartPoint() {
 }
 
 /**
- * @enum
  * Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) object.
  * @param POINT_ADDED Emitted when point created
  * @param POINT_DRAG_START Emitted when user press mouse button on point before start dragging it
@@ -251,7 +250,7 @@ function SmartPoint() {
  * @param POINT_DRAG_END Emitted when user releases mouse button after pressing it
  * @param POINT_DESTROYED Emitted when point destroyed point (by pressing right mouse button on it or
  * programmatically using `destroy` method)
- * @constructor
+ * @enum {string}
  */
 export const PointEvents = {
     POINT_ADDED: "POINT_ADDED",
@@ -259,6 +258,6 @@ export const PointEvents = {
     POINT_DRAG_START: "POINT_DRAG_START",
     POINT_DRAG_MOVE: "POINT_DRAG_MOVE",
     POINT_DRAG_END: "POINT_DRAG_END",
-}
+};
 
 export default SmartPoint;

@@ -271,13 +271,13 @@ function SmartShapeEventListener(shape) {
 }
 
 /**
- * Enumeration of event names, that can be emitted by shape
- * @param CONTAINER_BOUNDS_CHANGED Emitted by shape when dimensions of container changed, e.g. browser
- * window resized. Sends the event with the following fields: `bounds` -an object with the following fields:
- * left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)
- * with array of all points of this shape, which could be affected by this bounds change.
- * @constructor
- */
+ * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
+ @param CONTAINER_BOUNDS_CHANGED by shape when dimensions of container changed, e.g. browser
+ window resized. Sends the event with the following fields: `bounds` -an object with the following fields:
+ left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)
+ with array of all points of this shape, which could be affected by this bounds change.
+ @enum {string}
+*/
 export const ContainerEvents = {
     CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
 }

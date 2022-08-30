@@ -11,8 +11,6 @@
 <dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
-<dt><a href="#ContainerEvents">ContainerEvents</a></dt>
-<dd></dd>
 </dl>
 
 <a name="EventsManager"></a>
@@ -475,21 +473,29 @@ this class automatically during init process
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
 
-<a name="ContainerEvents"></a>
+<a name="PointEvents"></a>
 
-## ContainerEvents
-**Kind**: global class  
-<a name="new_ContainerEvents_new"></a>
+## PointEvents : <code>enum</code>
+Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) object.
 
-### new exports.ContainerEvents(CONTAINER_BOUNDS_CHANGED)
-Enumeration of event names, that can be emitted by shape
-
+**Kind**: global enum  
 
 | Param | Description |
 | --- | --- |
-| CONTAINER_BOUNDS_CHANGED | Emitted by shape when dimensions of container changed, e.g. browser window resized. Sends the event with the following fields: `bounds` -an object with the following fields: left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects) with array of all points of this shape, which could be affected by this bounds change. |
+| POINT_ADDED | Emitted when point created |
+| POINT_DRAG_START | Emitted when user press mouse button on point before start dragging it |
+| POINT_DRAG_MOVE | Emitted when user drags point by a mouse. As an arguments to event passed `oldX` and `oldY` coordinates, which was before event start. |
+| POINT_DRAG_END | Emitted when user releases mouse button after pressing it |
+| POINT_DESTROYED | Emitted when point destroyed point (by pressing right mouse button on it or programmatically using `destroy` method) |
 
-<a name="PointEvents"></a>
+<a name="ContainerEvents"></a>
 
-## PointEvents
+## ContainerEvents : <code>enum</code>
+Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
+
 **Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| CONTAINER_BOUNDS_CHANGED | by shape when dimensions of container changed, e.g. browser  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)  with array of all points of this shape, which could be affected by this bounds change. |
+
