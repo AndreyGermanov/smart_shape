@@ -50,7 +50,10 @@ function SmartShapeDrawHelper() {
         shape.svg.appendChild(polygon);
         shape.root.appendChild(shape.svg);
         shape.svg.addEventListener("mousedown",shape.eventListener.mousedown)
-        shape.points.forEach(point => point.redraw());
+        shape.points.forEach(point => {
+            point.options.zIndex = shape.options.zIndex+1;
+            point.redraw()
+        });
     }
 
     /**

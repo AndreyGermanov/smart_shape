@@ -296,6 +296,20 @@ function SmartShape() {
     }
 
     /**
+     * Method returns SmartPoint object for point with specified ID or null, if point not found
+     * @param id {string} ID of point, provided to it as an options
+     * @returns {null|object} [SmartPoint](#SmartPoint) object instance of point,
+     * or null if point does not exist
+     */
+    this.findPointById = (id) => {
+        const point = this.points.find(item => item.options.id === id)
+        if (typeof(point) === "undefined" || !point) {
+            return null;
+        }
+        return point
+    }
+
+    /**
      * Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
      * @returns {array} 2D array of points in format [ [x,y], [x,y], [x,y] ... ]
      */
