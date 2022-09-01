@@ -187,4 +187,69 @@ describe('SmartShape API tests', () => {
     })
   })
 
+  it("moveTo", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app, shape] = initShape();
+      const point1 = shape.findPoint(0,100);
+      const point2 = shape.findPoint(100, 0);
+      const point3 = shape.findPoint(200,100);
+      shape.moveTo(300,50);
+      shape.redraw();
+      assert.equal(point1.x,300,"Should correctly move point");
+      assert.equal(point1.y,150,"Should correctly move point");
+      assert.equal(point2.x,400,"Should correctly move point");
+      assert.equal(point2.y,50,"Should correctly move point");
+      assert.equal(point3.x,500,"Should correctly move point");
+      assert.equal(point3.y,150,"Should correctly move point");
+      shape.moveTo(400,270);
+      shape.redraw();
+      assert.equal(point1.x,400,"Should correctly move point when out of bounds");
+      assert.equal(point1.y,200,"Should correctly move point when out of bounds");
+      assert.equal(point2.x,500,"Should correctly move point when out of bounds");
+      assert.equal(point2.y,100,"Should correctly move point when out of bounds");
+      assert.equal(point3.x,600,"Should correctly move point when out of bounds");
+      assert.equal(point3.y,200,"Should correctly move point when out of bounds");
+    })
+  });
+
+  it("scaleTo", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app, shape] = initShape();
+      const point1 = shape.findPoint(0,100);
+      const point2 = shape.findPoint(100, 0);
+      const point3 = shape.findPoint(200,100);
+      shape.scaleTo(300,200);
+      shape.redraw();
+      assert.equal(point1.x,0,"Should correctly scale point");
+      assert.equal(point1.y,200,"Should correctly scale point");
+      assert.equal(point2.x,150,"Should correctly scale point");
+      assert.equal(point2.y,0,"Should correctly scale point");
+      assert.equal(point3.x,300,"Should correctly scale point");
+      assert.equal(point3.y,200,"Should correctly scale point");
+      shape.scaleTo(200,100);
+      shape.redraw();
+      assert.equal(point1.x,0,"Should correctly scale point");
+      assert.equal(point1.y,100,"Should correctly scale point");
+      assert.equal(point2.x,100,"Should correctly scale point");
+      assert.equal(point2.y,0,"Should correctly scale point");
+      assert.equal(point3.x,200,"Should correctly scale point");
+      assert.equal(point3.y,100,"Should correctly scale point");
+      shape.moveTo(10,10);
+      shape.redraw();
+      assert.equal(point1.x,10,"Should correctly scale point");
+      assert.equal(point1.y,110,"Should correctly scale point");
+      assert.equal(point2.x,110,"Should correctly scale point");
+      assert.equal(point2.y,10,"Should correctly scale point");
+      assert.equal(point3.x,210,"Should correctly scale point");
+      assert.equal(point3.y,110,"Should correctly scale point");
+      shape.scaleTo(500,300);
+      shape.redraw();
+      assert.equal(point1.x,10,"Should correctly scale point when out of bounds");
+      assert.equal(point1.y,200,"Should correctly scale point when out of bounds");
+      assert.equal(point2.x,260,"Should correctly scale point when out of bounds");
+      assert.equal(point2.y,10,"Should correctly scale point when out of bounds");
+      assert.equal(point3.x,510,"Should correctly scale point when out of bounds");
+      assert.equal(point3.y,200,"Should correctly scale point when out of bounds");
+    });
+  });
 })

@@ -1,6 +1,7 @@
 import EventsManager from "./events/EventsManager.js";
 import {getOffset} from "./utils.js";
 import {PointEvents} from "./smart_point.js";
+import {ResizeBoxEvents} from "./resizebox/ResizeBox.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the shape.
@@ -54,6 +55,20 @@ function SmartShapeEventListener(shape) {
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
         EventsManager.subscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
+    }
+
+    this.addResizeEventListener = () => {
+        if (!this.shape.resizeBox) {
+            return;
+        }
+        this.resizeBoxListener = this.shape.resizeBox.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, (event) => {
+            const diffX = event.newDims.left - event.oldDims.left;
+            const diffY = event.newDims.top - event.oldDims.top;
+            this.shape.moveTo(this.shape.left+diffX,this.shape.top+diffY);
+            const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
+            this.shape.scaleTo(event.newDims.width-(pointWidth+5)*2,event.newDims.height-(pointHeight+5)*2);
+            this.shape.redraw();
+        });
     }
 
     /**
@@ -267,6 +282,9 @@ function SmartShapeEventListener(shape) {
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
         EventsManager.unsubscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
+        if (this.shape.resizeBox) {
+            this.shape.resizeBox.removeEventListener(this.resizeBoxListener);
+        }
     }
 }
 

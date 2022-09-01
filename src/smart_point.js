@@ -181,8 +181,6 @@ function SmartPoint() {
      */
     this.mousedown = (event) => {
         if (event.buttons === 1 && this.options.canDrag) {
-            event.preventDefault = true;
-            event.stopPropagation();
             EventsManager.emit(PointEvents.POINT_DRAG_START,this);
         }
     }
@@ -239,6 +237,18 @@ function SmartPoint() {
         }
         if (newX<oldX && this.options.moveDirections.indexOf(PointMoveDirections.LEFT) === -1) {
             newX = oldX;
+        }
+        if (newX>this.options.bounds.right) {
+            newX = this.options.bounds.right;
+        }
+        if (newY>this.options.bounds.bottom) {
+            newY = this.options.bounds.bottom;
+        }
+        if (newX<this.options.bounds.left) {
+            newX = this.options.bounds.left;
+        }
+        if (newY<this.options.bounds.top) {
+            newY = this.options.bounds.top;
         }
         return [newX,newY];
     }
@@ -302,7 +312,7 @@ export const PointEvents = {
 
 /**
  * Enumeration that defines point move directions. Values from this enumeration should be used
- * in point option `moveDirection` to specify in which directions point can be moved.
+ * in point option `moveDirections` to specify in which directions point can be moved.
  * Members of enumeration: `LEFT`, `TOP`, `RIGHT`, `BOTTOM`
  * @enum {int}
  */
