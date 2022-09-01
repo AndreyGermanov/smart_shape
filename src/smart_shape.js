@@ -322,6 +322,38 @@ function SmartShape() {
     }
 
     /**
+     * Moves shape to specific position. It only changes coordinates of points, but do not
+     * redraws the shape on new position. So, you need to call `redraw` yourself after move.
+     * @param x new X coordinate
+     * @param y new Y coordinate
+     */
+    this.moveTo = (x,y) => {
+        const bounds = this.getBounds();
+        let newX = x+this.width > bounds.right ? bounds.right - this.width : x;
+        let newY = y+this.height > bounds.bottom ? bounds.bottom - this.height: y;
+        this.points.forEach(point => { point.x += (newX-this.left); point.y += (newY-this.top)});
+    }
+
+    /**
+     * Scales image to fit specified `width` and `height`. It only changes coordinates of points, but do not
+     * redraws the shape on new position. So, you need to call `redraw` yourself after scale.
+     * @param width new width
+     * @param height new height
+     */
+    this.scaleTo = (width,height) => {
+        const bounds = this.getBounds();
+        this.calcPosition();
+        let newWidth = this.left + width > bounds.right ? bounds.right - this.left : width;
+        let newHeight = this.top + height > bounds.bottom ? bounds.bottom - this.top : height;
+        let scaleX = newWidth/this.width;
+        let scaleY = newHeight/this.height;
+        this.points.forEach(point => {
+            point.x = (point.x-this.left)*scaleX+this.left;
+            point.y = (point.y-this.top)*scaleY+this.top}
+        );
+    }
+    
+    /**
      * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
     this.redraw = () => {
