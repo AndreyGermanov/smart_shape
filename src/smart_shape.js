@@ -55,6 +55,12 @@ function SmartShape() {
      * @param fillImage {object} Defines image fill object to fill the shape with image. Should contain following fields:
      * `url` - URL to image, `width` - width of image, `height` - height of image
      * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html).
+     * @param filters {object} Object, that defines a set of SVG filters, that will be applied to this shape.
+     * Keys are names of filters, for example `feDropShadow` for drop-shadow filter. Values are objects with attributes
+     * for each filter. All attributes, that supported by each particular SVG filter are supported. See more about SVG
+     * filters [here](#https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter).
+     * The demo of applying feDropShadow filter see
+     * [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/svgfilters.html)
      * @param classes {string} CSS class names, that will be applied to underlying polygon SVG element.
      * @param style {object} CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and
      * classes is an alternative way to specify options of SVG elements:
@@ -87,6 +93,7 @@ function SmartShape() {
         fillGradient: null,
         fillImage: null,
         fillOpacity: "1",
+        filters:{},
         canDragShape: true,
         canAddPoints: false,
         canScale: false,
@@ -190,6 +197,9 @@ function SmartShape() {
         this.resizeBox = new ResizeBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
             zIndex: this.options.zIndex-1,
             id: this.options.id+"_resizebox",
+            shapeOptions:{
+                canDragShape: false
+            }
         })
         this.calcPosition();
         this.eventListener.addResizeEventListener();
