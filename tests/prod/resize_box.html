@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Shape Demo Page</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="surface" style="left:150px;width:500px;height:400px;border: 1px solid"></div>
+    </div>
+    <script src="../../smart_shape.umd.cjs"></script>
+    <script>
+      const div = document.getElementById("surface");
+
+      const resizeBox = new window.ResizeBox();
+      resizeBox.init(div,0,0,100,100,{});
+    </script>
+  </body>
+</html>

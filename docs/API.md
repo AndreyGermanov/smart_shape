@@ -3,6 +3,10 @@
 <dl>
 <dt><a href="#EventsManager">EventsManager</a></dt>
 <dd></dd>
+<dt><a href="#ResizeBox">ResizeBox</a></dt>
+<dd></dd>
+<dt><a href="#ResizeBoxEventListener">ResizeBoxEventListener</a></dt>
+<dd></dd>
 <dt><a href="#SmartPoint">SmartPoint</a></dt>
 <dd></dd>
 <dt><a href="#SmartShape">SmartShape</a></dt>
@@ -91,6 +95,186 @@ Removes specified handler from event with specified name.
 Method removes all subscriptions to events.
 
 **Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
+<a name="ResizeBox"></a>
+
+## ResizeBox
+**Kind**: global class  
+
+* [ResizeBox](#ResizeBox)
+    * [new ResizeBox()](#new_ResizeBox_new)
+    * [.left](#ResizeBox+left) : <code>number</code>
+    * [.top](#ResizeBox+top) : <code>number</code>
+    * [.right](#ResizeBox+right) : <code>number</code>
+    * [.bottom](#ResizeBox+bottom) : <code>number</code>
+    * [.width](#ResizeBox+width) : <code>number</code>
+    * [.height](#ResizeBox+height) : <code>number</code>
+    * [.shape](#ResizeBox+shape) : <code>null</code>
+    * [.options](#ResizeBox+options) : <code>object</code>
+    * [.eventListener](#ResizeBox+eventListener) : [<code>ResizeBoxEventListener</code>](#ResizeBoxEventListener)
+    * [.init(root, left, top, width, height, options)](#ResizeBox+init) ⇒ [<code>ResizeBox</code>](#ResizeBox)
+    * [.setOptions(options)](#ResizeBox+setOptions)
+    * [.redraw()](#ResizeBox+redraw)
+    * [.destroy()](#ResizeBox+destroy)
+    * [.addEventListener(eventName, handler)](#ResizeBox+addEventListener) ⇒ <code>function</code>
+    * [.removeEventListener(eventName, listener)](#ResizeBox+removeEventListener)
+
+<a name="new_ResizeBox_new"></a>
+
+### new ResizeBox()
+Class represents a special type of shape, that shows the rectangle with markers on
+it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
+Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as a separate shape
+for tasks like resizing objects on a web page or select rectangular regions.
+
+<a name="ResizeBox+left"></a>
+
+### resizeBox.left : <code>number</code>
+Left corner of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+top"></a>
+
+### resizeBox.top : <code>number</code>
+Top corner of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+right"></a>
+
+### resizeBox.right : <code>number</code>
+Right corner of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+bottom"></a>
+
+### resizeBox.bottom : <code>number</code>
+Bottom corner of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+width"></a>
+
+### resizeBox.width : <code>number</code>
+Width of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+height"></a>
+
+### resizeBox.height : <code>number</code>
+Height of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+shape"></a>
+
+### resizeBox.shape : <code>null</code>
+Underlying shape, that used to service this resize box
+(draw, point event handling and so on)
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+options"></a>
+
+### resizeBox.options : <code>object</code>
+Options of resize box
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | Unique ID or resize box. If instantiated by [SmartShape](#SmartShape), then setup automatically |
+| shapeOptions | <code>object</code> | Options of underlying shape, that used to draw and manage this ResizeBox. See [SmartShape.options](#SmartShape+options) |
+| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
+
+<a name="ResizeBox+eventListener"></a>
+
+### resizeBox.eventListener : [<code>ResizeBoxEventListener</code>](#ResizeBoxEventListener)
+Event listener that handles event listening logic for this resize box.
+Instance of [ResizeBoxEventListener](#ResizeBoxEventListener) class.
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+init"></a>
+
+### resizeBox.init(root, left, top, width, height, options) ⇒ [<code>ResizeBox</code>](#ResizeBox)
+Method used to construct ResizeBox object with specified coordinates and
+size, with specified `options`. Then it binds this object to specified `root`
+HTML node and displays it
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+**Returns**: [<code>ResizeBox</code>](#ResizeBox) - constucted ResizeBox object  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| root | <code>HTMLElement</code> | HTML element that used as a container for this ResizeBox |
+| left | <code>number</code> | Left corner of shape relative to container top left |
+| top | <code>number</code> | Top corner of shape relative to container top left |
+| width | <code>number</code> | Width of shape |
+| height | <code>number</code> | Height of shape |
+| options | <code>object</code> | Options used to setup ResizeBox. See [here](#ResizeBox+options). |
+
+<a name="ResizeBox+setOptions"></a>
+
+### resizeBox.setOptions(options)
+Method used to change options of ResizeBox.
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | Options object. See [here](#ResizeBox+options). |
+
+<a name="ResizeBox+redraw"></a>
+
+### resizeBox.redraw()
+Method used to redraw resize box
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+destroy"></a>
+
+### resizeBox.destroy()
+Destroys the ResizeBox. Destroys all points, removes event listeners and removes the shape from screen.
+But variable continue existing. To completely remove the shape,
+set the variable to 'null' after calling this method.
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+addEventListener"></a>
+
+### resizeBox.addEventListener(eventName, handler) ⇒ <code>function</code>
+Uniform method that used to add event handler of specified type to this object.
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+**Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event |
+| handler | <code>function</code> | Function that used as an event handler |
+
+<a name="ResizeBox+removeEventListener"></a>
+
+### resizeBox.removeEventListener(eventName, listener)
+Uniform method that used to remove event handler, that previously added
+to this object.
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+
+| Param | Description |
+| --- | --- |
+| eventName | Name of event to remove listener from |
+| listener | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
+
+<a name="ResizeBoxEventListener"></a>
+
+## ResizeBoxEventListener
+**Kind**: global class  
+<a name="new_ResizeBoxEventListener_new"></a>
+
+### new ResizeBoxEventListener(resizeBox)
+Internal helper class, that contains all event listening logic for the ResizeBox.
+This class should not be used directly. Each ResizeBox creates an instance of
+this class automatically during init process
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| resizeBox | [<code>ResizeBox</code>](#ResizeBox) | Link to owner Shape instance |
+
 <a name="SmartPoint"></a>
 
 ## SmartPoint
@@ -211,13 +395,17 @@ removes this point from shape's points array.
     * [.width](#SmartShape+width) : <code>number</code>
     * [.height](#SmartShape+height) : <code>number</code>
     * [.guid](#SmartShape+guid) : <code>string</code>
+    * [.resizeBox](#SmartShape+resizeBox) : [<code>ResizeBox</code>](#ResizeBox)
     * [.init(root, options, points)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
     * [.addPoints(points, pointOptions)](#SmartShape+addPoints)
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
+    * [.findPointById(id)](#SmartShape+findPointById) ⇒ <code>null</code> \| <code>object</code>
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
+    * [.moveTo(x, y)](#SmartShape+moveTo)
+    * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.redraw()](#SmartShape+redraw)
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>Object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
@@ -275,6 +463,7 @@ Options of shape as an object. Can have the following parameters.
 | offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire shape to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
+| canScale | <code>boolean</code> | Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears around shape and user can drag in to resize shape in different directions |
 | pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 
@@ -324,6 +513,13 @@ Height of shape
 
 ### smartShape.guid : <code>string</code>
 Internal global unique identifier of shape. Generated automatically.
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+resizeBox"></a>
+
+### smartShape.resizeBox : [<code>ResizeBox</code>](#ResizeBox)
+[ResizeBox](#ResizeBox) component, used to scale shape if
+`canScale` option enabled
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
@@ -408,6 +604,19 @@ or null if point does not exist
 | x | <code>number</code> | X coordinate of point |
 | y | <code>number</code> | Y coordinate of point |
 
+<a name="SmartShape+findPointById"></a>
+
+### smartShape.findPointById(id) ⇒ <code>null</code> \| <code>object</code>
+Method returns SmartPoint object for point with specified ID or null, if point not found
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>null</code> \| <code>object</code> - [SmartPoint](#SmartPoint) object instance of point,
+or null if point does not exist  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | ID of point, provided to it as an options |
+
 <a name="SmartShape+getPointsArray"></a>
 
 ### smartShape.getPointsArray() ⇒ <code>array</code>
@@ -415,6 +624,32 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
+<a name="SmartShape+moveTo"></a>
+
+### smartShape.moveTo(x, y)
+Moves shape to specific position. It only changes coordinates of points, but do not
+redraws the shape on new position. So, you need to call `redraw` yourself after move.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Description |
+| --- | --- |
+| x | new X coordinate |
+| y | new Y coordinate |
+
+<a name="SmartShape+scaleTo"></a>
+
+### smartShape.scaleTo(width, height)
+Scales image to fit specified `width` and `height`. It only changes coordinates of points, but do not
+redraws the shape on new position. So, you need to call `redraw` yourself after scale.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Description |
+| --- | --- |
+| width | new width |
+| height | new height |
+
 <a name="SmartShape+redraw"></a>
 
 ### smartShape.redraw()
@@ -451,12 +686,29 @@ set the variable to 'null' after calling this method.
 
 ## SmartShapeDrawHelper
 **Kind**: global class  
+
+* [SmartShapeDrawHelper](#SmartShapeDrawHelper)
+    * [new SmartShapeDrawHelper()](#new_SmartShapeDrawHelper_new)
+    * [.redrawResizeBox(shape)](#SmartShapeDrawHelper+redrawResizeBox)
+
 <a name="new_SmartShapeDrawHelper_new"></a>
 
 ### new SmartShapeDrawHelper()
 Internal helper class that used to draw shape.
 Should not be used directly. SmartShape objects execute methods
 of this object when need to draw shapes.
+
+<a name="SmartShapeDrawHelper+redrawResizeBox"></a>
+
+### smartShapeDrawHelper.redrawResizeBox(shape)
+If shape scaling feature is enabled, this method
+redraws [ResizeBox](#ResizeBox) around it after redrawing the shape
+
+**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>SmartShape</code>](#SmartShape) | Shape object |
 
 <a name="SmartShapeEventListener"></a>
 
@@ -473,6 +725,17 @@ this class automatically during init process
 | Param | Type | Description |
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
+
+<a name="ResizeBoxEvents"></a>
+
+## ResizeBoxEvents : <code>enum</code>
+Enumeration that defines events, that ResizeBox can emit.
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| RESIZE_BOX_RESIZE | Emitted when user resized the shape by dragging one of marker points. |
 
 <a name="PointEvents"></a>
 
@@ -493,7 +756,7 @@ Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) obj
 
 ## PointMoveDirections : <code>enum</code>
 Enumeration that defines point move directions. Values from this enumeration should be used
-in point option `moveDirection` to specify in which directions point can be moved.
+in point option `moveDirections` to specify in which directions point can be moved.
 Members of enumeration: `LEFT`, `TOP`, `RIGHT`, `BOTTOM`
 
 **Kind**: global enum  

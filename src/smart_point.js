@@ -181,8 +181,6 @@ function SmartPoint() {
      */
     this.mousedown = (event) => {
         if (event.buttons === 1 && this.options.canDrag) {
-            event.preventDefault = true;
-            event.stopPropagation();
             EventsManager.emit(PointEvents.POINT_DRAG_START,this);
         }
     }

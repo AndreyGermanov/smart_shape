@@ -54,6 +54,9 @@ function SmartShapeDrawHelper() {
             point.options.zIndex = shape.options.zIndex+1;
             point.redraw()
         });
+        if (shape.resizeBox) {
+            this.redrawResizeBox(shape);
+        }
     }
 
     /**
@@ -104,6 +107,20 @@ function SmartShapeDrawHelper() {
         }
         polygon.style.zIndex = shape.options.zIndex;
         return polygon;
+    }
+
+    /**
+     * If shape scaling feature is enabled, this method
+     * redraws [ResizeBox](#ResizeBox) around it after redrawing the shape
+     * @param shape {SmartShape} Shape object
+     */
+    this.redrawResizeBox = (shape) => {
+        const bounds = shape.getResizeBoxBounds();
+        shape.resizeBox.left = bounds.left;
+        shape.resizeBox.top = bounds.top;
+        shape.resizeBox.width = bounds.width;
+        shape.resizeBox.height = bounds.height;
+        shape.resizeBox.redraw();
     }
 
     /**

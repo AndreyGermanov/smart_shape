@@ -1,6 +1,7 @@
 import SmartPoint from "./smart_point.js";
 import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
 import SmartShapeEventListener from "./smart_shape_event_listener.js";
+import ResizeBox from "./resizebox/ResizeBox.js";
 import {uuid} from "./utils.js";
 
 /**
@@ -66,6 +67,8 @@ function SmartShape() {
      * @param canDragShape {boolean} Is it allowed to drag shape. Default `true`.
      * @param canAddPoints {boolean} Is it allowed to add points to the shape interactively,
      * by mouse double-click on the screen. Default `false`.
+     * @param canScale {boolean} Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears
+     * around shape and user can drag in to resize shape in different directions
      * @param pointOptions {object} Default options for created points. See  [options](#SmartPoint+options)
      * property of `SmartPoint` object.
      * @param zIndex {number} Order of element in a stack of HTML elements
@@ -86,6 +89,7 @@ function SmartShape() {
         fillOpacity: "1",
         canDragShape: true,
         canAddPoints: false,
+        canScale: false,
         offsetX: 0,
         offsetY: 0,
         classes: "",
@@ -143,6 +147,13 @@ function SmartShape() {
     this.guid = uuid();
 
     /**
+     * [ResizeBox](#ResizeBox) component, used to scale shape if
+     * `canScale` option enabled
+     * @type {ResizeBox}
+     */
+    this.resizeBox = null;
+
+    /**
      * Method used to construct SmartShape object with specified `points` and
      * with specified `options`.
      * Then it binds this object to specified `root` HTML node and displays it
@@ -162,9 +173,74 @@ function SmartShape() {
         this.draggedPoint = null;
         this.root.draggedShape = null;
         this.setOptions(options);
-        this.eventListener = new SmartShapeEventListener(this).run()
-        this.setupPoints(points,this.options.pointOptions);
+        this.eventListener = new SmartShapeEventListener(this).run();
+        this.setupPoints(points,Object.assign({},this.options.pointOptions));
+        if (this.options.canScale) {
+            this.setupResizeBox();
+        }
         return this;
+    }
+
+    /**
+     * @ignore
+     * Used to setup [ResizeBox](#ResizeBox) around shape if shape scaling is enabled
+     */
+    this.setupResizeBox = () => {
+        const bounds = this.getResizeBoxBounds();
+        this.resizeBox = new ResizeBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
+            zIndex: this.options.zIndex-1,
+            id: this.options.id+"_resizebox",
+        })
+        this.calcPosition();
+        this.eventListener.addResizeEventListener();
+        this.resizeBox.redraw();
+    }
+
+    /**
+     * @ignore
+     * Returns dimensions of resize box around shape according to shape dimensions
+     * @returns {{top: number, left: number, bottom: *, width: *, right: *, height: *}}
+     */
+    this.getResizeBoxBounds = () => {
+        this.calcPosition();
+        const [pointWidth,pointHeight] = this.getMaxPointSize();
+        const result = {
+            left: this.left - pointWidth - 5,
+            right: this.right + pointWidth + 5,
+            top: this.top - pointHeight - 5,
+            bottom: this.bottom + pointHeight + 5,
+            width: this.width + (pointWidth + 5)*2,
+            height: this.height + (pointHeight + 5)*2,
+        }
+        if (result.left < 0) {
+            this.moveTo(result.left*-1,this.top);
+            result.left = 0;
+        }
+        if (result.top < 0) {
+            this.moveTo(this.left,result.top*-1);
+            result.top = 0;
+        }
+        const bounds = this.getBounds();
+        if (result.bottom > bounds.bottom) {
+            this.moveTo(this.left,result.bottom-bounds.bottom+this.top);
+            result.bottom = bounds.bottom;
+        }
+        if (result.right > bounds.right) {
+            this.moveTo(result.right-bounds.right+this.left,this.top);
+            result.bottom = bounds.bottom;
+        }
+        return result;
+    }
+
+    /**
+     * @ignore
+     * Method finds and return the size of the biggest point in this shape
+     * @returns {array} [width,height]
+     */
+    this.getMaxPointSize = () => {
+        const pointWidth = this.points.map(point=>point.options.width).reduce((w1,w2) => Math.max(w1,w2));
+        const pointHeight = this.points.map(point=>point.options.height).reduce((h1,h2) => Math.max(h1,h2));
+        return [pointWidth,pointHeight];
     }
 
     /**
@@ -182,7 +258,7 @@ function SmartShape() {
             }
             Object.assign(this.options,options);
             this.points.forEach(point=>{
-                point.setOptions(this.options.pointOptions);
+                point.setOptions(Object.assign({},this.options.pointOptions));
                 point.options.bounds = this.getBounds();
                 if (point.options.zIndex <= this.options.zIndex) {
                     point.options.zIndex = this.options.zIndex+1;
@@ -203,7 +279,7 @@ function SmartShape() {
     this.setupPoints = (points,pointOptions) => {
         if (typeof(points) === "object") {
             this.points = [];
-            this.addPoints(points,pointOptions);
+            this.addPoints(points,Object.assign({},pointOptions));
         }
     }
 
@@ -218,7 +294,7 @@ function SmartShape() {
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.addPoint = (x,y,pointOptions=null) => {
-        const point = this.putPoint(x, y,pointOptions);
+        const point = this.putPoint(x, y,Object.assign({},pointOptions));
         this.redraw();
         return point;
     }
@@ -235,7 +311,7 @@ function SmartShape() {
         if (!points || typeof(points) !== "object") {
             return
         }
-        points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,pointOptions));
+        points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,Object.assign({},pointOptions)));
         this.redraw();
     }
 
@@ -332,6 +408,7 @@ function SmartShape() {
         let newX = x+this.width > bounds.right ? bounds.right - this.width : x;
         let newY = y+this.height > bounds.bottom ? bounds.bottom - this.height: y;
         this.points.forEach(point => { point.x += (newX-this.left); point.y += (newY-this.top)});
+        this.calcPosition();
     }
 
     /**
@@ -351,8 +428,9 @@ function SmartShape() {
             point.x = (point.x-this.left)*scaleX+this.left;
             point.y = (point.y-this.top)*scaleY+this.top}
         );
+        this.calcPosition();
     }
-    
+
     /**
      * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
@@ -410,5 +488,5 @@ function SmartShape() {
         this.redraw();
     }
 }
-
+window.ResizeBox = ResizeBox;
 export default SmartShape;

@@ -1,12 +1,20 @@
 import ResizeBox, {ResizeBoxEvents} from "../../../src/resizebox/ResizeBox.js";
 import {PointEvents, PointMoveDirections} from "../../../src/smart_point.js";
 import EventsManager from "../../../src/events/EventsManager.js";
+import SmartShape from "../../../src/smart_shape.js";
 describe('ResizeBox tests', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];
     app.style.height = "800px";
     const box = new ResizeBox().init(app,10,10,90,90,{id:"box1"});
     return [app,box];
+  }
+  const initShape = () => {
+    const app = Cypress.$("#app").toArray()[0];
+    app.style.height = "800px";
+    const shape = new SmartShape().init(app,{id:"shape1",canScale:true},
+        [[0,200],[100,100],[200,200]]);
+    return [app,shape];
   }
   const getPoints = (box) => {
     const box_id = box.options.id;
@@ -78,7 +86,7 @@ describe('ResizeBox tests', () => {
         "Should setup correct top movement boundary for center bottom marker");
     assert.equal(left_bottom.options.bounds.right,right_bottom.x-right_bottom.options.width-center_bottom.options.width,
         "Should setup correct right movement boundary for left bottom marker");
-    assert.equal(left_bottom.options.bounds.top,left_top.x+left_top.options.height+left_center.options.height,
+    assert.equal(left_bottom.options.bounds.top,left_top.y+left_top.options.height+left_center.options.height,
         "Should setup correct top movement boundary for left bottom marker");
     assert.equal(left_center.options.bounds.right,right_center.x-right_center.options.width-center_top.options.width,
         "Should setup correct right movement boundary for left center marker");
@@ -280,10 +288,10 @@ describe('ResizeBox tests', () => {
       cy.get("#"+box.options.id+"_right_bottom").trigger("mousedown",{buttons:1}).then(() => {
         cy.get("#app").trigger("mousemove",{buttons:1, clientX:130,clientY:130}).then(() => {
           assert.isTrue(handlerTriggered,"Should trigger event handler");
-          assert.equal(box.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to local object queue");
+          assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to local object queue");
           assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to global EventsManager queue");
           box.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,listener);
-          assert.equal(box.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should remove event handler from local object queue");
+          assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should remove event handler from local object queue");
           assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should remove event handler from global EventsManager queue");
         });
       });
@@ -366,15 +374,41 @@ describe('ResizeBox tests', () => {
       box.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,()=> {
         console.log("Triggered");
       });
-      assert.equal(box.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in local queue");
+      assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in local queue");
       assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in global queue");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,2,"Should contain point drag move event handlers for all points in global queue");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,2,"Should contain point drag end event handlers for all points in global queue");
       box.destroy();
-      assert.equal(box.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in local queue after destroy");
+      assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in local queue after destroy");
       assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in global queue after destroy");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,0,"Should not contain point drag move event handlers for all points in global queue after destroy");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,0,"Should not contain point drag end event handlers for all points in global queue after destroy");
     });
   })
+  it("Should correctly enable scale feature on SmartShape instance", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app, shape] = initShape();
+      const [pointWidth,pointHeight] = shape.getMaxPointSize();
+      assert.isNotNull(shape.resizeBox,"Resize box should be created if not null");
+      assert.equal(shape.resizeBox.left,shape.left-pointWidth-5,
+          "Should correctly setup left corner of ResizeBox around shape");
+      assert.equal(shape.resizeBox.top,shape.top-pointHeight-5,
+          "Should correctly setup top corner of ResizeBox around shape");
+      assert.equal(shape.resizeBox.width,shape.width+(pointWidth+5)*2,
+          "Should correctly setup width of resize box");
+      assert.equal(shape.resizeBox.height, shape.height+(pointHeight+5)*2,
+          "Should correctly setup height of resize box"
+      );
+      assert.equal(shape.resizeBox.right,shape.right+pointWidth+5,
+          "Should correctly setup right corner of resize box around shape"
+      );
+      assert.equal(shape.resizeBox.bottom,shape.bottom+pointHeight+5,
+          "Should correctly setup bottom corner of resize box around shape"
+      );
+      assert.equal(shape.resizeBox.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,
+          "Shape should add event listener for resize event of ResizeBox");
+      assert.equal(shape.resizeBox.shape.root,app,
+          "Should correctly bind internal shape to specified HTML container element");
+    });
+  });
 });

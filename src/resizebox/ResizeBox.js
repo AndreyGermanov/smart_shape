@@ -1,38 +1,109 @@
 import SmartShape from "../smart_shape.js";
-import {PointEvents, PointMoveDirections} from "../smart_point.js";
-import EventsManager from "../events/EventsManager.js";
+import {PointMoveDirections} from "../smart_point.js";
+import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 
+/**
+ * Class represents a special type of shape, that shows the rectangle with markers on
+ * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
+ * Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as a separate shape
+ * for tasks like resizing objects on a web page or select rectangular regions.
+ * @constructor
+ */
 function ResizeBox() {
 
+    /**
+     * Left corner of resize box
+     * @type {number}
+     */
     this.left = 0;
 
+    /**
+     * Top corner of resize box
+     * @type {number}
+     */
     this.top = 0;
 
+    /**
+     * Right corner of resize box
+     * @type {number}
+     */
     this.right = 0;
 
+    /**
+     * Bottom corner of resize box
+     * @type {number}
+     */
     this.bottom = 0;
 
+    /**
+     * Width of resize box
+     * @type {number}
+     */
     this.width = 0;
 
+    /**
+     * Height of resize box
+     * @type {number}
+     */
     this.height = 0;
 
+    /**
+     * Underlying shape, that used to service this resize box
+     * (draw, point event handling and so on)
+     * @type {null}
+     */
     this.shape = null;
 
+    /**
+     * Options of resize box
+     * @param id {string} Unique ID or resize box. If instantiated by [SmartShape](#SmartShape), then setup
+     * automatically
+     * @param shapeOptions {object} Options of underlying shape, that used to draw and manage this ResizeBox. See
+     * [SmartShape.options](#SmartShape+options)
+     * @param zIndex {number} Order of element in a stack of HTML elements
+     * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
+     * @type {object}
+     */
     this.options = {
         id: "",
         shapeOptions: {
             id: "",
             canAddPoints: false,
             canDeletePoints: false,
-            pointOptions: {}
+            stroke: "#aaaaaa",
+            strokeWidth:1,
+            strokeDasharray: "10",
+            pointOptions: {
+                style: {
+                    borderWidth: "1px",
+                    borderColor: "rgb(204, 204, 204)",
+                    borderRadius: "0px",
+                    backgroundColor: "rgb(255, 255, 255)"
+                }
+            }
         },
         zIndex: 1000
     }
 
-    this.subscriptions = {
-        "resize": []
-    }
+    /**
+     * Event listener that handles event listening logic for this resize box.
+     * Instance of [ResizeBoxEventListener](#ResizeBoxEventListener) class.
+     * @type {ResizeBoxEventListener}
+     */
+    this.eventListener = null;
 
+    /**
+     * Method used to construct ResizeBox object with specified coordinates and
+     * size, with specified `options`. Then it binds this object to specified `root`
+     * HTML node and displays it
+     * @param root {HTMLElement} HTML element that used as a container for this ResizeBox
+     * @param left {number} Left corner of shape relative to container top left
+     * @param top {number} Top corner of shape relative to container top left
+     * @param width {number} Width of shape
+     * @param height {number} Height of shape
+     * @param options {object} Options used to setup ResizeBox. See [here](#ResizeBox+options).
+     * @returns {ResizeBox} constucted ResizeBox object
+     */
     this.init = (root,left,top,width,height,options={}) => {
         this.left = left;
         this.top = top;
@@ -42,24 +113,29 @@ function ResizeBox() {
         this.bottom = this.top + this.height;
         this.setOptions(options);
         this.options.shapeOptions.id = this.options.id+"_shape";
-        this.shape = new SmartShape().init(root,this.options.shapeOptions,[]);
+        this.shape = new SmartShape().init(root,Object.assign({},this.options.shapeOptions),[]);
         this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds();
         this.addPoints();
-        this.setEventListeners();
+        this.eventListener = new ResizeBoxEventListener(this).run();
+        this.redraw()
         return this;
     }
 
+    /**
+     * Method used to change options of ResizeBox.
+     * @param options {object} Options object. See [here](#ResizeBox+options).
+     */
     this.setOptions = (options = {}) => {
         if (options && typeof(options) === "object") {
             if (options.shapeOptions && typeof(options.shapeOptions) === "object") {
                 if (options.shapeOptions.pointOptions && typeof(options.shapeOptions.pointOptions) === "object") {
                     options.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions,options.shapeOptions.pointOptions);
                 } else {
-                    options.shapeOptions.pointOptions = this.options.shapeOptions.pointOptions;
+                    options.shapeOptions.pointOptions = Object.assign({},this.options.shapeOptions.pointOptions);
                 }
                 options.shapeOptions = Object.assign(this.options.shapeOptions,options.shapeOptions);
             } else {
-                options.shapeOptions = this.options.shapeOptions;
+                options.shapeOptions = Object.assign({},this.options.shapeOptions);
             }
             options.shapeOptions.zIndex = options.zIndex || this.options.zIndex;
             options.shapeOptions.id = options.id ? options.id+"_shape" : this.options.id+"_shape";
@@ -67,23 +143,37 @@ function ResizeBox() {
         }
     }
 
+    /**
+     * @ignore
+     * Method used to add marker points to ResizeBox, that lately used to resize the box
+     */
     this.addPoints = () => {
-        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.options.id+"_left_top"});
-        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.options.id+"_center_top"});
-        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.options.id+"_right_top"});
-        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.options.id+"_right_center"});
-        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.options.id+"_right_bottom"});
-        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.options.id+"_center_bottom"});
-        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.options.id+"_left_bottom"});
-        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.options.id+"_left_center"});
+        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.options.id+"_left_top",style:{cursor: "nw-resize"}});
+        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.options.id+"_center_top",style:{cursor: "ns-resize"}});
+        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.options.id+"_right_top",style:{cursor: "ne-resize"}});
+        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.options.id+"_right_center",style:{cursor: "ew-resize"}});
+        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.options.id+"_right_bottom",style:{cursor: "se-resize"}});
+        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.options.id+"_center_bottom",style:{cursor: "ns-resize"}});
+        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.options.id+"_left_bottom",style:{cursor: "sw-resize"}});
+        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.options.id+"_left_center",style:{cursor: "ew-resize"}});
         this.setPointsOptions();
     }
 
+    /**
+     * @ignore
+     * Method used to setup marker points of ResizeBox
+     */
     this.setPointsOptions = () => {
         this.setPointsMoveDirections();
         this.setPointsMoveBounds();
     }
 
+    /**
+     * @ignore
+     * Method used to setup to which directions allowed to move marker points.
+     * For example, some of them possible to move only horizontally, others, only vertically.
+     * See [SmartShape.options.moveDirections](#SmartShape+options) to learn more.
+     */
     this.setPointsMoveDirections = () => {
         this.center_top.setOptions({moveDirections:[PointMoveDirections.TOP,PointMoveDirections.BOTTOM]});
         this.center_bottom.setOptions({moveDirections:[PointMoveDirections.TOP,PointMoveDirections.BOTTOM]});
@@ -91,6 +181,11 @@ function ResizeBox() {
         this.right_center.setOptions({moveDirections:[PointMoveDirections.LEFT,PointMoveDirections.RIGHT]});
     }
 
+    /**
+     * @ignore
+     * Method used to set bounds, to which possible to move each marker point of ResizeBox
+     * For example, it's impossible to drag right corner beyond left corner, top corner beyond bottom corner.
+     */
     this.setPointsMoveBounds = () => {
         this.left_top.options.bounds.bottom = this.left_bottom.y-this.left_bottom.options.height-this.left_center.options.height;
         this.left_top.options.bounds.right = this.right_top.x-this.right_top.options.width-this.center_top.options.width;
@@ -102,131 +197,15 @@ function ResizeBox() {
         this.right_bottom.options.bounds.top = this.right_top.y+this.right_top.options.height+this.right_center.options.height;
         this.center_bottom.options.bounds.top =this.center_top.y+this.center_top.options.height+this.right_center.options.height;
         this.left_bottom.options.bounds.right = this.right_bottom.x-this.right_bottom.options.width-this.center_bottom.options.width;
-        this.left_bottom.options.bounds.top = this.left_top.x+this.left_top.options.height+this.left_center.options.height;
+        this.left_bottom.options.bounds.top = this.left_top.y+this.left_top.options.height+this.left_center.options.height;
         this.left_center.options.bounds.right = this.right_center.x-this.right_center.options.width-this.center_top.options.width;
-    }
-
-    this.setEventListeners = () => {
-        EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
-        EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragMove);
-    }
-
-    this.onPointDragMove = (event) => {
-        if (!this.shape.isShapePoint(event.target)) {
-            return
-        }
-        switch (event.target) {
-            case this.left_top:
-                this.onLeftTopDragMove(event);
-                break;
-            case this.center_top:
-                this.onCenterTopDragMove(event);
-                break;
-            case this.right_top:
-                this.onRightTopDragMove(event);
-                break;
-            case this.right_center:
-                this.onRightCenterDragMove(event);
-                break;
-            case this.right_bottom:
-                this.onRightBottomDragMove(event);
-                break;
-            case this.center_bottom:
-                this.onCenterBottomDragMove(event);
-                break;
-            case this.left_bottom:
-                this.onLeftBottomDragMove(event);
-                break;
-            case this.left_center:
-                this.onLeftCenterDragMove(event);
-                break;
-        }
-        this.adjustCenters();
-        this.setPointsMoveBounds();
-        const oldDims = {left:this.left,top:this.top,right:this.right,bottom:this.bottom,width:this.width,height:this.height};
-        this.calcPosition();
-        const newDims = {left:this.left,top:this.top,right:this.right,bottom:this.bottom,width:this.width,height:this.height};
-        this.redraw();
-        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this,{oldDims,newDims});
     }
 
     /**
      * @ignore
-     * Internal method that used to calculate resize box dimensions, based on point coordinates.
-     * Set left,top,right,bottom,width and height of resize box.
+     * Method used to recalculate coordinates of marker points
+     * according to current ResizeBox coordinates and dimensions.
      */
-    this.calcPosition = () => {
-        this.shape.calcPosition();
-        this.left = this.shape.left;
-        this.top = this.shape.top;
-        this.bottom = this.shape.bottom;
-        this.right = this.shape.right;
-        this.width = this.shape.width;
-        this.height = this.shape.height;
-    }
-
-    this.onLeftTopDragMove = (event) => {
-        this.left_center.x = event.target.x;
-        this.left_bottom.x = event.target.x;
-        this.center_top.y = event.target.y;
-        this.right_top.y = event.target.y;
-    }
-
-    this.onCenterTopDragMove = (event) => {
-        this.left_top.y = event.target.y;
-        this.right_top.y = event.target.y;
-    }
-
-    this.onRightTopDragMove = (event) => {
-        this.left_top.y = event.target.y;
-        this.center_top.y = event.target.y;
-        this.right_center.x = event.target.x;
-        this.right_bottom.x = event.target.x;
-    }
-
-    this.onRightCenterDragMove = (event) => {
-        this.right_top.x = event.target.x;
-        this.right_bottom.x = event.target.x;
-    }
-
-    this.onRightBottomDragMove = (event) => {
-        this.right_top.x = event.target.x;
-        this.right_center.x = event.target.x;
-        this.left_bottom.y = event.target.y;
-        this.center_bottom.y = event.target.y;
-    }
-
-    this.onCenterBottomDragMove = (event) => {
-        this.left_bottom.y = event.target.y;
-        this.right_bottom.y = event.target.y;
-    }
-
-    this.onLeftBottomDragMove = (event) => {
-        this.center_bottom.y = event.target.y;
-        this.right_bottom.y = event.target.y;
-        this.left_center.x = event.target.x;
-        this.left_top.x = event.target.x;
-    }
-
-    this.onLeftCenterDragMove = (event) => {
-        this.left_bottom.x = event.target.x;
-        this.left_top.x = event.target.x;
-    }
-
-    this.adjustCenters = () => {
-        this.center_top.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
-        this.center_bottom.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
-        this.left_center.y = parseInt((this.left_top.y+(this.left_bottom.y-this.left_top.y)/2));
-        this.right_center.y = parseInt((this.right_top.y+(this.right_bottom.y-this.right_top.y)/2));
-    }
-
-    this.redraw = () => {
-        this.adjustCoordinates();
-        this.shape.setOptions(this.options.shapeOptions);
-        this.shape.redraw();
-        this.setPointsMoveBounds();
-    }
-
     this.adjustCoordinates = () => {
         this.right = this.left + this.width;
         this.bottom = this.top + this.height;
@@ -245,33 +224,80 @@ function ResizeBox() {
         this.adjustCenters();
     }
 
-    this.addEventListener = (eventName,handler) => {
-        const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.options.id === this.options.id) {
-                handler(event)
-            }
-        });
-        this.subscriptions[eventName].push(listener);
-        return listener;
+    /**
+     * @ignore
+     * Method used to recalculate coordinates of point markers, located on the centers of rectangle,
+     * after user dragged corner markers.
+     */
+    this.adjustCenters = () => {
+        this.center_top.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
+        this.center_bottom.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
+        this.left_center.y = parseInt((this.left_top.y+(this.left_bottom.y-this.left_top.y)/2));
+        this.right_center.y = parseInt((this.right_top.y+(this.right_bottom.y-this.right_top.y)/2));
     }
 
-    this.removeEventListener = (eventName,listener) => {
-        this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener),1);
-        EventsManager.unsubscribe(eventName,listener)
+    /**
+     * @ignore
+     * Internal method that used to calculate resize box dimensions, based on point coordinates.
+     * Set left,top,right,bottom,width and height of resize box.
+     */
+    this.calcPosition = () => {
+        this.shape.calcPosition();
+        this.left = this.shape.left;
+        this.top = this.shape.top;
+        this.bottom = this.shape.bottom;
+        this.right = this.shape.right;
+        this.width = this.shape.width;
+        this.height = this.shape.height;
     }
 
+    /**
+     * Method used to redraw resize box
+     */
+    this.redraw = () => {
+        this.adjustCoordinates();
+        this.shape.setOptions(this.options.shapeOptions);
+        this.shape.redraw();
+        this.setPointsMoveBounds();
+    }
+
+    /**
+     * Destroys the ResizeBox. Destroys all points, removes event listeners and removes the shape from screen.
+     * But variable continue existing. To completely remove the shape,
+     * set the variable to 'null' after calling this method.
+     */
     this.destroy = () => {
-        for (let eventName in this.subscriptions) {
-            const handlers = this.subscriptions[eventName];
-            handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
-            this.subscriptions[eventName] = [];
-        }
-        EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE,this.onPointDragMove);
-        EventsManager.unsubscribe(PointEvents.POINT_DRAG_END,this.onPointDragMove);
+        this.eventListener.destroy();
         this.shape.destroy();
+    }
+
+    /**
+     * Uniform method that used to add event handler of specified type to this object.
+     * @param eventName {string} - Name of event
+     * @param handler {function} - Function that used as an event handler
+     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
+     */
+    this.addEventListener = (eventName,handler) => {
+        return this.eventListener.addEventListener(eventName,handler)
+    }
+
+    /**
+     * Uniform method that used to remove event handler, that previously added
+     * to this object.
+     * @param eventName - Name of event to remove listener from
+     * @param listener - Pointer to event listener, that added previously.
+     * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
+     */
+    this.removeEventListener = (eventName,listener) => {
+        this.eventListener.removeEventListener(eventName,listener);
     }
 }
 
+/**
+ * Enumeration that defines events, that ResizeBox can emit.
+ * @param RESIZE_BOX_RESIZE Emitted when user resized the shape by dragging one of marker points.
+ * @enum {int}
+ */
 export const ResizeBoxEvents = {
     RESIZE_BOX_RESIZE: "resize"
 };
