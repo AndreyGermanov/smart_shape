@@ -9,7 +9,7 @@ const f = (t, i = !0) => {
   var i = Math.random() * 16 | 0, s = t == "x" ? i : i & 3 | 8;
   return s.toString(16);
 }).replace(/\-/g, "");
-function x() {
+function m() {
   this.subscriptions = {}, this.subscribe = (t, i) => ((typeof this.subscriptions[t] > "u" || !this.subscriptions[t]) && (this.subscriptions[t] = []), typeof this.subscriptions[t].find((s) => s === i) < "u" ? null : (this.subscriptions[t].push(i), i)), this.emit = (t, i, s = null) => ((!s || typeof s != "object") && (s = {}), s.type = t, s.target = i, typeof this.subscriptions[t] < "u" && this.subscriptions[t] && this.subscriptions[t].length ? (this.subscriptions[t].forEach((e) => e(s)), !0) : !1), this.unsubscribe = (t, i) => {
     if (typeof this.subscriptions[t] > "u" || !this.subscriptions[t])
       return !1;
@@ -19,8 +19,8 @@ function x() {
     this.subscriptions = {};
   };
 }
-const h = new x();
-function m(t) {
+const h = new m();
+function x(t) {
   this.resizeBox = t, this.subscriptions = {
     resize: []
   }, this.run = () => (this.setEventListeners(), this), this.setEventListeners = () => {
@@ -122,7 +122,7 @@ function c() {
       }
     },
     zIndex: 1e3
-  }, this.eventListener = null, this.init = (t, i, s, e, o, n = {}) => (this.left = i, this.top = s, this.width = e, this.height = o, this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id + "_shape", this.shape = new D().init(t, Object.assign({}, this.options.shapeOptions), []), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new m(this).run(), this.redraw(), this), this.setOptions = (t = {}) => {
+  }, this.eventListener = null, this.init = (t, i, s, e, o, n = {}) => (this.left = i, this.top = s, this.width = e, this.height = o, this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id + "_shape", this.shape = new D().init(t, Object.assign({}, this.options.shapeOptions), []), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new x(this).run(), this.redraw(), this), this.setOptions = (t = {}) => {
     t && typeof t == "object" && (t.shapeOptions && typeof t.shapeOptions == "object" ? (t.shapeOptions.pointOptions && typeof t.shapeOptions.pointOptions == "object" ? t.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions, t.shapeOptions.pointOptions) : t.shapeOptions.pointOptions = Object.assign({}, this.options.shapeOptions.pointOptions), t.shapeOptions = Object.assign(this.options.shapeOptions, t.shapeOptions)) : t.shapeOptions = Object.assign({}, this.options.shapeOptions), t.shapeOptions.zIndex = t.zIndex || this.options.zIndex, t.shapeOptions.id = t.id ? t.id + "_shape" : this.options.id + "_shape", Object.assign(this.options, t));
   }, this.addPoints = () => {
     this.left_top = this.shape.addPoint(this.left, this.top, { id: this.options.id + "_left_top", style: { cursor: "nw-resize" } }), this.center_top = this.shape.addPoint(this.left + this.width / 2, this.top, { id: this.options.id + "_center_top", style: { cursor: "ns-resize" } }), this.right_top = this.shape.addPoint(this.right, this.top, { id: this.options.id + "_right_top", style: { cursor: "ne-resize" } }), this.right_center = this.shape.addPoint(this.right, this.top + this.height / 2, { id: this.options.id + "_right_center", style: { cursor: "ew-resize" } }), this.right_bottom = this.shape.addPoint(this.right, this.bottom, { id: this.options.id + "_right_bottom", style: { cursor: "se-resize" } }), this.center_bottom = this.shape.addPoint(this.left + this.width / 2, this.bottom, { id: this.options.id + "_center_bottom", style: { cursor: "ns-resize" } }), this.left_bottom = this.shape.addPoint(this.left, this.bottom, { id: this.options.id + "_left_bottom", style: { cursor: "sw-resize" } }), this.left_center = this.shape.addPoint(this.left, this.top + this.height / 2, { id: this.options.id + "_left_center", style: { cursor: "ew-resize" } }), this.setPointsOptions();
@@ -139,7 +139,7 @@ function c() {
   }, this.calcPosition = () => {
     this.shape.calcPosition(), this.left = this.shape.left, this.top = this.shape.top, this.bottom = this.shape.bottom, this.right = this.shape.right, this.width = this.shape.width, this.height = this.shape.height;
   }, this.redraw = () => {
-    this.adjustCoordinates(), this.shape.setOptions(this.options.shapeOptions), this.shape.redraw(), this.setPointsMoveBounds();
+    this.adjustCoordinates(), this.shape.setOptions(this.options.shapeOptions), this.setPointsMoveBounds(), this.shape.redraw();
   }, this.destroy = () => {
     this.eventListener.destroy(), this.shape.destroy();
   }, this.addEventListener = (t, i) => this.eventListener.addEventListener(t, i), this.removeEventListener = (t, i) => {
@@ -189,8 +189,8 @@ function _(t) {
   }, this.calcMovementOffset = (i) => {
     this.shape.calcPosition();
     let s = i.movementX, e = i.movementY, o = i.clientX, n = i.clientY;
-    const l = this.shape.left + s, a = this.shape.top + e, d = f(this.shape.root, !0);
-    return l < 0 || l + this.shape.width > this.shape.root.clientLeft + this.shape.root.clientWidth ? [null, null] : a < 0 || a + this.shape.height > this.shape.root.clientTop + this.shape.root.clientHeight ? [null, null] : (o < l + d.left && (s = o - (l + d.left)), n < a + d.top && (e = n - (a + d.top)), o > l + this.shape.width + d.left && (s = o - (this.shape.width + d.left + this.shape.left)), n > a + this.shape.height + d.right && (e = n - (this.shape.height + d.top + this.shape.top)), [s, e]);
+    const l = this.shape.left + s, d = this.shape.top + e, a = f(this.shape.root, !0);
+    return l < 0 || l + this.shape.width > this.shape.root.clientLeft + this.shape.root.clientWidth ? [null, null] : d < 0 || d + this.shape.height > this.shape.root.clientTop + this.shape.root.clientHeight ? [null, null] : (o < l + a.left && (s = o - (l + a.left)), n < d + a.top && (e = n - (d + a.top)), o > l + this.shape.width + a.left && (s = o - (this.shape.width + a.left + this.shape.left)), n > d + this.shape.height + a.right && (e = n - (this.shape.height + a.top + this.shape.top)), [s, e]);
   }, this.onPointAdded = (i) => {
   }, this.onPointDragStart = (i) => {
     !this.shape.isShapePoint(i.target) || (this.shape.root.draggedShape = this.shape, this.shape.draggedPoint = i.target);
@@ -290,9 +290,9 @@ const r = {
 };
 function O() {
   this.draw = (t) => {
-    if (t.svg && (t.root.removeChild(t.svg), t.svg = null), t.points.length < 1)
+    if (t.points.length < 1 || (t.svg && (t.root.removeChild(t.svg), t.svg = null), t.calcPosition(), isNaN(t.width) || isNaN(t.height)))
       return;
-    if (t.calcPosition(), t.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), t.svg.ondragstart = function() {
+    if (t.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), t.svg.ondragstart = function() {
       return !1;
     }, t.svg.id = t.options.id, t.svg.style.position = "absolute", t.svg.style.cursor = "crosshair", t.svg.style.left = t.left, t.svg.style.top = t.top, t.svg.setAttribute("width", t.width), t.svg.setAttribute("height", t.height), t.options.fillImage && typeof (t.options.fillImage === "object")) {
       const s = document.createElementNS(t.svg.namespaceURI, "defs"), e = this.createImageFill(t);
@@ -300,6 +300,9 @@ function O() {
     } else if (t.options.fillGradient && typeof (t.options.fillGradient === "object") && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1) {
       const s = document.createElementNS(t.svg.namespaceURI, "defs"), e = this.createGradient(t);
       s.appendChild(e), t.svg.appendChild(s);
+    } else if (t.options.filters && typeof t.options.filters == "object" && Object.keys(t.options.filters).length) {
+      const s = document.createElementNS(t.svg.namespaceURI, "defs"), e = this.createSVGFilters(t);
+      s.append(e), t.svg.appendChild(s);
     }
     t.svg.style.zIndex = t.options.zIndex;
     const i = this.drawPolygon(t);
@@ -313,7 +316,7 @@ function O() {
     if (i.setAttribute("points", s), t.options.stroke && i.setAttribute("stroke", t.options.stroke), t.options.strokeWidth && i.setAttribute("stroke-width", t.options.strokeWidth), t.options.strokeLinecap && i.setAttribute("stroke-linecap", t.options.strokeLinecap), t.options.strokeDasharray && i.setAttribute("stroke-dasharray", t.options.strokeDasharray), t.options.fill && (t.options.fillImage && typeof t.options.fillImage == "object" ? i.setAttribute("fill", 'url("#' + t.guid + '_pattern")') : t.options.fillGradient && typeof (t.options.fillGradient === "object") && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1 ? i.setAttribute("fill", 'url("#' + t.guid + '_gradient")') : i.setAttribute("fill", t.options.fill)), t.options.fillOpacity && i.setAttribute("fill-opacity", t.options.fillOpacity), t.options.classes && i.setAttribute("class", t.options.classes), t.options.style)
       for (let e in t.options.style)
         i.style[e] = t.options.style[e];
-    return i.style.zIndex = t.options.zIndex, i;
+    return t.svg.querySelector("defs") && t.svg.querySelector("defs").querySelector("filter") && (i.style.filter = 'url("#' + t.guid + '_filter")'), i.style.zIndex = t.options.zIndex, i;
   }, this.redrawResizeBox = (t) => {
     const i = t.getResizeBoxBounds();
     t.resizeBox.left = i.left, t.resizeBox.top = i.top, t.resizeBox.width = i.width, t.resizeBox.height = i.height, t.resizeBox.redraw();
@@ -347,6 +350,19 @@ function O() {
       o !== "href" && s.setAttribute(o, i[o]);
     const e = document.createElementNS(t.svg.namespaceURI, "image");
     return e.setAttribute("href", i.href), e.setAttribute("width", i.width), e.setAttribute("height", i.height), s.appendChild(e), s;
+  }, this.createSVGFilters = (t) => {
+    const i = document.createElementNS(t.svg.namespaceURI, "filter");
+    i.setAttribute("id", t.guid + "_filter");
+    for (let s in t.options.filters) {
+      const e = this.createSVGFilter(t, s, t.options.filters[s]);
+      i.appendChild(e);
+    }
+    return i;
+  }, this.createSVGFilter = (t, i, s) => {
+    const e = document.createElementNS(t.svg.namespaceURI, i);
+    for (let o in s)
+      e.setAttributeNS(t.svg.namespaceURI, o, s[o]);
+    return e;
   };
 }
 const P = new O();
@@ -363,6 +379,7 @@ function D() {
     fillGradient: null,
     fillImage: null,
     fillOpacity: "1",
+    filters: {},
     canDragShape: !0,
     canAddPoints: !1,
     canScale: !1,
@@ -382,7 +399,10 @@ function D() {
     const t = this.getResizeBoxBounds();
     this.resizeBox = new c().init(this.root, t.left, t.top, t.width, t.height, {
       zIndex: this.options.zIndex - 1,
-      id: this.options.id + "_resizebox"
+      id: this.options.id + "_resizebox",
+      shapeOptions: {
+        canDragShape: !1
+      }
     }), this.calcPosition(), this.eventListener.addResizeEventListener(), this.resizeBox.redraw();
   }, this.getResizeBoxBounds = () => {
     this.calcPosition();
@@ -440,8 +460,8 @@ function D() {
     this.calcPosition();
     let e = this.left + t > s.right ? s.right - this.left : t, o = this.top + i > s.bottom ? s.bottom - this.top : i, n = e / this.width, l = o / this.height;
     this.points.forEach(
-      (a) => {
-        a.x = (a.x - this.left) * n + this.left, a.y = (a.y - this.top) * l + this.top;
+      (d) => {
+        d.x = (d.x - this.left) * n + this.left, d.y = (d.y - this.top) * l + this.top;
       }
     ), this.calcPosition();
   }, this.redraw = () => {

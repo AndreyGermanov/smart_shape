@@ -12,14 +12,17 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object to draw
      */
     this.draw = (shape) => {
+        if (shape.points.length < 1) {
+            return
+        }
         if (shape.svg) {
             shape.root.removeChild(shape.svg);
             shape.svg = null;
         }
-        if (shape.points.length < 1) {
-            return
-        }
         shape.calcPosition();
+        if (isNaN(shape.width) || isNaN(shape.height)) {
+            return;
+        }
         shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         shape.svg.ondragstart = function() {
             return false;
@@ -43,6 +46,11 @@ function SmartShapeDrawHelper() {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const gradient = this.createGradient(shape);
             defs.appendChild(gradient);
+            shape.svg.appendChild(defs);
+        } else if (shape.options.filters && typeof(shape.options.filters) === "object" && Object.keys(shape.options.filters).length) {
+            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
+            const filters = this.createSVGFilters(shape);
+            defs.append(filters);
             shape.svg.appendChild(defs);
         }
         shape.svg.style.zIndex = shape.options.zIndex;
@@ -104,6 +112,9 @@ function SmartShapeDrawHelper() {
             for (let cssName in shape.options.style) {
                 polygon.style[cssName] = shape.options.style[cssName]
             }
+        }
+        if (shape.svg.querySelector("defs") && shape.svg.querySelector("defs").querySelector("filter")) {
+            polygon.style.filter ='url("#'+shape.guid+'_filter")';
         }
         polygon.style.zIndex = shape.options.zIndex;
         return polygon;
@@ -194,6 +205,40 @@ function SmartShapeDrawHelper() {
         image.setAttribute("height",imageFillOptions.height);
         pattern.appendChild(image);
         return pattern;
+    }
+
+    /**
+     * @ignore
+     * Method used to apply SVG filter to the shape, if `filters` options specified in
+     * options of SmartShape.
+     * @param shape {SmartShape} shape object to apply filter to
+     * @returns {SVGFilterElement} Constructed filter element with set of filters
+     */
+    this.createSVGFilters = (shape) => {
+        const filters = document.createElementNS(shape.svg.namespaceURI,"filter");
+        filters.setAttribute("id",shape.guid+"_filter");
+        for (let filterName in shape.options.filters) {
+            const filter = this.createSVGFilter(shape,filterName,shape.options.filters[filterName]);
+            filters.appendChild(filter);
+        }
+        return filters;
+    }
+
+    /**
+     * @ignore
+     * Method constructs individual SVG filter tag with specified name and options
+     * that will be added to the <filter> tag of shape's SVG.
+     * @param shape {SmartShape} shape object to apply filter ot
+     * @param filterName {string} name of SVG filter (feDropShadow, feGaussianBlur etc.)
+     * @param filterOptions {object} attributes of filter (any attributes that appropriate SVG filter tag accepts)
+     * @returns {SVGElement} Constructed filter element
+     */
+    this.createSVGFilter = (shape,filterName,filterOptions) => {
+        const filter = document.createElementNS(shape.svg.namespaceURI,filterName);
+        for (let attribute in filterOptions) {
+            filter.setAttributeNS(shape.svg.namespaceURI,attribute,filterOptions[attribute]);
+        }
+        return filter;
     }
 }
 

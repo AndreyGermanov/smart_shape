@@ -257,8 +257,8 @@ function ResizeBox() {
     this.redraw = () => {
         this.adjustCoordinates();
         this.shape.setOptions(this.options.shapeOptions);
-        this.shape.redraw();
         this.setPointsMoveBounds();
+        this.shape.redraw();
     }
 
     /**
