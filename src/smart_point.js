@@ -1,4 +1,4 @@
-import {getOffset} from "./utils.js";
+import {getOffset, uuid} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
 import {ContainerEvents} from "./smart_shape_event_listener.js";
 /**
@@ -75,6 +75,23 @@ function SmartPoint() {
      * @type {HTMLElement}
      */
     this.element = null;
+
+    /**
+     * Internal global unique identifier of point. Generated automatically.
+     * @type {string}
+     */
+    this.guid = uuid();
+
+    /**
+     * @ignore
+     * List of subscribers, that subscribed to events, emitted by
+     * this point. This is an object, that consists of array
+     * of event handlers of each event. Each handler is a function
+     * that called when event of specified type emitted by
+     * this shape
+     * @type {object}
+     */
+    this.subscriptions = {}
 
     /**
      * Initializes new point and displays it on the screen.
@@ -286,6 +303,37 @@ function SmartPoint() {
         this.element.removeEventListener("mouseup",this.mouseup)
         this.element.removeEventListener("mousedown", this.mousedown)
         EventsManager.emit(PointEvents.POINT_DESTROYED,this);
+    }
+
+    /**
+     * Uniform method that used to add event handler of specified type to this object.
+     * @param eventName {string} - Name of event
+     * @param handler {function} - Function that used as an event handler
+     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
+     */
+    this.addEventListener = (eventName,handler) => {
+        if (typeof(this.subscriptions[eventName]) === "undefined") {
+            this.subscriptions[eventName] = [];
+        }
+        const listener = EventsManager.subscribe(eventName, (event) => {
+            if (event.target.guid === this.guid) {
+                handler(event)
+            }
+        });
+        this.subscriptions[eventName].push(listener);
+        return listener;
+    }
+
+    /**
+     * Uniform method that used to remove event handler, that previously added
+     * to this object.
+     * @param eventName {string} Name of event to remove listener from
+     * @param listener {function} Pointer to event listener, that added previously.
+     * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
+     */
+    this.removeEventListener = (eventName,listener) => {
+        this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener),1);
+        EventsManager.unsubscribe(eventName,listener)
     }
 
     return this;

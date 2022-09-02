@@ -220,6 +220,9 @@ function ResizeBoxEventListener(resizeBox) {
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */
     this.addEventListener = (eventName,handler) => {
+        if (typeof(this.subscriptions[eventName]) === "undefined") {
+            this.subscriptions[eventName] = [];
+        }
         const listener = EventsManager.subscribe(eventName, (event) => {
             if (event.target.shape.guid === this.resizeBox.shape.guid) {
                 handler(event)

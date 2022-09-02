@@ -485,6 +485,27 @@ function SmartShape() {
     }
 
     /**
+     * Uniform method that used to add event handler of specified type to this object.
+     * @param eventName {string} - Name of event
+     * @param handler {function} - Function that used as an event handler
+     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
+     */
+    this.addEventListener = (eventName,handler) => {
+        return this.eventListener.addEventListener(eventName,handler)
+    }
+
+    /**
+     * Uniform method that used to remove event handler, that previously added
+     * to this object.
+     * @param eventName {string} Name of event to remove listener from
+     * @param listener {function} Pointer to event listener, that added previously.
+     * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
+     */
+    this.removeEventListener = (eventName,listener) => {
+        this.eventListener.removeEventListener(eventName,listener);
+    }
+
+    /**
      * Destroys the shape. Destroys all points, removes event listeners and removes the shape from screen.
      * But variable continue existing. To completely remove the shape,
      * set the variable to 'null' after calling this method.
