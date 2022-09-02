@@ -287,7 +287,7 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      */
     this.setupPoints = (points,pointOptions) => {
-        if (typeof(points) === "object") {
+        if (points && typeof(points) === "object") {
             this.points = [];
             this.addPoints(points,Object.assign({},pointOptions));
         }
@@ -321,7 +321,9 @@ function SmartShape() {
         if (!points || typeof(points) !== "object") {
             return
         }
-        points.forEach(point => this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,Object.assign({},pointOptions)));
+        points.forEach(point =>
+            this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,Object.assign({},pointOptions))
+        );
         this.redraw();
     }
 
@@ -342,7 +344,7 @@ function SmartShape() {
             return null;
         }
         if (!pointOptions) {
-            pointOptions = this.options.pointOptions || {};
+            pointOptions = Object.assign({},this.options.pointOptions) || {};
         }
         pointOptions.bounds = this.getBounds();
         pointOptions.zIndex = this.options.zIndex+1;

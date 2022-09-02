@@ -39,7 +39,7 @@ function SmartShapeEventListener(shape) {
      */
     this.run = () => {
         this.shape = shape;
-        this.addEventListeners();
+        this.setEventListeners();
         return this;
     }
 
@@ -47,7 +47,7 @@ function SmartShapeEventListener(shape) {
      * @ignore
      * Internal method that installs HTML DOM event listeners to the shape, and it's container
      */
-    this.addEventListeners = () => {
+    this.setEventListeners = () => {
         if (this.shape.root.getAttribute("sh_listeners") !== "true") {
             this.shape.root.setAttribute("sh_listeners","true");
             this.shape.root.addEventListener("mousemove", (event) => {
@@ -70,6 +70,13 @@ function SmartShapeEventListener(shape) {
         EventsManager.subscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
     }
 
+    /**
+     * @ignore
+     * Method adds a listener to shape, that listens for "resize" event of ResizeBox.
+     * As a reaction, listening function scales the shape according to new coordinates
+     * of the resize box.
+     * So, when user changes the size of resize box, the shape resizes according to this.
+     */
     this.addResizeEventListener = () => {
         if (!this.shape.resizeBox) {
             return;
@@ -118,9 +125,9 @@ function SmartShapeEventListener(shape) {
     /**
      * @ignore
      * onMouseDown event handler, triggered when user presses mouse button on the shape or on container element.
-     * @param event {MouseEvent} Event object
+     * @param _event {MouseEvent} Event object
      */
-    this.mousedown = (event) => {
+    this.mousedown = (_event) => {
         this.shape.root.draggedShape = this.shape;
     }
 
@@ -211,9 +218,9 @@ function SmartShapeEventListener(shape) {
     /**
      * @ignore
      * Internal method, that triggered when new point added
-     * @param event Custom event object
+     * @param _event Custom event object
      */
-    this.onPointAdded = (event) => { /* Temporary empty */ }
+    this.onPointAdded = (_event) => { /* Temporary empty */ }
 
     /**
      * @ignore

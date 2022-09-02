@@ -24,9 +24,7 @@ function SmartShapeDrawHelper() {
             return;
         }
         shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-        shape.svg.ondragstart = function() {
-            return false;
-        }
+        shape.svg.ondragstart = function() { return false; }
         shape.svg.id = shape.options.id;
         shape.svg.style.position = 'absolute';
         shape.svg.style.cursor = 'crosshair';
@@ -34,29 +32,8 @@ function SmartShapeDrawHelper() {
         shape.svg.style.top = shape.top;
         shape.svg.setAttribute("width",shape.width);
         shape.svg.setAttribute("height",shape.height);
-        if (shape.options.fillImage && typeof(shape.options.fillImage === "object")) {
-            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
-            const pattern = this.createImageFill(shape);
-            if (pattern) {
-                defs.appendChild(pattern)
-            }
-            shape.svg.appendChild(defs);
-        } else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
-            ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
-            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
-            const gradient = this.createGradient(shape);
-            defs.appendChild(gradient);
-            shape.svg.appendChild(defs);
-        }
-        if (shape.options.filters && typeof(shape.options.filters) === "object" && Object.keys(shape.options.filters).length) {
-            let defs = shape.svg.querySelector("defs");
-            if (!defs) {
-                defs = document.createElementNS(shape.svg.namespaceURI,"defs");
-                shape.svg.appendChild(defs);
-            }
-            const filters = this.createSVGFilters(shape);
-            defs.append(filters);
-        }
+        this.setupShapeFill(shape);
+        this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
@@ -84,39 +61,9 @@ function SmartShapeDrawHelper() {
         }
         const points = shape.points.map(point => ""+(point.x-shape.left)+","+(point.y-shape.top)).join(" ");
         polygon.setAttribute("points",points);
-        if (shape.options.stroke) {
-            polygon.setAttribute("stroke", shape.options.stroke);
-        }
-        if (shape.options.strokeWidth) {
-            polygon.setAttribute("stroke-width",shape.options.strokeWidth);
-        }
-        if (shape.options.strokeLinecap) {
-            polygon.setAttribute("stroke-linecap",shape.options.strokeLinecap);
-        }
-        if (shape.options.strokeDasharray) {
-            polygon.setAttribute("stroke-dasharray",shape.options.strokeDasharray);
-        }
-        if (shape.options.fill) {
-            if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
-                polygon.setAttribute("fill",'url("#'+shape.guid+'_pattern'+'")');
-            }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
-                ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
-                polygon.setAttribute("fill",'url("#'+shape.guid+'_gradient'+'")');
-            } else {
-                polygon.setAttribute("fill", shape.options.fill);
-            }
-        }
-        if (shape.options.fillOpacity) {
-            polygon.setAttribute("fill-opacity",shape.options.fillOpacity);
-        }
-        if (shape.options.classes) {
-            polygon.setAttribute("class",shape.options.classes);
-        }
-        if (shape.options.style) {
-            for (let cssName in shape.options.style) {
-                polygon.style[cssName] = shape.options.style[cssName]
-            }
-        }
+        this.setupPolygonStroke(shape,polygon);
+        this.setupPolygonFill(shape,polygon);
+        this.setupPolygonStyles(shape,polygon);
         if (shape.svg.querySelector("defs") && shape.svg.querySelector("defs").querySelector("filter")) {
             polygon.style.filter ='url("#'+shape.guid+'_filter")';
         }
@@ -136,6 +83,28 @@ function SmartShapeDrawHelper() {
         shape.resizeBox.width = bounds.width;
         shape.resizeBox.height = bounds.height;
         shape.resizeBox.redraw();
+    }
+
+    /**
+     * @ignore
+     * Used to setup fill of shape depending on provided options: color fill, gradient fill or image fill
+     * @param shape {SmartShape} Shape for which gradient should be created
+     */
+    this.setupShapeFill = (shape) => {
+        if (shape.options.fillImage && typeof(shape.options.fillImage === "object")) {
+            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
+            const pattern = this.createImageFill(shape);
+            if (pattern) {
+                defs.appendChild(pattern)
+            }
+            shape.svg.appendChild(defs);
+        } else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
+            ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
+            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
+            const gradient = this.createGradient(shape);
+            defs.appendChild(gradient);
+            shape.svg.appendChild(defs);
+        }
     }
 
     /**
@@ -213,6 +182,23 @@ function SmartShapeDrawHelper() {
 
     /**
      * @ignore
+     * Method used to create and add SVG filters to SVG definitions, if the filters provided in options.
+     * @param shape {SmartShape} shape object to apply filter to
+     */
+    this.setupSVGFilters = (shape) => {
+        if (shape.options.filters && typeof(shape.options.filters) === "object" && Object.keys(shape.options.filters).length) {
+            let defs = shape.svg.querySelector("defs");
+            if (!defs) {
+                defs = document.createElementNS(shape.svg.namespaceURI,"defs");
+                shape.svg.appendChild(defs);
+            }
+            const filters = this.createSVGFilters(shape);
+            defs.append(filters);
+        }
+    }
+
+    /**
+     * @ignore
      * Method used to apply SVG filter to the shape, if `filters` options specified in
      * options of SmartShape.
      * @param shape {SmartShape} shape object to apply filter to
@@ -252,6 +238,67 @@ function SmartShapeDrawHelper() {
         }
         return filter;
     }
+
+    /**
+     * @ignore
+     * Method used to setup stroke params of shape polygon
+     * @param shape {SmartShape} Shape object
+     * @param polygon {SVGPolygonElement} Polygon element to setup
+     */
+    this.setupPolygonStroke = (shape,polygon) => {
+        if (shape.options.stroke) {
+            polygon.setAttribute("stroke", shape.options.stroke);
+        }
+        if (shape.options.strokeWidth) {
+            polygon.setAttribute("stroke-width",shape.options.strokeWidth);
+        }
+        if (shape.options.strokeLinecap) {
+            polygon.setAttribute("stroke-linecap",shape.options.strokeLinecap);
+        }
+        if (shape.options.strokeDasharray) {
+            polygon.setAttribute("stroke-dasharray",shape.options.strokeDasharray);
+        }
+    }
+
+    /**
+     * @ignore
+     * Method used to set up fill params of shape polygon
+     * @param shape {SmartShape} Shape object
+     * @param polygon {SVGPolygonElement} Polygon element to setup
+     */
+    this.setupPolygonFill = (shape, polygon) => {
+        if (shape.options.fill) {
+            if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
+                polygon.setAttribute("fill",'url("#'+shape.guid+'_pattern'+'")');
+            }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
+                ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
+                polygon.setAttribute("fill",'url("#'+shape.guid+'_gradient'+'")');
+            } else {
+                polygon.setAttribute("fill", shape.options.fill);
+            }
+        }
+        if (shape.options.fillOpacity) {
+            polygon.setAttribute("fill-opacity", shape.options.fillOpacity);
+        }
+    }
+
+    /**
+     * @ignore
+     * Method used to apply provided CSS classes and styles to SVG polygon
+     * @param shape {SmartShape} Shape object
+     * @param polygon {SVGPolygonElement} Polygon element to se tup
+     */
+    this.setupPolygonStyles = (shape, polygon) => {
+        if (shape.options.classes) {
+            polygon.setAttribute("class",shape.options.classes);
+        }
+        if (shape.options.style) {
+            for (let cssName in shape.options.style) {
+                polygon.style[cssName] = shape.options.style[cssName]
+            }
+        }
+    }
+
 }
 
 export default new SmartShapeDrawHelper();
