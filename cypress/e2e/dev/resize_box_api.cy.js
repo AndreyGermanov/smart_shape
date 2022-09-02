@@ -17,7 +17,7 @@ describe('ResizeBox tests', () => {
     return [app,shape];
   }
   const getPoints = (box) => {
-    const box_id = box.options.id;
+    const box_id = box.shape.guid;
     const left_top = box.shape.findPointById(box_id+"_left_top");
     const center_top = box.shape.findPointById(box_id+"_center_top");
     const right_top = box.shape.findPointById(box_id+"_right_top");
@@ -124,7 +124,7 @@ describe('ResizeBox tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, box] = setup();
       const [left_top,center_top,right_top,left_bottom,center_bottom,right_bottom,left_center,right_center] = checkAndGetPoints(box);
-      const box_id = box.options.id;
+      const box_id = box.shape.guid;
       cy.get("#"+box_id+"_right_top").trigger("mousedown",{buttons:1}).then(() => {
         cy.get("#app").trigger("mousemove",{buttons:1,clientX:120,clientY:20}).then(() => {
           assert.equal(right_center.x,right_top.x);
@@ -224,7 +224,7 @@ describe('ResizeBox tests', () => {
   it("Should recalculate ResizeBox position and dimensions after move markers", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, box] = setup();
-      const box_id = box.options.id;
+      const box_id = box.shape.guid;
       cy.get("#"+box_id+"_left_top").trigger("mousedown",{buttons:1}).then(() => {
         cy.get("#app").trigger("mousemove",{buttons:1,clientX:5,clientY:5}).then(() => {
           cy.get("#"+box_id+"_center_top").trigger("mousedown",{buttons:1}).then(() => {
@@ -252,7 +252,7 @@ describe('ResizeBox tests', () => {
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, box] = setup();
-      const box_id = box.options.id;
+      const box_id = box.shape.guid;
       let handlerTriggered = false;
       let handler = (event) => {
         handlerTriggered = true;
@@ -285,7 +285,7 @@ describe('ResizeBox tests', () => {
       const listener = box.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,(event) => {
         handlerTriggered = true;
       });
-      cy.get("#"+box.options.id+"_right_bottom").trigger("mousedown",{buttons:1}).then(() => {
+      cy.get("#"+box.shape.guid+"_right_bottom").trigger("mousedown",{buttons:1}).then(() => {
         cy.get("#app").trigger("mousemove",{buttons:1, clientX:130,clientY:130}).then(() => {
           assert.isTrue(handlerTriggered,"Should trigger event handler");
           assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to local object queue");
@@ -350,11 +350,11 @@ describe('ResizeBox tests', () => {
         cy.get("#box1_shape > polygon").should("have.attr","stroke-dasharray","10").then(() => {
           cy.get("#box1_shape > polygon").should("have.attr","stroke","#aaaaaa").then(() => {
             cy.get("#box1_shape").should("have.css","z-index","1010").then(() => {
-              cy.get("#box1_left_top").should("have.css","border-width","1px").then(() => {
-                cy.get("#box1_left_top").should("have.css","border-color","rgb(204, 204, 204)").then(() => {
-                  cy.get("#box1_left_top").should("have.css","border-radius","0px").then(() => {
-                    cy.get("#box1_left_top").should("have.css","z-index","1011").then(() => {
-                      cy.get("#box1_left_top").should("have.css", "background-color", "rgb(255, 255, 255)").then(() => {
+              cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-width","1px").then(() => {
+                cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-color","rgb(204, 204, 204)").then(() => {
+                  cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-radius","0px").then(() => {
+                    cy.get("#"+box.shape.guid+"_left_top").should("have.css","z-index","1011").then(() => {
+                      cy.get("#"+box.shape.guid+"_left_top").should("have.css", "background-color", "rgb(255, 255, 255)").then(() => {
                         assert.equal(box.options.zIndex, 1010);
                       });
                     });

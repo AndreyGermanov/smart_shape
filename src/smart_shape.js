@@ -410,8 +410,8 @@ function SmartShape() {
     /**
      * Moves shape to specific position. It only changes coordinates of points, but do not
      * redraws the shape on new position. So, you need to call `redraw` yourself after move.
-     * @param x new X coordinate
-     * @param y new Y coordinate
+     * @param x {number} new X coordinate
+     * @param y {number} new Y coordinate
      */
     this.moveTo = (x,y) => {
         const bounds = this.getBounds();
@@ -424,8 +424,8 @@ function SmartShape() {
     /**
      * Scales image to fit specified `width` and `height`. It only changes coordinates of points, but do not
      * redraws the shape on new position. So, you need to call `redraw` yourself after scale.
-     * @param width new width
-     * @param height new height
+     * @param width {number} new width
+     * @param height {number} new height
      */
     this.scaleTo = (width,height) => {
         const bounds = this.getBounds();
@@ -495,7 +495,7 @@ function SmartShape() {
         })
         this.eventListener.destroy();
         this.points = [];
-        this.redraw();
+        this.root.removeChild(this.svg);
     }
 }
 window.ResizeBox = ResizeBox;

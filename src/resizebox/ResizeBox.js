@@ -5,7 +5,7 @@ import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
  * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
- * Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as a separate shape
+ * Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as an independent shape
  * for tasks like resizing objects on a web page or select rectangular regions.
  * @constructor
  */
@@ -50,7 +50,7 @@ function ResizeBox() {
     /**
      * Underlying shape, that used to service this resize box
      * (draw, point event handling and so on)
-     * @type {null}
+     * @type {SmartShape}
      */
     this.shape = null;
 
@@ -148,14 +148,14 @@ function ResizeBox() {
      * Method used to add marker points to ResizeBox, that lately used to resize the box
      */
     this.addPoints = () => {
-        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.options.id+"_left_top",style:{cursor: "nw-resize"}});
-        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.options.id+"_center_top",style:{cursor: "ns-resize"}});
-        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.options.id+"_right_top",style:{cursor: "ne-resize"}});
-        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.options.id+"_right_center",style:{cursor: "ew-resize"}});
-        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.options.id+"_right_bottom",style:{cursor: "se-resize"}});
-        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.options.id+"_center_bottom",style:{cursor: "ns-resize"}});
-        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.options.id+"_left_bottom",style:{cursor: "sw-resize"}});
-        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.options.id+"_left_center",style:{cursor: "ew-resize"}});
+        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{cursor: "nw-resize"}});
+        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.shape.guid+"_center_top",style:{cursor: "ns-resize"}});
+        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{cursor: "ne-resize"}});
+        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.shape.guid+"_right_center",style:{cursor: "ew-resize"}});
+        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{cursor: "se-resize"}});
+        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.shape.guid+"_center_bottom",style:{cursor: "ns-resize"}});
+        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{cursor: "sw-resize"}});
+        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.shape.guid+"_left_center",style:{cursor: "ew-resize"}});
         this.setPointsOptions();
     }
 
@@ -284,8 +284,8 @@ function ResizeBox() {
     /**
      * Uniform method that used to remove event handler, that previously added
      * to this object.
-     * @param eventName - Name of event to remove listener from
-     * @param listener - Pointer to event listener, that added previously.
+     * @param eventName {string} Name of event to remove listener from
+     * @param listener {function} Pointer to event listener, that added previously.
      * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
      */
     this.removeEventListener = (eventName,listener) => {

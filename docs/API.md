@@ -108,7 +108,7 @@ Method removes all subscriptions to events.
     * [.bottom](#ResizeBox+bottom) : <code>number</code>
     * [.width](#ResizeBox+width) : <code>number</code>
     * [.height](#ResizeBox+height) : <code>number</code>
-    * [.shape](#ResizeBox+shape) : <code>null</code>
+    * [.shape](#ResizeBox+shape) : [<code>SmartShape</code>](#SmartShape)
     * [.options](#ResizeBox+options) : <code>object</code>
     * [.eventListener](#ResizeBox+eventListener) : [<code>ResizeBoxEventListener</code>](#ResizeBoxEventListener)
     * [.init(root, left, top, width, height, options)](#ResizeBox+init) ⇒ [<code>ResizeBox</code>](#ResizeBox)
@@ -123,7 +123,7 @@ Method removes all subscriptions to events.
 ### new ResizeBox()
 Class represents a special type of shape, that shows the rectangle with markers on
 it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
-Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as a separate shape
+Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as an independent shape
 for tasks like resizing objects on a web page or select rectangular regions.
 
 <a name="ResizeBox+left"></a>
@@ -164,7 +164,7 @@ Height of resize box
 **Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
 <a name="ResizeBox+shape"></a>
 
-### resizeBox.shape : <code>null</code>
+### resizeBox.shape : [<code>SmartShape</code>](#SmartShape)
 Underlying shape, that used to service this resize box
 (draw, point event handling and so on)
 
@@ -254,10 +254,10 @@ to this object.
 
 **Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
 
-| Param | Description |
-| --- | --- |
-| eventName | Name of event to remove listener from |
-| listener | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event to remove listener from |
+| listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
 
 <a name="ResizeBoxEventListener"></a>
 
@@ -633,10 +633,10 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 
-| Param | Description |
-| --- | --- |
-| x | new X coordinate |
-| y | new Y coordinate |
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | new X coordinate |
+| y | <code>number</code> | new Y coordinate |
 
 <a name="SmartShape+scaleTo"></a>
 
@@ -646,10 +646,10 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 
-| Param | Description |
-| --- | --- |
-| width | new width |
-| height | new height |
+| Param | Type | Description |
+| --- | --- | --- |
+| width | <code>number</code> | new width |
+| height | <code>number</code> | new height |
 
 <a name="SmartShape+redraw"></a>
 

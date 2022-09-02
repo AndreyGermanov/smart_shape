@@ -12,11 +12,11 @@ describe('Shadow SVG filter tests', () => {
       const [app,shape] = setup();
       shape.setOptions({filters:{
           feDropShadow: {
-            dx:0.2,
-            dy:0.4,
+            dx:2,
+            dy:2,
             stdDeviation:0.5,
-            floodColor:"#555555",
-            floodOpacity:0.9
+            "flood-color":"#555555",
+            "flood-opacity":0.9
           }
         }});
       shape.redraw();
@@ -27,11 +27,11 @@ describe('Shadow SVG filter tests', () => {
       assert.equal(filters[0].getAttribute("id"),shape.guid+"_filter")
       const dropShadow = filters[0].querySelector("feDropShadow");
       assert.isNotNull(dropShadow,"Should contain drop shadow filter inside filters")
-      assert.equal(dropShadow.getAttributeNS(shape.svg.namespaceURI,"dx"),0.2,"Should contain dx attribute");
-      assert.equal(dropShadow.getAttributeNS(shape.svg.namespaceURI,"dy"),0.4,"Should contain dy attribute");
-      assert.equal(dropShadow.getAttributeNS(shape.svg.namespaceURI,"stdDeviation"),0.5,"Should contain stdDeviation attribute");
-      assert.equal(dropShadow.getAttributeNS(shape.svg.namespaceURI,"floodColor"),"#555555","Should contain floodColor attribute");
-      assert.equal(dropShadow.getAttributeNS(shape.svg.namespaceURI,"floodOpacity"),0.9,"Should contain floodColor attribute");
+      assert.equal(dropShadow.getAttribute("dx"),2,"Should contain dx attribute");
+      assert.equal(dropShadow.getAttribute("dy"),2,"Should contain dy attribute");
+      assert.equal(dropShadow.getAttribute("stdDeviation"),0.5,"Should contain stdDeviation attribute");
+      assert.equal(dropShadow.getAttribute("flood-color"),"#555555","Should contain floodColor attribute");
+      assert.equal(dropShadow.getAttribute("flood-opacity"),0.9,"Should contain floodColor attribute");
       const polygon = shape.svg.querySelector("polygon");
       assert.equal(polygon.style.filter,'url("#'+shape.guid+'_filter")',"Should apply filter to polygon");
     });

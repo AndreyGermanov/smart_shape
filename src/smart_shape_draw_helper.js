@@ -47,11 +47,15 @@ function SmartShapeDrawHelper() {
             const gradient = this.createGradient(shape);
             defs.appendChild(gradient);
             shape.svg.appendChild(defs);
-        } else if (shape.options.filters && typeof(shape.options.filters) === "object" && Object.keys(shape.options.filters).length) {
-            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
+        }
+        if (shape.options.filters && typeof(shape.options.filters) === "object" && Object.keys(shape.options.filters).length) {
+            let defs = shape.svg.querySelector("defs");
+            if (!defs) {
+                defs = document.createElementNS(shape.svg.namespaceURI,"defs");
+                shape.svg.appendChild(defs);
+            }
             const filters = this.createSVGFilters(shape);
             defs.append(filters);
-            shape.svg.appendChild(defs);
         }
         shape.svg.style.zIndex = shape.options.zIndex;
         const polygon = this.drawPolygon(shape);
@@ -236,7 +240,15 @@ function SmartShapeDrawHelper() {
     this.createSVGFilter = (shape,filterName,filterOptions) => {
         const filter = document.createElementNS(shape.svg.namespaceURI,filterName);
         for (let attribute in filterOptions) {
-            filter.setAttributeNS(shape.svg.namespaceURI,attribute,filterOptions[attribute]);
+            let html_attribute = attribute;
+
+            filter.setAttribute(html_attribute,filterOptions[attribute].toString());
+            if (attribute === "dx") {
+                shape.svg.setAttribute("width",shape.width + parseInt(filterOptions["dx"])*2);
+            }
+            if (attribute === "dy") {
+                shape.svg.setAttribute("height",shape.height + parseInt(filterOptions["dy"])*2);
+            }
         }
         return filter;
     }

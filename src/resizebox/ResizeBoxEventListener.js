@@ -221,7 +221,7 @@ function ResizeBoxEventListener(resizeBox) {
      */
     this.addEventListener = (eventName,handler) => {
         const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.options.id === this.resizeBox.options.id) {
+            if (event.target.shape.guid === this.resizeBox.shape.guid) {
                 handler(event)
             }
         });
@@ -233,8 +233,8 @@ function ResizeBoxEventListener(resizeBox) {
      * @ignore
      * Uniform method that used to remove event handler, that previously added
      * to this object.
-     * @param eventName - Name of event to remove listener from
-     * @param listener - Pointer to event listener, that added previously.
+     * @param eventName {string} Name of event to remove listener from
+     * @param listener {function} Pointer to event listener, that added previously.
      * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
      */
     this.removeEventListener = (eventName,listener) => {
