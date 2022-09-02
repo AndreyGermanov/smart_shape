@@ -311,15 +311,7 @@ function O() {
   this.draw = (t) => {
     if (t.points.length < 1)
       return;
-    if (t.svg && (t.root.removeChild(t.svg), t.svg = null), t.calcPosition(), isNaN(t.width)) {
-      t.width = 1, t.scaleTo(1, t.height);
-      return;
-    }
-    if (isNaN(t.height)) {
-      t.height = 1, t.scaleTo(t.width, 1);
-      return;
-    }
-    t.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), t.svg.ondragstart = function() {
+    t.svg && (t.root.removeChild(t.svg), t.svg = null), t.calcPosition(), t.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), t.svg.ondragstart = function() {
       return !1;
     }, t.svg.id = t.options.id, t.svg.style.position = "absolute", t.svg.style.cursor = "crosshair", t.svg.style.left = t.left, t.svg.style.top = t.top, t.svg.setAttribute("width", t.width), t.svg.setAttribute("height", t.height), this.setupShapeFill(t), this.setupSVGFilters(t), t.svg.style.zIndex = t.options.zIndex;
     const i = this.drawPolygon(t);
@@ -498,7 +490,7 @@ function D() {
     }), this.calcPosition();
   }, this.scaleTo = (t, i) => {
     const s = this.getBounds();
-    this.calcPosition();
+    this.calcPosition(), this.width >= 10 && t < 10 && (t = 10), this.height >= 10 && i < 10 && (i = 10);
     let e = this.left + t > s.right ? s.right - this.left : t, o = this.top + i > s.bottom ? s.bottom - this.top : i, n = e / this.width, a = o / this.height;
     this.points.forEach(
       (d) => {
@@ -508,7 +500,7 @@ function D() {
   }, this.redraw = () => {
     P.draw(this);
   }, this.calcPosition = () => {
-    this.left = this.points.map((t) => t.x).reduce((t, i) => i < t ? i : t), this.top = this.points.map((t) => t.y).reduce((t, i) => i < t ? i : t), this.right = this.points.map((t) => t.x).reduce((t, i) => i > t ? i : t), this.bottom = this.points.map((t) => t.y).reduce((t, i) => i > t ? i : t), this.width = this.right - this.left, this.height = this.bottom - this.top;
+    this.left = this.points.map((t) => t.x).reduce((t, i) => i < t ? i : t), this.top = this.points.map((t) => t.y).reduce((t, i) => i < t ? i : t), this.right = this.points.map((t) => t.x).reduce((t, i) => i > t ? i : t), this.bottom = this.points.map((t) => t.y).reduce((t, i) => i > t ? i : t), this.width = this.right - this.left || 1, this.height = this.bottom - this.top || 1;
   }, this.getBounds = () => ({
     left: this.root.clientLeft,
     top: this.root.clientTop,
