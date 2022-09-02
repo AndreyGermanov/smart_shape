@@ -1,6 +1,8 @@
 import SmartShape from "../../../src/smart_shape.js";
+import {ContainerEvents} from "../../../src/smart_shape_event_listener.js";
+import EventsManager from "../../../src/events/EventsManager.js";
 
-function initShape() {
+function setup() {
   const app = Cypress.$("#app").toArray()[0];
   const shape = new SmartShape().init(app,{id:"shape1",canAddPoints:true,canDeletePoints:true},
       [[0,100],[100,0],[200,100]]);
@@ -10,7 +12,7 @@ function initShape() {
 describe('SmartShape API tests', () => {
   it('addPoint', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app,shape] = initShape()
+      const [app,shape] = setup()
       const point = shape.addPoint(100,200,{id:"point1"})
       assert.isNotNull(point)
       cy.get("#point1").should("exist")
@@ -29,7 +31,7 @@ describe('SmartShape API tests', () => {
 
   it('addPoints', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       shape.addPoints([[150, 150], [200, 200]], {style: {backgroundColor: 'rgb(144, 238, 144)'}})
       const point1 = shape.findPoint(150, 150);
       assert.isNotNull(point1)
@@ -52,7 +54,7 @@ describe('SmartShape API tests', () => {
 
   it("deletePoint", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape()
+      const [app, shape] = setup()
       shape.deletePoint(100, 0)
       const point1 = shape.findPoint(100, 0);
       assert.isNull(point1);
@@ -74,7 +76,7 @@ describe('SmartShape API tests', () => {
 
   it('findPoint', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [root, shape] = initShape()
+      const [root, shape] = setup()
       const point1 = shape.findPoint(100, 0)
       assert.isNotNull(point1)
       const point2 = shape.findPoint(200, 200)
@@ -84,7 +86,7 @@ describe('SmartShape API tests', () => {
 
   it('destroy', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       cy.get("#shape1").should("exist").then(() => {
         const point1 = shape.findPoint(100, 0);
         point1.element.id = "point1";
@@ -99,7 +101,7 @@ describe('SmartShape API tests', () => {
 
   it("redraw", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       cy.get("#shape1").should("exist").then(() => {
         shape.svg.id = "shape2";
         cy.get("#shape1").should("not.exist").then(() => {
@@ -116,7 +118,7 @@ describe('SmartShape API tests', () => {
 
   it("setOptions", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       cy.get("#shape1").should("exist").then(() => {
         shape.setOptions({
           id: "shape2",
@@ -174,7 +176,7 @@ describe('SmartShape API tests', () => {
 
   it("getPointsArray", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       let cords = shape.getPointsArray();
       assert.deepEqual(cords, [[0, 100], [100, 0], [200, 100]]);
       shape.addPoint(200, 200);
@@ -189,7 +191,7 @@ describe('SmartShape API tests', () => {
 
   it("moveTo", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       const point1 = shape.findPoint(0,100);
       const point2 = shape.findPoint(100, 0);
       const point3 = shape.findPoint(200,100);
@@ -214,7 +216,7 @@ describe('SmartShape API tests', () => {
 
   it("scaleTo", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
+      const [app, shape] = setup();
       const point1 = shape.findPoint(0,100);
       const point2 = shape.findPoint(100, 0);
       const point3 = shape.findPoint(200,100);
@@ -250,6 +252,67 @@ describe('SmartShape API tests', () => {
       assert.equal(point2.y,10,"Should correctly scale point when out of bounds");
       assert.equal(point3.x,510,"Should correctly scale point when out of bounds");
       assert.equal(point3.y,200,"Should correctly scale point when out of bounds");
+    });
+  });
+  it("addEventListener", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app, shape] = setup();
+      const body = Cypress.$("body").toArray()[0];
+      const app2 = document.createElement("div");
+      app2.style.width = "700px";
+      app2.style.height = "800px";
+      body.appendChild(app2);
+      const shape2 = new SmartShape().init(app2, {id: "shape2"}, [[0, 50], [50, 0], [100, 50], [50, 100]]);
+      let listener1Triggered = false;
+      let listener2Triggered = false;
+      shape.addEventListener(ContainerEvents.CONTAINER_BOUNDS_CHANGED, (event) => {
+        listener1Triggered = true;
+      })
+      shape2.addEventListener(ContainerEvents.CONTAINER_BOUNDS_CHANGED, (event) => {
+        listener2Triggered = true;
+      })
+      assert.equal(shape.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length, 1,
+          "Should register subscription to event of first shape");
+      assert.equal(shape2.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length, 1,
+          "Should register subscription to event of second shape");
+      window.dispatchEvent(new Event('resize'));
+      assert.equal(listener1Triggered, true, "Should trigger first listener");
+      assert.equal(listener2Triggered, true, "Should trigger second listener");
+    });
+  })
+  it("removeEventListener", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      EventsManager.clear();
+      const [app,shape] = setup();
+      const body = Cypress.$("body").toArray()[0];
+      const app2 = document.createElement("div");
+      app2.style.width = "700px";
+      app2.style.height = "800px";
+      body.appendChild(app2);
+      const shape2 = new SmartShape().init(app2, {id:"shape2"},[[0,50],[50,0],[100,50],[50,100]]);
+      let listener1Triggered = false;
+      let listener2Triggered = false;
+      const listener1 = shape.addEventListener(ContainerEvents.CONTAINER_BOUNDS_CHANGED,(event) => {
+        listener1Triggered = true;
+      })
+      const listener2 = shape2.addEventListener(ContainerEvents.CONTAINER_BOUNDS_CHANGED,(event) => {
+        listener2Triggered = true;
+      })
+      assert.equal(shape.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length,1,
+          "Should register subscription to event of first shape");
+      assert.equal(shape2.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length,1,
+          "Should register subscription to event of second shape");
+      window.dispatchEvent(new Event('resize'));
+      assert.equal(listener1Triggered,true,"Should trigger first listener");
+      assert.equal(listener2Triggered,true,"Should trigger second listener");
+      shape.removeEventListener(ContainerEvents.CONTAINER_BOUNDS_CHANGED,listener1);
+      shape2.removeEventListener(ContainerEvents.CONTAINER_BOUNDS_CHANGED,listener2);
+      assert.equal(shape.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length,0,
+          "Should remove subscription from first shape");
+      assert.equal(shape2.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length,0,
+          "Should remove subscription from second shape");
+      assert.equal(EventsManager.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length,7,
+          "Should remove listener from global EventsManager queue");
     });
   });
 })

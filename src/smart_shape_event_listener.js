@@ -21,6 +21,19 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
+     * List of subscribers, that subscribed to events, emitted by
+     * this shape. This is an object, that consists of array
+     * of event handlers of each event. Each handler is a function
+     * that called when event of specified type emitted by
+     * this shape
+     * @type {object}
+     */
+    this.subscriptions = {
+        "CONTAINER_BOUNDS_CHANGED": []
+    }
+
+    /**
+     * @ignore
      * Method binds events to the shape and returns itself
      * @returns {SmartShapeEventListener}
      */
@@ -269,6 +282,39 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
+     * Uniform method that used to add event handler of specified type to this object.
+     * @param eventName {string} - Name of event
+     * @param handler {function} - Function that used as an event handler
+     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
+     */
+    this.addEventListener = (eventName,handler) => {
+        if (typeof(this.subscriptions[eventName]) === "undefined") {
+            this.subscriptions[eventName] = [];
+        }
+        const listener = EventsManager.subscribe(eventName, (event) => {
+            if (event.target.guid === this.shape.guid) {
+                handler(event)
+            }
+        });
+        this.subscriptions[eventName].push(listener);
+        return listener;
+    }
+
+    /**
+     * @ignore
+     * Uniform method that used to remove event handler, that previously added
+     * to this object.
+     * @param eventName {string} Name of event to remove listener from
+     * @param listener {function} Pointer to event listener, that added previously.
+     * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
+     */
+    this.removeEventListener = (eventName,listener) => {
+        this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener),1);
+        EventsManager.unsubscribe(eventName,listener)
+    }
+
+    /**
+     * @ignore
      * Used to remove all event listeners when destroy the object
      */
     this.destroy = () => {
@@ -276,7 +322,7 @@ function SmartShapeEventListener(shape) {
             this.shape.root.removeEventListener("contextmenu", this.nocontextmenu);
         }
         this.shape.root.removeEventListener("mouseup",this.mouseup);
-        window.removeEventListener("window.resize",this.onWindowResize);
+        window.removeEventListener("resize",this.onWindowResize);
         EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);

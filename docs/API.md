@@ -286,10 +286,13 @@ this class automatically during init process
     * [.x](#SmartPoint+x) : <code>number</code>
     * [.y](#SmartPoint+y) : <code>number</code>
     * [.element](#SmartPoint+element) : <code>HTMLElement</code>
+    * [.guid](#SmartPoint+guid) : <code>string</code>
     * [.init(x, y, options)](#SmartPoint+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartPoint+setOptions)
     * [.redraw()](#SmartPoint+redraw)
     * [.destroy()](#SmartPoint+destroy)
+    * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
+    * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
 
 <a name="new_SmartPoint_new"></a>
 
@@ -338,6 +341,12 @@ Y coordinate of point, relative to a corner of shape's container
 HTML DOM node of element, which used to display the point. This is styled DIV element.
 
 **Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+guid"></a>
+
+### smartPoint.guid : <code>string</code>
+Internal global unique identifier of point. Generated automatically.
+
+**Kind**: instance property of [<code>SmartPoint</code>](#SmartPoint)  
 <a name="SmartPoint+init"></a>
 
 ### smartPoint.init(x, y, options) ⇒ <code>object</code>
@@ -377,6 +386,32 @@ raises the `point_destroyed` event. This event then intercepted by owner shape. 
 removes this point from shape's points array.
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+addEventListener"></a>
+
+### smartPoint.addEventListener(eventName, handler) ⇒ <code>function</code>
+Uniform method that used to add event handler of specified type to this object.
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+**Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event |
+| handler | <code>function</code> | Function that used as an event handler |
+
+<a name="SmartPoint+removeEventListener"></a>
+
+### smartPoint.removeEventListener(eventName, listener)
+Uniform method that used to remove event handler, that previously added
+to this object.
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event to remove listener from |
+| listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
+
 <a name="SmartShape"></a>
 
 ## SmartShape
@@ -409,6 +444,8 @@ removes this point from shape's points array.
     * [.redraw()](#SmartShape+redraw)
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>Object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
+    * [.addEventListener(eventName, handler)](#SmartShape+addEventListener) ⇒ <code>function</code>
+    * [.removeEventListener(eventName, listener)](#SmartShape+removeEventListener)
     * [.destroy()](#SmartShape+destroy)
 
 <a name="new_SmartShape_new"></a>
@@ -674,6 +711,32 @@ Method returns true if specified point exists in the array of this shape or fals
 | Param | Description |
 | --- | --- |
 | point | [SmartPoint](#SmartPoint) object of point to search |
+
+<a name="SmartShape+addEventListener"></a>
+
+### smartShape.addEventListener(eventName, handler) ⇒ <code>function</code>
+Uniform method that used to add event handler of specified type to this object.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event |
+| handler | <code>function</code> | Function that used as an event handler |
+
+<a name="SmartShape+removeEventListener"></a>
+
+### smartShape.removeEventListener(eventName, listener)
+Uniform method that used to remove event handler, that previously added
+to this object.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event to remove listener from |
+| listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
 
 <a name="SmartShape+destroy"></a>
 
