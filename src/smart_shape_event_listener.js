@@ -169,8 +169,8 @@ function SmartShapeEventListener(shape) {
         this.shape.calcPosition();
         let stepX = event.movementX;
         let stepY = event.movementY;
-        let clientX = event.clientX;
-        let clientY = event.clientY;
+        let clientX = event.clientX+window.scrollX;
+        let clientY = event.clientY+window.scrollY;
         const newX = this.shape.left + stepX;
         const newY = this.shape.top + stepY;
         const offset = getOffset(this.shape.root, true);
