@@ -91,7 +91,7 @@ function x(t) {
     this.resizeBox.left_bottom.x = i.target.x, this.resizeBox.left_top.x = i.target.x;
   }, this.addEventListener = (i, s) => {
     const e = h.subscribe(i, (o) => {
-      o.target.options.id === this.resizeBox.options.id && s(o);
+      o.target.shape.guid === this.resizeBox.shape.guid && s(o);
     });
     return this.subscriptions[i].push(e), e;
   }, this.removeEventListener = (i, s) => {
@@ -125,7 +125,7 @@ function c() {
   }, this.eventListener = null, this.init = (t, i, s, e, o, n = {}) => (this.left = i, this.top = s, this.width = e, this.height = o, this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id + "_shape", this.shape = new D().init(t, Object.assign({}, this.options.shapeOptions), []), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new x(this).run(), this.redraw(), this), this.setOptions = (t = {}) => {
     t && typeof t == "object" && (t.shapeOptions && typeof t.shapeOptions == "object" ? (t.shapeOptions.pointOptions && typeof t.shapeOptions.pointOptions == "object" ? t.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions, t.shapeOptions.pointOptions) : t.shapeOptions.pointOptions = Object.assign({}, this.options.shapeOptions.pointOptions), t.shapeOptions = Object.assign(this.options.shapeOptions, t.shapeOptions)) : t.shapeOptions = Object.assign({}, this.options.shapeOptions), t.shapeOptions.zIndex = t.zIndex || this.options.zIndex, t.shapeOptions.id = t.id ? t.id + "_shape" : this.options.id + "_shape", Object.assign(this.options, t));
   }, this.addPoints = () => {
-    this.left_top = this.shape.addPoint(this.left, this.top, { id: this.options.id + "_left_top", style: { cursor: "nw-resize" } }), this.center_top = this.shape.addPoint(this.left + this.width / 2, this.top, { id: this.options.id + "_center_top", style: { cursor: "ns-resize" } }), this.right_top = this.shape.addPoint(this.right, this.top, { id: this.options.id + "_right_top", style: { cursor: "ne-resize" } }), this.right_center = this.shape.addPoint(this.right, this.top + this.height / 2, { id: this.options.id + "_right_center", style: { cursor: "ew-resize" } }), this.right_bottom = this.shape.addPoint(this.right, this.bottom, { id: this.options.id + "_right_bottom", style: { cursor: "se-resize" } }), this.center_bottom = this.shape.addPoint(this.left + this.width / 2, this.bottom, { id: this.options.id + "_center_bottom", style: { cursor: "ns-resize" } }), this.left_bottom = this.shape.addPoint(this.left, this.bottom, { id: this.options.id + "_left_bottom", style: { cursor: "sw-resize" } }), this.left_center = this.shape.addPoint(this.left, this.top + this.height / 2, { id: this.options.id + "_left_center", style: { cursor: "ew-resize" } }), this.setPointsOptions();
+    this.left_top = this.shape.addPoint(this.left, this.top, { id: this.shape.guid + "_left_top", style: { cursor: "nw-resize" } }), this.center_top = this.shape.addPoint(this.left + this.width / 2, this.top, { id: this.shape.guid + "_center_top", style: { cursor: "ns-resize" } }), this.right_top = this.shape.addPoint(this.right, this.top, { id: this.shape.guid + "_right_top", style: { cursor: "ne-resize" } }), this.right_center = this.shape.addPoint(this.right, this.top + this.height / 2, { id: this.shape.guid + "_right_center", style: { cursor: "ew-resize" } }), this.right_bottom = this.shape.addPoint(this.right, this.bottom, { id: this.shape.guid + "_right_bottom", style: { cursor: "se-resize" } }), this.center_bottom = this.shape.addPoint(this.left + this.width / 2, this.bottom, { id: this.shape.guid + "_center_bottom", style: { cursor: "ns-resize" } }), this.left_bottom = this.shape.addPoint(this.left, this.bottom, { id: this.shape.guid + "_left_bottom", style: { cursor: "sw-resize" } }), this.left_center = this.shape.addPoint(this.left, this.top + this.height / 2, { id: this.shape.guid + "_left_center", style: { cursor: "ew-resize" } }), this.setPointsOptions();
   }, this.setPointsOptions = () => {
     this.setPointsMoveDirections(), this.setPointsMoveBounds();
   }, this.setPointsMoveDirections = () => {
@@ -300,9 +300,12 @@ function O() {
     } else if (t.options.fillGradient && typeof (t.options.fillGradient === "object") && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1) {
       const s = document.createElementNS(t.svg.namespaceURI, "defs"), e = this.createGradient(t);
       s.appendChild(e), t.svg.appendChild(s);
-    } else if (t.options.filters && typeof t.options.filters == "object" && Object.keys(t.options.filters).length) {
-      const s = document.createElementNS(t.svg.namespaceURI, "defs"), e = this.createSVGFilters(t);
-      s.append(e), t.svg.appendChild(s);
+    }
+    if (t.options.filters && typeof t.options.filters == "object" && Object.keys(t.options.filters).length) {
+      let s = t.svg.querySelector("defs");
+      s || (s = document.createElementNS(t.svg.namespaceURI, "defs"), t.svg.appendChild(s));
+      const e = this.createSVGFilters(t);
+      s.append(e);
     }
     t.svg.style.zIndex = t.options.zIndex;
     const i = this.drawPolygon(t);
@@ -360,8 +363,10 @@ function O() {
     return i;
   }, this.createSVGFilter = (t, i, s) => {
     const e = document.createElementNS(t.svg.namespaceURI, i);
-    for (let o in s)
-      e.setAttributeNS(t.svg.namespaceURI, o, s[o]);
+    for (let o in s) {
+      let n = o;
+      e.setAttribute(n, s[o].toString()), o === "dx" && t.svg.setAttribute("width", t.width + parseInt(s.dx) * 2), o === "dy" && t.svg.setAttribute("height", t.height + parseInt(s.dy) * 2);
+    }
     return e;
   };
 }
@@ -476,7 +481,7 @@ function D() {
   }), this.isShapePoint = (t) => !!this.points.find((i) => i === t), this.destroy = () => {
     this.points.forEach((t) => {
       this.root.removeChild(t.element);
-    }), this.eventListener.destroy(), this.points = [], this.redraw();
+    }), this.eventListener.destroy(), this.points = [], this.root.removeChild(this.svg);
   };
 }
 window.ResizeBox = c;
