@@ -205,8 +205,8 @@ function SmartPoint() {
             EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
-        let newX = event.clientX - offset.left - this.options.width/2;
-        let newY = event.clientY - offset.top - this.options.height/2;
+        let newX = event.clientX + window.scrollX - offset.left - this.options.width/2;
+        let newY = event.clientY + window.scrollY - offset.top - this.options.height/2;
         [newX,newY] = this.applyMoveRestrictions(newX,newY,oldX,oldY);
         this.x = newX;
         this.y = newY;
