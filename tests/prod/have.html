@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Have a fun with SmartShape v 1.0.3</title>
+  </head>
+  <body style="width:99%;height:100%">
+    <div id="app" style="padding-top:10px" align="center">
+      <div id="container1" style="width:1300px;height:800px">
+        <div align="center" style="padding-top:450px">
+          Want to create similar or better figures on your sites? Use <strong>SmartShape</strong> component: <a href="https://github.com/AndreyGermanov/smart_shape" target="_blank">https://github.com/AndreyGermanov/smart_shape</a>
+        </div>
+      </div>
+    </div>
+    <script src="../../smart_shape.umd.cjs"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const grassFill = {
+          href: "https://code.germanov.dev/smart_shape/tests/assets/demo.jpg",
+          width: 200,
+          height: 133
+        };
+        const seaFill = {
+          href: "https://code.germanov.dev/smart_shape/tests/assets/sea.jpg",
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100
+        };
+        const gradientFill = {
+          type: "linear",
+          gradientTransform: "rotate(90)",
+          steps: [
+            {
+              offset: "20%",
+              stopColor: "#ffff00",
+            },
+            {
+              offset: "60%",
+              stopColor: "#ff0000",
+            },
+            {
+              offset: "100%",
+              stopColor: "#ffaa00",
+            },
+          ]
+        }
+        const weekendPointOptions = {
+          style: {
+            backgroundColor: "rgba(0,255,0,0.5)",
+            borderWidth: "0px",
+          }
+        };
+        const havePointOptions = {
+          style: {
+            backgroundColor: "rgba(255,255,0,0.3)",
+          }
+        }
+        const funPointOptions = {
+          style: {
+            backgroundColor: "rgba(0,100,200,0.5)",
+            borderWidth: "0px"
+          }
+        }
+        const filters = {
+          feDropShadow: {
+            dx: 10, dy: 10, "flood-opacity": 0.5, stdDeviation: 3, "flood-color": "#000000"
+          }
+        }
+
+        const div1 = document.getElementById("container1");
+        const div2 = document.getElementById("container2");
+        const h1 = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillGradient: gradientFill,
+                  pointOptions: havePointOptions,
+                  offsetX: 20,
+                  offsetY: 20
+                },
+                [[0, 0], [25, 0], [25, 60], [75, 60], [75, 0], [100, 0], [100, 150], [75, 150], [75, 80], [25, 80], [25, 150], [0, 150]]
+        );
+        const a1 = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  offsetX: 170,
+                  offsetY: 20,
+                  fillGradient: gradientFill,
+                  pointOptions: havePointOptions
+                },
+                [[0, 150], [50, 0], [100, 150], [75, 150], [55, 80], [45, 80], [25, 150]]
+        )
+        const a1_sub = new SmartShape().init(div1, {
+                  fill: 'rgba(255,255,255,1)',
+                  pointOptions: havePointOptions,
+                  offsetX: 170,
+                  offsetY: 20,
+                  zIndex: 1001
+                },
+                [[45, 60], [50, 40], [55, 60]]
+        )
+        const v = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  offsetX: 320,
+                  offsetY: 20,
+                  fillGradient: gradientFill,
+                  pointOptions: havePointOptions
+                },
+                [[0, 0], [50, 150], [100, 0], [75, 0], [50, 90], [25, 0]])
+        const e = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  offsetX: 470,
+                  offsetY: 20,
+                  fillGradient: gradientFill,
+                  pointOptions: havePointOptions
+                },
+                [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+        const a2 = new SmartShape().init(div1,
+                {
+                  filters: filters,
+                  canScale: true,
+                  fill: 'rgba(255,255,255,1)',
+                  offsetX: 650,
+                  offsetY: 20,
+                  pointOptions: {canDrag: false},
+                  strokeDasharray: "10",
+                  strokeWidth: 2,
+                  stroke: "rgba(128,128,128,1)"
+                },
+                [[0, 150], [50, 0], [100, 150], [75, 150], [55, 80], [45, 80], [25, 150]])
+        const a2_sub = new SmartShape().init(div1,
+                {
+                  fill: 'rgba(255,255,255,1)', offsetX: 650, offsetY: 20, zIndex: 1001, pointOptions: {canDrag: false},
+                  strokeDasharray: "2,3", strokeWidth: 2, stroke: "rgba(128,128,128,1)"
+                },
+                [[45, 60], [50, 40], [55, 60]]
+        )
+        const f = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: seaFill,
+                  offsetX: 830,
+                  offsetY: 20,
+                  pointOptions: funPointOptions
+                },
+                [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 150], [0, 150]])
+        const u = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: seaFill,
+                  offsetX: 980,
+                  offsetY: 20,
+                  pointOptions: funPointOptions
+                },
+                [[0, 0], [25, 0], [25, 125], [75, 125], [75, 0], [100, 0], [100, 150], [0, 150]])
+        const n = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: seaFill,
+                  offsetX: 1130,
+                  offsetY: 20,
+                  pointOptions: funPointOptions
+                },
+                [[0, 150], [0, 0], [35, 0], [75, 125], [75, 0], [100, 0], [100, 150], [65, 150], [25, 25], [25, 150]])
+
+        // WEEKEND
+        const w = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px",
+                  offsetY: 230,
+                  offsetX: 52
+                },
+                [[0, 0], [25, 0], [50, 100], [75, 50], [100, 100], [125, 0], [150, 0], [100, 150], [75, 90], [50, 150]])
+        const e2 = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 252,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+        const e3 = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 402,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+        const k = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 552,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 0], [25, 0], [25, 50], [75, 0], [100, 0], [40, 65], [100, 150], [75, 150], [25, 75], [25, 150], [0, 150]])
+        const e4 = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 702,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+        const n2 = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 852,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 150], [0, 0], [35, 0], [75, 125], [75, 0], [100, 0], [100, 150], [65, 150], [25, 25], [25, 150]])
+        const d = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 1002,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 0], [75, 0], [100, 25], [100, 125], [75, 150], [0, 150]])
+        const d_sub = new SmartShape().init(div1, {
+                  fill: 'rgba(255,255,255,1)',
+                  offsetX: 1002,
+                  offsetY: 230,
+                  zIndex: 1001,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[18, 13], [67, 13], [82, 26], [82, 125], [67, 137], [18, 137]])
+        const excl = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 1152,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 0], [25, 0], [25, 100], [0, 100]])
+        const excl_sub = new SmartShape().init(div1, {
+                  filters: filters,
+                  canScale: true,
+                  fillImage: grassFill,
+                  offsetX: 1152,
+                  offsetY: 230,
+                  pointOptions: weekendPointOptions,
+                  strokeWidth: "0px"
+                },
+                [[0, 125], [25, 125], [25, 150], [0, 150]])
+      })
+    </script>
+  </body>
+</html>
