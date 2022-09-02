@@ -432,6 +432,12 @@ function SmartShape() {
     this.scaleTo = (width,height) => {
         const bounds = this.getBounds();
         this.calcPosition();
+        if (this.width>=10 && width<10) {
+            width = 10;
+        }
+        if (this.height>=10 && height<10) {
+            height = 10;
+        }
         let newWidth = this.left + width > bounds.right ? bounds.right - this.left : width;
         let newHeight = this.top + height > bounds.bottom ? bounds.bottom - this.top : height;
         let scaleX = newWidth/this.width;
@@ -460,8 +466,8 @@ function SmartShape() {
         this.top = this.points.map(point => point.y).reduce((miny,y) => y < miny ? y : miny);
         this.right = this.points.map(point => point.x).reduce((maxx,x) => x > maxx ? x : maxx);
         this.bottom = this.points.map(point => point.y).reduce((maxy,y) => y > maxy ? y : maxy);
-        this.width = this.right-this.left;
-        this.height = this.bottom-this.top;
+        this.width = this.right-this.left || 1;
+        this.height = this.bottom-this.top || 1;
     }
 
     /**

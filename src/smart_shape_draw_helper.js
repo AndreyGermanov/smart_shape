@@ -20,16 +20,6 @@ function SmartShapeDrawHelper() {
             shape.svg = null;
         }
         shape.calcPosition();
-        if (isNaN(shape.width)) {
-            shape.width = 1;
-            shape.scaleTo(1,shape.height);
-            return
-        }
-        if (isNaN(shape.height)) {
-            shape.height = 1;
-            shape.scaleTo(shape.width,1);
-            return
-        }
         shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         shape.svg.ondragstart = function() { return false; }
         shape.svg.id = shape.options.id;
