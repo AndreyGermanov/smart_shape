@@ -188,7 +188,7 @@ function _(t) {
     i.buttons !== 1 && (this.shape.root.draggedShape && (this.shape.root.draggedShape.draggedPoint = null), this.shape.root.draggedShape = null);
   }, this.calcMovementOffset = (i) => {
     this.shape.calcPosition();
-    let s = i.movementX, e = i.movementY, o = i.clientX, n = i.clientY;
+    let s = i.movementX, e = i.movementY, o = i.clientX + window.scrollX, n = i.clientY + window.scrollY;
     const l = this.shape.left + s, d = this.shape.top + e, a = f(this.shape.root, !0);
     return l < 0 || l + this.shape.width > this.shape.root.clientLeft + this.shape.root.clientWidth ? [null, null] : d < 0 || d + this.shape.height > this.shape.root.clientTop + this.shape.root.clientHeight ? [null, null] : (o < l + a.left && (s = o - (l + a.left)), n < d + a.top && (e = n - (d + a.top)), o > l + this.shape.width + a.left && (s = o - (this.shape.width + a.left + this.shape.left)), n > d + this.shape.height + a.right && (e = n - (this.shape.height + a.top + this.shape.top)), [s, e]);
   }, this.onPointAdded = (i) => {
@@ -266,7 +266,7 @@ function y() {
       h.emit(r.POINT_DRAG_MOVE, this, { oldX: i, oldY: s });
       return;
     }
-    let o = t.clientX - e.left - this.options.width / 2, n = t.clientY - e.top - this.options.height / 2;
+    let o = t.clientX + window.scrollX - e.left - this.options.width / 2, n = t.clientY + window.scrollY - e.top - this.options.height / 2;
     [o, n] = this.applyMoveRestrictions(o, n, i, s), this.x = o, this.y = n, this.element.style.left = this.x + "px", this.element.style.top = this.y + "px", h.emit(r.POINT_DRAG_MOVE, this, { oldX: i, oldY: s });
   }, this.applyMoveRestrictions = (t, i, s, e) => (i > e && this.options.moveDirections.indexOf(p.BOTTOM) === -1 && (i = e), i < e && this.options.moveDirections.indexOf(p.TOP) === -1 && (i = e), t > s && this.options.moveDirections.indexOf(p.RIGHT) === -1 && (t = s), t < s && this.options.moveDirections.indexOf(p.LEFT) === -1 && (t = s), t > this.options.bounds.right && (t = this.options.bounds.right), i > this.options.bounds.bottom && (i = this.options.bounds.bottom), t < this.options.bounds.left && (t = this.options.bounds.left), i < this.options.bounds.top && (i = this.options.bounds.top), [t, i]), this.mouseup = (t) => {
     h.emit(r.POINT_DRAG_END, this), t.button === 2 && this.options.canDelete && this.destroy();
