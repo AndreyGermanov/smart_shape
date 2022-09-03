@@ -105,10 +105,10 @@ function ResizeBox() {
      * @returns {ResizeBox} constucted ResizeBox object
      */
     this.init = (root,left,top,width,height,options={}) => {
-        this.left = left;
-        this.top = top;
-        this.width = width;
-        this.height = height;
+        this.left = parseInt(left);
+        this.top = parseInt(top);
+        this.width = parseInt(width);
+        this.height = parseInt(height);
         this.right = this.left + this.width;
         this.bottom = this.top + this.height;
         this.setOptions(options);
@@ -140,6 +140,9 @@ function ResizeBox() {
             options.shapeOptions.zIndex = options.zIndex || this.options.zIndex;
             options.shapeOptions.id = options.id ? options.id+"_shape" : this.options.id+"_shape";
             Object.assign(this.options,options);
+            if (this.shape) {
+                this.shape.setOptions(this.options.shapeOptions);
+            }
         }
     }
 

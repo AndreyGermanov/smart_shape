@@ -102,8 +102,8 @@ function SmartPoint() {
      * @returns {object} constructed SmartPoint object
      */
     this.init = (x,y,options = null) => {
-        this.x = x;
-        this.y = y;
+        this.x = parseInt(x);
+        this.y = parseInt(y);
         this.element = this.createPointUI();
         this.setOptions(options);
         this.addEventListeners();
@@ -214,11 +214,7 @@ function SmartPoint() {
         const oldX = this.x;
         const oldY = this.y;
         const offset = getOffset(this.element.parentNode,true);
-        if (event.movementX+this.x < this.options.bounds.left || event.movementX+this.x > this.options.bounds.right) {
-            EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
-            return;
-        }
-        if (event.movementY+this.y < this.options.bounds.top || event.movementY + this.y > this.options.bounds.bottom) {
+        if (!this.checkFitBounds(this.x + event.movementX, this.y + event.movementY)) {
             EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
             return;
         }
@@ -230,6 +226,20 @@ function SmartPoint() {
         this.element.style.left = (this.x)+"px";
         this.element.style.top = (this.y)+"px";
         EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
+    }
+
+    /**
+     * @ignore
+     * Method checks if specified coordinate does not go beyond bounds
+     * @param x {number} X coordinate
+     * @param y {number} Y coordinate
+     * @returns {boolean} True if x,y fit bounds and false if not
+     */
+    this.checkFitBounds = (x,y) => {
+        return !(this.options.bounds.left !== -1 && x < this.options.bounds.left ||
+            this.options.bounds.right !== -1 && x > this.options.bounds.right ||
+            this.options.bounds.top !== -1 && y < this.options.bounds.top ||
+            this.options.bounds.bottom !== -1 && y > this.options.bounds.bottom);
     }
 
     /**

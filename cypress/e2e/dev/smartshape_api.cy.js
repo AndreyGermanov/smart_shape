@@ -139,8 +139,16 @@ describe('SmartShape API tests', () => {
           style: {
             strokeOpacity: 0.0,
           },
-          zIndex: 1010
+          zIndex: 1010,
+          bounds: {
+            bottom: 2000
+          }
         })
+        const bounds = shape.getBounds();
+        assert.equal(bounds.top,shape.root.clientTop);
+        assert.equal(bounds.left,shape.root.clientLeft);
+        assert.equal(bounds.right,shape.root.clientLeft+shape.root.clientWidth);
+        assert.equal(bounds.bottom,2000);
         shape.redraw();
         cy.get("#shape1").should("not.exist").then(() => {
           cy.get("#shape2").should("exist").then(() => {

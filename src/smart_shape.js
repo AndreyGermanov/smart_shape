@@ -79,6 +79,9 @@ function SmartShape() {
      * property of `SmartPoint` object.
      * @param zIndex {number} Order of element in a stack of HTML elements
      * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
+     * @param bounds {object} Bounds for shape movement and points dragging. This is an object with `left`, `top`, `right`
+     * and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not
+     * specified, then left, top, right and bottom of container element will be used for this
      * @type {{}}
      */
     this.options = {
@@ -103,6 +106,7 @@ function SmartShape() {
         style: {},
         pointOptions:{},
         zIndex: 1000,
+        bounds: {left:-1,top:-1,right:-1,bottom:-1}
     };
 
     /**
@@ -265,6 +269,9 @@ function SmartShape() {
             }
             if (options.style && typeof(options.style) === "object") {
                 options.style = Object.assign(this.options.style, options.style);
+            }
+            if (options.bounds && typeof(options.bounds) === "object") {
+                options.bounds = Object.assign(this.options.bounds, options.bounds);
             }
             Object.assign(this.options,options);
             this.points.forEach(point=>{
@@ -476,10 +483,10 @@ function SmartShape() {
      */
     this.getBounds = () => {
         return {
-            left: this.root.clientLeft,
-            top: this.root.clientTop,
-            right: this.root.clientLeft+ this.root.clientWidth,
-            bottom: this.root.clientTop+this.root.clientHeight
+            left: this.options.bounds.left !== -1 ? this.options.bounds.left : this.root.clientLeft,
+            top: this.options.bounds.top !== -1 ? this.options.bounds.top :  this.root.clientTop,
+            right: this.options.bounds.right !== -1 ? this.options.bounds.right : this.root.clientLeft+ this.root.clientWidth,
+            bottom: this.options.bounds.bottom !== -1 ? this.options.bounds.bottom : this.root.clientTop+this.root.clientHeight
         }
     };
 
@@ -527,5 +534,7 @@ function SmartShape() {
         this.root.removeChild(this.svg);
     }
 }
-window.ResizeBox = ResizeBox;
+try {
+    window.ResizeBox = ResizeBox;
+} catch (err) {}
 export default SmartShape;
