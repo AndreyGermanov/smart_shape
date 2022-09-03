@@ -313,6 +313,11 @@ function SmartPoint() {
         this.element.removeEventListener("mouseup",this.mouseup)
         this.element.removeEventListener("mousedown", this.mousedown)
         EventsManager.emit(PointEvents.POINT_DESTROYED,this);
+        for (let eventName in this.subscriptions) {
+            const handlers = this.subscriptions[eventName];
+            handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
+            this.subscriptions[eventName] = [];
+        }
     }
 
     /**

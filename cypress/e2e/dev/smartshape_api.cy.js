@@ -1,5 +1,5 @@
 import SmartShape from "../../../src/smart_shape.js";
-import {ContainerEvents} from "../../../src/smart_shape_event_listener.js";
+import {ContainerEvents, ShapeEvents} from "../../../src/smart_shape_event_listener.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 
 function setup() {
@@ -98,6 +98,7 @@ describe('SmartShape API tests', () => {
       })
     })
   })
+
 
   it("redraw", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
@@ -286,8 +287,62 @@ describe('SmartShape API tests', () => {
       window.dispatchEvent(new Event('resize'));
       assert.equal(listener1Triggered, true, "Should trigger first listener");
       assert.equal(listener2Triggered, true, "Should trigger second listener");
+      shape.destroy();
+      shape2.destroy();
+      let createTriggered = false;
+      let destroyTriggered = false;
+      let mouseMoveTriggered = false;
+      let mouseEnterTriggered = false;
+      let moveStartTriggered = false;
+      let moveEndTriggered = false;
+      let moveTriggered = false;
+      const shape3 = new SmartShape();
+      EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,(event) => {
+        if (event.target.guid === shape3.guid) {
+          createTriggered = true;
+        }
+      });
+      shape3.init(app,{id:"shape3"},[[200,200],[250,150],[300,100],[400,50]]);
+      shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
+        mouseMoveTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER, (event) => {
+        mouseEnterTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
+        moveTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
+        moveStartTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
+        moveEndTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
+        destroyTriggered = true;
+      });
+
+      cy.get("#shape3").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
+        cy.get("#shape3").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
+          cy.get("#shape3").trigger("mousedown", {buttons: 1}).then(() => {
+            cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
+              cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
+                shape3.destroy();
+                assert.isTrue(createTriggered, "Should trigger shape create event");
+                assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
+                assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                assert.isTrue(moveTriggered, "Should trigger shape move event");
+                assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+              });
+            });
+          });
+        });
+      });
     });
   })
+
   it("removeEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       EventsManager.clear();

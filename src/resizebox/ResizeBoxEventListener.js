@@ -1,6 +1,7 @@
 import EventsManager from "../events/EventsManager.js";
 import {PointEvents} from "../smart_point.js";
 import {ResizeBoxEvents} from "./ResizeBox.js";
+import {ShapeEvents} from "../smart_shape_event_listener.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the ResizeBox.
@@ -49,6 +50,21 @@ function ResizeBoxEventListener(resizeBox) {
     this.setEventListeners = () => {
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragMove);
+        this.shapeMouseEnter = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,(event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_ENTER,this.resizeBox,event);
+        });
+        this.shapeMouseMove = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.resizeBox,event);
+        });
+        this.shapeMoveStart = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.resizeBox,event);
+        });
+        this.shapeMoveEnd = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,this.resizeBox,event);
+        });
+        this.shapeMove = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.resizeBox,event);
+        });
     }
 
     /**
@@ -236,7 +252,7 @@ function ResizeBoxEventListener(resizeBox) {
      * @ignore
      * Uniform method that used to remove event handler, that previously added
      * to this object.
-     * @param eventName {string} Name of event to remove listener from
+     * @param eventName {ResizeBoxEvents|string} Name of event to remove listener from
      * @param listener {function} Pointer to event listener, that added previously.
      * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
      */
@@ -255,6 +271,11 @@ function ResizeBoxEventListener(resizeBox) {
             handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
             this.subscriptions[eventName] = [];
         }
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.shapeMoveStart);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE,this.shapeMove);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_END,this.shapeMoveEnd);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE,this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_END,this.onPointDragMove);
     }
