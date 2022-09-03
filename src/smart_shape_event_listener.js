@@ -194,10 +194,10 @@ function SmartShapeEventListener(shape) {
         const newX = this.shape.left + stepX;
         const newY = this.shape.top + stepY;
         const offset = getOffset(this.shape.root, true);
-        if (newX < 0 || newX+this.shape.width > this.shape.root.clientLeft + this.shape.root.clientWidth) {
+        if (newX < 0 || newX+this.shape.width > this.shape.getBounds().right) {
             return [null, null]
         }
-        if (newY < 0 || newY+this.shape.height > this.shape.root.clientTop + this.shape.root.clientHeight) {
+        if (newY < 0 || newY+this.shape.height > this.shape.getBounds().bottom) {
             return [null, null]
         }
         if (clientX<newX+offset.left) {
