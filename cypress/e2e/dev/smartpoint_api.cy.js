@@ -73,19 +73,6 @@ describe('SmartPoint API tests', () => {
     });
   })
 
-  it("destroy", () => {
-    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app,shape] = initShape()
-      const point1 = shape.putPoint(100,100,{id:"point1"});
-      cy.get("#point1").should("exist").then(() => {
-        point1.destroy();
-        cy.get("#point1").should("not.exist").then(() => {
-          assert.equal(shape.points.length,0)
-        });
-      });
-    });
-  })
-
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
@@ -109,6 +96,45 @@ describe('SmartPoint API tests', () => {
         assert.equal(listener1Triggered,true,"Should trigger first listener");
         cy.get("#point2").trigger("mousedown",{buttons:1}).then(() => {
           assert.equal(listener1Triggered,true,"Should trigger second listener");
+          const shape = new SmartShape().init(app,{},[[5,5]]);
+          let createListenerTriggered = false;
+          EventsManager.subscribe(PointEvents.POINT_ADDED,(event) => {
+            createListenerTriggered = true;
+          })
+          const point = shape.addPoint(40,40,{id:"point3"});
+          let mouseMoveListenerTriggered = false;
+          point.addEventListener(PointEvents.POINT_MOUSE_MOVE, (event) => {
+            mouseMoveListenerTriggered = true;
+          })
+          let dragStartListenerTriggered = false;
+          point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
+            dragStartListenerTriggered = true;
+          });
+          let dragMoveListenerTriggered = false;
+          point.addEventListener(PointEvents.POINT_DRAG_MOVE, (event) => {
+            dragMoveListenerTriggered = true;
+          })
+          let dragEndListenerTriggered = false;
+          point.addEventListener(PointEvents.POINT_DRAG_END, (event) => {
+            dragEndListenerTriggered = true;
+          })
+          let destroyedListenerTriggered = false;
+          point.addEventListener(PointEvents.POINT_DESTROYED, (event) => {
+            destroyedListenerTriggered = true;
+          });
+          cy.get("#point3").trigger("mousedown",{buttons:1}).then(() => {
+            cy.get("#app").trigger("mousemove",{buttons:1,clientX:40,clientY:40}).then(() => {
+              cy.get("#app").trigger("mouseup",{buttons:1}).then(() => {
+                assert.isTrue(createListenerTriggered,"Should trigger create event listener");
+                assert.isTrue(mouseMoveListenerTriggered,"Should trigger mouse move event listener");
+                assert.isTrue(dragStartListenerTriggered,"Should trigger drag start event listener");
+                assert.isTrue(dragMoveListenerTriggered,"Should trigger drag move event listener");
+                assert.isTrue(dragEndListenerTriggered,"Should trigger drag end event listener");
+                point.destroy();
+                assert.isTrue(destroyedListenerTriggered,"Should trigger destroy event listener");
+              })
+            })
+          })
         })
       })
     });
@@ -150,5 +176,75 @@ describe('SmartPoint API tests', () => {
       })
     });
   });
+
+  it("destroy", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      EventsManager.clear();
+      const [app,shape] = initShape()
+      const point1 = shape.putPoint(100,100,{id:"point1"});
+      cy.get("#point1").should("exist").then(() => {
+        point1.destroy();
+        cy.get("#point1").should("not.exist").then(() => {
+          assert.equal(shape.points.length,0)
+          const point2 = shape.putPoint(100,100, {id:"point1"});
+          point2.addEventListener(PointEvents.POINT_ADDED,()=> {});
+          point2.addEventListener(PointEvents.POINT_MOUSE_MOVE,()=> {});
+          point2.addEventListener(PointEvents.POINT_DRAG_START,()=> {});
+          point2.addEventListener(PointEvents.POINT_DRAG_MOVE,()=> {});
+          point2.addEventListener(PointEvents.POINT_DRAG_END,()=> {});
+          point2.addEventListener(PointEvents.POINT_DESTROYED,()=> {});
+          assert.equal(point2.subscriptions[PointEvents.POINT_ADDED].length,1,
+              "Should add point create event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_MOUSE_MOVE].length,1,
+              "Should add point mouse move event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DRAG_START].length,1,
+              "Should add point drag start event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DRAG_MOVE].length,1,
+              "Should add point drag move event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DRAG_END].length,1,
+              "Should add point drag end event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DESTROYED].length,1,
+              "Should add point destroyed event listener");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_ADDED].length,2,
+              "Should add point added event to global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_MOUSE_MOVE].length,1,
+              "Should add point mouse move event to global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_START].length,2,
+              "Should add point drag start event to global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,2,
+              "Should add point drag move event to global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,2,
+              "Should add point drag end event to global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DESTROYED].length,2,
+              "Should add point destroy event to global EventsManager");
+          point2.destroy();
+          assert.equal(point2.subscriptions[PointEvents.POINT_ADDED].length,0,
+              "Should remove point create event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_MOUSE_MOVE].length,0,
+              "Should remove point mouse move event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DRAG_START].length,0,
+              "Should remove point drag start event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DRAG_MOVE].length,0,
+              "Should remove point drag move event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DRAG_END].length,0,
+              "Should remove point drag end event listener");
+          assert.equal(point2.subscriptions[PointEvents.POINT_DESTROYED].length,0,
+              "Should remove point destroyed event listener");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_ADDED].length,1,
+              "Should remove point added event from global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_MOUSE_MOVE].length,0,
+              "Should remove point mouse move event from global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_START].length,1,
+              "Should remove point drag start event from global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,1,
+              "Should remove point drag move event from global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,1,
+              "Should remove point drag end event from global EventsManager");
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DESTROYED].length,1,
+              "Should remove point destroy event from global EventsManager");
+        });
+      });
+    });
+  })
 
 })

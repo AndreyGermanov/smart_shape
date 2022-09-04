@@ -1,8 +1,9 @@
 import SmartPoint from "./smart_point.js";
 import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
-import SmartShapeEventListener from "./smart_shape_event_listener.js";
+import SmartShapeEventListener, {ShapeEvents} from "./smart_shape_event_listener.js";
 import ResizeBox from "./resizebox/ResizeBox.js";
 import {uuid} from "./utils.js";
+import EventsManager from "./events/EventsManager.js";
 
 /**
  * SmartShape class. Used to construct shapes.
@@ -189,6 +190,7 @@ function SmartShape() {
         if (this.options.canScale) {
             this.setupResizeBox();
         }
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
     }
 
@@ -478,6 +480,14 @@ function SmartShape() {
     }
 
     /**
+     * Method used to get current position of shape
+     * @returns {{top: number, left: number, bottom: number, right: number,width:number,height:number}}
+     */
+    this.getPosition = () => (
+        {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
+    )
+
+    /**
      * Method returns the coordinates of container, to which this shape connected.
      * @returns {{top: number, left: number, bottom: number, right: number}}
      */
@@ -526,11 +536,11 @@ function SmartShape() {
      * set the variable to 'null' after calling this method.
      */
     this.destroy = () => {
-        this.points.forEach(point => {
-            this.root.removeChild(point.element)
-        })
+        while (this.points.length>0) {
+            this.points[0].destroy();
+        }
+        EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
         this.eventListener.destroy();
-        this.points = [];
         this.root.removeChild(this.svg);
     }
 }

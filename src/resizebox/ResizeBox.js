@@ -1,7 +1,9 @@
 import SmartShape from "../smart_shape.js";
 import {PointMoveDirections} from "../smart_point.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
-
+import EventsManager from "../events/EventsManager.js";
+import {ShapeEvents} from "../smart_shape_event_listener.js";
+import {uuid} from "../utils.js";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
  * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
@@ -55,6 +57,13 @@ function ResizeBox() {
     this.shape = null;
 
     /**
+     * Global unique identifier of this object.
+     * Generated automatically
+     * @type {string}
+     */
+    this.guid = uuid()
+
+    /**
      * Options of resize box
      * @param id {string} Unique ID or resize box. If instantiated by [SmartShape](#SmartShape), then setup
      * automatically
@@ -93,6 +102,54 @@ function ResizeBox() {
     this.eventListener = null;
 
     /**
+     * Left top marker point
+     * @type {SmartPoint}
+     */
+    this.left_top = null;
+
+    /**
+     * Left center marker point
+     * @type {SmartPoint}
+     */
+    this.left_center = null;
+
+    /**
+     * Left bottom marker point
+     * @type {SmartPoint}
+     */
+    this.left_bottom = null;
+
+    /**
+     * Center top marker point
+     * @type {SmartPoint}
+     */
+    this.center_top = null;
+
+    /**
+     * Center bottom marker point
+     * @type {SmartPoint}
+     */
+    this.center_bottom = null;
+
+    /**
+     * Right top marker point
+     * @type {SmartPoint}
+     */
+    this.right_top = null;
+
+    /**
+     * Right center marker point
+     * @type {SmartPoint}
+     */
+    this.right_center = null;
+
+    /**
+     * Right bottom marker point
+     * @type {SmartPoint}
+     */
+    this.right_bottom = null;
+
+    /**
      * Method used to construct ResizeBox object with specified coordinates and
      * size, with specified `options`. Then it binds this object to specified `root`
      * HTML node and displays it
@@ -118,6 +175,7 @@ function ResizeBox() {
         this.addPoints();
         this.eventListener = new ResizeBoxEventListener(this).run();
         this.redraw()
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
     }
 
@@ -255,6 +313,14 @@ function ResizeBox() {
     }
 
     /**
+     * Method used to get current position of Resize Box
+     * @returns {{top: number, left: number, bottom: number, right: number,width:number,height:number}}
+     */
+    this.getPosition = () => (
+        {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
+    )
+
+    /**
      * Method used to redraw resize box
      */
     this.redraw = () => {
@@ -270,6 +336,7 @@ function ResizeBox() {
      * set the variable to 'null' after calling this method.
      */
     this.destroy = () => {
+        EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
         this.eventListener.destroy();
         this.shape.destroy();
     }
@@ -281,13 +348,13 @@ function ResizeBox() {
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */
     this.addEventListener = (eventName,handler) => {
-        return this.eventListener.addEventListener(eventName,handler)
+        return this.eventListener.addEventListener(eventName,handler);
     }
 
     /**
      * Uniform method that used to remove event handler, that previously added
      * to this object.
-     * @param eventName {string} Name of event to remove listener from
+     * @param eventName {ResizeBoxEvents|string} Name of event to remove listener from
      * @param listener {function} Pointer to event listener, that added previously.
      * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
      */

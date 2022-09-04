@@ -106,7 +106,7 @@ function SmartPoint() {
         this.y = parseInt(y);
         this.element = this.createPointUI();
         this.setOptions(options);
-        this.addEventListeners();
+        this.setEventListeners();
         EventsManager.emit(PointEvents.POINT_ADDED,this);
         return this;
     }
@@ -185,7 +185,7 @@ function SmartPoint() {
      * @ignore
      * Internal method used to attach HTML event listeners to point.
      */
-    this.addEventListeners = () => {
+    this.setEventListeners = () => {
         this.element.addEventListener("mouseup",this.mouseup);
         this.element.addEventListener("mousedown", this.mousedown);
         EventsManager.subscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
@@ -208,6 +208,7 @@ function SmartPoint() {
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
+        EventsManager.emit(PointEvents.POINT_MOUSE_MOVE,this,{clientX:event.clientX,clientY:event.clientY})
         if (event.buttons !== 1 || !this.options.canDrag) {
             return
         }
@@ -310,9 +311,15 @@ function SmartPoint() {
      * removes this point from shape's points array.
      */
     this.destroy = () => {
-        this.element.removeEventListener("mouseup",this.mouseup)
-        this.element.removeEventListener("mousedown", this.mousedown)
+        this.element.removeEventListener("mouseup",this.mouseup);
+        this.element.removeEventListener("mousedown", this.mousedown);
+        EventsManager.unsubscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
         EventsManager.emit(PointEvents.POINT_DESTROYED,this);
+        for (let eventName in this.subscriptions) {
+            const handlers = this.subscriptions[eventName];
+            handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
+            this.subscriptions[eventName] = [];
+        }
     }
 
     /**
@@ -361,11 +368,12 @@ function SmartPoint() {
  * @enum {string}
  */
 export const PointEvents = {
-    POINT_ADDED: "POINT_ADDED",
-    POINT_DESTROYED: "POINT_DESTROYED",
-    POINT_DRAG_START: "POINT_DRAG_START",
-    POINT_DRAG_MOVE: "POINT_DRAG_MOVE",
-    POINT_DRAG_END: "POINT_DRAG_END",
+    POINT_ADDED: "create",
+    POINT_DESTROYED: "destroy",
+    POINT_DRAG_START: "move_start",
+    POINT_DRAG_MOVE: "move",
+    POINT_DRAG_END: "move_end",
+    POINT_MOUSE_MOVE: "mousemove"
 };
 
 /**

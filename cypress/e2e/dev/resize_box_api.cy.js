@@ -2,6 +2,7 @@ import ResizeBox, {ResizeBoxEvents} from "../../../src/resizebox/ResizeBox.js";
 import {PointEvents, PointMoveDirections} from "../../../src/smart_point.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 import SmartShape from "../../../src/smart_shape.js";
+import {ShapeEvents} from "../../../src/smart_shape_event_listener.js";
 describe('ResizeBox tests', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];
@@ -256,24 +257,76 @@ describe('ResizeBox tests', () => {
       let handlerTriggered = false;
       let handler = (event) => {
         handlerTriggered = true;
-        assert.equal(event.oldDims.left, 10, "Should return correct old left coordinate");
-        assert.equal(event.oldDims.right, 100, "Should return correct old right coordinate");
-        assert.equal(event.oldDims.top, 10, "Should return correct old top coordinate");
-        assert.equal(event.oldDims.bottom, 100, "Should return correct old bottom coordinate");
-        assert.equal(event.oldDims.width, 90, "Should return correct old width");
-        assert.equal(event.oldDims.height, 90, "Should return correct old height");
-        assert.equal(event.newDims.left, 10, "Should return correct new left coordinate");
-        assert.equal(event.newDims.right, 107, "Should return correct new right coordinate");
-        assert.equal(event.newDims.top, 10, "Should return correct new top coordinate");
-        assert.equal(event.newDims.bottom, 107, "Should return correct new bottom coordinate");
-        assert.equal(event.newDims.width, 97, "Should return correct new width");
-        assert.equal(event.newDims.height, 97, "Should return correct new height");
+        assert.equal(event.oldPos.left, 10, "Should return correct old left coordinate");
+        assert.equal(event.oldPos.right, 100, "Should return correct old right coordinate");
+        assert.equal(event.oldPos.top, 10, "Should return correct old top coordinate");
+        assert.equal(event.oldPos.bottom, 100, "Should return correct old bottom coordinate");
+        assert.equal(event.oldPos.width, 90, "Should return correct old width");
+        assert.equal(event.oldPos.height, 90, "Should return correct old height");
+        assert.equal(event.newPos.left, 10, "Should return correct new left coordinate");
+        assert.equal(event.newPos.right, 107, "Should return correct new right coordinate");
+        assert.equal(event.newPos.top, 10, "Should return correct new top coordinate");
+        assert.equal(event.newPos.bottom, 107, "Should return correct new bottom coordinate");
+        assert.equal(event.newPos.width, 97, "Should return correct new width");
+        assert.equal(event.newPos.height, 97, "Should return correct new height");
       }
       const listener = box.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, handler);
       cy.get("#" + box_id + "_right_bottom").trigger("mousedown", {buttons: 1}).then(() => {
         cy.get("#app").trigger("mousemove", {buttons: 1, clientX: 120, clientY: 120}).then(() => {
           assert.isTrue(handlerTriggered, "Should trigger event handler");
           box.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, listener);
+          let createTriggered = false;
+          const box2 = new ResizeBox()
+          EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,(event) => {
+            if (event.target.guid === box2.guid) {
+              createTriggered = true;
+            }
+          });
+          box2.init(app,120,10,220,100,{id:"box2"});
+          let destroyTriggered = false;
+          let mouseMoveTriggered = false;
+          let mouseEnterTriggered = false;
+          let moveStartTriggered = false;
+          let moveEndTriggered = false;
+          let moveTriggered = false;
+          box2.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
+            mouseMoveTriggered = true;
+          });
+          box2.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER, (event) => {
+            mouseEnterTriggered = true;
+          });
+          box2.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
+            moveTriggered = true;
+          });
+          box2.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
+            moveStartTriggered = true;
+          });
+          box2.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
+            moveEndTriggered = true;
+          });
+          box2.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
+            destroyTriggered = true;
+          });
+
+          cy.get("#box2_shape").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
+            cy.get("#box2_shape").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
+              cy.get("#box2_shape").trigger("mousedown", {buttons: 1}).then(() => {
+                cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
+                  cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
+                    box.destroy();
+                    box2.destroy();
+                    assert.isTrue(createTriggered, "Should trigger shape create event");
+                    assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
+                    assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                    assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                    assert.isTrue(moveTriggered, "Should trigger shape move event");
+                    assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                    assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                  });
+                });
+              });
+            });
+          });
         })
       })
     })
@@ -374,17 +427,99 @@ describe('ResizeBox tests', () => {
       box.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,()=> {
         console.log("Triggered");
       });
+      box.addEventListener(ShapeEvents.SHAPE_CREATE,() => {});
+      box.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER, () => {});
+      box.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, () => {});
+      box.addEventListener(ShapeEvents.SHAPE_MOVE_START, () => {});
+      box.addEventListener(ShapeEvents.SHAPE_MOVE, () => {});
+      box.addEventListener(ShapeEvents.SHAPE_MOVE_END, () => {});
+      box.addEventListener(ShapeEvents.SHAPE_DESTROY, () => {});
       assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in local queue");
       assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,2,"Should contain point drag move event handlers for all points in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,2,"Should contain point drag end event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,4,"Should contain point drag move event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,4,"Should contain point drag end event handlers for all points in global queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
+          "Should register SHAPE_CREATE event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
+          "Should register SHAPE_MOUSE_ENTER event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,1,
+          "Should register SHAPE_MOUSE_MOVE event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,1,
+          "Should register SHAPE_MOVE_START event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE].length,1,
+          "Should register SHAPE_MOVE event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,1,
+          "Should register SHAPE_MOVE_END event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,1,
+          "Should register SHAPE_DESTROY event in local queue");
+
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,2,
+          "Should register SHAPE_CREATE in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,2,
+          "Should register SHAPE_MOUSE_ENTER in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,2,
+          "Should register SHAPE_MOUSE_MOVE in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,3,
+          "Should register SHAPE_MOVE_START in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,4,
+          "Should register SHAPE_MOVE in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,4,
+          "Should register SHAPE_MOVE_END in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,2,
+          "Should register SHAPE_DESTROY in global EventsManager"
+      );
+
       box.destroy();
       assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in local queue after destroy");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
+          "Should register SHAPE_CREATE event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
+          "Should register SHAPE_MOUSE_ENTER event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
+          "Should register SHAPE_MOUSE_ENTER event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,0,
+          "Should register SHAPE_MOUSE_MOVE event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,0,
+          "Should register SHAPE_MOVE_START event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE].length,0,
+          "Should register SHAPE_MOVE event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,0,
+          "Should register SHAPE_MOVE_END event in local queue");
+      assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
+          "Should register SHAPE_DESTROY event in local queue");
+
       assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in global queue after destroy");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,0,"Should not contain point drag move event handlers for all points in global queue after destroy");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,0,"Should not contain point drag end event handlers for all points in global queue after destroy");
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
+          "Should register SHAPE_CREATE in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
+          "Should register SHAPE_MOUSE_ENTER in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,0,
+          "Should register SHAPE_MOUSE_MOVE in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,0,
+          "Should register SHAPE_MOVE_START in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,0,
+          "Should register SHAPE_MOVE in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,0,
+          "Should register SHAPE_MOVE_END in global EventsManager"
+      );
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
+          "Should register SHAPE_DESTROY in global EventsManager"
+      );
     });
-  })
+  });
   it("Should correctly enable scale feature on SmartShape instance", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = initShape();

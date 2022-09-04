@@ -109,10 +109,20 @@ Method removes all subscriptions to events.
     * [.width](#ResizeBox+width) : <code>number</code>
     * [.height](#ResizeBox+height) : <code>number</code>
     * [.shape](#ResizeBox+shape) : [<code>SmartShape</code>](#SmartShape)
+    * [.guid](#ResizeBox+guid) : <code>string</code>
     * [.options](#ResizeBox+options) : <code>object</code>
     * [.eventListener](#ResizeBox+eventListener) : [<code>ResizeBoxEventListener</code>](#ResizeBoxEventListener)
+    * [.left_top](#ResizeBox+left_top) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.left_center](#ResizeBox+left_center) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.left_bottom](#ResizeBox+left_bottom) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.center_top](#ResizeBox+center_top) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.center_bottom](#ResizeBox+center_bottom) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.right_top](#ResizeBox+right_top) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.right_center](#ResizeBox+right_center) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.right_bottom](#ResizeBox+right_bottom) : [<code>SmartPoint</code>](#SmartPoint)
     * [.init(root, left, top, width, height, options)](#ResizeBox+init) ⇒ [<code>ResizeBox</code>](#ResizeBox)
     * [.setOptions(options)](#ResizeBox+setOptions)
+    * [.getPosition()](#ResizeBox+getPosition) ⇒ <code>Object</code>
     * [.redraw()](#ResizeBox+redraw)
     * [.destroy()](#ResizeBox+destroy)
     * [.addEventListener(eventName, handler)](#ResizeBox+addEventListener) ⇒ <code>function</code>
@@ -169,6 +179,13 @@ Underlying shape, that used to service this resize box
 (draw, point event handling and so on)
 
 **Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+guid"></a>
+
+### resizeBox.guid : <code>string</code>
+Global unique identifier of this object.
+Generated automatically
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
 <a name="ResizeBox+options"></a>
 
 ### resizeBox.options : <code>object</code>
@@ -187,6 +204,54 @@ Options of resize box
 ### resizeBox.eventListener : [<code>ResizeBoxEventListener</code>](#ResizeBoxEventListener)
 Event listener that handles event listening logic for this resize box.
 Instance of [ResizeBoxEventListener](#ResizeBoxEventListener) class.
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+left_top"></a>
+
+### resizeBox.left\_top : [<code>SmartPoint</code>](#SmartPoint)
+Left top marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+left_center"></a>
+
+### resizeBox.left\_center : [<code>SmartPoint</code>](#SmartPoint)
+Left center marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+left_bottom"></a>
+
+### resizeBox.left\_bottom : [<code>SmartPoint</code>](#SmartPoint)
+Left bottom marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+center_top"></a>
+
+### resizeBox.center\_top : [<code>SmartPoint</code>](#SmartPoint)
+Center top marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+center_bottom"></a>
+
+### resizeBox.center\_bottom : [<code>SmartPoint</code>](#SmartPoint)
+Center bottom marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+right_top"></a>
+
+### resizeBox.right\_top : [<code>SmartPoint</code>](#SmartPoint)
+Right top marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+right_center"></a>
+
+### resizeBox.right\_center : [<code>SmartPoint</code>](#SmartPoint)
+Right center marker point
+
+**Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+right_bottom"></a>
+
+### resizeBox.right\_bottom : [<code>SmartPoint</code>](#SmartPoint)
+Right bottom marker point
 
 **Kind**: instance property of [<code>ResizeBox</code>](#ResizeBox)  
 <a name="ResizeBox+init"></a>
@@ -219,6 +284,12 @@ Method used to change options of ResizeBox.
 | --- | --- | --- |
 | options | <code>object</code> | Options object. See [here](#ResizeBox+options). |
 
+<a name="ResizeBox+getPosition"></a>
+
+### resizeBox.getPosition() ⇒ <code>Object</code>
+Method used to get current position of Resize Box
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
 <a name="ResizeBox+redraw"></a>
 
 ### resizeBox.redraw()
@@ -256,7 +327,7 @@ to this object.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Name of event to remove listener from |
+| eventName | [<code>ResizeBoxEvents</code>](#ResizeBoxEvents) \| <code>string</code> | Name of event to remove listener from |
 | listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
 
 <a name="ResizeBoxEventListener"></a>
@@ -442,6 +513,7 @@ to this object.
     * [.moveTo(x, y)](#SmartShape+moveTo)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.redraw()](#SmartShape+redraw)
+    * [.getPosition()](#SmartShape+getPosition) ⇒ <code>Object</code>
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>Object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
     * [.addEventListener(eventName, handler)](#SmartShape+addEventListener) ⇒ <code>function</code>
@@ -504,6 +576,7 @@ Options of shape as an object. Can have the following parameters.
 | canScale | <code>boolean</code> | Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears around shape and user can drag in to resize shape in different directions |
 | pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
+| bounds | <code>object</code> | Bounds for shape movement and points dragging. This is an object with `left`, `top`, `right` and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not specified, then left, top, right and bottom of container element will be used for this |
 
 <a name="SmartShape+left"></a>
 
@@ -692,6 +765,12 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 
 ### smartShape.redraw()
 Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+getPosition"></a>
+
+### smartShape.getPosition() ⇒ <code>Object</code>
+Method used to get current position of shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+getBounds"></a>

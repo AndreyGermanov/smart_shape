@@ -57,12 +57,12 @@ function SmartShapeEventListener(shape) {
             })
             this.shape.root.addEventListener("mouseup",this.mouseup);
             this.shape.root.addEventListener("dblclick",this.doubleclick);
-            this.shape.root.addEventListener("mouseenter", this.mouseenter);
+            this.shape.root.addEventListener("mouseenter",this.mouseenter);
             if (this.shape.options.canDeletePoints) {
                 this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
             }
-            window.addEventListener("resize", this.onWindowResize);
         }
+        window.addEventListener("resize", this.onWindowResize);
         EventsManager.subscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.subscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
@@ -82,11 +82,11 @@ function SmartShapeEventListener(shape) {
             return;
         }
         this.resizeBoxListener = this.shape.resizeBox.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, (event) => {
-            const diffX = event.newDims.left - event.oldDims.left;
-            const diffY = event.newDims.top - event.oldDims.top;
+            const diffX = event.newPos.left - event.oldPos.left;
+            const diffY = event.newPos.top - event.oldPos.top;
             this.shape.moveTo(this.shape.left+diffX,this.shape.top+diffY);
             const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
-            this.shape.scaleTo(event.newDims.width-(pointWidth+5)*2,event.newDims.height-(pointHeight+5)*2);
+            this.shape.scaleTo(event.newPos.width-(pointWidth+5)*2,event.newPos.height-(pointHeight+5)*2);
             this.shape.redraw();
         });
     }
@@ -97,14 +97,21 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mouseup = (event) => {
-        if (event.buttons === 1 && this.shape.options.canAddPoints && !this.shape.draggedPoint) {
-            if (this.shape.options.maxPoints === -1 || this.shape.points.length < this.shape.options.maxPoints) {
-                this.shape.addPoint(event.clientX-this.shape.root.offsetLeft, event.clientY-this.shape.root.offsetTop)
-            }
-        }
         if (this.shape.root.draggedShape) {
-            this.shape.root.draggedShape.draggedPoint = null;
+            const dragshape = this.shape.root.draggedShape;
+            if (event.buttons === 1 && dragshape.options.canAddPoints && !dragshape.draggedPoint) {
+                if (dragshape.options.maxPoints === -1 || dragshape.points.length < dragshape.options.maxPoints) {
+                    dragshape.addPoint(event.clientX-dragshape.root.offsetLeft, event.clientY-dragshape.root.offsetTop)
+                }
+            }
+            if (this.shape.root.draggedShape.draggedPoint) {
+                this.shape.root.draggedShape.draggedPoint.mouseup(event);
+                if (this.shape.root.draggedShape) {
+                    this.shape.root.draggedShape.draggedPoint = null;
+                }
+            }
             this.shape.root.draggedShape = null;
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,dragshape);
         }
     }
 
@@ -129,6 +136,7 @@ function SmartShapeEventListener(shape) {
      */
     this.mousedown = (_event) => {
         this.shape.root.draggedShape = this.shape;
+        EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.shape);
     }
 
     /**
@@ -137,6 +145,7 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.shape, {clientX:event.clientX,clientY:event.clientY});
         if (event.buttons !== 1) {
             if (this.shape.root.draggedShape) {
                 this.shape.root.draggedShape.draggedPoint = null;
@@ -155,12 +164,15 @@ function SmartShapeEventListener(shape) {
         if (stepX === null || stepY === null) {
             return
         }
+        const oldPos = this.shape.getPosition();
         for (let index in this.shape.points) {
             this.shape.points[index].x += stepX;
             this.shape.points[index].y += stepY;
             this.shape.points[index].redraw();
         }
         this.shape.redraw()
+        const newPos = this.shape.getPosition();
+        EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,{oldPos,newPos});
     }
 
     /**
@@ -169,6 +181,7 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mouseenter = (event) => {
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_ENTER, this.shape, {clientX:event.clientX,clientY:event.clientY});
         if (event.buttons !== 1) {
             if (this.shape.root.draggedShape) {
                 this.shape.root.draggedShape.draggedPoint = null;
@@ -329,15 +342,21 @@ function SmartShapeEventListener(shape) {
         if (this.shape.options.canDeletePoints) {
             this.shape.root.removeEventListener("contextmenu", this.nocontextmenu);
         }
-        this.shape.root.removeEventListener("mouseup",this.mouseup);
+
         window.removeEventListener("resize",this.onWindowResize);
+        this.shape.svg.removeEventListener("mouseenter",this.shape.svg_mouseenter);
         EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
         EventsManager.unsubscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
         if (this.shape.resizeBox) {
-            this.shape.resizeBox.removeEventListener(this.resizeBoxListener);
+            this.shape.resizeBox.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBoxListener);
+        }
+        for (let eventName in this.subscriptions) {
+            const handlers = this.subscriptions[eventName];
+            handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
+            this.subscriptions[eventName] = [];
         }
     }
 }
@@ -352,6 +371,16 @@ function SmartShapeEventListener(shape) {
 */
 export const ContainerEvents = {
     CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
+}
+
+export const ShapeEvents = {
+    SHAPE_CREATE: "create",
+    SHAPE_MOVE_START: "move_start",
+    SHAPE_MOVE: "move",
+    SHAPE_MOVE_END: "move_end",
+    SHAPE_MOUSE_MOVE: "mousemove",
+    SHAPE_MOUSE_ENTER: "mouseenter",
+    SHAPE_DESTROY: "destroy"
 }
 
 export default SmartShapeEventListener;
