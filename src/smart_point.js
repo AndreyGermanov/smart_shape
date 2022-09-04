@@ -188,9 +188,6 @@ function SmartPoint() {
     this.setEventListeners = () => {
         this.element.addEventListener("mouseup",this.mouseup);
         this.element.addEventListener("mousedown", this.mousedown);
-        this.element.addEventListener("mousemove", (event) => {
-
-        })
         EventsManager.subscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
     }
 

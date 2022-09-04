@@ -98,10 +98,10 @@ function SmartShapeEventListener(shape) {
      */
     this.mouseup = (event) => {
         if (this.shape.root.draggedShape) {
-            const shape = this.shape.root.draggedShape;
-            if (event.buttons === 1 && shape.options.canAddPoints && !shape.draggedPoint) {
-                if (shape.options.maxPoints === -1 || shape.points.length < shape.options.maxPoints) {
-                    shape.addPoint(event.clientX-shape.root.offsetLeft, event.clientY-shape.root.offsetTop)
+            const dragshape = this.shape.root.draggedShape;
+            if (event.buttons === 1 && dragshape.options.canAddPoints && !dragshape.draggedPoint) {
+                if (dragshape.options.maxPoints === -1 || dragshape.points.length < dragshape.options.maxPoints) {
+                    dragshape.addPoint(event.clientX-dragshape.root.offsetLeft, event.clientY-dragshape.root.offsetTop)
                 }
             }
             if (this.shape.root.draggedShape.draggedPoint) {
@@ -111,7 +111,7 @@ function SmartShapeEventListener(shape) {
                 }
             }
             this.shape.root.draggedShape = null;
-            EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,shape);
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,dragshape);
         }
     }
 
