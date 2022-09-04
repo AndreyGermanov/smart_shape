@@ -82,11 +82,11 @@ function SmartShapeEventListener(shape) {
             return;
         }
         this.resizeBoxListener = this.shape.resizeBox.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, (event) => {
-            const diffX = event.newDims.left - event.oldDims.left;
-            const diffY = event.newDims.top - event.oldDims.top;
+            const diffX = event.newPos.left - event.oldPos.left;
+            const diffY = event.newPos.top - event.oldPos.top;
             this.shape.moveTo(this.shape.left+diffX,this.shape.top+diffY);
             const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
-            this.shape.scaleTo(event.newDims.width-(pointWidth+5)*2,event.newDims.height-(pointHeight+5)*2);
+            this.shape.scaleTo(event.newPos.width-(pointWidth+5)*2,event.newPos.height-(pointHeight+5)*2);
             this.shape.redraw();
         });
     }
@@ -104,7 +104,12 @@ function SmartShapeEventListener(shape) {
                     shape.addPoint(event.clientX-shape.root.offsetLeft, event.clientY-shape.root.offsetTop)
                 }
             }
-            this.shape.root.draggedShape.draggedPoint = null;
+            if (this.shape.root.draggedShape.draggedPoint) {
+                this.shape.root.draggedShape.draggedPoint.mouseup(event);
+                if (this.shape.root.draggedShape) {
+                    this.shape.root.draggedShape.draggedPoint = null;
+                }
+            }
             this.shape.root.draggedShape = null;
             EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,shape);
         }

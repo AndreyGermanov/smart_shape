@@ -111,25 +111,11 @@ function ResizeBoxEventListener(resizeBox) {
         }
         this.resizeBox.adjustCenters();
         this.resizeBox.setPointsMoveBounds();
-        const oldDims = {
-            left:this.resizeBox.left,
-            top:this.resizeBox.top,
-            right:this.resizeBox.right,
-            bottom:this.resizeBox.bottom,
-            width:this.resizeBox.width,
-            height:this.resizeBox.height
-        };
+        const oldPos = this.resizeBox.getPosition();
         this.resizeBox.calcPosition();
-        const newDims = {
-            left:this.resizeBox.left,
-            top:this.resizeBox.top,
-            right:this.resizeBox.right,
-            bottom:this.resizeBox.bottom,
-            width:this.resizeBox.width,
-            height:this.resizeBox.height
-        };
+        const newPos = this.resizeBox.getPosition();
         this.resizeBox.redraw();
-        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBox,{oldDims,newDims});
+        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBox,{oldPos,newPos});
     }
 
     /**
@@ -240,7 +226,7 @@ function ResizeBoxEventListener(resizeBox) {
             this.subscriptions[eventName] = [];
         }
         const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.shape.guid === this.resizeBox.shape.guid) {
+            if (event.target.shape && event.target.shape.guid === this.resizeBox.shape.guid) {
                 handler(event)
             }
         });

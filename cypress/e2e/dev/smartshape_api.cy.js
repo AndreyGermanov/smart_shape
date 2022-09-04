@@ -85,12 +85,99 @@ describe('SmartShape API tests', () => {
   })
 
   it('destroy', () => {
+    EventsManager.clear();
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = setup();
       cy.get("#shape1").should("exist").then(() => {
         const point1 = shape.findPoint(100, 0);
         point1.element.id = "point1";
+        shape.addEventListener(ShapeEvents.SHAPE_CREATE,() => {});
+        shape.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER, () => {});
+        shape.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, () => {});
+        shape.addEventListener(ShapeEvents.SHAPE_MOVE_START, () => {});
+        shape.addEventListener(ShapeEvents.SHAPE_MOVE, () => {});
+        shape.addEventListener(ShapeEvents.SHAPE_MOVE_END, () => {});
+        shape.addEventListener(ShapeEvents.SHAPE_DESTROY, () => {});
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
+            "Should register SHAPE_CREATE event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
+            "Should register SHAPE_MOUSE_ENTER event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
+            "Should register SHAPE_MOUSE_ENTER event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,1,
+            "Should register SHAPE_MOUSE_MOVE event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,1,
+            "Should register SHAPE_MOVE_START event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE].length,1,
+            "Should register SHAPE_MOVE event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,1,
+            "Should register SHAPE_MOVE_END event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,1,
+            "Should register SHAPE_DESTROY event in local queue");
+
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,2,
+            "Should register SHAPE_CREATE in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
+            "Should register SHAPE_MOUSE_ENTER in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,1,
+            "Should register SHAPE_MOUSE_MOVE in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,2,
+            "Should register SHAPE_MOVE_START in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,2,
+            "Should register SHAPE_MOVE in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,2,
+            "Should register SHAPE_MOVE_END in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,2,
+            "Should register SHAPE_DESTROY in global EventsManager"
+        );
+
         shape.destroy();
+
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
+            "Should register SHAPE_CREATE event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
+            "Should register SHAPE_MOUSE_ENTER event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
+            "Should register SHAPE_MOUSE_ENTER event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,0,
+            "Should register SHAPE_MOUSE_MOVE event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,0,
+            "Should register SHAPE_MOVE_START event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE].length,0,
+            "Should register SHAPE_MOVE event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,0,
+            "Should register SHAPE_MOVE_END event in local queue");
+        assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
+            "Should register SHAPE_DESTROY event in local queue");
+
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
+            "Should register SHAPE_CREATE in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
+            "Should register SHAPE_MOUSE_ENTER in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,0,
+            "Should register SHAPE_MOUSE_MOVE in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,0,
+            "Should register SHAPE_MOVE_START in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,0,
+            "Should register SHAPE_MOVE in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,0,
+            "Should register SHAPE_MOVE_END in global EventsManager"
+        );
+        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
+            "Should register SHAPE_DESTROY in global EventsManager"
+        );
+
         cy.get("#point1").should("not.exist").then(() => {
           assert.equal(shape.points.length, 0);
           cy.get("#shape1").should("not.exist");
@@ -376,6 +463,7 @@ describe('SmartShape API tests', () => {
           "Should remove subscription from second shape");
       assert.equal(EventsManager.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length,7,
           "Should remove listener from global EventsManager queue");
+
     });
   });
 })

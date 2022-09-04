@@ -3,7 +3,7 @@ import {PointMoveDirections} from "../smart_point.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../smart_shape_event_listener.js";
-
+import {uuid} from "../utils.js";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
  * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
@@ -55,6 +55,13 @@ function ResizeBox() {
      * @type {SmartShape}
      */
     this.shape = null;
+
+    /**
+     * Global unique identifier of this object.
+     * Generated automatically
+     * @type {string}
+     */
+    this.guid = uuid()
 
     /**
      * Options of resize box
@@ -306,6 +313,14 @@ function ResizeBox() {
     }
 
     /**
+     * Method used to get current position of Resize Box
+     * @returns {{top: number, left: number, bottom: number, right: number,width:number,height:number}}
+     */
+    this.getPosition = () => (
+        {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
+    )
+
+    /**
      * Method used to redraw resize box
      */
     this.redraw = () => {
@@ -321,9 +336,9 @@ function ResizeBox() {
      * set the variable to 'null' after calling this method.
      */
     this.destroy = () => {
+        EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
         this.eventListener.destroy();
         this.shape.destroy();
-        EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
     }
 
     /**
