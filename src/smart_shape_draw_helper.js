@@ -70,6 +70,7 @@ function SmartShapeDrawHelper() {
     }
 
     /**
+     * @ignore
      * If shape scaling feature is enabled, this method
      * redraws [ResizeBox](#ResizeBox) around it after redrawing the shape
      * @param shape {SmartShape} Shape object

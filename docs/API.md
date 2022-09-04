@@ -836,29 +836,12 @@ set the variable to 'null' after calling this method.
 
 ## SmartShapeDrawHelper
 **Kind**: global class  
-
-* [SmartShapeDrawHelper](#SmartShapeDrawHelper)
-    * [new SmartShapeDrawHelper()](#new_SmartShapeDrawHelper_new)
-    * [.redrawResizeBox(shape)](#SmartShapeDrawHelper+redrawResizeBox)
-
 <a name="new_SmartShapeDrawHelper_new"></a>
 
 ### new SmartShapeDrawHelper()
 Internal helper class that used to draw shape.
 Should not be used directly. SmartShape objects execute methods
 of this object when need to draw shapes.
-
-<a name="SmartShapeDrawHelper+redrawResizeBox"></a>
-
-### smartShapeDrawHelper.redrawResizeBox(shape)
-If shape scaling feature is enabled, this method
-redraws [ResizeBox](#ResizeBox) around it after redrawing the shape
-
-**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| shape | [<code>SmartShape</code>](#SmartShape) | Shape object |
 
 <a name="SmartShapeEventListener"></a>
 
