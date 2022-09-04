@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resize Image with ResizeBox demo</title>
+</head>
+<body>
+    <img src="../assets/demo.jpg" id="img"/>
+    <script src="../../smart_shape.umd.cjs"></script>
+    <script>
+        const img = document.querySelector("#img");
+        img.addEventListener("click",() => {
+            console.log(img.clientLeft,img.clientTop, img.clientWidth,img.clientHeight);
+            const resizeBox = new window.ResizeBox();
+            resizeBox.init(document.querySelector("body"),img.clientLeft,img.clientTop,img.clientWidth,img.clientHeight,{shapeOptions:{canDragShape:false}})
+            resizeBox.options.shapeOptions.bounds = resizeBox.shape.getBounds();
+            resizeBox.options.shapeOptions.bounds.bottom = 1000;
+            resizeBox.setOptions(resizeBox.options);
+            console.log(resizeBox.shape.getBounds());
+
+        })
+    </script>
+</body>
+</html>

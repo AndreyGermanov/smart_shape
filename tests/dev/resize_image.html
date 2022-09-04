@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resize Image with ResizeBox demo</title>
+</head>
+<body style="width:100%;height:1200px">
+    <img src="../assets/demo.jpg" id="img" style="position:absolute" alt="Simple image"/>
+    <script type="module">
+        import ResizeBox from "../../src/resizebox/ResizeBox.js";
+        let resizeBox = null;
+        const img = document.querySelector("#img");
+
+        // When click on image, show ResizeBox around it
+        img.addEventListener("click",(event) => {
+            // if Resize box already displayed, exit
+            if (resizeBox) { return }
+            // Create the Resize box object
+            resizeBox = new ResizeBox();
+            // Initialize and display ResizeBox around image
+            resizeBox.init(
+                // container to which ResizeBox should be bound (just to HTML body)
+                document.querySelector("body"),
+                // left, right, width and height of Resize box. Let's make it equal to image dimensions
+                img.style.left || img.clientLeft,img.style.top || img.clientTop,img.style.width || img.clientWidth,img.style.height || img.clientHeight,
+                // set some custom options of ResizeBox: no need to drag ResizeBox shape. Only resize required.
+                {
+                    shapeOptions: {
+                        canDragShape:false
+                    }
+                });
+
+            // Add listener to Resize box, which will trigger every time when it resized
+            resizeBox.addEventListener("resize",(event) => {
+                // Set dimensions of the image to new dimensions of resize box
+                img.style.top = event.newPos.top + "px";
+                img.style.left = event.newPos.left + "px";
+                img.style.width = event.newPos.width + "px";
+                img.style.height = event.newPos.height + "px";
+            })
+        })
+
+        // Remove resize box when click on the screen
+        document.body.addEventListener("click", (event) => {
+            if (!resizeBox || event.target !== document.querySelector("body")) {
+                return;
+            }
+            resizeBox.destroy();
+            resizeBox = null;
+        })
+    </script>
+</body>
+</html>

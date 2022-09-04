@@ -122,7 +122,7 @@ Method removes all subscriptions to events.
     * [.right_bottom](#ResizeBox+right_bottom) : [<code>SmartPoint</code>](#SmartPoint)
     * [.init(root, left, top, width, height, options)](#ResizeBox+init) ⇒ [<code>ResizeBox</code>](#ResizeBox)
     * [.setOptions(options)](#ResizeBox+setOptions)
-    * [.getPosition()](#ResizeBox+getPosition) ⇒ <code>Object</code>
+    * [.getPosition()](#ResizeBox+getPosition) ⇒ <code>object</code>
     * [.redraw()](#ResizeBox+redraw)
     * [.destroy()](#ResizeBox+destroy)
     * [.addEventListener(eventName, handler)](#ResizeBox+addEventListener) ⇒ <code>function</code>
@@ -286,10 +286,12 @@ Method used to change options of ResizeBox.
 
 <a name="ResizeBox+getPosition"></a>
 
-### resizeBox.getPosition() ⇒ <code>Object</code>
+### resizeBox.getPosition() ⇒ <code>object</code>
 Method used to get current position of Resize Box
 
 **Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+**Returns**: <code>object</code> - Position with fields:
+`top`,`left`,`right`,`bottom`,`width`,`height`  
 <a name="ResizeBox+redraw"></a>
 
 ### resizeBox.redraw()
@@ -513,8 +515,8 @@ to this object.
     * [.moveTo(x, y)](#SmartShape+moveTo)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.redraw()](#SmartShape+redraw)
-    * [.getPosition()](#SmartShape+getPosition) ⇒ <code>Object</code>
-    * [.getBounds()](#SmartShape+getBounds) ⇒ <code>Object</code>
+    * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
+    * [.getBounds()](#SmartShape+getBounds) ⇒ <code>object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
     * [.addEventListener(eventName, handler)](#SmartShape+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartShape+removeEventListener)
@@ -769,16 +771,21 @@ Method used to redraw shape polygon. Runs automatically when add/remove points o
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+getPosition"></a>
 
-### smartShape.getPosition() ⇒ <code>Object</code>
+### smartShape.getPosition() ⇒ <code>object</code>
 Method used to get current position of shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>object</code> - Position with fields:
+`top`,`left`,`right`,`bottom`,`width`,`height`  
 <a name="SmartShape+getBounds"></a>
 
-### smartShape.getBounds() ⇒ <code>Object</code>
-Method returns the coordinates of container, to which this shape connected.
+### smartShape.getBounds() ⇒ <code>object</code>
+Method returns the bounds of this shape, e.g. inside which square it's allowed to drag it.
+By default, if [options.bounds](#SmartShape+options) not specified, the bounds of shape are equal to
+the bounds of shape's container element (clientLeft, clientTop, clientLeft+clientWidth, clientTop+clientHeight)
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>object</code> - Object with `left`, `top`, `right` and `bottom` fields.  
 <a name="SmartShape+isShapePoint"></a>
 
 ### smartShape.isShapePoint(point) ⇒ <code>boolean</code>

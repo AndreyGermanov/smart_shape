@@ -314,7 +314,8 @@ function ResizeBox() {
 
     /**
      * Method used to get current position of Resize Box
-     * @returns {{top: number, left: number, bottom: number, right: number,width:number,height:number}}
+     * @returns {object} Position with fields:
+     * `top`,`left`,`right`,`bottom`,`width`,`height`
      */
     this.getPosition = () => (
         {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}

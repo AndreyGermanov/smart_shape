@@ -481,15 +481,18 @@ function SmartShape() {
 
     /**
      * Method used to get current position of shape
-     * @returns {{top: number, left: number, bottom: number, right: number,width:number,height:number}}
+     * @returns {object} Position with fields:
+     * `top`,`left`,`right`,`bottom`,`width`,`height`
      */
     this.getPosition = () => (
         {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
     )
 
     /**
-     * Method returns the coordinates of container, to which this shape connected.
-     * @returns {{top: number, left: number, bottom: number, right: number}}
+     * Method returns the bounds of this shape, e.g. inside which square it's allowed to drag it.
+     * By default, if [options.bounds](#SmartShape+options) not specified, the bounds of shape are equal to
+     * the bounds of shape's container element (clientLeft, clientTop, clientLeft+clientWidth, clientTop+clientHeight)
+     * @returns {object} Object with `left`, `top`, `right` and `bottom` fields.
      */
     this.getBounds = () => {
         return {
