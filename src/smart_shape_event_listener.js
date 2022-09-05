@@ -304,9 +304,9 @@ function SmartShapeEventListener(shape) {
     /**
      * @ignore
      * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
-     * @param handler {function} - Function that used as an event handler
-     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
+     * @param eventName {string} Name of event
+     * @param handler {function} Function that used as an event handler
+     * @returns {function} Pointer to added event handler. Should be used to remove event listener later.
      */
     this.addEventListener = (eventName,handler) => {
         if (typeof(this.subscriptions[eventName]) === "undefined") {

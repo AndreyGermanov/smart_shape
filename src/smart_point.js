@@ -30,6 +30,7 @@ function SmartPoint() {
      * value is:
      * `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`.
      * To restrict movement in any direction, need to remove some directions from this array.
+     * @param visible {boolean} Point is visible or not. By default, `true`.
      * @type {{}}
      */
     this.options = {
@@ -55,7 +56,8 @@ function SmartPoint() {
             PointMoveDirections.TOP,
             PointMoveDirections.RIGHT,
             PointMoveDirections.BOTTOM
-        ]
+        ],
+        visible: true
     };
 
     /**
@@ -166,7 +168,7 @@ function SmartPoint() {
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
         element.style.zIndex = this.options.zIndex;
-        if (!this.options.canDrag) {
+        if (!this.options.canDrag || !this.options.visible) {
             element.style.display = 'none';
         } else {
             element.style.display = '';
@@ -177,8 +179,24 @@ function SmartPoint() {
     /**
      * Method used to redraw the point. Usually used after change point position on the screen.
      */
-    this.redraw =() => {
+    this.redraw = () => {
         this.element = this.setPointStyles();
+    }
+
+    /**
+     * Method used to display point if it has hidden
+     */
+    this.show = () => {
+        this.setOptions({visible:true});
+        this.redraw();
+    }
+
+    /**
+     * Method used to hide point
+     */
+    this.hide = () => {
+        this.setOptions({visible:false});
+        this.redraw();
     }
 
     /**

@@ -204,6 +204,40 @@ describe('SmartShape API tests', () => {
     })
   })
 
+  it("show/hide", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = new SmartShape();
+      shape.init(app,{visible:false,canScale:true,id:"shape1"},[[0,100],[100,0],[200,100]]);
+      assert.equal(shape.svg.style.display,'none',"Should create invisible shape");
+      assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
+      for (let point of shape.points) {
+        assert.equal(point.element.style.display,'none',"Point must be invisible");
+      }
+      for (let point of shape.resizeBox.shape.points) {
+        assert.equal(point.element.style.display,'none',"Resize box point must be invisible");
+      }
+      shape.show();
+      assert.notEqual(shape.svg.style.display,'none',"Should show visible shape");
+      assert.notEqual(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also visible")
+      for (let point of shape.points) {
+        assert.notEqual(point.element.style.display,'none',"Point must be visible");
+      }
+      for (let point of shape.resizeBox.shape.points) {
+        assert.notEqual(point.element.style.display,'none',"Resize box point must be visible");
+      }
+      shape.hide();
+      assert.equal(shape.svg.style.display,'none',"Should hide shape");
+      assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
+      for (let point of shape.points) {
+        assert.equal(point.element.style.display,'none',"Point must be invisible");
+      }
+      for (let point of shape.resizeBox.shape.points) {
+        assert.equal(point.element.style.display,'none',"Resize box point must be invisible");
+      }
+    });
+  })
+
   it("setOptions", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = setup();

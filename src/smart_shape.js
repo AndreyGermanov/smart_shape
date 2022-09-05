@@ -83,6 +83,7 @@ function SmartShape() {
      * @param bounds {object} Bounds for shape movement and points dragging. This is an object with `left`, `top`, `right`
      * and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not
      * specified, then left, top, right and bottom of container element will be used for this
+     * @param visible {boolean} Shape is visible or not. By default, `true`.
      * @type {{}}
      */
     this.options = {
@@ -107,7 +108,8 @@ function SmartShape() {
         style: {},
         pointOptions:{},
         zIndex: 1000,
-        bounds: {left:-1,top:-1,right:-1,bottom:-1}
+        bounds: {left:-1,top:-1,right:-1,bottom:-1},
+        visible:true
     };
 
     /**
@@ -204,7 +206,8 @@ function SmartShape() {
             zIndex: this.options.zIndex-1,
             id: this.options.id+"_resizebox",
             shapeOptions:{
-                canDragShape: false
+                canDragShape: false,
+                visible: this.options.visible,
             }
         })
         this.calcPosition();
@@ -274,6 +277,12 @@ function SmartShape() {
             }
             if (options.bounds && typeof(options.bounds) === "object") {
                 options.bounds = Object.assign(this.options.bounds, options.bounds);
+            }
+            if (options.visible !== this.options.visible) {
+                this.points.forEach(point => point.options.visible = options.visible);
+                if (this.resizeBox) {
+                    this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
+                }
             }
             Object.assign(this.options,options);
             this.points.forEach(point=>{
@@ -531,6 +540,22 @@ function SmartShape() {
      */
     this.removeEventListener = (eventName,listener) => {
         this.eventListener.removeEventListener(eventName,listener);
+    }
+
+    /**
+     * Method used to show shape if it has hidden
+     */
+    this.show = () => {
+        this.setOptions({visible:true});
+        this.redraw();
+    }
+
+    /**
+     * Method used to hide the shape
+     */
+    this.hide = () => {
+        this.setOptions({visible:false});
+        this.redraw();
     }
 
     /**

@@ -71,7 +71,21 @@ describe('SmartPoint API tests', () => {
         })
       })
     });
-  })
+  });
+
+  it("show/hide", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = new SmartShape();
+      shape.init(app,{canScale:false,visible:false,id:"shape1"},[[0,100],[100,0],[200,100]]);
+      const point = shape.findPoint(100,0);
+      assert.equal(point.element.style.display,'none',"Should create invisible point");
+      point.show();
+      assert.notEqual(point.element.style.display,'none',"Should show the point");
+      point.hide();
+      assert.equal(point.element.style.display,'none',"Should hide the point");
+    });
+  });
 
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
