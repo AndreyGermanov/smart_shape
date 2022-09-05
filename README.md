@@ -32,7 +32,15 @@ That's all. It's self-contained and does not have any other dependencies.
 
 This will add `SmartShape` object to a global namespace automatically, and you can start using it to create interactive shapes.
 
+<a name="Use"></a>
+
 # Use
+
+The main class is obviously `SmartShape`, but there are other helper classes exist as well, that either used by SmartShape, or can be instantiated independently for different tasks. Their specifications you can find in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).
+
+<a name="Use+SmartShape"></a>
+
+## SmartShape
 
 When the script is loaded, you have the `SmartShape` class, that is ready to be used. However, smart shapes can be added only inside a container. Container is any html element, that should exist on a web page.
 
@@ -73,7 +81,39 @@ You can create many shapes and each of them can be much more complex. Then you c
 `SmartShape` object contains the shape itself and array of points, each of them is an object of `SmartPoint` class.
 After `SmartShape` object created, you can add new points, change various options and read various properties of the shape and points using properties and methods of public API.
 
-[Read API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).   
+[Read API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).
+
+# Examples
+
+Examples below show how you can use SmartShape and it's derivatives in basic mode and also how they can be customized and integrated in real world applications.
+
+## SmartShape
+
+
+| Description                | Source                                                                                    | Live                                                                    |
+| -------------------------- |-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| Basic example              | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/demo.html)      | [link](https://code.germanov.dev/smart_shape/tests/prod/demo.html)      |
+| Extended example: multiple shapes with different options| [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/index.html)     | [link](https://code.germanov.dev/smart_shape/tests/prod/index.html)     |
+| Cut image using SmartShape | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/cut_image.html) | [link](https://code.germanov.dev/smart_shape/tests/prod/cut_image.html) |
+
+This is how **Cut image using SmartShape** looks:
+
+![cut](https://code.germanov.dev/smart_shape/assets/cut.gif)
+
+### SmartShape in production
+
+This video shows how SmartShape used inside online text recognition tool to select an image region for perspective correction. Then, after region selected, application uses `getPointsArray()` method of SmartShape to get array of coordinates of points and send them to backend for further processing.
+
+<iframe width="640" height="480" src="https://www.youtube.com/embed/4ee-HYCtgJ4"
+frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+# Resize Box
+
+
+| Description                           | Source                                                                                       | Live                                                                       |
+| ------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Basic example                         | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/resize_box.html)   | [link](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html)   |
+| Resize and move image using ResizeBox | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/resize_image.html) | [link](https://code.germanov.dev/smart_shape/tests/prod/resize_image.html) |
 
 # Plans and Contribution
 
