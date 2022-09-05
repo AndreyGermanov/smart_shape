@@ -122,7 +122,8 @@ function SmartShapeEventListener(shape) {
         event.stopPropagation();
         if (this.shape.options.canAddPoints && !this.shape.draggedPoint) {
             if (this.shape.options.maxPoints === -1 || this.shape.points.length < this.shape.options.maxPoints) {
-                this.shape.addPoint(event.clientX-this.shape.root.offsetLeft, event.clientY-this.shape.root.offsetTop)
+                this.shape.addPoint(event.clientX-this.shape.root.offsetLeft + window.scrollX,
+                    event.clientY-this.shape.root.offsetTop + window.scrollY);
             }
         }
     }
