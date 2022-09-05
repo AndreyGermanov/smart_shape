@@ -170,7 +170,10 @@ function P(t) {
       i.buttons === 1 && s.options.canAddPoints && !s.draggedPoint && (s.options.maxPoints === -1 || s.points.length < s.options.maxPoints) && s.addPoint(i.clientX - s.root.offsetLeft, i.clientY - s.root.offsetTop), this.shape.root.draggedShape.draggedPoint && (this.shape.root.draggedShape.draggedPoint.mouseup(i), this.shape.root.draggedShape && (this.shape.root.draggedShape.draggedPoint = null)), this.shape.root.draggedShape = null, o.emit(r.SHAPE_MOVE_END, s);
     }
   }, this.doubleclick = (i) => {
-    i.stopPropagation(), this.shape.options.canAddPoints && !this.shape.draggedPoint && (this.shape.options.maxPoints === -1 || this.shape.points.length < this.shape.options.maxPoints) && this.shape.addPoint(i.clientX - this.shape.root.offsetLeft, i.clientY - this.shape.root.offsetTop);
+    i.stopPropagation(), this.shape.options.canAddPoints && !this.shape.draggedPoint && (this.shape.options.maxPoints === -1 || this.shape.points.length < this.shape.options.maxPoints) && this.shape.addPoint(
+      i.clientX - this.shape.root.offsetLeft + window.scrollX,
+      i.clientY - this.shape.root.offsetTop + window.scrollY
+    );
   }, this.mousedown = (i) => {
     m(i), this.shape.root.draggedShape = this.shape, o.emit(r.SHAPE_MOVE_START, this.shape);
   }, this.mousemove = (i) => {
@@ -188,8 +191,8 @@ function P(t) {
     if (s === null || e === null)
       return;
     const h = this.shape.getPosition();
-    for (let a in this.shape.points)
-      this.shape.points[a].x += s, this.shape.points[a].y += e, this.shape.points[a].redraw();
+    for (let l in this.shape.points)
+      this.shape.points[l].x += s, this.shape.points[l].y += e, this.shape.points[l].redraw();
     this.shape.redraw();
     const n = this.shape.getPosition();
     o.emit(r.SHAPE_MOVE, this.shape, { oldPos: h, newPos: n });
@@ -198,8 +201,8 @@ function P(t) {
   }, this.calcMovementOffset = (i) => {
     this.shape.calcPosition();
     let s = i.movementX, e = i.movementY, h = i.clientX + window.scrollX, n = i.clientY + window.scrollY;
-    const a = this.shape.left + s, l = this.shape.top + e, u = _(this.shape.root, !0), c = this.shape.getBounds();
-    return a < c.left || a + this.shape.width > c.right ? [null, null] : l < c.top || l + this.shape.height > c.bottom ? [null, null] : (h < a + u.left && (s = h - (a + u.left)), n < l + u.top && (e = n - (l + u.top)), h > a + this.shape.width + u.left && (s = h - (this.shape.width + u.left + this.shape.left)), n > l + this.shape.height + u.right && (e = n - (this.shape.height + u.top + this.shape.top)), [s, e]);
+    const l = this.shape.left + s, a = this.shape.top + e, u = _(this.shape.root, !0), c = this.shape.getBounds();
+    return l < c.left || l + this.shape.width > c.right ? [null, null] : a < c.top || a + this.shape.height > c.bottom ? [null, null] : (h < l + u.left && (s = h - (l + u.left)), n < a + u.top && (e = n - (a + u.top)), h > l + this.shape.width + u.left && (s = h - (this.shape.width + u.left + this.shape.left)), n > a + this.shape.height + u.right && (e = n - (this.shape.height + u.top + this.shape.top)), [s, e]);
   }, this.onPointAdded = (i) => {
     this.checkCanDeletePoints();
   }, this.checkCanDeletePoints = () => {
@@ -520,10 +523,10 @@ function w() {
   }, this.scaleTo = (t, i) => {
     const s = this.getBounds();
     this.calcPosition(), this.width >= 10 && t < 10 && (t = 10), this.height >= 10 && i < 10 && (i = 10);
-    let e = this.left + t > s.right ? s.right - this.left : t, h = this.top + i > s.bottom ? s.bottom - this.top : i, n = e / this.width, a = h / this.height;
+    let e = this.left + t > s.right ? s.right - this.left : t, h = this.top + i > s.bottom ? s.bottom - this.top : i, n = e / this.width, l = h / this.height;
     this.points.forEach(
-      (l) => {
-        l.x = (l.x - this.left) * n + this.left, l.y = (l.y - this.top) * a + this.top;
+      (a) => {
+        a.x = (a.x - this.left) * n + this.left, a.y = (a.y - this.top) * l + this.top;
       }
     ), this.calcPosition();
   }, this.redraw = () => {
