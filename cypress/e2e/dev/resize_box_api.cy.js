@@ -378,7 +378,31 @@ describe('ResizeBox tests', () => {
       assert.equal(right_center.x,250,"Should correctly recalculate x coordinate of right center marker");
       assert.equal(right_center.y,115,"Should correctly recalculate y coordinate of right center marker");
     });
-  })
+  });
+
+  it("show/hide", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const box = new ResizeBox();
+      box.init(app,0,0,100,100,{shapeOptions:{visible:false}},);
+      assert.equal(box.shape.svg.style.display,'none',"Should create invisible shape");
+      for (let point of box.shape.points) {
+        assert.equal(point.element.style.display,'none',"Point must be invisible");
+      }
+      box.show();
+      assert.notEqual(box.shape.svg.style.display,'none',"Should show visible shape");
+      for (let point of box.shape.points) {
+        assert.notEqual(point.element.style.display,'none',"Point must be visible");
+      }
+      box.hide();
+      assert.equal(box.shape.svg.style.display,'none',"Should hide shape");
+      for (let point of box.shape.points) {
+        assert.equal(point.element.style.display,'none',"Point must be invisible");
+      }
+      box.show();
+    });
+  });
+
   it("setOptions",() => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,box] = setup();

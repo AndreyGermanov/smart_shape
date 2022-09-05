@@ -37,7 +37,7 @@ function SmartShapeDrawHelper() {
         shape.root.appendChild(shape.svg);
         shape.svg.addEventListener("mousedown",shape.eventListener.mousedown)
         shape.svg_mouseenter = shape.svg.addEventListener("mouseenter",shape.eventListener.mouseenter)
-        if (!shape.options.visible) {
+        if (typeof(shape.options.visible) !== "undefined" && !shape.options.visible) {
             shape.svg.style.display = 'none';
         }
         shape.points.forEach(point => {

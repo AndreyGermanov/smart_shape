@@ -332,6 +332,20 @@ function ResizeBox() {
     }
 
     /**
+     * Method used to show Resize Box if it has hidden
+     */
+    this.show = () => {
+        this.shape.show();
+    }
+
+    /**
+     * Method used to hide Resize Box
+     */
+    this.hide = () => {
+        this.shape.hide();
+    }
+
+    /**
      * Destroys the ResizeBox. Destroys all points, removes event listeners and removes the shape from screen.
      * But variable continue existing. To completely remove the shape,
      * set the variable to 'null' after calling this method.

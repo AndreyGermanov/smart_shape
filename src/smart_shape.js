@@ -278,7 +278,7 @@ function SmartShape() {
             if (options.bounds && typeof(options.bounds) === "object") {
                 options.bounds = Object.assign(this.options.bounds, options.bounds);
             }
-            if (options.visible !== this.options.visible) {
+            if (typeof(options.visible) !== "undefined" && options.visible !== this.options.visible) {
                 this.points.forEach(point => point.options.visible = options.visible);
                 if (this.resizeBox) {
                     this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
