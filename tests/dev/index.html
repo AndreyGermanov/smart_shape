@@ -46,23 +46,28 @@
             borderWidth:"0px",
           }
         };
+        const filters = {
+          feDropShadow: {
+            dx: 10, dy: 10, "flood-opacity": 0.5, stdDeviation: 3, "flood-color": "#000000"
+          }
+        }
         const body = document.querySelector("body");
         body.style.height = (window.innerHeight-50)+"px";
-        const s = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
-        const m = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:120},[[0,0],[50,60],[100,0],[100,150],[75,150],[75,75],[50,100],[25,75],[25,150],[0,150]])
-        const a1 = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:240},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
-        const a1_sub = new SmartShape().init(body,{fill:"white",pointOptions:smartPointOptions,offsetX:240,zIndex:1010},[[45,60],[50,40],[55,60]])
-        const r = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:360},[[0,0],[75,0],[100,25],[100,50],[75,75],[100,150],[75,150],[50,75],[25,75],[25,150],[0,150]])
-        const r_sub = new SmartShape().init(body,{fill:"white",pointOptions:smartPointOptions,offsetX:360,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]])
-        const t = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:480},[[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]])
+        const s = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,offsetX:15,offsetY:15},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
+        const m = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:170,filters:filters,canScale:true,offsetY:15},[[0,0],[50,60],[100,0],[100,150],[75,150],[75,75],[50,100],[25,75],[25,150],[0,150]])
+        const a1 = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:325,filters:filters,canScale:true,offsetY:15},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
+        const a1_sub = new SmartShape().init(body,{fill:"white",pointOptions:smartPointOptions,offsetX:325,offsetY:15,zIndex:1010},[[45,60],[50,40],[55,60]])
+        const r = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:480,filters:filters,canScale:true,offsetY:15},[[0,0],[75,0],[100,25],[100,50],[75,75],[100,150],[75,150],[50,75],[25,75],[25,150],[0,150]])
+        const r_sub = new SmartShape().init(body,{fill:"white",pointOptions:smartPointOptions,offsetX:480,offsetY:15,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]])
+        const t = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:635,filters:filters,canScale:true,offsetY:15},[[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]])
 
-        const s1 = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetY:200},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
-        const h = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:120,offsetY:200},[[0,0],[25,0],[25,60],[75,60],[75,0],[100,0],[100,150],[75,150],[75,80],[25,80],[25,150],[0,150]]);
-        const a2 = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:240,offsetY:200},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
-        const a2_sub = new SmartShape().init(body,{fill:'white',pointOptions:shapePointOptions,offsetX:240,zIndex:1010,offsetY:200},[[45,60],[50,40],[55,60]])
-        const p = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:360,offsetY:200},[[0,0],[75,0],[100,25],[100,50],[75,75],[50,75],[25,75],[25,150],[0,150]])
-        const p_sub = new SmartShape().init(body,{fill:'white',pointOptions:shapePointOptions,offsetX:360,offsetY:200,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]]);
-        const e = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:480,offsetY:200},[[0,0],[100,0],[100,25],[25,25],[25,60],[100,60],[100,85],[25,85],[25,120],[100,120],[100,150],[0,150]])
+        const s1 = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetY:215,offsetX:15,filters:filters,canScale:true},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
+        const h = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:170,offsetY:215,filters:filters,canScale:true},[[0,0],[25,0],[25,60],[75,60],[75,0],[100,0],[100,150],[75,150],[75,80],[25,80],[25,150],[0,150]]);
+        const a2 = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:325,offsetY:215,filters:filters,canScale:true},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
+        const a2_sub = new SmartShape().init(body,{fill:'white',pointOptions:shapePointOptions,offsetX:325,zIndex:1010,offsetY:215},[[45,60],[50,40],[55,60]])
+        const p = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:480,offsetY:215,filters:filters,canScale:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[50,75],[25,75],[25,150],[0,150]])
+        const p_sub = new SmartShape().init(body,{fill:'white',pointOptions:shapePointOptions,offsetX:480,offsetY:215,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]]);
+        const e = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:635,offsetY:215,filters:filters,canScale:true},[[0,0],[100,0],[100,25],[25,25],[25,60],[100,60],[100,85],[25,85],[25,120],[100,120],[100,150],[0,150]])
       })
     </script>
   </body>
