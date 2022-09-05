@@ -1,4 +1,4 @@
-import {getOffset, uuid} from "./utils.js";
+import {getOffset, pauseEvent, uuid} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
 import {ContainerEvents} from "./smart_shape_event_listener.js";
 /**
@@ -217,6 +217,7 @@ function SmartPoint() {
     this.mousedown = (event) => {
         if (event.buttons === 1 && this.options.canDrag) {
             EventsManager.emit(PointEvents.POINT_DRAG_START,this);
+            pauseEvent(event);
         }
     }
 

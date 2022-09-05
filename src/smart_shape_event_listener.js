@@ -1,5 +1,5 @@
 import EventsManager from "./events/EventsManager.js";
-import {getOffset} from "./utils.js";
+import {getOffset, pauseEvent} from "./utils.js";
 import {PointEvents} from "./smart_point.js";
 import {ResizeBoxEvents} from "./resizebox/ResizeBox.js";
 
@@ -132,9 +132,10 @@ function SmartShapeEventListener(shape) {
     /**
      * @ignore
      * onMouseDown event handler, triggered when user presses mouse button on the shape or on container element.
-     * @param _event {MouseEvent} Event object
+     * @param event {MouseEvent} Event object
      */
-    this.mousedown = (_event) => {
+    this.mousedown = (event) => {
+        pauseEvent(event);
         this.shape.root.draggedShape = this.shape;
         EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.shape);
     }
