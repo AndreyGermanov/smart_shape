@@ -335,6 +335,7 @@ function ResizeBox() {
      * Method used to show Resize Box if it has hidden
      */
     this.show = () => {
+        this.options.shapeOptions.visible = true;
         this.shape.show();
     }
 
@@ -342,6 +343,7 @@ function ResizeBox() {
      * Method used to hide Resize Box
      */
     this.hide = () => {
+        this.options.shapeOptions.visible = false;
         this.shape.hide();
     }
 

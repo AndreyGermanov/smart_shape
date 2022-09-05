@@ -4,20 +4,61 @@
     <meta charset="UTF-8">
     <title>Resize Image with ResizeBox demo</title>
 </head>
-<body>
-    <img src="../assets/demo.jpg" id="img"/>
+<body style="width:95%;height:700px">
+    <img src="../assets/tropical-beach.jpg" style="position:absolute;width:300px" id="img" alt="Simple image">
+    <div align="right">
+        <a href="https://www.freepik.com/free-photo/tropical-beach_3501168.htm#query=sea%20beach&position=0&from_view=keyword" target="_blank">Image by lifeforstock</a> on Freepik
+    </div>
     <script src="../../smart_shape.umd.cjs"></script>
     <script>
         const img = document.querySelector("#img");
-        img.addEventListener("click",() => {
-            console.log(img.clientLeft,img.clientTop, img.clientWidth,img.clientHeight);
-            const resizeBox = new window.ResizeBox();
-            resizeBox.init(document.querySelector("body"),img.clientLeft,img.clientTop,img.clientWidth,img.clientHeight,{shapeOptions:{canDragShape:false}})
-            resizeBox.options.shapeOptions.bounds = resizeBox.shape.getBounds();
-            resizeBox.options.shapeOptions.bounds.bottom = 1000;
-            resizeBox.setOptions(resizeBox.options);
-            console.log(resizeBox.shape.getBounds());
 
+        // Create the Resize box object
+        const resizeBox = new window.ResizeBox();
+
+        // Initialize and display ResizeBox around image
+        resizeBox.init(
+            // container to which ResizeBox should be bound (just to HTML body)
+            document.querySelector("body"),
+            // left, right, width and height of Resize box. Let's make it equal to image dimensions
+            img.style.left || img.clientLeft,img.style.top || img.clientTop,img.style.width || img.clientWidth,img.style.height || img.clientHeight,
+            // set some custom options of ResizeBox: should be invisible by default, until user clicks on the image.
+            {
+                shapeOptions: {
+                    visible: false,
+                }
+            }
+        );
+
+        // Add listener to Resize box, which will trigger every time when it resized
+        resizeBox.addEventListener("resize",(event) => {
+            // Set dimensions of the image to new dimensions of resize box
+            img.style.top = event.newPos.top + "px";
+            img.style.left = event.newPos.left + "px";
+            img.style.width = event.newPos.width + "px";
+            img.style.height = event.newPos.height + "px";
+        })
+
+        // Add listener to Resize box, which will trigger every time when it moved
+        resizeBox.addEventListener("move", (event) => {
+            // Set dimensions of the image to new dimensions of resize box
+            img.style.top = event.newPos.top + "px";
+            img.style.left = event.newPos.left + "px";
+            img.style.width = event.newPos.width + "px";
+            img.style.height = event.newPos.height + "px";
+        })
+
+        // Show resize box when click on the image
+        img.addEventListener("click",(event) => {
+            resizeBox.show();
+
+        })
+
+        // Hide resize box when click on the screen
+        document.body.addEventListener("click", (event) => {
+            if (event.target === document.body) {
+                resizeBox.hide();
+            }
         })
     </script>
 </body>
