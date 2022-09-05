@@ -124,6 +124,8 @@ Method removes all subscriptions to events.
     * [.setOptions(options)](#ResizeBox+setOptions)
     * [.getPosition()](#ResizeBox+getPosition) ⇒ <code>object</code>
     * [.redraw()](#ResizeBox+redraw)
+    * [.show()](#ResizeBox+show)
+    * [.hide()](#ResizeBox+hide)
     * [.destroy()](#ResizeBox+destroy)
     * [.addEventListener(eventName, handler)](#ResizeBox+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#ResizeBox+removeEventListener)
@@ -296,6 +298,18 @@ Method used to get current position of Resize Box
 
 ### resizeBox.redraw()
 Method used to redraw resize box
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+show"></a>
+
+### resizeBox.show()
+Method used to show Resize Box if it has hidden
+
+**Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
+<a name="ResizeBox+hide"></a>
+
+### resizeBox.hide()
+Method used to hide Resize Box
 
 **Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
 <a name="ResizeBox+destroy"></a>
