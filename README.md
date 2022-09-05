@@ -106,7 +106,7 @@ This video shows how SmartShape used inside online text recognition tool to sele
 
 Watch on YouTube: https://youtu.be/4ee-HYCtgJ4 .
 
-# Resize Box
+## Resize Box
 
 
 | Description                           | Source                                                                                       | Live                                                                       |
