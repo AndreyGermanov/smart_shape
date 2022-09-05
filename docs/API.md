@@ -363,6 +363,8 @@ this class automatically during init process
     * [.init(x, y, options)](#SmartPoint+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartPoint+setOptions)
     * [.redraw()](#SmartPoint+redraw)
+    * [.show()](#SmartPoint+show)
+    * [.hide()](#SmartPoint+hide)
     * [.destroy()](#SmartPoint+destroy)
     * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
@@ -395,6 +397,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 | bounds | <code>object</code> | Bounds for point movement. If setup, then it's impossible to drag point beyond bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`. If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container. |
 | moveDirections | <code>array</code> | . Defines in which directions point can move. Can contain values from [PointMoveDirections](#PointMoveDirections) enumeration. By default, all directions allowed. Default value is: `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`. To restrict movement in any direction, need to remove some directions from this array. |
+| visible | <code>boolean</code> | Point is visible or not. By default, `true`. |
 
 <a name="SmartPoint+x"></a>
 
@@ -449,6 +452,18 @@ Method used to set specified options to point.
 
 ### smartPoint.redraw()
 Method used to redraw the point. Usually used after change point position on the screen.
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+show"></a>
+
+### smartPoint.show()
+Method used to display point if it has hidden
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+hide"></a>
+
+### smartPoint.hide()
+Method used to hide point
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
 <a name="SmartPoint+destroy"></a>
@@ -520,6 +535,8 @@ to this object.
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
     * [.addEventListener(eventName, handler)](#SmartShape+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartShape+removeEventListener)
+    * [.show()](#SmartShape+show)
+    * [.hide()](#SmartShape+hide)
     * [.destroy()](#SmartShape+destroy)
 
 <a name="new_SmartShape_new"></a>
@@ -579,6 +596,7 @@ Options of shape as an object. Can have the following parameters.
 | pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 | bounds | <code>object</code> | Bounds for shape movement and points dragging. This is an object with `left`, `top`, `right` and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not specified, then left, top, right and bottom of container element will be used for this |
+| visible | <code>boolean</code> | Shape is visible or not. By default, `true`. |
 
 <a name="SmartShape+left"></a>
 
@@ -824,6 +842,18 @@ to this object.
 | eventName | <code>string</code> | Name of event to remove listener from |
 | listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
 
+<a name="SmartShape+show"></a>
+
+### smartShape.show()
+Method used to show shape if it has hidden
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+hide"></a>
+
+### smartShape.hide()
+Method used to hide the shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+destroy"></a>
 
 ### smartShape.destroy()
