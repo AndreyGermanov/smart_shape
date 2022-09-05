@@ -104,8 +104,7 @@ This is how **Cut image using SmartShape** looks:
 
 This video shows how SmartShape used inside online text recognition tool to select an image region for perspective correction. Then, after region selected, application uses `getPointsArray()` method of SmartShape to get array of coordinates of points and send them to backend for further processing.
 
-<iframe width="640" height="480" src="https://www.youtube.com/embed/4ee-HYCtgJ4"
-frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+Watch on YouTube: https://youtu.be/4ee-HYCtgJ4 .
 
 # Resize Box
 
