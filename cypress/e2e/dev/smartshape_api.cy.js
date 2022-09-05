@@ -74,6 +74,19 @@ describe('SmartShape API tests', () => {
     })
   })
 
+  it("deleteAllPoints", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = new SmartShape();
+      shape.init(app,{},[[0,100],[100,0],[200,100]]);
+      const point1 = shape.findPoint(100,0)
+      point1.element.id = "#point1";
+      shape.deleteAllPoints();
+      assert.equal(shape.points.length,0,"Should remove all points");
+      assert.isNull(app.querySelector("#point1"),"Should remove HTML elements of points");
+    });
+  });
+
   it('findPoint', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [root, shape] = setup()

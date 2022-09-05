@@ -373,6 +373,15 @@ function SmartShape() {
     }
 
     /**
+     * Method used to delete all points from shape
+     */
+    this.deleteAllPoints = () => {
+        while (this.points.length) {
+            this.points[0].destroy();
+        }
+    }
+
+    /**
      * Method used to delete point with specified coordinates.
      * If point with specified coordinates not found then just
      * do nothing
@@ -568,8 +577,12 @@ function SmartShape() {
             this.points[0].destroy();
         }
         EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
-        this.eventListener.destroy();
-        this.root.removeChild(this.svg);
+        if (this.eventListener) {
+            this.eventListener.destroy();
+        }
+        if (this.root && this.svg) {
+            this.root.removeChild(this.svg);
+        }
     }
 }
 try {

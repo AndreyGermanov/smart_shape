@@ -537,6 +537,7 @@ to this object.
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
     * [.addPoints(points, pointOptions)](#SmartShape+addPoints)
+    * [.deleteAllPoints()](#SmartShape+deleteAllPoints)
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.findPointById(id)](#SmartShape+findPointById) ⇒ <code>null</code> \| <code>object</code>
@@ -721,6 +722,12 @@ Adds specified points to shape.
 | points | <code>array</code> | 2D array of points to add. Each point is array of [x,y] coordinates |
 | pointOptions | <code>object</code> | Points options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
 
+<a name="SmartShape+deleteAllPoints"></a>
+
+### smartShape.deleteAllPoints()
+Method used to delete all points from shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+deletePoint"></a>
 
 ### smartShape.deletePoint(x, y)

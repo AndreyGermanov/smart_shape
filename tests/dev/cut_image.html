@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cut Image with SmartShape Demo</title>
+</head>
+<body style="width:95%;height:700px">
+    <div id="container"></div>
+    <br/>
+    <button id="upload">Upload image</button><br/><br/>
+    <button id="cut">Cut image</button><br/><br/>
+    <button id="download">Download image</button>
+    <input type="file" style="display:none" id="file"/>
+    <br/><br/>
+    <div>
+        <strong>IMAGE CUTTER</strong><br/><br/>
+        <p>1. Press <strong>Upload image</strong> to upload an image ;)</p>
+        <p>2. Create SmartShape polygon on then image by adding/removing points on the image.
+            <div style="padding-left:10px">
+                2.1. To add point do a double mouse click on the image<br/>
+                2.2. To delete point do a right mouse click on the image<br/>
+                2.3. You can drag points or polygon to select required region on the image<br/>
+            </div>
+        </p>
+        <p>3. Press <strong>Cut image</strong> to extract selected polygon from image</p>
+        <p>4. Press <strong>Download image</strong> to download and save extracted polygon as a new image</p>
+    </div>
+
+    <script type="module">
+        // Get link to the container
+        const container = document.querySelector("#container");
+
+        // Initialize empty SmartShape, connect it to the container
+        // and allow to add and delete points to it.
+        import SmartShape from "../../src/smart_shape.js";
+        const shape = new SmartShape();
+        shape.init(container,{canAddPoints:true,pointOptions:{canDelete:true}});
+
+        // Create an empty image to upload image file to
+        const img = new Image();
+
+        // Each time, when image loads, set size of the container div and
+        // of the SmartShape bounds to a size of the image
+        img.addEventListener("load", () => {
+            container.style.width = img.width+ "px";
+            container.style.height = img.height + "px";
+            shape.setOptions({bounds:{width:img.width,height:img.height}});
+        });
+
+
+        // Upload Image button handler
+        document.querySelector("#upload").addEventListener("click", (event) => {
+            // Get link to file input element
+            const file = document.querySelector("#file");
+            // when user select the image file
+            file.addEventListener("change", (event) => {
+                const reader = new FileReader();
+                reader.addEventListener("loadend", (event) => {
+                    // read it to the image
+                    img.src = event.target.result;
+                    // remove previous image from container if it was there
+                    const prev_img = container.querySelector("img");
+                    if (prev_img) {
+                        container.removeChild(prev_img);
+                    }
+                    // add loaded image to container
+                    container.appendChild(img);
+                    // remove previous polygon from shape, if it was defined
+                    shape.deleteAllPoints();
+                });
+                reader.readAsDataURL(event.target.files[0]);
+            })
+            // click on file input click element
+            file.click();
+        })
+
+        // Cut Image button handler
+        document.querySelector("#cut").addEventListener("click", (event) => {
+            // Get array of SmartShape polygon points
+            const points = shape.getPointsArray();
+            // At least 3 points must be in polygon
+            if (points.length < 3) {
+                alert("Create at least 3 points to cut polygon");
+                return;
+            }
+            // Copy polygon of points from the image to source canvas
+            const srcCanvas = document.createElement("canvas");
+            srcCanvas.width = img.width;
+            srcCanvas.height = img.height;
+            const srcCtx = srcCanvas.getContext("2d");
+            srcCtx.beginPath();
+            srcCtx.moveTo(points[0][0],points[0][1])
+            for (let index=1;index<points.length;index++) {
+                srcCtx.lineTo(points[index][0],points[index][1]);
+            }
+            srcCtx.save();
+            srcCtx.clip();
+            srcCtx.drawImage(img,0,0,img.width,img.height);
+
+            // Extract only selected polygon and copy it to destination canvas
+            const dstCanvas = document.createElement("canvas");
+            const position = shape.getPosition();
+            dstCanvas.width = position.width;
+            dstCanvas.height = position.height;
+            const dstCtx = dstCanvas.getContext("2d");
+            dstCtx.drawImage(srcCanvas,position.left,position.top,position.width,position.height,0,0,position.width,position.height);
+
+            // Load the image from destination canvas with a size of selected polygon
+            img.src = dstCanvas.toDataURL("image/png");
+            // Move SmartShape to the top left corner of new image
+            shape.moveTo(0,0);
+            shape.redraw();
+        })
+
+        // Download image button handler
+        document.querySelector("#download").addEventListener("click", (event) => {
+            // Copy image to canvas
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img,0,0);
+            // Extract image data from canvas as PNG
+            const data = canvas.toDataURL("image/png");
+            // Create a link to image data from canvas
+            const a = document.createElement("a");
+            a.download = "image.png";
+            a.href = data;
+            document.body.appendChild(a);
+            // And click this link
+            a.click();
+            document.body.removeChild(a);
+        });
+
+    </script>
+</body>
+</html>

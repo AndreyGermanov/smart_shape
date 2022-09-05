@@ -58,9 +58,7 @@ function SmartShapeEventListener(shape) {
             this.shape.root.addEventListener("mouseup",this.mouseup);
             this.shape.root.addEventListener("dblclick",this.doubleclick);
             this.shape.root.addEventListener("mouseenter",this.mouseenter);
-            if (this.shape.options.canDeletePoints) {
-                this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
-            }
+            this.checkCanDeletePoints();
         }
         window.addEventListener("resize", this.onWindowResize);
         EventsManager.subscribe(PointEvents.POINT_ADDED, this.onPointAdded);
@@ -235,7 +233,20 @@ function SmartShapeEventListener(shape) {
      * Internal method, that triggered when new point added
      * @param _event Custom event object
      */
-    this.onPointAdded = (_event) => { /* Temporary empty */ }
+    this.onPointAdded = (event) => {
+        this.checkCanDeletePoints();
+    }
+
+    /**
+     * @ignore
+     * Method that disables context menu on container if allowed to delete points,
+     * it's required to press second mouse button to delete the point
+     */
+    this.checkCanDeletePoints = () => {
+        if (!!this.shape.points.find(point => point.options.canDelete === true)) {
+            this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
+        }
+    }
 
     /**
      * @ignore
@@ -343,9 +354,10 @@ function SmartShapeEventListener(shape) {
         if (this.shape.options.canDeletePoints) {
             this.shape.root.removeEventListener("contextmenu", this.nocontextmenu);
         }
-
         window.removeEventListener("resize",this.onWindowResize);
-        this.shape.svg.removeEventListener("mouseenter",this.shape.svg_mouseenter);
+        if (this.shape.svg) {
+            this.shape.svg.removeEventListener("mouseenter", this.shape.svg_mouseenter);
+        }
         EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
