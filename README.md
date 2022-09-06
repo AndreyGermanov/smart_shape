@@ -162,7 +162,7 @@ ResizeBox class created on top of SmartShape, however it doesn't use class inher
 
 See examples of using ResizeBox in [Examples](#Examples+ResizeBox) section.
 
-Full API and properties of ResizeBox available in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md+ResizeBox).
+Full API and properties of ResizeBox available in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#ResizeBox).
 
 <a name="Examples"></a>
 
@@ -175,10 +175,10 @@ Examples below show how you can use SmartShape and it's derivatives in basic mod
 ## SmartShape
 
 
-| Description                                              | Source                                                                                    | Live                                                                   |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Basic example                                            | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/demo.html)      | [link](https://code.germanov.dev/smart_shape/tests/prod/demo.html      |
-| Extended example: multiple shapes with different options | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/index.html)     | [link](https://code.germanov.dev/smart_shape/tests/prod/index.html)    |
+| Description                                              | Source                                                                                    | Live                                                                    |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------- |-------------------------------------------------------------------------|
+| Basic example                                            | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/demo.html)      | [link](https://code.germanov.dev/smart_shape/tests/prod/demo.html)      |
+| Extended example: multiple shapes with different options | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/index.html)     | [link](https://code.germanov.dev/smart_shape/tests/prod/index.html)     |
 | Cut image using SmartShape                               | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/cut_image.html) | [link](https://code.germanov.dev/smart_shape/tests/prod/cut_image.html) |
 
 **Cut image using SmartShape** demo:
