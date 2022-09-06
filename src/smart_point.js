@@ -200,6 +200,7 @@ function SmartPoint() {
     }
 
     /**
+     * @ignore
      * Method used to rotate this point by specified angle around specified center
      * @param angle {number} Angle in degrees
      * @param centerX {number} X coordinate of center

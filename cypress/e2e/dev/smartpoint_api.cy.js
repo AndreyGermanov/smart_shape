@@ -191,7 +191,7 @@ describe('SmartPoint API tests', () => {
     });
   });
 
-  it("rotatePoint", () => {
+  it("rotatePBy", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const point = new SmartPoint()
       point.init(50,50,{});

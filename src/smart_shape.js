@@ -2,6 +2,7 @@ import SmartPoint from "./smart_point.js";
 import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./smart_shape_event_listener.js";
 import ResizeBox from "./resizebox/ResizeBox.js";
+import RotateBox from "./rotatebox/RotateBox.js";
 import {getRotatedCoords, uuid} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
 
@@ -622,6 +623,6 @@ try {
     window.ResizeBox = ResizeBox;
 } catch (err) {}
 
-export {ResizeBox}
+export {ResizeBox, RotateBox}
 
 export default SmartShape;

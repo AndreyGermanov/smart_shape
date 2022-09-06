@@ -7,6 +7,10 @@
 <dd></dd>
 <dt><a href="#ResizeBoxEventListener">ResizeBoxEventListener</a></dt>
 <dd></dd>
+<dt><a href="#RotateBox">RotateBox</a></dt>
+<dd></dd>
+<dt><a href="#RotateBoxEventListener">RotateBoxEventListener</a></dt>
+<dd></dd>
 <dt><a href="#SmartPoint">SmartPoint</a></dt>
 <dd></dd>
 <dt><a href="#SmartShape">SmartShape</a></dt>
@@ -362,6 +366,245 @@ this class automatically during init process
 | --- | --- | --- |
 | resizeBox | [<code>ResizeBox</code>](#ResizeBox) | Link to owner Shape instance |
 
+<a name="RotateBox"></a>
+
+## RotateBox
+**Kind**: global class  
+
+* [RotateBox](#RotateBox)
+    * [new RotateBox()](#new_RotateBox_new)
+    * [.left](#RotateBox+left) : <code>number</code>
+    * [.top](#RotateBox+top) : <code>number</code>
+    * [.right](#RotateBox+right) : <code>number</code>
+    * [.bottom](#RotateBox+bottom) : <code>number</code>
+    * [.width](#RotateBox+width) : <code>number</code>
+    * [.height](#RotateBox+height) : <code>number</code>
+    * [.shape](#RotateBox+shape) : [<code>SmartShape</code>](#SmartShape)
+    * [.guid](#RotateBox+guid) : <code>string</code>
+    * [.options](#RotateBox+options) : <code>object</code>
+    * [.eventListener](#RotateBox+eventListener) : [<code>RotateBoxEventListener</code>](#RotateBoxEventListener)
+    * [.left_top](#RotateBox+left_top) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.left_bottom](#RotateBox+left_bottom) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.right_top](#RotateBox+right_top) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.right_bottom](#RotateBox+right_bottom) : [<code>SmartPoint</code>](#SmartPoint)
+    * [.init(root, left, top, width, height, options)](#RotateBox+init) ⇒ [<code>RotateBox</code>](#RotateBox)
+    * [.setOptions(options)](#RotateBox+setOptions)
+    * [.getPosition()](#RotateBox+getPosition) ⇒ <code>object</code>
+    * [.redraw()](#RotateBox+redraw)
+    * [.show()](#RotateBox+show)
+    * [.hide()](#RotateBox+hide)
+    * [.destroy()](#RotateBox+destroy)
+    * [.addEventListener(eventName, handler)](#RotateBox+addEventListener) ⇒ <code>function</code>
+    * [.removeEventListener(eventName, listener)](#RotateBox+removeEventListener)
+
+<a name="new_RotateBox_new"></a>
+
+### new RotateBox()
+Class represents a special type of shape, that shows the rectangle with markers on
+it corners, used to rotate it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/rotate_box.html).
+Mostly used to rotate [SmartShape](#SmartShape) object, but also can be used as an independent shape
+for tasks like rotating objects on a web page or select rectangular regions.
+
+<a name="RotateBox+left"></a>
+
+### rotateBox.left : <code>number</code>
+Left corner of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+top"></a>
+
+### rotateBox.top : <code>number</code>
+Top corner of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+right"></a>
+
+### rotateBox.right : <code>number</code>
+Right corner of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+bottom"></a>
+
+### rotateBox.bottom : <code>number</code>
+Bottom corner of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+width"></a>
+
+### rotateBox.width : <code>number</code>
+Width of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+height"></a>
+
+### rotateBox.height : <code>number</code>
+Height of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+shape"></a>
+
+### rotateBox.shape : [<code>SmartShape</code>](#SmartShape)
+Underlying shape, that used to service this rotate box
+(draw, point event handling and so on)
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+guid"></a>
+
+### rotateBox.guid : <code>string</code>
+Global unique identifier of this object.
+Generated automatically
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+options"></a>
+
+### rotateBox.options : <code>object</code>
+Options of rotate box
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | Unique ID or rotate box. If instantiated by [SmartShape](#SmartShape), then setup automatically |
+| shapeOptions | <code>object</code> | Options of underlying shape, that used to draw and manage this RotateBox. See [SmartShape.options](#SmartShape+options) |
+| zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
+
+<a name="RotateBox+eventListener"></a>
+
+### rotateBox.eventListener : [<code>RotateBoxEventListener</code>](#RotateBoxEventListener)
+Event listener that handles event listening logic for this rotate box.
+Instance of [ResizeBoxEventListener](#ResizeBoxEventListener) class.
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+left_top"></a>
+
+### rotateBox.left\_top : [<code>SmartPoint</code>](#SmartPoint)
+Left top marker point
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+left_bottom"></a>
+
+### rotateBox.left\_bottom : [<code>SmartPoint</code>](#SmartPoint)
+Left bottom marker point
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+right_top"></a>
+
+### rotateBox.right\_top : [<code>SmartPoint</code>](#SmartPoint)
+Right top marker point
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+right_bottom"></a>
+
+### rotateBox.right\_bottom : [<code>SmartPoint</code>](#SmartPoint)
+Right bottom marker point
+
+**Kind**: instance property of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+init"></a>
+
+### rotateBox.init(root, left, top, width, height, options) ⇒ [<code>RotateBox</code>](#RotateBox)
+Method used to construct RotateBox object with specified coordinates and
+size, with specified `options`. Then it binds this object to specified `root`
+HTML node and displays it
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+**Returns**: [<code>RotateBox</code>](#RotateBox) - constucted RotateBox object  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| root | <code>HTMLElement</code> | HTML element that used as a container for this RotateBox |
+| left | <code>number</code> | Left corner of shape relative to container top left |
+| top | <code>number</code> | Top corner of shape relative to container top left |
+| width | <code>number</code> | Width of shape |
+| height | <code>number</code> | Height of shape |
+| options | <code>object</code> | Options used to setup RotateBox. See [here](#RotateBox+options). |
+
+<a name="RotateBox+setOptions"></a>
+
+### rotateBox.setOptions(options)
+Method used to change options of RotateBox.
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | Options object. See [here](#RotateBox+options). |
+
+<a name="RotateBox+getPosition"></a>
+
+### rotateBox.getPosition() ⇒ <code>object</code>
+Method used to get current position of Rotate Box
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+**Returns**: <code>object</code> - Position with fields:
+`top`,`left`,`right`,`bottom`,`width`,`height`  
+<a name="RotateBox+redraw"></a>
+
+### rotateBox.redraw()
+Method used to redraw rotate box
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+show"></a>
+
+### rotateBox.show()
+Method used to show Rotate Box if it has hidden
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+hide"></a>
+
+### rotateBox.hide()
+Method used to hide Rotate Box
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+destroy"></a>
+
+### rotateBox.destroy()
+Destroys the RotateBox. Destroys all points, removes event listeners and removes the shape from screen.
+But variable continue existing. To completely remove the shape,
+set the variable to 'null' after calling this method.
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+<a name="RotateBox+addEventListener"></a>
+
+### rotateBox.addEventListener(eventName, handler) ⇒ <code>function</code>
+Uniform method that used to add event handler of specified type to this object.
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+**Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event |
+| handler | <code>function</code> | Function that used as an event handler |
+
+<a name="RotateBox+removeEventListener"></a>
+
+### rotateBox.removeEventListener(eventName, listener)
+Uniform method that used to remove event handler, that previously added
+to this object.
+
+**Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | [<code>RotateBoxEvents</code>](#RotateBoxEvents) \| <code>string</code> | Name of event to remove listener from |
+| listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#RotateBox+addEventListener) method. |
+
+<a name="RotateBoxEventListener"></a>
+
+## RotateBoxEventListener
+**Kind**: global class  
+<a name="new_RotateBoxEventListener_new"></a>
+
+### new RotateBoxEventListener(rotateBox)
+Internal helper class, that contains all event listening logic for the RotateBox.
+This class should not be used directly. Each RotateBox creates an instance of
+this class automatically during init process
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| rotateBox | [<code>RotateBox</code>](#RotateBox) | Link to owner Shape instance |
+
 <a name="SmartPoint"></a>
 
 ## SmartPoint
@@ -379,7 +622,6 @@ this class automatically during init process
     * [.redraw()](#SmartPoint+redraw)
     * [.show()](#SmartPoint+show)
     * [.hide()](#SmartPoint+hide)
-    * [.rotateBy(angle, centerX, centerY)](#SmartPoint+rotateBy)
     * [.destroy()](#SmartPoint+destroy)
     * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
@@ -481,19 +723,6 @@ Method used to display point if it has hidden
 Method used to hide point
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
-<a name="SmartPoint+rotateBy"></a>
-
-### smartPoint.rotateBy(angle, centerX, centerY)
-Method used to rotate this point by specified angle around specified center
-
-**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| angle | <code>number</code> | Angle in degrees |
-| centerX | <code>number</code> | X coordinate of center |
-| centerY | <code>number</code> | Y coordinate of center |
-
 <a name="SmartPoint+destroy"></a>
 
 ### smartPoint.destroy()
@@ -946,6 +1175,17 @@ Enumeration that defines events, that ResizeBox can emit.
 | Param | Description |
 | --- | --- |
 | RESIZE_BOX_RESIZE | Emitted when user resized the shape by dragging one of marker points. |
+
+<a name="RotateBoxEvents"></a>
+
+## RotateBoxEvents : <code>enum</code>
+Enumeration that defines events, that RotateBox can emit.
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| ROTATE_BOX_ROTATE | Emitted when user rotate the shape by dragging one of marker points. The event object of this type contains `angle` option, which is an angle of rotation in degrees. |
 
 <a name="PointEvents"></a>
 
