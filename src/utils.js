@@ -14,7 +14,7 @@ export const getOffset = ( elem,deep=true ) => {
 
 export const uuid = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     }).replace(/\-/g,"");
 }
@@ -26,3 +26,14 @@ export const pauseEvent = (e) => {
     e.returnValue=false;
     return false;
 }
+
+export const degrees_to_radians = (degrees) =>  {
+    return degrees * (Math.PI/180);
+}
+
+export const getRotatedCoords = (angle, x, y, centerX, centerY) => {
+    const resultX = (x-centerX)*Math.cos(degrees_to_radians(angle))-(y-centerY)*Math.sin(degrees_to_radians(angle))+centerX;
+    const resultY = (x-centerX)*Math.sin(degrees_to_radians(angle))+(y-centerY)*Math.cos(degrees_to_radians(angle))+centerY;
+    return [Math.round(resultX), Math.round(resultY)];
+}
+

@@ -191,6 +191,16 @@ describe('SmartPoint API tests', () => {
     });
   });
 
+  it("rotatePoint", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const point = new SmartPoint()
+      point.init(50,50,{});
+      point.rotateBy(30,0,0);
+      assert.equal(point.x,18,"Should correctly rotate X coordinate");
+      assert.equal(point.y, 68, "Should correctly rotate Y coordinate");
+    })
+  })
+
   it("destroy", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       EventsManager.clear();

@@ -379,6 +379,7 @@ this class automatically during init process
     * [.redraw()](#SmartPoint+redraw)
     * [.show()](#SmartPoint+show)
     * [.hide()](#SmartPoint+hide)
+    * [.rotateBy(angle, centerX, centerY)](#SmartPoint+rotateBy)
     * [.destroy()](#SmartPoint+destroy)
     * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
@@ -480,6 +481,19 @@ Method used to display point if it has hidden
 Method used to hide point
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+rotateBy"></a>
+
+### smartPoint.rotateBy(angle, centerX, centerY)
+Method used to rotate this point by specified angle around specified center
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| angle | <code>number</code> | Angle in degrees |
+| centerX | <code>number</code> | X coordinate of center |
+| centerY | <code>number</code> | Y coordinate of center |
+
 <a name="SmartPoint+destroy"></a>
 
 ### smartPoint.destroy()
@@ -544,6 +558,7 @@ to this object.
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
     * [.moveTo(x, y)](#SmartShape+moveTo)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
+    * [.rotateBy(angle)](#SmartShape+rotateBy)
     * [.redraw()](#SmartShape+redraw)
     * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>object</code>
@@ -801,6 +816,17 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 | --- | --- | --- |
 | width | <code>number</code> | new width |
 | height | <code>number</code> | new height |
+
+<a name="SmartShape+rotateBy"></a>
+
+### smartShape.rotateBy(angle)
+Method used to rotate this shape by specified angle around it's center.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| angle | <code>number</code> | Angle in degrees. Positive - clockwise, Negative - counterclock-wise |
 
 <a name="SmartShape+redraw"></a>
 

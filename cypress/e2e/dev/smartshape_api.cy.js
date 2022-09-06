@@ -397,6 +397,50 @@ describe('SmartShape API tests', () => {
       assert.equal(point3.y,200,"Should correctly scale point when out of bounds");
     });
   });
+
+  it("rotateBy", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.width="400px";
+      app.style.height="400px";
+      app.style.borderWidth = "1px";
+      app.style.borderStyle = "solid";
+      const shape = new SmartShape();
+      shape.init(app,{},[[50,50],[150,50],[150,150],[50,150]]);
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[82,32],[168,82],[118,168],[32,118]],"Should rotate shape correctly");
+      shape.rotateBy(-30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[50,50],[150,50],[150,150],[50,150]],"Should rotate shape correctly");
+      shape.moveTo(0,0)
+      shape.redraw();
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[0,0],[100,0],[100,100],[0,100]],"Should not rotate beyond left bound");
+      shape.moveTo(50,280)
+      shape.redraw();
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[50,280],[150,280],[150,380],[50,380]],"Should not rotate beyond bottom bound");
+      shape.moveTo(280,120);
+      shape.redraw()
+      shape.rotateBy(30)
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[280,120],[380,120],[380,220],[280,220]],"Should not rotate beyond right bound");
+      shape.moveTo(100,20);
+      shape.redraw();
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[100,20],[200,20],[200,120],[100,120]],"Should not rotate beyond right bound");
+      shape.moveTo(150,150);
+      shape.redraw();
+      shape.rotateBy(-60);
+      shape.redraw()
+      assert.deepEqual(shape.getPointsArray(),[[132,218],[182,132],[268,182],[218,268]],"Should rotate counterclock-wise");
+    });
+  });
+
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = setup();

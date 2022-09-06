@@ -2,7 +2,7 @@ import SmartPoint from "./smart_point.js";
 import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./smart_shape_event_listener.js";
 import ResizeBox from "./resizebox/ResizeBox.js";
-import {uuid} from "./utils.js";
+import {getRotatedCoords, uuid} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
 
 /**
@@ -474,6 +474,39 @@ function SmartShape() {
             point.y = (point.y-this.top)*scaleY+this.top}
         );
         this.calcPosition();
+    }
+
+    /**
+     * Method used to rotate this shape by specified angle around it's center.
+     * @param angle {number} Angle in degrees. Positive - clockwise, Negative - counterclock-wise
+     */
+    this.rotateBy = (angle) => {
+        this.calcPosition();
+        const centerX = this.left+this.width/2;
+        const centerY = this.top+this.height/2;
+        if (!this.isInBounds(...getRotatedCoords(angle,this.left,this.top,centerX,centerY)) ||
+            !this.isInBounds(...getRotatedCoords(angle,this.right,this.top,centerX,centerY)) ||
+            !this.isInBounds(...getRotatedCoords(angle,this.left,this.bottom,centerX,centerY)) ||
+            !this.isInBounds(...getRotatedCoords(angle,this.right,this.bottom,centerX,centerY))) {
+            return
+        }
+        this.points.forEach(point => point.rotateBy(angle,centerX,centerY));
+    }
+
+    /**
+     * @ignore
+     * Method used to check is specified coordinate not goes beyond bounds
+     * @param x {number} X coordinate
+     * @param y {number} Y coordinate
+     * @returns true if it does not go beyond or false otherwise.
+     */
+    this.isInBounds = (x,y) => {
+        const [width,height] = this.getMaxPointSize();
+        const bounds = this.getBounds();
+        return (x > bounds.left + width /2) &&
+            (x < bounds.right - width/2) &&
+            (y > bounds.top + height/2) &&
+            (y < bounds.bottom - height/2)
     }
 
     /**
