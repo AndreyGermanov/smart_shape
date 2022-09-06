@@ -432,7 +432,7 @@ describe('SmartShape API tests', () => {
       shape.redraw();
       shape.rotateBy(30);
       shape.redraw();
-      assert.deepEqual(shape.getPointsArray(),[[100,20],[200,20],[200,120],[100,120]],"Should not rotate beyond right bound");
+      assert.deepEqual(shape.getPointsArray(),[[100,20],[200,20],[200,120],[100,120]],"Should not rotate beyond top bound");
       shape.moveTo(150,150);
       shape.redraw();
       shape.rotateBy(-60);
