@@ -105,7 +105,7 @@ After create the shape, you can communicate with it, using various methods of [S
 
 ```javascript
 shape.addEventListener("move",(event) => {
-    console.love(event.oldPos);
+    console.log(event.oldPos);
     console.log(event.newPos);
 })
 ```
@@ -145,13 +145,13 @@ Developer can make the app to react to movement and resize events of ResizeBox b
 
 ```javascript
 resizeBox.addEventListener("resize",(event) => {
-    console.love(event.oldPos);
+    console.log(event.oldPos);
     console.log(event.newPos);
     // Do something
 })
 
 resizeBox.addEventListener("move",(event) => {
-    console.love(event.oldPos);
+    console.log(event.oldPos);
     console.log(event.newPos);
     // Do something
 })
