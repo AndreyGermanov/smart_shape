@@ -555,5 +555,6 @@ try {
 } catch {
 }
 export {
+  x as ResizeBox,
   w as default
 };

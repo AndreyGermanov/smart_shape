@@ -588,4 +588,7 @@ function SmartShape() {
 try {
     window.ResizeBox = ResizeBox;
 } catch (err) {}
+
+export {ResizeBox}
+
 export default SmartShape;
