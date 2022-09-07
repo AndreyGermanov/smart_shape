@@ -3,6 +3,7 @@ import {getOffset, pauseEvent} from "./utils.js";
 import {PointEvents} from "./smart_point.js";
 import {ResizeBoxEvents} from "./resizebox/ResizeBox.js";
 import {RotateBoxEvents} from "./rotatebox/RotateBox.js";
+import {createEvent} from "./events/functions.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the shape.
@@ -68,6 +69,33 @@ function SmartShapeEventListener(shape) {
         EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
         EventsManager.subscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
     }
+
+    /**
+     * @ignore
+     * Internal method that binds DOM event listeners from SVG element of shape
+     * each time when it redraws itself
+     */
+    this.setSvgEventListeners = () => {
+        shape.svg.addEventListener("mousedown",this.mousedown);
+        shape.svg.addEventListener("mouseenter",this.mouseenter);
+        shape.svg.addEventListener("mouseover",this.mouseover);
+        shape.svg.addEventListener("mouseout",this.mouseout);
+        shape.svg.addEventListener("click",this.click);
+    }
+
+    /**
+     * @ignore
+     * Internal method that removes DOM event listeners from SVG element of shape
+     * each time when it destroys before redrawing itself
+     */
+    this.removeSvgEventListeners = () => {
+        shape.svg.addEventListener("mousedown",this.mousedown);
+        shape.svg.addEventListener("mouseenter",this.mouseenter);
+        shape.svg.addEventListener("mouseover",this.mouseover);
+        shape.svg.addEventListener("mouseout",this.mouseout);
+        shape.svg.addEventListener("click",this.click);
+    }
+
 
     /**
      * @ignore
@@ -206,6 +234,37 @@ function SmartShapeEventListener(shape) {
             this.shape.root.draggedShape = null;
         }
     }
+
+    /**
+     * @ignore
+     * onMouseOver event handler, triggered when user moves mouse over the shape.
+     * @param event {MouseEvent} Event object
+     */
+    this.mouseover = (event) => {
+        const shapeEvent = createEvent(event);
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OVER,this.shape,shapeEvent);
+    }
+
+    /**
+     * @ignore
+     * onMouseOut event handler, triggered when user moves mouse away from shape.
+     * @param event {MouseEvent} Event object
+     */
+    this.mouseout = (event) => {
+        const shapeEvent = createEvent(event);
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OUT,this.shape,shapeEvent);
+    }
+
+    /**
+     * @ignore
+     * onClick event handler, triggered when user clicks on shape
+     * @param event {MouseEvent} Event object
+     */
+    this.click = (event) => {
+        const shapeEvent = createEvent(event);
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.shape,shapeEvent);
+    }
+
 
     /**
      * @ignore
@@ -373,9 +432,6 @@ function SmartShapeEventListener(shape) {
             this.shape.root.removeEventListener("contextmenu", this.nocontextmenu);
         }
         window.removeEventListener("resize",this.onWindowResize);
-        if (this.shape.svg) {
-            this.shape.svg.removeEventListener("mouseenter", this.shape.svg_mouseenter);
-        }
         EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
@@ -415,6 +471,9 @@ export const ContainerEvents = {
  * @param SHAPE_MOVE_END Emitted when user releases mouse button to stop drag the shape
  * @param SHAPE_MOUSE_MOVE Emitted when user moves mouse over shape
  * @param SHAPE_MOUSE_ENTER Emitted when mouse cursor enters shape
+ * @param SHAPE_MOUSE_OVER Emitted when mouse cursor goes inside shape
+ * @param SHAPE_MOUSE_OUT Emitted when mouse cursor goes away from shape
+ * @param SHAPE_MOUSE_CLICK Emitted when click on shape
  * @param SHAPE_DESTROY Emitted right before shape is destroyed
  * @enum {string}
  */
@@ -425,6 +484,9 @@ export const ShapeEvents = {
     SHAPE_MOVE_END: "move_end",
     SHAPE_MOUSE_MOVE: "mousemove",
     SHAPE_MOUSE_ENTER: "mouseenter",
+    SHAPE_MOUSE_OVER: "mouseover",
+    SHAPE_MOUSE_OUT: "mouseout",
+    SHAPE_MOUSE_CLICK: "click",
     SHAPE_DESTROY: "destroy"
 }
 
