@@ -76,7 +76,9 @@ function SmartShape() {
      * @param canAddPoints {boolean} Is it allowed to add points to the shape interactively,
      * by mouse double-click on the screen. Default `false`.
      * @param canScale {boolean} Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears
-     * around shape and user can drag in to resize shape in different directions
+     * around shape and user can drag it to resize shape in different directions
+     * @param canRotate {boolean} Is it allowed to rotate this shape. If true, then [RotateBox](#RotateBox) appears
+     * around shape and user can drag it to rotate shape in different directions
      * @param pointOptions {object} Default options for created points. See  [options](#SmartPoint+options)
      * property of `SmartPoint` object.
      * @param zIndex {number} Order of element in a stack of HTML elements
@@ -85,7 +87,9 @@ function SmartShape() {
      * and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not
      * specified, then left, top, right and bottom of container element will be used for this
      * @param visible {boolean} Shape is visible or not. By default, `true`.
-     * @type {{}}
+     * @param displayMode {SmartShapeDisplayMode} In which mode the shape is displayed: default mode or with resize
+     * or rotate box around it. See [SmartShapeDisplayMode](#SmartShapeDisplayMode)
+     * @type {object}
      */
     this.options = {
         id: "",
@@ -103,6 +107,7 @@ function SmartShape() {
         canDragShape: true,
         canAddPoints: false,
         canScale: false,
+        canRotate: false,
         offsetX: 0,
         offsetY: 0,
         classes: "",
@@ -110,7 +115,8 @@ function SmartShape() {
         pointOptions:{},
         zIndex: 1000,
         bounds: {left:-1,top:-1,right:-1,bottom:-1},
-        visible:true
+        visible:true,
+        displayMode: SmartShapeDisplayMode.DEFAULT
     };
 
     /**
@@ -169,6 +175,13 @@ function SmartShape() {
     this.resizeBox = null;
 
     /**
+     * [RotateBox](#RotateBox) component, used to rotate shape if
+     * `canRotate` option enabled
+     * @type {RotateBox}
+     */
+    this.rotateBox = null;
+
+    /**
      * Method used to construct SmartShape object with specified `points` and
      * with specified `options`.
      * Then it binds this object to specified `root` HTML node and displays it
@@ -190,9 +203,7 @@ function SmartShape() {
         this.setOptions(options);
         this.eventListener = new SmartShapeEventListener(this).run();
         this.setupPoints(points,Object.assign({},this.options.pointOptions));
-        if (this.options.canScale) {
-            this.setupResizeBox();
-        }
+        this.applyDisplayMode();
         EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
     }
@@ -218,6 +229,26 @@ function SmartShape() {
 
     /**
      * @ignore
+     * Used to setup [Rotate](#RotateBox) around shape if shape rotation is enabled
+     */
+    this.setupRotateBox = () => {
+        const bounds = this.getResizeBoxBounds();
+        this.rotateBox = new RotateBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
+            zIndex: this.options.zIndex-1,
+            id: this.options.id+"_rotatebox",
+            shapeOptions:{
+                canDragShape: false,
+                visible: this.options.visible,
+            }
+        })
+        this.calcPosition();
+        this.eventListener.addRotateEventListener();
+        this.rotateBox.redraw();
+    }
+
+
+    /**
+     * @ignore
      * Returns dimensions of resize box around shape according to shape dimensions
      * @returns {{top: number, left: number, bottom: *, width: *, right: *, height: *}}
      */
@@ -225,12 +256,12 @@ function SmartShape() {
         this.calcPosition();
         const [pointWidth,pointHeight] = this.getMaxPointSize();
         const result = {
-            left: this.left - pointWidth - 5,
-            right: this.right + pointWidth + 5,
-            top: this.top - pointHeight - 5,
-            bottom: this.bottom + pointHeight + 5,
-            width: this.width + (pointWidth + 5)*2,
-            height: this.height + (pointHeight + 5)*2,
+            left: this.left - pointWidth,
+            right: this.right + pointWidth,
+            top: this.top - pointHeight,
+            bottom: this.bottom + pointHeight,
+            width: this.width + (pointWidth)*2,
+            height: this.height + (pointHeight)*2,
         }
         if (result.left < 0) {
             this.moveTo(result.left*-1,this.top);
@@ -258,6 +289,9 @@ function SmartShape() {
      * @returns {array} [width,height]
      */
     this.getMaxPointSize = () => {
+        if (!this.points.length) {
+            return [0,0];
+        }
         const pointWidth = this.points.map(point=>point.options.width).reduce((w1,w2) => Math.max(w1,w2));
         const pointHeight = this.points.map(point=>point.options.height).reduce((h1,h2) => Math.max(h1,h2));
         return [pointWidth,pointHeight];
@@ -283,6 +317,9 @@ function SmartShape() {
                 this.points.forEach(point => point.options.visible = options.visible);
                 if (this.resizeBox) {
                     this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
+                }
+                if (this.rotateBox) {
+                    this.rotateBox.setOptions({shapeOptions:{visible:options.visible}});
                 }
             }
             Object.assign(this.options,options);
@@ -514,7 +551,73 @@ function SmartShape() {
      * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
     this.redraw = () => {
+        this.applyDisplayMode();
         SmartShapeDrawHelper.draw(this);
+    }
+
+    /**
+     * @ignore
+     * Method used to setup shape drawing depending on current options.displayMode.
+     * Depending on this it shows either ResizeBox around it, or RotateBox, or nothing.
+     */
+    this.applyDisplayMode = () => {
+        if (this.options.displayMode === SmartShapeDisplayMode.SCALE && this.options.canScale) {
+            if (this.rotateBox) {
+                this.rotateBox.hide();
+            }
+            if (!this.resizeBox) {
+                this.setupResizeBox();
+            }
+            this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
+        } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
+            if (this.resizeBox) {
+                this.resizeBox.hide();
+            }
+            if (!this.rotateBox) {
+                this.setupRotateBox()
+            }
+            this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
+        } else {
+            if (this.resizeBox) {
+                this.resizeBox.hide();
+            }
+            if (this.rotateBox) {
+                this.rotateBox.hide();
+            }
+        }
+    }
+
+    /**
+     * Method used to switch display mode of SmartShape from Default to Resize to Rotate.
+     * @param mode {SmartShapeDisplayMode} Display mode to switch to. One of values of
+     * [SmartShapeDisplayMode](#SmartShapeDisplayMode). If not specified, then automatically
+     * switches to next mode in the following loop sequence: DEFAULT -> SCALE -> ROTATE -> DEFAULT
+     */
+    this.switchDisplayMode = (mode=null) => {
+        if (!mode) {
+            if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+                mode = SmartShapeDisplayMode.SCALE;
+            } else if (this.options.displayMode === SmartShapeDisplayMode.SCALE) {
+                mode = SmartShapeDisplayMode.ROTATE;
+            } else {
+                mode = SmartShapeDisplayMode.DEFAULT;
+            }
+            if (mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) {
+                if (this.options.canRotate) {
+                    mode = SmartShapeDisplayMode.ROTATE;
+                } else {
+                    mode = SmartShapeDisplayMode.DEFAULT;
+                }
+            } else if (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) {
+                mode = SmartShapeDisplayMode.DEFAULT;
+            }
+        }
+        if ((mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) ||
+            (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate)) {
+            mode = SmartShapeDisplayMode.DEFAULT;
+        }
+        this.options.displayMode = mode;
+        this.redraw();
     }
 
     /**
@@ -523,6 +626,9 @@ function SmartShape() {
      * Set left,top,right,bottom,width and height of shape.
      */
     this.calcPosition = () => {
+        if (!this.points.length) {
+            return;
+        }
         this.left = this.points.map(point => point.x).reduce((minx,x) => x < minx ? x : minx);
         this.top = this.points.map(point => point.y).reduce((miny,y) => y < miny ? y : miny);
         this.right = this.points.map(point => point.x).reduce((maxx,x) => x > maxx ? x : maxx);
@@ -622,6 +728,19 @@ function SmartShape() {
 try {
     window.ResizeBox = ResizeBox;
 } catch (err) {}
+
+/**
+ * Enumeration of SmartShape display modes
+ * @param DEFAULT basic display mode without resize or rotate boxes
+ * @param SCALE In this mode the shape displayed with resize box around it
+ * @param ROTATE In this mode the shape displayed with rotate box around it
+ * @enum {string}
+ */
+export const SmartShapeDisplayMode = {
+    DEFAULT: "default",
+    SCALE: "scale",
+    ROTATE: "rotate"
+}
 
 export {ResizeBox, RotateBox}
 

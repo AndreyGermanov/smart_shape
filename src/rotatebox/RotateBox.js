@@ -144,7 +144,9 @@ function RotateBox() {
         this.right = this.left + this.width;
         this.bottom = this.top + this.height;
         this.setOptions(options);
-        this.options.shapeOptions.id = this.options.id+"_shape";
+        this.options.shapeOptions.id = this.options.id;
+        this.options.shapeOptions.canRotate = false;
+        this.options.shapeOptions.canScale = false;
         this.shape = new SmartShape().init(root,Object.assign({},this.options.shapeOptions),[]);
         this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds();
         this.addPoints();
@@ -171,7 +173,7 @@ function RotateBox() {
                 options.shapeOptions = Object.assign({},this.options.shapeOptions);
             }
             options.shapeOptions.zIndex = options.zIndex || this.options.zIndex;
-            options.shapeOptions.id = options.id ? options.id+"_shape" : this.options.id+"_shape";
+            options.shapeOptions.id = options.id ? options.id : this.options.id;
             Object.assign(this.options,options);
             if (this.shape) {
                 this.shape.setOptions(this.options.shapeOptions);

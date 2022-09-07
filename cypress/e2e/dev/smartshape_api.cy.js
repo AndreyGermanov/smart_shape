@@ -1,4 +1,4 @@
-import SmartShape from "../../../src/smart_shape.js";
+import SmartShape, {SmartShapeDisplayMode} from "../../../src/smart_shape.js";
 import {ContainerEvents, ShapeEvents} from "../../../src/smart_shape_event_listener.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 
@@ -222,6 +222,8 @@ describe('SmartShape API tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new SmartShape();
       shape.init(app,{visible:false,canScale:true,id:"shape1"},[[0,100],[100,0],[200,100]]);
+      shape.setOptions({canScale:true,canRotate:true,displayMode:SmartShapeDisplayMode.SCALE});
+      shape.redraw();
       assert.equal(shape.svg.style.display,'none',"Should create invisible shape");
       assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
       for (let point of shape.points) {
@@ -250,6 +252,46 @@ describe('SmartShape API tests', () => {
       }
     });
   })
+
+  it("switchDisplayMode", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app,shape] = setup();
+      assert.equal(shape.options.displayMode, SmartShapeDisplayMode.DEFAULT,"Should be in DEFAULT mode by default");
+      assert.isNull(shape.resizeBox,"Resize box by default is null");
+      assert.isNull(shape.rotateBox,"Rotate box by default is null");
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should not switch to SCALE because canScale option disabled");
+      shape.setOptions({canScale:true});
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.SCALE,"Should switch from DEFAULT to SCALE");
+      assert.isNotNull(shape.resizeBox,"Should create Resize box");
+      assert.isNotNull(shape.resizeBox.shape.svg,"Should display shape for Resize box");
+      assert.equal(shape.resizeBox.shape.svg.style.display,'',"Should show resize box");
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should not switch to ROTATE because canRotate option disabled");
+      shape.setOptions({canRotate:true});
+      shape.switchDisplayMode();
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.ROTATE,"Should switch from SCALE to ROTATE");
+      assert.isNotNull(shape.rotateBox,"Should create Rotate box");
+      assert.isNotNull(shape.rotateBox.shape.svg,"Should display shape for Rotate box");
+      assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should show rotate box");
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch from ROTATE to default");
+      assert.equal(shape.resizeBox.shape.svg.style.display,'none',"Should hide resize box");
+      assert.equal(shape.rotateBox.shape.svg.style.display,'none',"Should hide rotate box");
+      shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.ROTATE,"Should switch DIRECTLY to ROTATE");
+      assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should display rotate box");
+      shape.setOptions({canScale:false});
+      shape.switchDisplayMode(SmartShapeDisplayMode.SCALE);
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if SCALE is disabled");
+      shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+      shape.setOptions({canRotate:false});
+      shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if ROTATE is disabled");
+    });
+  });
 
   it("setOptions", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {

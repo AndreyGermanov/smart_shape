@@ -767,7 +767,7 @@ to this object.
     * [.root](#SmartShape+root) : <code>object</code>
     * [.points](#SmartShape+points) : <code>array</code>
     * [.svg](#SmartShape+svg) : <code>object</code>
-    * [.options](#SmartShape+options) : <code>Object</code>
+    * [.options](#SmartShape+options) : <code>object</code>
     * [.left](#SmartShape+left) : <code>number</code>
     * [.top](#SmartShape+top) : <code>number</code>
     * [.right](#SmartShape+right) : <code>number</code>
@@ -776,6 +776,7 @@ to this object.
     * [.height](#SmartShape+height) : <code>number</code>
     * [.guid](#SmartShape+guid) : <code>string</code>
     * [.resizeBox](#SmartShape+resizeBox) : [<code>ResizeBox</code>](#ResizeBox)
+    * [.rotateBox](#SmartShape+rotateBox) : [<code>RotateBox</code>](#RotateBox)
     * [.init(root, options, points)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
@@ -789,6 +790,7 @@ to this object.
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.rotateBy(angle)](#SmartShape+rotateBy)
     * [.redraw()](#SmartShape+redraw)
+    * [.switchDisplayMode(mode)](#SmartShape+switchDisplayMode)
     * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
@@ -826,7 +828,7 @@ SmartShape constructs SVG element based on provided point coordinates and option
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+options"></a>
 
-### smartShape.options : <code>Object</code>
+### smartShape.options : <code>object</code>
 Options of shape as an object. Can have the following parameters.
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
@@ -851,11 +853,13 @@ Options of shape as an object. Can have the following parameters.
 | offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire shape to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
-| canScale | <code>boolean</code> | Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears around shape and user can drag in to resize shape in different directions |
+| canScale | <code>boolean</code> | Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears around shape and user can drag it to resize shape in different directions |
+| canRotate | <code>boolean</code> | Is it allowed to rotate this shape. If true, then [RotateBox](#RotateBox) appears around shape and user can drag it to rotate shape in different directions |
 | pointOptions | <code>object</code> | Default options for created points. See  [options](#SmartPoint+options) property of `SmartPoint` object. |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
 | bounds | <code>object</code> | Bounds for shape movement and points dragging. This is an object with `left`, `top`, `right` and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not specified, then left, top, right and bottom of container element will be used for this |
 | visible | <code>boolean</code> | Shape is visible or not. By default, `true`. |
+| displayMode | [<code>SmartShapeDisplayMode</code>](#SmartShapeDisplayMode) | In which mode the shape is displayed: default mode or with resize or rotate box around it. See [SmartShapeDisplayMode](#SmartShapeDisplayMode) |
 
 <a name="SmartShape+left"></a>
 
@@ -910,6 +914,13 @@ Internal global unique identifier of shape. Generated automatically.
 ### smartShape.resizeBox : [<code>ResizeBox</code>](#ResizeBox)
 [ResizeBox](#ResizeBox) component, used to scale shape if
 `canScale` option enabled
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+rotateBox"></a>
+
+### smartShape.rotateBox : [<code>RotateBox</code>](#RotateBox)
+[RotateBox](#RotateBox) component, used to rotate shape if
+`canRotate` option enabled
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
@@ -1063,6 +1074,17 @@ Method used to rotate this shape by specified angle around it's center.
 Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+switchDisplayMode"></a>
+
+### smartShape.switchDisplayMode(mode)
+Method used to switch display mode of SmartShape from Default to Resize to Rotate.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| mode | [<code>SmartShapeDisplayMode</code>](#SmartShapeDisplayMode) | Display mode to switch to. One of values of [SmartShapeDisplayMode](#SmartShapeDisplayMode). If not specified, then automatically switches to next mode in the following loop sequence: DEFAULT -> SCALE -> ROTATE -> DEFAULT |
+
 <a name="SmartShape+getPosition"></a>
 
 ### smartShape.getPosition() ⇒ <code>object</code>
@@ -1210,6 +1232,19 @@ in point option `moveDirections` to specify in which directions point can be mov
 Members of enumeration: `LEFT`, `TOP`, `RIGHT`, `BOTTOM`
 
 **Kind**: global enum  
+<a name="SmartShapeDisplayMode"></a>
+
+## SmartShapeDisplayMode : <code>enum</code>
+Enumeration of SmartShape display modes
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| DEFAULT | basic display mode without resize or rotate boxes |
+| SCALE | In this mode the shape displayed with resize box around it |
+| ROTATE | In this mode the shape displayed with rotate box around it |
+
 <a name="ContainerEvents"></a>
 
 ## ContainerEvents : <code>enum</code>
@@ -1219,5 +1254,22 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 
 | Param | Description |
 | --- | --- |
-| CONTAINER_BOUNDS_CHANGED | by shape when dimensions of container changed, e.g. browser  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)  with array of all points of this shape, which could be affected by this bounds change. |
+| CONTAINER_BOUNDS_CHANGED | Emitted by shape when dimensions of container changed, e.g. browser  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)  with array of all points of this shape, which could be affected by this bounds change. |
+
+<a name="ShapeEvents"></a>
+
+## ShapeEvents : <code>enum</code>
+Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| SHAPE_CREATE | Emitted right after shape is created and initialized |
+| SHAPE_MOVE_START | Emitted when user presses left mouse button on shape to start dragging |
+| SHAPE_MOVE | Emitted when user drags shape |
+| SHAPE_MOVE_END | Emitted when user releases mouse button to stop drag the shape |
+| SHAPE_MOUSE_MOVE | Emitted when user moves mouse over shape |
+| SHAPE_MOUSE_ENTER | Emitted when mouse cursor enters shape |
+| SHAPE_DESTROY | Emitted right before shape is destroyed |
 

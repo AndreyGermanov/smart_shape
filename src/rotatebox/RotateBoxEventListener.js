@@ -2,6 +2,7 @@ import EventsManager from "../events/EventsManager.js";
 import {RotateBoxEvents} from "./RotateBox.js";
 import {ShapeEvents} from "../smart_shape_event_listener.js";
 import {distance, radians_to_degrees} from "../utils.js";
+import {PointEvents} from "../smart_point.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the RotateBox.
@@ -34,6 +35,21 @@ function RotateBoxEventListener(rotateBox) {
 
     /**
      * @ignore
+     * Initial rotation angle when user presses one of rotation buttons
+     * @type {number}
+     */
+    this.initialAngle = 0;
+
+    /**
+     * @ignore
+     * Rotation angle from previous rotate event. Used to measure difference
+     * between previous rotate event and current rotation event.
+     * @type {number}
+     */
+    this.previousAngle = 0;
+
+    /**
+     * @ignore
      * Initializes and starts this event listener
      * @returns {RotateBoxEventListener}
      */
@@ -58,12 +74,18 @@ function RotateBoxEventListener(rotateBox) {
             EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.rotateBox,event);
         });
         this.shapeMoveEnd = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
+            this.previousAngle = 0;
             EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,this.rotateBox,event);
         });
         this.shapeMove = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
             EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.rotateBox,event);
         });
-        this.rotateBox.shape.eventListener.mousemove = this.mousemove;
+        this.rotateBox.shape.points.forEach(point => {
+            point.mousemove = this.mousemove;
+            point.rotateListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
+                this.onPointMouseDown(event);
+            });
+        });
     }
 
     /**
@@ -86,6 +108,11 @@ function RotateBoxEventListener(rotateBox) {
         return listener;
     }
 
+    /**
+     * @ignore
+     * onMouseMove event handler, triggered when user moves mouse over the shape or container element.
+     * @param event {MouseEvent} Event object
+     */
     this.mousemove = (event) => {
         EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, {clientX:event.clientX,clientY:event.clientY});
         if (event.buttons !== 1) {
@@ -97,25 +124,57 @@ function RotateBoxEventListener(rotateBox) {
         }
         let clientX = event.clientX+window.scrollX;
         let clientY = event.clientY+window.scrollY;
-        const basePoint = this.rotateBox.shape.draggedPoint;
-        let angle = 0;
-        if (basePoint === this.rotateBox.left_top) {
-            if (clientX<basePoint.x && clientY<basePoint.y) {
-                clientX = basePoint.x;
-            }
-            if (clientX>basePoint.x && clientY>basePoint.y) {
-                clientY = basePoint.y;
-            }
-            const hyp = distance(clientX,clientY,basePoint.x,basePoint.y);
-            let catet = distance(clientX,clientY,basePoint.x,clientY)*-1;
-            if (clientX>basePoint.x) {
-                catet = distance(clientX,clientY,clientX,basePoint.y);
-            }
-            if (hyp>0) {
-                angle = radians_to_degrees(Math.asin(catet/hyp));
-            }
+        const centerX = this.rotateBox.shape.left+this.rotateBox.shape.width/2;
+        const centerY = this.rotateBox.shape.top+this.rotateBox.shape.height/2;
+        let hypotenuse = distance(clientX,clientY,centerX,centerY);
+        let cathetus = 0;
+        let start_angle = 0;
+        if (clientX < centerX && clientY < centerY) {
+            cathetus = distance(clientX,clientY,clientX,centerY)
         }
-        EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle});
+        if (clientX > centerX && clientY < centerY) {
+            start_angle = 90;
+            cathetus = distance(clientX,clientY,centerX,clientY);
+        }
+        if (clientX > centerX && clientY > centerY) {
+            start_angle = 180;
+            cathetus = distance(clientX,clientY,clientX,centerY);
+        }
+        if (clientX < centerX && clientY > centerY) {
+            start_angle = 270;
+            cathetus = distance(clientX,clientY,centerX,clientY);
+        }
+        if (hypotenuse > 0) {
+            let angle = radians_to_degrees((Math.asin(cathetus/hypotenuse))) + start_angle + this.initialAngle;
+            let angleDiff = angle;
+            if (this.previousAngle) {
+                angleDiff -= this.previousAngle;
+            }
+            this.previousAngle = angle;
+            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:angleDiff});
+        }
+    }
+
+    /**
+     * @ignore
+     * onMouseDown event for marker points
+     * @param event {MouseEvent} Standard Mouse event object
+     */
+    this.onPointMouseDown = (event) => {
+        switch (event.target) {
+            case this.rotateBox.left_top:
+                this.initialAngle = -45;
+                break;
+            case this.rotateBox.right_top:
+                this.initialAngle = -135;
+                break;
+            case this.rotateBox.right_bottom:
+                this.initialAngle = -225;
+                break;
+            case this.rotateBox.left_bottom:
+                this.initialAngle = -315;
+                break;
+        }
     }
 
     /**
@@ -146,6 +205,9 @@ function RotateBoxEventListener(rotateBox) {
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_END,this.shapeMoveEnd);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
+        this.rotateBox.shape.points.forEach(point => {
+            point.removeEventListener(PointEvents.POINT_DRAG_START, point.rotateListener);
+        });
     }
 }
 

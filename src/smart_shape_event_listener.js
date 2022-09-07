@@ -2,6 +2,7 @@ import EventsManager from "./events/EventsManager.js";
 import {getOffset, pauseEvent} from "./utils.js";
 import {PointEvents} from "./smart_point.js";
 import {ResizeBoxEvents} from "./resizebox/ResizeBox.js";
+import {RotateBoxEvents} from "./rotatebox/RotateBox.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the shape.
@@ -84,8 +85,24 @@ function SmartShapeEventListener(shape) {
             const diffY = event.newPos.top - event.oldPos.top;
             this.shape.moveTo(this.shape.left+diffX,this.shape.top+diffY);
             const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
-            this.shape.scaleTo(event.newPos.width-(pointWidth+5)*2,event.newPos.height-(pointHeight+5)*2);
+            this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
             this.shape.redraw();
+        });
+    }
+
+    /**
+     * @ignore
+     * Method adds a listener to shape, that listens for "rotate" event of RotateBox.
+     * As a reaction, listening function rotates the shape according to the angle, received
+     * from the event of resize box.
+     */
+    this.addRotateEventListener = () => {
+        if (!this.shape.rotateBox) {
+            return;
+        }
+        this.rotateBoxListener = this.shape.rotateBox.addEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE, (event) => {
+            this.shape.rotateBy(event.angle);
+            this.shape.redraw()
         });
     }
 
@@ -367,6 +384,9 @@ function SmartShapeEventListener(shape) {
         if (this.shape.resizeBox) {
             this.shape.resizeBox.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBoxListener);
         }
+        if (this.shape.rotateBox) {
+            this.shape.rotateBox.removeEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBoxListener);
+        }
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];
             handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
@@ -377,7 +397,7 @@ function SmartShapeEventListener(shape) {
 
 /**
  * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
- @param CONTAINER_BOUNDS_CHANGED by shape when dimensions of container changed, e.g. browser
+ @param CONTAINER_BOUNDS_CHANGED Emitted by shape when dimensions of container changed, e.g. browser
  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:
  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)
  with array of all points of this shape, which could be affected by this bounds change.
@@ -387,6 +407,17 @@ export const ContainerEvents = {
     CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
 }
 
+/**
+ * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
+ * @param SHAPE_CREATE Emitted right after shape is created and initialized
+ * @param SHAPE_MOVE_START Emitted when user presses left mouse button on shape to start dragging
+ * @param SHAPE_MOVE Emitted when user drags shape
+ * @param SHAPE_MOVE_END Emitted when user releases mouse button to stop drag the shape
+ * @param SHAPE_MOUSE_MOVE Emitted when user moves mouse over shape
+ * @param SHAPE_MOUSE_ENTER Emitted when mouse cursor enters shape
+ * @param SHAPE_DESTROY Emitted right before shape is destroyed
+ * @enum {string}
+ */
 export const ShapeEvents = {
     SHAPE_CREATE: "create",
     SHAPE_MOVE_START: "move_start",

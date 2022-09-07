@@ -50,6 +50,9 @@ function SmartShapeDrawHelper() {
         if (shape.resizeBox) {
             this.redrawResizeBox(shape);
         }
+        if (shape.rotateBox) {
+            this.redrawRotateBox(shape);
+        }
     }
 
     /**
@@ -88,6 +91,21 @@ function SmartShapeDrawHelper() {
         shape.resizeBox.width = bounds.width;
         shape.resizeBox.height = bounds.height;
         shape.resizeBox.redraw();
+    }
+
+    /**
+     * @ignore
+     * If shape rotation feature is enabled, this method
+     * redraws [RotateBox](#RotateBox) around it after redrawing the shape
+     * @param shape {SmartShape} Shape object
+     */
+    this.redrawRotateBox = (shape) => {
+        const bounds = shape.getResizeBoxBounds();
+        shape.rotateBox.left = bounds.left;
+        shape.rotateBox.top = bounds.top;
+        shape.rotateBox.width = bounds.width;
+        shape.rotateBox.height = bounds.height;
+        shape.rotateBox.redraw();
     }
 
     /**
