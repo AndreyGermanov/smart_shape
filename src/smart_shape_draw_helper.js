@@ -16,6 +16,7 @@ function SmartShapeDrawHelper() {
             return
         }
         if (shape.svg) {
+            shape.eventListener.removeSvgEventListeners();
             shape.root.removeChild(shape.svg);
             shape.svg = null;
         }
@@ -35,8 +36,7 @@ function SmartShapeDrawHelper() {
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
         shape.root.appendChild(shape.svg);
-        shape.svg.addEventListener("mousedown",shape.eventListener.mousedown)
-        shape.svg_mouseenter = shape.svg.addEventListener("mouseenter",shape.eventListener.mouseenter)
+        shape.eventListener.setSvgEventListeners()
         if (typeof(shape.options.visible) !== "undefined") {
             shape.svg.style.display = shape.options.visible ? '' : 'none';
         }

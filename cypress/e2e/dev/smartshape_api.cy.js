@@ -516,6 +516,9 @@ describe('SmartShape API tests', () => {
       let moveStartTriggered = false;
       let moveEndTriggered = false;
       let moveTriggered = false;
+      let mouseOverTriggered = false;
+      let mouseOutTriggered = false;
+      let clickTriggered = false
       const shape3 = new SmartShape();
       EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,(event) => {
         if (event.target.guid === shape3.guid) {
@@ -538,6 +541,15 @@ describe('SmartShape API tests', () => {
       shape3.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
         moveEndTriggered = true;
       });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
+        mouseOverTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
+        mouseOutTriggered = true;
+      });
+      shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
+        clickTriggered = true;
+      });
       shape3.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
         destroyTriggered = true;
       });
@@ -547,14 +559,23 @@ describe('SmartShape API tests', () => {
           cy.get("#shape3").trigger("mousedown", {buttons: 1}).then(() => {
             cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
               cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
-                shape3.destroy();
-                assert.isTrue(createTriggered, "Should trigger shape create event");
-                assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
-                assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
-                assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
-                assert.isTrue(moveTriggered, "Should trigger shape move event");
-                assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
-                assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                cy.get("#shape3").trigger("mouseover").then(() => {
+                  cy.get("#shape3").trigger("mouseout").then(() => {
+                    cy.get("#shape3").trigger("click").then(() => {
+                      shape3.destroy();
+                      assert.isTrue(createTriggered, "Should trigger shape create event");
+                      assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
+                      assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                      assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                      assert.isTrue(moveTriggered, "Should trigger shape move event");
+                      assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
+                      assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
+                      assert.isTrue(clickTriggered, "Should trigger shape click event");
+                      assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                      assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                    })
+                  })
+                })
               });
             });
           });
