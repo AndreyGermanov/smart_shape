@@ -261,6 +261,7 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.click = (event) => {
+        this.shape.switchDisplayMode();
         const shapeEvent = createEvent(event);
         EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.shape,shapeEvent);
     }
