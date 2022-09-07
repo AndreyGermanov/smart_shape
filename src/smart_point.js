@@ -1,4 +1,4 @@
-import {getOffset, pauseEvent, uuid} from "./utils.js";
+import {getOffset, getRotatedCoords, pauseEvent, uuid} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
 import {ContainerEvents} from "./smart_shape_event_listener.js";
 /**
@@ -197,6 +197,19 @@ function SmartPoint() {
     this.hide = () => {
         this.setOptions({visible:false});
         this.redraw();
+    }
+
+    /**
+     * @ignore
+     * Method used to rotate this point by specified angle around specified center
+     * @param angle {number} Angle in degrees
+     * @param centerX {number} X coordinate of center
+     * @param centerY {number} Y coordinate of center
+     */
+    this.rotateBy = (angle,centerX,centerY) => {
+        const [x,y] = getRotatedCoords(angle, this.x,this.y, centerX,centerY);
+        this.x = x;
+        this.y = y;
     }
 
     /**

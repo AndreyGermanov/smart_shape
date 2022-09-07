@@ -1,56 +1,55 @@
 import SmartShape from "../smart_shape.js";
-import {PointMoveDirections} from "../smart_point.js";
-import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
+import RotateBoxEventListener from "./RotateBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../smart_shape_event_listener.js";
 import {uuid} from "../utils.js";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
- * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
- * Mostly used to resize [SmartShape](#SmartShape) object, but also can be used as an independent shape
- * for tasks like resizing objects on a web page or select rectangular regions.
+ * it corners, used to rotate it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/rotate_box.html).
+ * Mostly used to rotate [SmartShape](#SmartShape) object, but also can be used as an independent shape
+ * for tasks like rotating objects on a web page or select rectangular regions.
  * @constructor
  */
-function ResizeBox() {
+function RotateBox() {
 
     /**
-     * Left corner of resize box
+     * Left corner of rotate box
      * @type {number}
      */
     this.left = 0;
 
     /**
-     * Top corner of resize box
+     * Top corner of rotate box
      * @type {number}
      */
     this.top = 0;
 
     /**
-     * Right corner of resize box
+     * Right corner of rotate box
      * @type {number}
      */
     this.right = 0;
 
     /**
-     * Bottom corner of resize box
+     * Bottom corner of rotate box
      * @type {number}
      */
     this.bottom = 0;
 
     /**
-     * Width of resize box
+     * Width of rotate box
      * @type {number}
      */
     this.width = 0;
 
     /**
-     * Height of resize box
+     * Height of rotate box
      * @type {number}
      */
     this.height = 0;
 
     /**
-     * Underlying shape, that used to service this resize box
+     * Underlying shape, that used to service this rotate box
      * (draw, point event handling and so on)
      * @type {SmartShape}
      */
@@ -64,10 +63,10 @@ function ResizeBox() {
     this.guid = uuid()
 
     /**
-     * Options of resize box
-     * @param id {string} Unique ID or resize box. If instantiated by [SmartShape](#SmartShape), then setup
+     * Options of rotate box
+     * @param id {string} Unique ID or rotate box. If instantiated by [SmartShape](#SmartShape), then setup
      * automatically
-     * @param shapeOptions {object} Options of underlying shape, that used to draw and manage this ResizeBox. See
+     * @param shapeOptions {object} Options of underlying shape, that used to draw and manage this RotateBox. See
      * [SmartShape.options](#SmartShape+options)
      * @param zIndex {number} Order of element in a stack of HTML elements
      * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
@@ -95,9 +94,9 @@ function ResizeBox() {
     }
 
     /**
-     * Event listener that handles event listening logic for this resize box.
+     * Event listener that handles event listening logic for this rotate box.
      * Instance of [ResizeBoxEventListener](#ResizeBoxEventListener) class.
-     * @type {ResizeBoxEventListener}
+     * @type {RotateBoxEventListener}
      */
     this.eventListener = null;
 
@@ -108,28 +107,10 @@ function ResizeBox() {
     this.left_top = null;
 
     /**
-     * Left center marker point
-     * @type {SmartPoint}
-     */
-    this.left_center = null;
-
-    /**
      * Left bottom marker point
      * @type {SmartPoint}
      */
     this.left_bottom = null;
-
-    /**
-     * Center top marker point
-     * @type {SmartPoint}
-     */
-    this.center_top = null;
-
-    /**
-     * Center bottom marker point
-     * @type {SmartPoint}
-     */
-    this.center_bottom = null;
 
     /**
      * Right top marker point
@@ -138,28 +119,22 @@ function ResizeBox() {
     this.right_top = null;
 
     /**
-     * Right center marker point
-     * @type {SmartPoint}
-     */
-    this.right_center = null;
-
-    /**
      * Right bottom marker point
      * @type {SmartPoint}
      */
     this.right_bottom = null;
 
     /**
-     * Method used to construct ResizeBox object with specified coordinates and
+     * Method used to construct RotateBox object with specified coordinates and
      * size, with specified `options`. Then it binds this object to specified `root`
      * HTML node and displays it
-     * @param root {HTMLElement} HTML element that used as a container for this ResizeBox
+     * @param root {HTMLElement} HTML element that used as a container for this RotateBox
      * @param left {number} Left corner of shape relative to container top left
      * @param top {number} Top corner of shape relative to container top left
      * @param width {number} Width of shape
      * @param height {number} Height of shape
-     * @param options {object} Options used to setup ResizeBox. See [here](#ResizeBox+options).
-     * @returns {ResizeBox} constucted ResizeBox object
+     * @param options {object} Options used to setup RotateBox. See [here](#RotateBox+options).
+     * @returns {RotateBox} constucted RotateBox object
      */
     this.init = (root,left,top,width,height,options={}) => {
         this.left = parseInt(left);
@@ -175,15 +150,15 @@ function ResizeBox() {
         this.shape = new SmartShape().init(root,Object.assign({},this.options.shapeOptions),[]);
         this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds();
         this.addPoints();
-        this.eventListener = new ResizeBoxEventListener(this).run();
+        this.eventListener = new RotateBoxEventListener(this).run();
         this.redraw()
         EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
     }
 
     /**
-     * Method used to change options of ResizeBox.
-     * @param options {object} Options object. See [here](#ResizeBox+options).
+     * Method used to change options of RotateBox.
+     * @param options {object} Options object. See [here](#RotateBox+options).
      */
     this.setOptions = (options = {}) => {
         if (options && typeof(options) === "object") {
@@ -208,66 +183,19 @@ function ResizeBox() {
 
     /**
      * @ignore
-     * Method used to add marker points to ResizeBox, that lately used to resize the box
+     * Method used to add marker points to RotateBox, that lately used to rotate the box
      */
     this.addPoints = () => {
         this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{cursor: "nw-resize"}});
-        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.shape.guid+"_center_top",style:{cursor: "ns-resize"}});
         this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{cursor: "ne-resize"}});
-        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.shape.guid+"_right_center",style:{cursor: "ew-resize"}});
         this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{cursor: "se-resize"}});
-        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.shape.guid+"_center_bottom",style:{cursor: "ns-resize"}});
         this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{cursor: "sw-resize"}});
-        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.shape.guid+"_left_center",style:{cursor: "ew-resize"}});
-        this.setPointsOptions();
-    }
-
-    /**
-     * @ignore
-     * Method used to setup marker points of ResizeBox
-     */
-    this.setPointsOptions = () => {
-        this.setPointsMoveDirections();
-        this.setPointsMoveBounds();
-    }
-
-    /**
-     * @ignore
-     * Method used to setup to which directions allowed to move marker points.
-     * For example, some of them possible to move only horizontally, others, only vertically.
-     * See [SmartShape.options.moveDirections](#SmartShape+options) to learn more.
-     */
-    this.setPointsMoveDirections = () => {
-        this.center_top.setOptions({moveDirections:[PointMoveDirections.TOP,PointMoveDirections.BOTTOM]});
-        this.center_bottom.setOptions({moveDirections:[PointMoveDirections.TOP,PointMoveDirections.BOTTOM]});
-        this.left_center.setOptions({moveDirections:[PointMoveDirections.LEFT,PointMoveDirections.RIGHT]});
-        this.right_center.setOptions({moveDirections:[PointMoveDirections.LEFT,PointMoveDirections.RIGHT]});
-    }
-
-    /**
-     * @ignore
-     * Method used to set bounds, to which possible to move each marker point of ResizeBox
-     * For example, it's impossible to drag right corner beyond left corner, top corner beyond bottom corner.
-     */
-    this.setPointsMoveBounds = () => {
-        this.left_top.options.bounds.bottom = this.left_bottom.y-this.left_bottom.options.height-this.left_center.options.height;
-        this.left_top.options.bounds.right = this.right_top.x-this.right_top.options.width-this.center_top.options.width;
-        this.center_top.options.bounds.bottom = this.left_bottom.y-this.left_bottom.options.height-this.left_center.options.height;
-        this.right_top.options.bounds.bottom = this.left_bottom.y-this.left_bottom.options.height-this.left_center.options.height;
-        this.right_top.options.bounds.left = this.left_top.x+this.right_top.options.width+this.center_top.options.width;
-        this.right_center.options.bounds.left = this.left_top.x+this.right_center.options.width+this.center_top.options.width;
-        this.right_bottom.options.bounds.left = this.left_top.x+this.right_bottom.options.width+this.center_bottom.options.width;
-        this.right_bottom.options.bounds.top = this.right_top.y+this.right_top.options.height+this.right_center.options.height;
-        this.center_bottom.options.bounds.top =this.center_top.y+this.center_top.options.height+this.right_center.options.height;
-        this.left_bottom.options.bounds.right = this.right_bottom.x-this.right_bottom.options.width-this.center_bottom.options.width;
-        this.left_bottom.options.bounds.top = this.left_top.y+this.left_top.options.height+this.left_center.options.height;
-        this.left_center.options.bounds.right = this.right_center.x-this.right_center.options.width-this.center_top.options.width;
     }
 
     /**
      * @ignore
      * Method used to recalculate coordinates of marker points
-     * according to current ResizeBox coordinates and dimensions.
+     * according to current RotateBox coordinates and dimensions.
      */
     this.adjustCoordinates = () => {
         this.right = this.left + this.width;
@@ -280,29 +208,12 @@ function ResizeBox() {
         this.left_bottom.y = this.bottom;
         this.right_bottom.x = this.right;
         this.right_bottom.y = this.bottom;
-        this.center_top.y = this.top;
-        this.center_bottom.y = this.bottom;
-        this.left_center.x = this.left;
-        this.right_center.x = this.right;
-        this.adjustCenters();
     }
 
     /**
      * @ignore
-     * Method used to recalculate coordinates of point markers, located on the centers of rectangle,
-     * after user dragged corner markers.
-     */
-    this.adjustCenters = () => {
-        this.center_top.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
-        this.center_bottom.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
-        this.left_center.y = parseInt((this.left_top.y+(this.left_bottom.y-this.left_top.y)/2));
-        this.right_center.y = parseInt((this.right_top.y+(this.right_bottom.y-this.right_top.y)/2));
-    }
-
-    /**
-     * @ignore
-     * Internal method that used to calculate resize box dimensions, based on point coordinates.
-     * Set left,top,right,bottom,width and height of resize box.
+     * Internal method that used to calculate rotate box dimensions, based on point coordinates.
+     * Set left,top,right,bottom,width and height of rotate box.
      */
     this.calcPosition = () => {
         this.shape.calcPosition();
@@ -315,7 +226,7 @@ function ResizeBox() {
     }
 
     /**
-     * Method used to get current position of Resize Box
+     * Method used to get current position of Rotate Box
      * @returns {object} Position with fields:
      * `top`,`left`,`right`,`bottom`,`width`,`height`
      */
@@ -324,17 +235,16 @@ function ResizeBox() {
     )
 
     /**
-     * Method used to redraw resize box
+     * Method used to redraw rotate box
      */
     this.redraw = () => {
         this.adjustCoordinates();
         this.shape.setOptions(this.options.shapeOptions);
-        this.setPointsMoveBounds();
         this.shape.redraw();
     }
 
     /**
-     * Method used to show Resize Box if it has hidden
+     * Method used to show Rotate Box if it has hidden
      */
     this.show = () => {
         this.options.shapeOptions.visible = true;
@@ -342,7 +252,7 @@ function ResizeBox() {
     }
 
     /**
-     * Method used to hide Resize Box
+     * Method used to hide Rotate Box
      */
     this.hide = () => {
         this.options.shapeOptions.visible = false;
@@ -350,7 +260,7 @@ function ResizeBox() {
     }
 
     /**
-     * Destroys the ResizeBox. Destroys all points, removes event listeners and removes the shape from screen.
+     * Destroys the RotateBox. Destroys all points, removes event listeners and removes the shape from screen.
      * But variable continue existing. To completely remove the shape,
      * set the variable to 'null' after calling this method.
      */
@@ -373,9 +283,9 @@ function ResizeBox() {
     /**
      * Uniform method that used to remove event handler, that previously added
      * to this object.
-     * @param eventName {ResizeBoxEvents|string} Name of event to remove listener from
+     * @param eventName {RotateBoxEvents|string} Name of event to remove listener from
      * @param listener {function} Pointer to event listener, that added previously.
-     * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
+     * It was returned from [addEventListener](#RotateBox+addEventListener) method.
      */
     this.removeEventListener = (eventName,listener) => {
         this.eventListener.removeEventListener(eventName,listener);
@@ -383,12 +293,13 @@ function ResizeBox() {
 }
 
 /**
- * Enumeration that defines events, that ResizeBox can emit.
- * @param RESIZE_BOX_RESIZE Emitted when user resized the shape by dragging one of marker points.
+ * Enumeration that defines events, that RotateBox can emit.
+ * @param ROTATE_BOX_ROTATE Emitted when user rotate the shape by dragging one of marker points.
+ * The event object of this type contains `angle` option, which is an angle of rotation in degrees.
  * @enum {int}
  */
-export const ResizeBoxEvents = {
-    RESIZE_BOX_RESIZE: "resize"
+export const RotateBoxEvents = {
+    ROTATE_BOX_ROTATE: "rotate"
 };
 
-export default ResizeBox;
+export default RotateBox;

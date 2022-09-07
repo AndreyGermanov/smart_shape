@@ -44,7 +44,7 @@ function ResizeBoxEventListener(resizeBox) {
 
     /**
      * @ignore
-     * Setup event handlers for different events, to whic resize box
+     * Setup event handlers for different events, to this resize box
      * should react.
      */
     this.setEventListeners = () => {

@@ -1,7 +1,7 @@
 import ResizeBox, {ResizeBoxEvents} from "../../../src/resizebox/ResizeBox.js";
 import {PointEvents, PointMoveDirections} from "../../../src/smart_point.js";
 import EventsManager from "../../../src/events/EventsManager.js";
-import SmartShape from "../../../src/smart_shape.js";
+import SmartShape, {SmartShapeDisplayMode} from "../../../src/smart_shape.js";
 import {ShapeEvents} from "../../../src/smart_shape_event_listener.js";
 describe('ResizeBox tests', () => {
   const setup = () => {
@@ -13,7 +13,7 @@ describe('ResizeBox tests', () => {
   const initShape = () => {
     const app = Cypress.$("#app").toArray()[0];
     app.style.height = "800px";
-    const shape = new SmartShape().init(app,{id:"shape1",canScale:true},
+    const shape = new SmartShape().init(app,{id:"shape1",canScale:true,displayMode:SmartShapeDisplayMode.SCALE},
         [[0,200],[100,100],[200,200]]);
     return [app,shape];
   }
@@ -110,14 +110,14 @@ describe('ResizeBox tests', () => {
       assert.equal(box.shape.height, box.height, "Should send correct height to shape");
       assert.equal(box.shape.right, box.right, "Should send correct right coordinate to shape");
       assert.equal(box.shape.bottom, box.bottom, "Should send correct bottom coordinate to shape");
-      assert.equal(box.shape.options.id,"box1_shape","Should set ID of internal shape correctly");
-      assert.equal(Cypress.$("#box1_shape").toArray().length,1, "Should create HTML element for shape with correct id");
+      assert.equal(box.shape.options.id,"box1","Should set ID of internal shape correctly");
+      assert.equal(Cypress.$("#box1").toArray().length,1, "Should create HTML element for shape with correct id");
       assert.equal(box.shape.points.length,8,"Should create 8 points as resize markers");
       assert.isFalse(box.shape.options.canAddPoints,"Adding points should not be allowed");
       assert.isFalse(box.shape.options.canDeletePoints,"Removing points should not be allowed");
       assert.isObject(box.options.shapeOptions,"Options for shape should exist");
       assert.isObject(box.options.shapeOptions.pointOptions,"Default point options for internal shape should exist");
-      assert.equal(box.options.shapeOptions.id,"box1_shape","Correct ID should be inside options for shape");
+      assert.equal(box.options.shapeOptions.id,"box1","Correct ID should be inside options for shape");
       checkAndGetPoints(box);
     });
   })
@@ -308,9 +308,9 @@ describe('ResizeBox tests', () => {
             destroyTriggered = true;
           });
 
-          cy.get("#box2_shape").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
-            cy.get("#box2_shape").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
-              cy.get("#box2_shape").trigger("mousedown", {buttons: 1}).then(() => {
+          cy.get("#box2").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
+            cy.get("#box2").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
+              cy.get("#box2").trigger("mousedown", {buttons: 1}).then(() => {
                 cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
                   cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
                     box.destroy();
@@ -423,10 +423,10 @@ describe('ResizeBox tests', () => {
         }
       })
       box.redraw();
-      cy.get("#box1_shape > polygon").should("have.attr","stroke-width","1").then(() => {
-        cy.get("#box1_shape > polygon").should("have.attr","stroke-dasharray","10").then(() => {
-          cy.get("#box1_shape > polygon").should("have.attr","stroke","#aaaaaa").then(() => {
-            cy.get("#box1_shape").should("have.css","z-index","1010").then(() => {
+      cy.get("#box1 > polygon").should("have.attr","stroke-width","1").then(() => {
+        cy.get("#box1 > polygon").should("have.attr","stroke-dasharray","10").then(() => {
+          cy.get("#box1 > polygon").should("have.attr","stroke","#aaaaaa").then(() => {
+            cy.get("#box1").should("have.css","z-index","1010").then(() => {
               cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-width","1px").then(() => {
                 cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-color","rgb(204, 204, 204)").then(() => {
                   cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-radius","0px").then(() => {
@@ -549,19 +549,19 @@ describe('ResizeBox tests', () => {
       const [app, shape] = initShape();
       const [pointWidth,pointHeight] = shape.getMaxPointSize();
       assert.isNotNull(shape.resizeBox,"Resize box should be created if not null");
-      assert.equal(shape.resizeBox.left,shape.left-pointWidth-5,
+      assert.equal(shape.resizeBox.left,shape.left-pointWidth,
           "Should correctly setup left corner of ResizeBox around shape");
-      assert.equal(shape.resizeBox.top,shape.top-pointHeight-5,
+      assert.equal(shape.resizeBox.top,shape.top-pointHeight,
           "Should correctly setup top corner of ResizeBox around shape");
-      assert.equal(shape.resizeBox.width,shape.width+(pointWidth+5)*2,
+      assert.equal(shape.resizeBox.width,shape.width+(pointWidth)*2,
           "Should correctly setup width of resize box");
-      assert.equal(shape.resizeBox.height, shape.height+(pointHeight+5)*2,
+      assert.equal(shape.resizeBox.height, shape.height+(pointHeight)*2,
           "Should correctly setup height of resize box"
       );
-      assert.equal(shape.resizeBox.right,shape.right+pointWidth+5,
+      assert.equal(shape.resizeBox.right,shape.right+pointWidth,
           "Should correctly setup right corner of resize box around shape"
       );
-      assert.equal(shape.resizeBox.bottom,shape.bottom+pointHeight+5,
+      assert.equal(shape.resizeBox.bottom,shape.bottom+pointHeight,
           "Should correctly setup bottom corner of resize box around shape"
       );
       assert.equal(shape.resizeBox.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,

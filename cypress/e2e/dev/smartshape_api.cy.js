@@ -1,4 +1,4 @@
-import SmartShape from "../../../src/smart_shape.js";
+import SmartShape, {SmartShapeDisplayMode} from "../../../src/smart_shape.js";
 import {ContainerEvents, ShapeEvents} from "../../../src/smart_shape_event_listener.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 
@@ -222,6 +222,8 @@ describe('SmartShape API tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new SmartShape();
       shape.init(app,{visible:false,canScale:true,id:"shape1"},[[0,100],[100,0],[200,100]]);
+      shape.setOptions({canScale:true,canRotate:true,displayMode:SmartShapeDisplayMode.SCALE});
+      shape.redraw();
       assert.equal(shape.svg.style.display,'none',"Should create invisible shape");
       assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
       for (let point of shape.points) {
@@ -250,6 +252,46 @@ describe('SmartShape API tests', () => {
       }
     });
   })
+
+  it("switchDisplayMode", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app,shape] = setup();
+      assert.equal(shape.options.displayMode, SmartShapeDisplayMode.DEFAULT,"Should be in DEFAULT mode by default");
+      assert.isNull(shape.resizeBox,"Resize box by default is null");
+      assert.isNull(shape.rotateBox,"Rotate box by default is null");
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should not switch to SCALE because canScale option disabled");
+      shape.setOptions({canScale:true});
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.SCALE,"Should switch from DEFAULT to SCALE");
+      assert.isNotNull(shape.resizeBox,"Should create Resize box");
+      assert.isNotNull(shape.resizeBox.shape.svg,"Should display shape for Resize box");
+      assert.equal(shape.resizeBox.shape.svg.style.display,'',"Should show resize box");
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should not switch to ROTATE because canRotate option disabled");
+      shape.setOptions({canRotate:true});
+      shape.switchDisplayMode();
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.ROTATE,"Should switch from SCALE to ROTATE");
+      assert.isNotNull(shape.rotateBox,"Should create Rotate box");
+      assert.isNotNull(shape.rotateBox.shape.svg,"Should display shape for Rotate box");
+      assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should show rotate box");
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch from ROTATE to default");
+      assert.equal(shape.resizeBox.shape.svg.style.display,'none',"Should hide resize box");
+      assert.equal(shape.rotateBox.shape.svg.style.display,'none',"Should hide rotate box");
+      shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.ROTATE,"Should switch DIRECTLY to ROTATE");
+      assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should display rotate box");
+      shape.setOptions({canScale:false});
+      shape.switchDisplayMode(SmartShapeDisplayMode.SCALE);
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if SCALE is disabled");
+      shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+      shape.setOptions({canRotate:false});
+      shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if ROTATE is disabled");
+    });
+  });
 
   it("setOptions", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
@@ -397,6 +439,50 @@ describe('SmartShape API tests', () => {
       assert.equal(point3.y,200,"Should correctly scale point when out of bounds");
     });
   });
+
+  it("rotateBy", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.width="400px";
+      app.style.height="400px";
+      app.style.borderWidth = "1px";
+      app.style.borderStyle = "solid";
+      const shape = new SmartShape();
+      shape.init(app,{},[[50,50],[150,50],[150,150],[50,150]]);
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[82,32],[168,82],[118,168],[32,118]],"Should rotate shape correctly");
+      shape.rotateBy(-30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[50,50],[150,50],[150,150],[50,150]],"Should rotate shape correctly");
+      shape.moveTo(0,0)
+      shape.redraw();
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[0,0],[100,0],[100,100],[0,100]],"Should not rotate beyond left bound");
+      shape.moveTo(50,280)
+      shape.redraw();
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[50,280],[150,280],[150,380],[50,380]],"Should not rotate beyond bottom bound");
+      shape.moveTo(280,120);
+      shape.redraw()
+      shape.rotateBy(30)
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[280,120],[380,120],[380,220],[280,220]],"Should not rotate beyond right bound");
+      shape.moveTo(100,20);
+      shape.redraw();
+      shape.rotateBy(30);
+      shape.redraw();
+      assert.deepEqual(shape.getPointsArray(),[[100,20],[200,20],[200,120],[100,120]],"Should not rotate beyond top bound");
+      shape.moveTo(150,150);
+      shape.redraw();
+      shape.rotateBy(-60);
+      shape.redraw()
+      assert.deepEqual(shape.getPointsArray(),[[132,218],[182,132],[268,182],[218,268]],"Should rotate counterclock-wise");
+    });
+  });
+
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = setup();
