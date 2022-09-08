@@ -87,7 +87,8 @@ function RotateBox() {
                     borderColor: "rgb(204, 204, 204)",
                     borderRadius: "0px",
                     backgroundColor: "rgb(255, 255, 255)"
-                }
+                },
+                forceDisplay:true
             }
         },
         zIndex: 1000

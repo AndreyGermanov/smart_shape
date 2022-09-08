@@ -15,8 +15,6 @@
 <dd></dd>
 <dt><a href="#SmartShape">SmartShape</a></dt>
 <dd></dd>
-<dt><a href="#SmartShapeDrawHelper">SmartShapeDrawHelper</a></dt>
-<dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
 </dl>
@@ -655,6 +653,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | bounds | <code>object</code> | Bounds for point movement. If setup, then it's impossible to drag point beyond bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`. If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container. |
 | moveDirections | <code>array</code> | . Defines in which directions point can move. Can contain values from [PointMoveDirections](#PointMoveDirections) enumeration. By default, all directions allowed. Default value is: `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`. To restrict movement in any direction, need to remove some directions from this array. |
 | visible | <code>boolean</code> | Point is visible or not. By default, `true`. |
+| forceDisplay | <code>boolean</code> | If this option enabled, than this point displayed all the time, even if shape is not in SCALE or ROTATE mode |
 
 <a name="SmartPoint+x"></a>
 
@@ -845,7 +844,7 @@ Options of shape as an object. Can have the following parameters.
 | fill | <code>string</code> | Fill color of shape polygon. Accepts the same values as [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` . |
 | fillOpacity | <code>string</code> | Fill opacity level of shape polygon. Accepts the same values as [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`. |
 | fillGradient | <code>object</code> | Defines gradient object, that should be used to fill the shape. This could be either linear gradient or radial gradient. Overrides `fill` property. See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html). |
-| fillImage | <code>object</code> | Defines image fill object to fill the shape with image. Should contain following fields: `url` - URL to image, `width` - width of image, `height` - height of image See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html). |
+| fillImage | <code>object</code> | Defines image fill object to fill the shape with image. Should contain following fields: `href` - URL to image, `width` - width of image, `height` - height of image See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html). |
 | filters | <code>object</code> | Object, that defines a set of SVG filters, that will be applied to this shape. Keys are names of filters, for example `feDropShadow` for drop-shadow filter. Values are objects with attributes for each filter. All attributes, that supported by each particular SVG filter are supported. See more about SVG filters [here](#https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter). The demo of applying feDropShadow filter see [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/svgfilters.html) |
 | classes | <code>string</code> | CSS class names, that will be applied to underlying polygon SVG element. |
 | style | <code>object</code> | CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and classes is an alternative way to specify options of SVG elements: https://jenkov.com/tutorials/svg/svg-and-css.html, https://css-tricks.com/svg-properties-and-css/ |
@@ -1160,17 +1159,6 @@ But variable continue existing. To completely remove the shape,
 set the variable to 'null' after calling this method.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
-<a name="SmartShapeDrawHelper"></a>
-
-## SmartShapeDrawHelper
-**Kind**: global class  
-<a name="new_SmartShapeDrawHelper_new"></a>
-
-### new SmartShapeDrawHelper()
-Internal helper class that used to draw shape.
-Should not be used directly. SmartShape objects execute methods
-of this object when need to draw shapes.
-
 <a name="SmartShapeEventListener"></a>
 
 ## SmartShapeEventListener

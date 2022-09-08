@@ -87,8 +87,9 @@ function ResizeBox() {
                     borderWidth: "1px",
                     borderColor: "rgb(204, 204, 204)",
                     borderRadius: "0px",
-                    backgroundColor: "rgb(255, 255, 255)"
-                }
+                    backgroundColor: "rgb(255, 255, 255)",
+                },
+                forceDisplay:true
             }
         },
         zIndex: 1000
