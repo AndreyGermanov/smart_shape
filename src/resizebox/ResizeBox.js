@@ -3,6 +3,7 @@ import {PointMoveDirections} from "../smart_point.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../smart_shape_event_listener.js";
+import {resize_lb,resize_cb,resize_ct,resize_lc,resize_lt,resize_rb,resize_rc,resize_rt} from "../../assets/graphics.js";
 import {uuid} from "../utils.js";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
@@ -84,13 +85,15 @@ function ResizeBox() {
             strokeDasharray: "10",
             pointOptions: {
                 style: {
-                    borderWidth: "1px",
-                    borderColor: "rgb(204, 204, 204)",
+                    borderWidth: "0px",
                     borderRadius: "0px",
-                    backgroundColor: "rgb(255, 255, 255)",
+                    backgroundColor: "rgba(0,0,0,0)",
+                    cursor:"pointer",
                 },
-                forceDisplay:true
-            }
+                forceDisplay:true,
+                width:13,
+                height:13,
+            },
         },
         zIndex: 1000
     }
@@ -212,14 +215,14 @@ function ResizeBox() {
      * Method used to add marker points to ResizeBox, that lately used to resize the box
      */
     this.addPoints = () => {
-        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{cursor: "nw-resize"}});
-        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.shape.guid+"_center_top",style:{cursor: "ns-resize"}});
-        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{cursor: "ne-resize"}});
-        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.shape.guid+"_right_center",style:{cursor: "ew-resize"}});
-        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{cursor: "se-resize"}});
-        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.shape.guid+"_center_bottom",style:{cursor: "ns-resize"}});
-        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{cursor: "sw-resize"}});
-        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.shape.guid+"_left_center",style:{cursor: "ew-resize"}});
+        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{backgroundImage: "url('"+resize_lt+"')"}});
+        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.shape.guid+"_center_top",style:{backgroundImage: "url('"+resize_ct+"')"}});
+        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{backgroundImage: "url('"+resize_rt+"')"}});
+        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.shape.guid+"_right_center",style:{backgroundImage: "url('"+resize_rc+"')"}});
+        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{backgroundImage: "url('"+resize_rb+"')"}});
+        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.shape.guid+"_center_bottom",style:{backgroundImage: "url('"+resize_cb+"')"}});
+        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{backgroundImage: "url('"+resize_lb+"')"}});
+        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.shape.guid+"_left_center",style:{backgroundImage: "url('"+resize_lc+"')"}});
         this.setPointsOptions();
     }
 

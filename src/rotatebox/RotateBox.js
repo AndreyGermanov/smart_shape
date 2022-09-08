@@ -2,6 +2,7 @@ import {SmartShape} from "../smart_shape.js";
 import RotateBoxEventListener from "./RotateBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../smart_shape_event_listener.js";
+import {rotate_tl,rotate_tr,rotate_br,rotate_bl} from "../../assets/graphics.js";
 import {uuid} from "../utils.js";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
@@ -83,11 +84,14 @@ function RotateBox() {
             strokeDasharray: "10",
             pointOptions: {
                 style: {
-                    borderWidth: "1px",
+                    borderWidth: "0px",
                     borderColor: "rgb(204, 204, 204)",
                     borderRadius: "0px",
-                    backgroundColor: "rgb(255, 255, 255)"
+                    cursor:"pointer",
+                    backgroundColor:'rgba(0,0,0,0'
                 },
+                width:13,
+                height:13,
                 forceDisplay:true
             }
         },
@@ -187,10 +191,10 @@ function RotateBox() {
      * Method used to add marker points to RotateBox, that lately used to rotate the box
      */
     this.addPoints = () => {
-        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{cursor: "pointer"}});
-        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{cursor: "pointer"}});
-        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{cursor: "pointer"}});
-        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{cursor: "pointer"}});
+        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{backgroundImage: "url('"+rotate_tl+"')"}});
+        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{backgroundImage: "url('"+rotate_tr+"')"}});
+        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{backgroundImage: "url('"+rotate_br+"')"}});
+        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{backgroundImage: "url('"+rotate_bl+"')"}});
     }
 
     /**
