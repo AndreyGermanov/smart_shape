@@ -13,7 +13,7 @@ Smart shape is a polygon (array of connected points) which can be attached to an
 [Examples](#Examples)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Examples+SmartShape)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#Examples+ResizeBox)<br/>
-[Plans and Contribution](#Plans)
+[Contribution](#Plans)
 
 <a name="Install"></a>
 
@@ -203,7 +203,7 @@ Watch on YouTube: https://youtu.be/4ee-HYCtgJ4 .
 
 <a name="Plans"></a>
 
-# Plans and Contribution
+# Contribution
 
 This is a new component on early stage of development. A lot of new features to come. Follow this repository to get updates as soon as I push them. Also, this project is open source, so you can clone SmartShape GitHub repository and modify source code to add any features, that still does not exist here.
 
