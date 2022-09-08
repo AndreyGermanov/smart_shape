@@ -85,7 +85,7 @@ SmartShape.init(container_node,options,array_of_points);
 
 After running HTML page with code above, you should see this:
 
-![demo1](https://code.germanov.dev/smart_shape/assets/demo1.png)
+![demo1](https://code.germanov.dev/smart_shape/assets/demo_1.png)
 
 You can not only see this shape, but use mouse to drag and drop it to any place inside container. Also, the points of a shape marked by red circles and you can drag these circles to change a shape of figure. For example, like this:
 
@@ -137,7 +137,7 @@ resizeBox.init(div,0,0,100,100,{id:"box1"});
 
 This code will display the shape like this:
 
-![resizebox](https://code.germanov.dev/smart_shape/assets/resizebox.jpg)
+![resizebox](https://code.germanov.dev/smart_shape/assets/rbox.jpg)
 
 This is a shape with predefined points, displayed on (0,0) coordinate with width=100 and height=100. It's connected to specified `div` HTML node and has HTML id="box1". Developer can drag it as any shape, and also drag it points. But each point programmed to move only in predefined directions, using event listeners.
 
