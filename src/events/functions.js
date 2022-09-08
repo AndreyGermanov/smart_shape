@@ -6,11 +6,11 @@
  */
 export const createEvent = (origEvent,params={}) => {
     const result = {};
-    Object.keys(origEvent).forEach((key) => {
+    for (let key in origEvent) {
         if (key !== "type" && key !== "target") {
             result[key] = origEvent[key];
         }
-    })
+    }
     Object.keys(params).forEach((key) => {
         result[key] = params[key];
     })

@@ -215,7 +215,7 @@ function SmartShape() {
     this.setupResizeBox = () => {
         const bounds = this.getResizeBoxBounds();
         this.resizeBox = new ResizeBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
-            zIndex: this.options.zIndex-1,
+            zIndex: this.options.zIndex+1,
             id: this.options.id+"_resizebox",
             shapeOptions:{
                 canDragShape: false,
@@ -234,7 +234,7 @@ function SmartShape() {
     this.setupRotateBox = () => {
         const bounds = this.getResizeBoxBounds();
         this.rotateBox = new RotateBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
-            zIndex: this.options.zIndex-1,
+            zIndex: this.options.zIndex+1,
             id: this.options.id+"_rotatebox",
             shapeOptions:{
                 canDragShape: false,
@@ -569,6 +569,10 @@ function SmartShape() {
                 this.setupResizeBox();
             }
             this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
+            this.points.forEach(point => {
+                point.setOptions({zIndex: this.resizeBox.options.zIndex + 1});
+                point.redraw();
+            })
         } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
             if (this.resizeBox) {
                 this.resizeBox.hide();
@@ -577,6 +581,10 @@ function SmartShape() {
                 this.setupRotateBox()
             }
             this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
+            this.points.forEach(point => {
+                point.setOptions({zIndex: this.rotateBox.options.zIndex + 1});
+                point.redraw();
+            })
         } else {
             if (this.resizeBox) {
                 this.resizeBox.hide();
@@ -584,6 +592,10 @@ function SmartShape() {
             if (this.rotateBox) {
                 this.rotateBox.hide();
             }
+            this.points.forEach(point => {
+                point.setOptions({zIndex: this.options.zIndex + 1});
+                point.redraw();
+            })
         }
     }
 

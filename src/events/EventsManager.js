@@ -4,6 +4,7 @@
  * Each time when object emits event, all subscribed event handlers triggered.
  * @constructor
  */
+
 function EventsManager() {
 
     /**
@@ -52,8 +53,10 @@ function EventsManager() {
         params["type"] = eventName;
         params["target"] = target;
         if (typeof(this.subscriptions[eventName]) !== "undefined" && this.subscriptions[eventName] &&
-            this.subscriptions[eventName].length) {
-            this.subscriptions[eventName].forEach(handler => handler(params));
+        this.subscriptions[eventName].length) {
+            for (let handler of this.subscriptions[eventName]) {
+                handler(params)
+            };
             return true;
         }
         return false;

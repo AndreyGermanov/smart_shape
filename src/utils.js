@@ -20,10 +20,12 @@ export const uuid = () => {
 }
 
 export const pauseEvent = (e) => {
-    if(e.stopPropagation) e.stopPropagation();
-    if(e.preventDefault) e.preventDefault();
-    e.cancelBubble=true;
-    e.returnValue=false;
+    try {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+        e.cancelBubble = true;
+        e.returnValue = false;
+    } catch (e) {};
     return false;
 }
 
@@ -76,4 +78,3 @@ export const getRotatedCoords = (angle, x, y, centerX, centerY) => {
 export const distance = (x1,y1,x2,y2) => {
     return Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2))
 }
-
