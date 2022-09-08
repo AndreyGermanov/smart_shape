@@ -31,6 +31,8 @@ function SmartPoint() {
      * `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`.
      * To restrict movement in any direction, need to remove some directions from this array.
      * @param visible {boolean} Point is visible or not. By default, `true`.
+     * @param forceDisplay {boolean} If this option enabled, than this point displayed all the time, even if shape
+     * is not in SCALE or ROTATE mode
      * @type {{}}
      */
     this.options = {
@@ -57,7 +59,8 @@ function SmartPoint() {
             PointMoveDirections.RIGHT,
             PointMoveDirections.BOTTOM
         ],
-        visible: true
+        visible: true,
+        forceDisplay: false
     };
 
     /**

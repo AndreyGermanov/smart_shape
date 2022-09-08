@@ -55,7 +55,7 @@ function SmartShape() {
      * linear gradient or radial gradient. Overrides `fill` property.
      * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html).
      * @param fillImage {object} Defines image fill object to fill the shape with image. Should contain following fields:
-     * `url` - URL to image, `width` - width of image, `height` - height of image
+     * `href` - URL to image, `width` - width of image, `height` - height of image
      * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html).
      * @param filters {object} Object, that defines a set of SVG filters, that will be applied to this shape.
      * Keys are names of filters, for example `feDropShadow` for drop-shadow filter. Values are objects with attributes
@@ -595,6 +595,9 @@ function SmartShape() {
             this.points.forEach(point => {
                 point.setOptions({zIndex: this.options.zIndex + 1});
                 point.redraw();
+                if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
+                    point.element.style.display = 'none';
+                }
             })
         }
     }

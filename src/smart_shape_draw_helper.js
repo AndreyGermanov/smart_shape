@@ -4,6 +4,9 @@
  * of this object when need to draw shapes.
  * @constructor
  */
+import {SmartShapeDisplayMode} from "./smart_shape.js";
+import {notNull} from "./utils";
+
 function SmartShapeDrawHelper() {
 
     /**
@@ -47,7 +50,10 @@ function SmartShapeDrawHelper() {
             if (!shape.options.visible) {
                 point.options.visible = false;
             }
-            point.redraw()
+            point.redraw();
+            if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
+                point.element.style.display = 'none';
+            }
         });
         if (shape.resizeBox) {
             this.redrawResizeBox(shape);
@@ -271,16 +277,16 @@ function SmartShapeDrawHelper() {
      * @param polygon {SVGPolygonElement} Polygon element to setup
      */
     this.setupPolygonStroke = (shape,polygon) => {
-        if (shape.options.stroke) {
+        if (notNull(shape.options.stroke)) {
             polygon.setAttribute("stroke", shape.options.stroke);
         }
-        if (shape.options.strokeWidth) {
+        if (notNull(shape.options.strokeWidth)) {
             polygon.setAttribute("stroke-width",shape.options.strokeWidth);
         }
-        if (shape.options.strokeLinecap) {
+        if (notNull(shape.options.strokeLinecap)) {
             polygon.setAttribute("stroke-linecap",shape.options.strokeLinecap);
         }
-        if (shape.options.strokeDasharray) {
+        if (notNull(shape.options.strokeDasharray)) {
             polygon.setAttribute("stroke-dasharray",shape.options.strokeDasharray);
         }
     }
