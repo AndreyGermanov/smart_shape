@@ -137,7 +137,7 @@ resizeBox.init(div,0,0,100,100,{id:"box1"});
 
 This code will display the shape like this:
 
-![resizebox](https://code.germanov.dev/smart_shape/assets/resize_box.jpg)
+![resizebox](https://code.germanov.dev/smart_shape/assets/resizebox.jpg)
 
 This is a shape with predefined points, displayed on (0,0) coordinate with width=100 and height=100. It's connected to specified `div` HTML node and has HTML id="box1". Developer can drag it as any shape, and also drag it points. But each point programmed to move only in predefined directions, using event listeners.
 
