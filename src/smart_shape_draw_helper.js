@@ -41,7 +41,9 @@ function SmartShapeDrawHelper() {
             shape.svg.style.display = shape.options.visible ? '' : 'none';
         }
         shape.points.forEach(point => {
-            point.options.zIndex = shape.options.zIndex+1;
+            if (point.options.zIndex < shape.options.zIndex+1) {
+                point.options.zIndex = shape.options.zIndex + 1;
+            }
             if (!shape.options.visible) {
                 point.options.visible = false;
             }

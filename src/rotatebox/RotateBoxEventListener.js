@@ -65,20 +65,35 @@ function RotateBoxEventListener(rotateBox) {
      */
     this.setEventListeners = () => {
         this.shapeMouseEnter = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,(event) => {
-            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_ENTER,this.rotateBox,event);
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_ENTER,this.rotateBox,event);
+            },1)
         });
         this.shapeMouseMove = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
-            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox,event);
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox,event);
+            },1)
         });
         this.shapeMoveStart = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
-            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.rotateBox,event);
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.rotateBox,event);
+            },1)
         });
         this.shapeMoveEnd = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
-            this.previousAngle = 0;
-            EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,this.rotateBox,event);
+            setTimeout(() => {
+                this.previousAngle = 0;
+                EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,this.rotateBox,event);
+            },1)
         });
         this.shapeMove = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
-            EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.rotateBox,event);
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.rotateBox,event);
+            },1)
+        });
+        this.shapeClick = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.rotateBox,event);
+            },1)
         });
         this.rotateBox.shape.points.forEach(point => {
             point.mousemove = this.mousemove;
@@ -114,12 +129,12 @@ function RotateBoxEventListener(rotateBox) {
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
-        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, {clientX:event.clientX,clientY:event.clientY});
         if (event.buttons !== 1) {
             if (this.rotateBox.shape.root.draggedShape) {
                 this.rotateBox.shape.root.draggedShape.draggedPoint = null;
                 this.rotateBox.shape.root.draggedShape = null;
             }
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, {clientX:event.clientX,clientY:event.clientY});
             return
         }
         let clientX = event.clientX+window.scrollX;
@@ -145,13 +160,13 @@ function RotateBoxEventListener(rotateBox) {
             cathetus = distance(clientX,clientY,centerX,clientY);
         }
         if (hypotenuse > 0) {
-            let angle = radians_to_degrees((Math.asin(cathetus/hypotenuse))) + start_angle + this.initialAngle;
+            let angle = Math.round(radians_to_degrees((Math.asin(cathetus/hypotenuse))) + start_angle + this.initialAngle);
             let angleDiff = angle;
             if (this.previousAngle) {
                 angleDiff -= this.previousAngle;
             }
             this.previousAngle = angle;
-            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:angleDiff});
+            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:Math.round(angleDiff)});
         }
     }
 

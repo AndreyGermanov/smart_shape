@@ -48,7 +48,7 @@ function SmartPoint() {
             backgroundColor: "red",
         },
         canDrag: true,
-        canDelete: true,
+        canDelete: false,
         zIndex:1000,
         bounds:{},
         moveDirections: [
