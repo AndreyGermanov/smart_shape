@@ -1,4 +1,4 @@
-import SmartShape from "../smart_shape.js";
+import {SmartShape} from "../smart_shape.js";
 import {PointMoveDirections} from "../smart_point.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";

@@ -1,4 +1,4 @@
-import SmartShape from "../../../src/smart_shape.js";
+import {SmartShape} from "../../../src/smart_shape.js";
 describe('Test drag points', () => {
   it('Should not go beyond container element', async() => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {

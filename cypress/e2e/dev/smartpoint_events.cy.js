@@ -1,4 +1,4 @@
-import SmartShape from "../../../src/smart_shape.js";
+import {SmartShape} from "../../../src/smart_shape.js";
 import {PointEvents} from "../../../src/smart_point.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 function getShape() {

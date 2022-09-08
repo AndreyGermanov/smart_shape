@@ -1,4 +1,4 @@
-import SmartShape from "../smart_shape.js";
+import {SmartShape} from "../smart_shape.js";
 import RotateBoxEventListener from "./RotateBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../smart_shape_event_listener.js";
@@ -186,10 +186,10 @@ function RotateBox() {
      * Method used to add marker points to RotateBox, that lately used to rotate the box
      */
     this.addPoints = () => {
-        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{cursor: "nw-resize"}});
-        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{cursor: "ne-resize"}});
-        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{cursor: "se-resize"}});
-        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{cursor: "sw-resize"}});
+        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{cursor: "pointer"}});
+        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{cursor: "pointer"}});
+        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{cursor: "pointer"}});
+        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{cursor: "pointer"}});
     }
 
     /**

@@ -32,7 +32,7 @@ npm install smart_shape
 Then, you can import SmartShape class to your project:
 
 ```javascript
-import SmartShape from "smart_shape";
+import {SmartShape} from "smart_shape";
 ```
 
 <a name="Install+Web"></a>

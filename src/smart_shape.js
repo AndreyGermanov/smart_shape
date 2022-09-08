@@ -739,6 +739,8 @@ function SmartShape() {
 }
 try {
     window.ResizeBox = ResizeBox;
+    window.SmartShape = SmartShape;
+    window.RotateBox = RotateBox;
 } catch (err) {}
 
 /**
@@ -754,6 +756,4 @@ export const SmartShapeDisplayMode = {
     ROTATE: "rotate"
 }
 
-export {ResizeBox, RotateBox}
-
-export default SmartShape;
+export {ResizeBox, RotateBox, SmartShape};

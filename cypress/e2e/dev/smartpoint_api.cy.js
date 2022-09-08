@@ -1,5 +1,5 @@
 import SmartPoint, {PointEvents} from "../../../src/smart_point.js";
-import SmartShape from "../../../src/smart_shape.js";
+import {SmartShape} from "../../../src/smart_shape.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 function initShape() {
   const app = Cypress.$("#app").toArray()[0]
@@ -196,8 +196,8 @@ describe('SmartPoint API tests', () => {
       const point = new SmartPoint()
       point.init(50,50,{});
       point.rotateBy(30,0,0);
-      assert.equal(point.x,18,"Should correctly rotate X coordinate");
-      assert.equal(point.y, 68, "Should correctly rotate Y coordinate");
+      assert.equal(Math.round(point.x),18,"Should correctly rotate X coordinate");
+      assert.equal(Math.round(point.y), 68, "Should correctly rotate Y coordinate");
     })
   })
 

@@ -1,7 +1,7 @@
 import ResizeBox, {ResizeBoxEvents} from "../../../src/resizebox/ResizeBox.js";
 import {PointEvents, PointMoveDirections} from "../../../src/smart_point.js";
 import EventsManager from "../../../src/events/EventsManager.js";
-import SmartShape, {SmartShapeDisplayMode} from "../../../src/smart_shape.js";
+import {SmartShape,SmartShapeDisplayMode} from "../../../src/smart_shape.js";
 import {ShapeEvents} from "../../../src/smart_shape_event_listener.js";
 describe('ResizeBox tests', () => {
   const setup = () => {
@@ -315,13 +315,15 @@ describe('ResizeBox tests', () => {
                   cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
                     box.destroy();
                     box2.destroy();
-                    assert.isTrue(createTriggered, "Should trigger shape create event");
-                    assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
-                    assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
-                    assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
-                    assert.isTrue(moveTriggered, "Should trigger shape move event");
-                    assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
-                    assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                    setTimeout(() => {
+                      assert.isTrue(createTriggered, "Should trigger shape create event");
+                      assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
+                      assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                      assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                      assert.isTrue(moveTriggered, "Should trigger shape move event");
+                      assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                      assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                    },10)
                   });
                 });
               });

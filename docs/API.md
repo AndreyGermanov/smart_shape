@@ -1271,5 +1271,8 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 | SHAPE_MOVE_END | Emitted when user releases mouse button to stop drag the shape |
 | SHAPE_MOUSE_MOVE | Emitted when user moves mouse over shape |
 | SHAPE_MOUSE_ENTER | Emitted when mouse cursor enters shape |
+| SHAPE_MOUSE_OVER | Emitted when mouse cursor goes inside shape |
+| SHAPE_MOUSE_OUT | Emitted when mouse cursor goes away from shape |
+| SHAPE_MOUSE_CLICK | Emitted when click on shape |
 | SHAPE_DESTROY | Emitted right before shape is destroyed |
 

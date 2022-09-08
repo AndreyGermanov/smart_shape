@@ -61,9 +61,10 @@ export const radians_to_degrees = (radians) => {
  * @returns {array} New coordinates of point in array [x,y]
  */
 export const getRotatedCoords = (angle, x, y, centerX, centerY) => {
-    const resultX = (x-centerX)*Math.cos(degrees_to_radians(angle))-(y-centerY)*Math.sin(degrees_to_radians(angle))+centerX;
-    const resultY = (x-centerX)*Math.sin(degrees_to_radians(angle))+(y-centerY)*Math.cos(degrees_to_radians(angle))+centerY;
-    return [Math.round(resultX), Math.round(resultY)];
+    const radians = degrees_to_radians(angle);
+    const resultX = (x-centerX)*Math.cos(radians)-(y-centerY)*Math.sin(radians)+centerX;
+    const resultY = (x-centerX)*Math.sin(radians)+(y-centerY)*Math.cos(radians)+centerY;
+    return [resultX, resultY];
 }
 
 /**
