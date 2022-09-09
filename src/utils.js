@@ -83,3 +83,10 @@ export const distance = (x1,y1,x2,y2) => {
 export const notNull = (value) => {
     return typeof(value) !== "undefined" && value !== null;
 }
+
+export const mergeObjects = (obj1, obj2) => {
+    if (obj1 && typeof(obj1) === "object" && obj2 && typeof(obj2) === "object") {
+        return Object.assign(obj1,obj2);
+    }
+    return obj1;
+}

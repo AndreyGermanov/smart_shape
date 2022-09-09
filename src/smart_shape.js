@@ -3,7 +3,7 @@ import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./smart_shape_event_listener.js";
 import ResizeBox from "./resizebox/ResizeBox.js";
 import RotateBox from "./rotatebox/RotateBox.js";
-import {getRotatedCoords, uuid} from "./utils.js";
+import {getRotatedCoords, mergeObjects, notNull, uuid} from "./utils.js";
 import EventsManager from "./events/EventsManager.js";
 
 /**
@@ -214,35 +214,26 @@ function SmartShape() {
      * @param options {object} Options object, [described above](#SmartShape+options)
      */
     this.setOptions = (options) => {
-        if (options && typeof(options) === "object") {
-            if (options.pointOptions && typeof(options.pointOptions) === "object") {
-                options.pointOptions = Object.assign(this.options.pointOptions, options.pointOptions)
-            }
-            if (options.style && typeof(options.style) === "object") {
-                options.style = Object.assign(this.options.style, options.style);
-            }
-            if (options.bounds && typeof(options.bounds) === "object") {
-                options.bounds = Object.assign(this.options.bounds, options.bounds);
-            }
-            if (typeof(options.visible) !== "undefined" && options.visible !== this.options.visible) {
-                this.points.forEach(point => point.options.visible = options.visible);
-                if (this.resizeBox) {
-                    this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
-                }
-                if (this.rotateBox) {
-                    this.rotateBox.setOptions({shapeOptions:{visible:options.visible}});
-                }
-            }
-            Object.assign(this.options,options);
-            this.points.forEach(point=>{
-                point.setOptions(Object.assign({},this.options.pointOptions));
-                point.options.bounds = this.getBounds();
-                if (point.options.zIndex <= this.options.zIndex) {
-                    point.options.zIndex = this.options.zIndex+1;
-                }
-                point.redraw();
-            })
+        if (!options || typeof(options) !== "object") {
+            return
         }
+        options.pointOptions = mergeObjects(this.options.pointOptions,options.pointOptions);
+        options.style = mergeObjects(this.options.style,options.style);
+        options.bounds = mergeObjects(this.options.bounds,options.bounds);
+        if (notNull(options.visible) && options.visible !== this.options.visible) {
+            this.points.forEach(point => point.options.visible = options.visible);
+            this.resizeBox && this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
+            this.rotateBox && this.rotateBox.setOptions({shapeOptions:{visible:options.visible}});
+        }
+        this.options = mergeObjects(this.options,options);
+        this.points.forEach(point=>{
+            point.setOptions(mergeObjects({},this.options.pointOptions))
+            point.options.bounds = this.getBounds();
+            if (point.options.zIndex <= this.options.zIndex) {
+                point.options.zIndex = this.options.zIndex+1;
+            }
+            point.redraw();
+        })
     }
 
     /**
@@ -473,28 +464,16 @@ function SmartShape() {
      */
     this.applyDisplayMode = () => {
         if (this.options.displayMode === SmartShapeDisplayMode.SCALE && this.options.canScale) {
-            if (this.rotateBox) {
-                this.rotateBox.hide();
-            }
-            if (!this.resizeBox) {
-                this.setupResizeBox();
-            }
+            this.rotateBox && this.rotateBox.hide();
+            !this.resizeBox && this.setupResizeBox();
             this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
         } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
-            if (this.resizeBox) {
-                this.resizeBox.hide();
-            }
-            if (!this.rotateBox) {
-                this.setupRotateBox()
-            }
+            this.resizeBox && this.resizeBox.hide();
+            !this.rotateBox && this.setupRotateBox();
             this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
         } else {
-            if (this.resizeBox) {
-                this.resizeBox.hide();
-            }
-            if (this.rotateBox) {
-                this.rotateBox.hide();
-            }
+            this.resizeBox && this.resizeBox.hide();
+            this.rotateBox && this.rotateBox.hide();
         }
         this.points.forEach(point => {
             point.setOptions({zIndex: this.options.zIndex + 1});
