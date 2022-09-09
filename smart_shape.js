@@ -17,8 +17,8 @@ const S = (t, s = !0) => {
 }, M = (t) => t * (Math.PI / 180), w = (t) => t * (180 / Math.PI), E = (t, s, i, e, o) => {
   const r = M(t), A = (s - e) * Math.cos(r) - (i - o) * Math.sin(r) + e, p = (s - e) * Math.sin(r) + (i - o) * Math.cos(r) + o;
   return [A, p];
-}, c = (t, s, i, e) => Math.sqrt(Math.pow(i - t, 2) + Math.pow(e - s, 2)), _ = (t) => typeof t < "u" && t !== null;
-function I() {
+}, u = (t, s, i, e) => Math.sqrt(Math.pow(i - t, 2) + Math.pow(e - s, 2)), _ = (t) => typeof t < "u" && t !== null;
+function D() {
   this.subscriptions = {}, this.subscribe = (t, s) => ((typeof this.subscriptions[t] > "u" || !this.subscriptions[t]) && (this.subscriptions[t] = []), typeof this.subscriptions[t].find((i) => i === s) < "u" ? null : (this.subscriptions[t].push(s), s)), this.emit = (t, s, i = null) => {
     if ((!i || typeof i != "object") && (i = {}), i.type = t, i.target = s, typeof this.subscriptions[t] < "u" && this.subscriptions[t] && this.subscriptions[t].length) {
       for (let e of this.subscriptions[t])
@@ -35,8 +35,8 @@ function I() {
     this.subscriptions = {};
   };
 }
-const h = new I();
-function D(t) {
+const h = new D();
+function I(t) {
   this.resizeBox = t, this.subscriptions = {
     resize: []
   }, this.guid = b(), this.run = () => (this.setEventListeners(), this), this.setEventListeners = () => {
@@ -153,7 +153,7 @@ function y() {
       }
     },
     zIndex: 1e3
-  }, this.eventListener = null, this.left_top = null, this.left_center = null, this.left_bottom = null, this.center_top = null, this.center_bottom = null, this.right_top = null, this.right_center = null, this.right_bottom = null, this.init = (t, s, i, e, o, r = {}) => (this.left = parseInt(s), this.top = parseInt(i), this.width = parseInt(e), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(r), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new x().init(t, Object.assign({}, this.options.shapeOptions), []), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new D(this).run(), this.redraw(), h.emit(n.SHAPE_CREATE, this, {}), this), this.setOptions = (t = {}) => {
+  }, this.eventListener = null, this.left_top = null, this.left_center = null, this.left_bottom = null, this.center_top = null, this.center_bottom = null, this.right_top = null, this.right_center = null, this.right_bottom = null, this.init = (t, s, i, e, o, r = {}) => (this.left = parseInt(s), this.top = parseInt(i), this.width = parseInt(e), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(r), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new x().init(t, Object.assign({}, this.options.shapeOptions), []), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new I(this).run(), this.redraw(), h.emit(n.SHAPE_CREATE, this, {}), this), this.setOptions = (t = {}) => {
     t && typeof t == "object" && (t.shapeOptions && typeof t.shapeOptions == "object" ? (t.shapeOptions.pointOptions && typeof t.shapeOptions.pointOptions == "object" ? t.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions, t.shapeOptions.pointOptions) : t.shapeOptions.pointOptions = Object.assign({}, this.options.shapeOptions.pointOptions), t.shapeOptions = Object.assign(this.options.shapeOptions, t.shapeOptions)) : t.shapeOptions = Object.assign({}, this.options.shapeOptions), t.shapeOptions.zIndex = t.zIndex || this.options.zIndex, t.shapeOptions.id = t.id ? t.id : this.options.id, Object.assign(this.options, t), this.shape && this.shape.setOptions(this.options.shapeOptions));
   }, this.addPoints = () => {
     this.left_top = this.shape.addPoint(this.left, this.top, { id: this.shape.guid + "_left_top", style: { backgroundImage: "url('" + G + "')" } }), this.center_top = this.shape.addPoint(this.left + this.width / 2, this.top, { id: this.shape.guid + "_center_top", style: { backgroundImage: "url('" + N + "')" } }), this.right_top = this.shape.addPoint(this.right, this.top, { id: this.shape.guid + "_right_top", style: { backgroundImage: "url('" + X + "')" } }), this.right_center = this.shape.addPoint(this.right, this.top + this.height / 2, { id: this.shape.guid + "_right_center", style: { backgroundImage: "url('" + Y + "')" } }), this.right_bottom = this.shape.addPoint(this.right, this.bottom, { id: this.shape.guid + "_right_bottom", style: { backgroundImage: "url('" + j + "')" } }), this.center_bottom = this.shape.addPoint(this.left + this.width / 2, this.bottom, { id: this.shape.guid + "_center_bottom", style: { backgroundImage: "url('" + V + "')" } }), this.left_bottom = this.shape.addPoint(this.left, this.bottom, { id: this.shape.guid + "_left_bottom", style: { backgroundImage: "url('" + k + "')" } }), this.left_center = this.shape.addPoint(this.left, this.top + this.height / 2, { id: this.shape.guid + "_left_center", style: { backgroundImage: "url('" + H + "')" } }), this.setPointsOptions();
@@ -230,10 +230,10 @@ function F(t) {
     }
     let i = s.clientX + window.scrollX, e = s.clientY + window.scrollY;
     const o = this.rotateBox.shape.left + this.rotateBox.shape.width / 2, r = this.rotateBox.shape.top + this.rotateBox.shape.height / 2;
-    let A = c(i, e, o, r), p = 0, g = 0;
-    if (i < o && e < r && (p = c(i, e, i, r)), i > o && e < r && (g = 90, p = c(i, e, o, e)), i > o && e > r && (g = 180, p = c(i, e, i, r)), i < o && e > r && (g = 270, p = c(i, e, o, e)), A > 0) {
-      let u = Math.round(w(Math.asin(p / A)) + g + this.initialAngle), v = u;
-      this.previousAngle && (v -= this.previousAngle), this.previousAngle = u, h.emit(O.ROTATE_BOX_ROTATE, this.rotateBox, { angle: Math.round(v) });
+    let A = u(i, e, o, r), p = 0, g = 0;
+    if (i < o && e < r && (p = u(i, e, i, r)), i > o && e < r && (g = 90, p = u(i, e, o, e)), i > o && e > r && (g = 180, p = u(i, e, i, r)), i < o && e > r && (g = 270, p = u(i, e, o, e)), A > 0) {
+      let c = Math.round(w(Math.asin(p / A)) + g + this.initialAngle), v = c;
+      this.previousAngle && (v -= this.previousAngle), this.previousAngle = c, h.emit(O.ROTATE_BOX_ROTATE, this.rotateBox, { angle: Math.round(v) });
     }
   }, this.onPointMouseDown = (s) => {
     switch (s.target) {
@@ -351,12 +351,16 @@ function T(t) {
   }, this.mouseup = (s) => {
     if (this.shape.root.draggedShape) {
       const i = this.shape.root.draggedShape;
-      s.buttons === 1 && i.options.canAddPoints && !i.draggedPoint && (i.options.maxPoints === -1 || i.points.length < i.options.maxPoints) && i.addPoint(s.clientX - i.root.offsetLeft, s.clientY - i.root.offsetTop), this.shape.root.draggedShape.draggedPoint && (this.shape.root.draggedShape.draggedPoint.mouseup(s), this.shape.root.draggedShape && (this.shape.root.draggedShape.draggedPoint = null)), this.shape.root.draggedShape = null, h.emit(n.SHAPE_MOVE_END, i);
+      s.buttons === 1 && i.options.canAddPoints && !i.draggedPoint && (i.options.maxPoints === -1 || i.points.length < i.options.maxPoints) && i.addPoint(
+        s.clientX - i.root.offsetLeft,
+        s.clientY - i.root.offsetTop
+      ), this.shape.root.draggedShape.draggedPoint && (this.shape.root.draggedShape.draggedPoint.mouseup(s), this.shape.root.draggedShape && (this.shape.root.draggedShape.draggedPoint = null)), this.shape.root.draggedShape = null, h.emit(n.SHAPE_MOVE_END, i);
     }
   }, this.doubleclick = (s) => {
     s.stopPropagation(), this.shape.options.canAddPoints && !this.shape.draggedPoint && (this.shape.options.maxPoints === -1 || this.shape.points.length < this.shape.options.maxPoints) && this.shape.addPoint(
       s.clientX - this.shape.root.offsetLeft + window.scrollX,
-      s.clientY - this.shape.root.offsetTop + window.scrollY
+      s.clientY - this.shape.root.offsetTop + window.scrollY,
+      { forceDisplay: !0 }
     );
   }, this.mousedown = (s) => {
     P(s), (s.buttons === 1 || s.type === n.SHAPE_MOVE_START) && (this.shape.root.draggedShape = this.shape, h.emit(n.SHAPE_MOVE_START, this.shape, f(s)));
@@ -396,8 +400,8 @@ function T(t) {
   }, this.calcMovementOffset = (s) => {
     this.shape.calcPosition();
     let i = s.movementX, e = s.movementY, o = s.clientX + window.scrollX, r = s.clientY + window.scrollY;
-    const A = this.shape.left + i, p = this.shape.top + e, g = S(this.shape.root, !0), u = this.shape.getBounds();
-    return A < u.left || A + this.shape.width > u.right ? [null, null] : p < u.top || p + this.shape.height > u.bottom ? [null, null] : (o < A + g.left && (i = o - (A + g.left)), r < p + g.top && (e = r - (p + g.top)), o > A + this.shape.width + g.left && (i = o - (this.shape.width + g.left + this.shape.left)), r > p + this.shape.height + g.right && (e = r - (this.shape.height + g.top + this.shape.top)), [i, e]);
+    const A = this.shape.left + i, p = this.shape.top + e, g = S(this.shape.root, !0), c = this.shape.getBounds();
+    return A < c.left || A + this.shape.width > c.right ? [null, null] : p < c.top || p + this.shape.height > c.bottom ? [null, null] : (o < A + g.left && (i = o - (A + g.left)), r < p + g.top && (e = r - (p + g.top)), o > A + this.shape.width + g.left && (i = o - (this.shape.width + g.left + this.shape.left)), r > p + this.shape.height + g.right && (e = r - (this.shape.height + g.top + this.shape.top)), [i, e]);
   }, this.onPointAdded = (s) => {
     this.checkCanDeletePoints();
   }, this.checkCanDeletePoints = () => {
@@ -715,7 +719,7 @@ function x() {
   }, this.putPoint = (t, s, i = null) => {
     if (this.findPoint(t, s))
       return console.error(`Point with x=${t} and y=${s} already exists`), null;
-    i || (i = Object.assign({}, this.options.pointOptions) || {}), i.bounds = this.getBounds(), i.zIndex = this.options.zIndex + 1;
+    (!i || !Object.keys(i).length) && (i = Object.assign({}, this.options.pointOptions) || {}), i.bounds = this.getBounds(), i.zIndex = this.options.zIndex + 1;
     const e = new K().init(t, s, i);
     return this.points.push(e), this.root.appendChild(e.element), e;
   }, this.deleteAllPoints = () => {

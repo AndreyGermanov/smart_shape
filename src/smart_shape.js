@@ -399,7 +399,7 @@ function SmartShape() {
             console.error(`Point with x=${x} and y=${y} already exists`);
             return null;
         }
-        if (!pointOptions) {
+        if (!pointOptions || !Object.keys(pointOptions).length) {
             pointOptions = Object.assign({},this.options.pointOptions) || {};
         }
         pointOptions.bounds = this.getBounds();
