@@ -257,8 +257,7 @@ function SmartShapeDrawHelper() {
     this.createSVGFilter = (shape,filterName,filterOptions) => {
         const filter = document.createElementNS(shape.svg.namespaceURI,filterName);
         for (let attribute in filterOptions) {
-            let html_attribute = attribute;
-            filter.setAttribute(html_attribute,filterOptions[attribute].toString());
+            filter.setAttribute(attribute,filterOptions[attribute].toString());
             if (attribute === "dx") {
                 shape.svg.setAttribute("width",shape.width + parseInt(filterOptions["dx"])*2);
             }
