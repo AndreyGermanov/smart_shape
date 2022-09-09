@@ -232,7 +232,7 @@ function K(t) {
     }
     let i = s.clientX + window.scrollX, e = s.clientY + window.scrollY;
     const o = this.rotateBox.getPosition();
-    if (i > o.left && i < o.right && e > o.top && e < o.bottom)
+    if (i > o.left + 20 && i < o.right - 20 && e > o.top + 20 && e < o.bottom - 20)
       return;
     const r = this.rotateBox.shape.left + this.rotateBox.shape.width / 2, p = this.rotateBox.shape.top + this.rotateBox.shape.height / 2;
     let l = c(i, e, r, p), g = 0, u = 0;
