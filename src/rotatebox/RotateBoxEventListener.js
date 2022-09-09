@@ -144,7 +144,7 @@ function RotateBoxEventListener(rotateBox) {
         let clientX = event.clientX+window.scrollX;
         let clientY = event.clientY+window.scrollY;
         const pos = this.rotateBox.getPosition();
-        if (clientX>pos.left && clientX<pos.right && clientY>pos.top && clientY<pos.bottom) {
+        if (clientX>pos.left+20 && clientX<pos.right-20 && clientY>pos.top+20 && clientY<pos.bottom-20) {
             return;
         }
         const centerX = this.rotateBox.shape.left+this.rotateBox.shape.width/2;
