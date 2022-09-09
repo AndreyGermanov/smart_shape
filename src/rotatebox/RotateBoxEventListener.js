@@ -97,9 +97,13 @@ function RotateBoxEventListener(rotateBox) {
         });
         this.rotateBox.shape.points.forEach(point => {
             point.mousemove = this.mousemove;
-            point.rotateListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
+            point.mouseDownListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
                 this.onPointMouseDown(event);
             });
+            point.mouseUpListener = point.addEventListener(PointEvents.POINT_DRAG_END, (event) => {
+                this.onPointMouseUp(event);
+            });
+
         });
     }
 
@@ -139,6 +143,10 @@ function RotateBoxEventListener(rotateBox) {
         }
         let clientX = event.clientX+window.scrollX;
         let clientY = event.clientY+window.scrollY;
+        const pos = this.rotateBox.getPosition();
+        if (clientX>pos.left && clientX<pos.right && clientY>pos.top && clientY<pos.bottom) {
+            return;
+        }
         const centerX = this.rotateBox.shape.left+this.rotateBox.shape.width/2;
         const centerY = this.rotateBox.shape.top+this.rotateBox.shape.height/2;
         let hypotenuse = distance(clientX,clientY,centerX,centerY);
@@ -173,9 +181,9 @@ function RotateBoxEventListener(rotateBox) {
     /**
      * @ignore
      * onMouseDown event for marker points
-     * @param event {MouseEvent} Standard Mouse event object
+     * @param _event {MouseEvent} Standard Mouse event object
      */
-    this.onPointMouseDown = (event) => {
+    this.onPointMouseDown = (_event) => {
         switch (event.target) {
             case this.rotateBox.left_top:
                 this.initialAngle = -45;
@@ -190,6 +198,20 @@ function RotateBoxEventListener(rotateBox) {
                 this.initialAngle = -315;
                 break;
         }
+        this.rotateBox.shape.points.forEach(point => point.setOptions({visible:false}));
+    }
+
+    /**
+     * @ignore
+     * onMouseUp event for marker points
+     * @param _event {MouseEvent} Standard Mouse event object
+     */
+    this.onPointMouseUp = (_event) => {
+        this.rotateBox.shape.points.forEach(point => {
+            point.setOptions({visible:true});
+            point.redraw();
+        });
+
     }
 
     /**
@@ -221,7 +243,8 @@ function RotateBoxEventListener(rotateBox) {
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
         this.rotateBox.shape.points.forEach(point => {
-            point.removeEventListener(PointEvents.POINT_DRAG_START, point.rotateListener);
+            point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseDownListener);
+            point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseUpListener);
         });
     }
 }
