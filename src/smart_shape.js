@@ -209,95 +209,6 @@ function SmartShape() {
     }
 
     /**
-     * @ignore
-     * Used to setup [ResizeBox](#ResizeBox) around shape if shape scaling is enabled
-     */
-    this.setupResizeBox = () => {
-        const bounds = this.getResizeBoxBounds();
-        this.resizeBox = new ResizeBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
-            zIndex: this.options.zIndex+1,
-            id: this.options.id+"_resizebox",
-            shapeOptions:{
-                canDragShape: false,
-                visible: this.options.visible,
-            }
-        })
-        this.calcPosition();
-        this.eventListener.addResizeEventListener();
-        this.resizeBox.redraw();
-    }
-
-    /**
-     * @ignore
-     * Used to setup [Rotate](#RotateBox) around shape if shape rotation is enabled
-     */
-    this.setupRotateBox = () => {
-        const bounds = this.getResizeBoxBounds();
-        this.rotateBox = new RotateBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
-            zIndex: this.options.zIndex+1,
-            id: this.options.id+"_rotatebox",
-            shapeOptions:{
-                canDragShape: false,
-                visible: this.options.visible,
-            }
-        })
-        this.calcPosition();
-        this.eventListener.addRotateEventListener();
-        this.rotateBox.redraw();
-    }
-
-
-    /**
-     * @ignore
-     * Returns dimensions of resize box around shape according to shape dimensions
-     * @returns {{top: number, left: number, bottom: *, width: *, right: *, height: *}}
-     */
-    this.getResizeBoxBounds = () => {
-        this.calcPosition();
-        const [pointWidth,pointHeight] = this.getMaxPointSize();
-        const result = {
-            left: this.left - pointWidth,
-            right: this.right + pointWidth,
-            top: this.top - pointHeight,
-            bottom: this.bottom + pointHeight,
-            width: this.width + (pointWidth)*2,
-            height: this.height + (pointHeight)*2,
-        }
-        if (result.left < 0) {
-            this.moveTo(result.left*-1,this.top);
-            result.left = 0;
-        }
-        if (result.top < 0) {
-            this.moveTo(this.left,result.top*-1);
-            result.top = 0;
-        }
-        const bounds = this.getBounds();
-        if (result.bottom > bounds.bottom) {
-            this.moveTo(this.left,result.bottom-bounds.bottom+this.top);
-            result.bottom = bounds.bottom;
-        }
-        if (result.right > bounds.right) {
-            this.moveTo(result.right-bounds.right+this.left,this.top);
-            result.bottom = bounds.bottom;
-        }
-        return result;
-    }
-
-    /**
-     * @ignore
-     * Method finds and return the size of the biggest point in this shape
-     * @returns {array} [width,height]
-     */
-    this.getMaxPointSize = () => {
-        if (!this.points.length) {
-            return [0,0];
-        }
-        const pointWidth = this.points.map(point=>point.options.width).reduce((w1,w2) => Math.max(w1,w2));
-        const pointHeight = this.points.map(point=>point.options.height).reduce((h1,h2) => Math.max(h1,h2));
-        return [pointWidth,pointHeight];
-    }
-
-    /**
      * Set specified options to the shape. You may not set all options, that exist, but only what you want to change.
      * Options that you set by this method will be merged with already active options.
      * @param options {object} Options object, [described above](#SmartShape+options)
@@ -557,7 +468,7 @@ function SmartShape() {
 
     /**
      * @ignore
-     * Method used to setup shape drawing depending on current options.displayMode.
+     * Method used to setup shape drawing depending on current `options.displayMode`.
      * Depending on this it shows either ResizeBox around it, or RotateBox, or nothing.
      */
     this.applyDisplayMode = () => {
@@ -569,10 +480,6 @@ function SmartShape() {
                 this.setupResizeBox();
             }
             this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
-            this.points.forEach(point => {
-                point.setOptions({zIndex: this.resizeBox.options.zIndex + 1});
-                point.redraw();
-            })
         } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
             if (this.resizeBox) {
                 this.resizeBox.hide();
@@ -581,10 +488,6 @@ function SmartShape() {
                 this.setupRotateBox()
             }
             this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
-            this.points.forEach(point => {
-                point.setOptions({zIndex: this.rotateBox.options.zIndex + 1});
-                point.redraw();
-            })
         } else {
             if (this.resizeBox) {
                 this.resizeBox.hide();
@@ -592,14 +495,14 @@ function SmartShape() {
             if (this.rotateBox) {
                 this.rotateBox.hide();
             }
-            this.points.forEach(point => {
-                point.setOptions({zIndex: this.options.zIndex + 1});
-                point.redraw();
-                if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
-                    point.element.style.display = 'none';
-                }
-            })
         }
+        this.points.forEach(point => {
+            point.setOptions({zIndex: this.options.zIndex + 1});
+            point.redraw();
+            if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
+                point.element.style.display = 'none';
+            }
+        })
     }
 
     /**
@@ -671,8 +574,8 @@ function SmartShape() {
         return {
             left: this.options.bounds.left !== -1 ? this.options.bounds.left : this.root.clientLeft,
             top: this.options.bounds.top !== -1 ? this.options.bounds.top :  this.root.clientTop,
-            right: this.options.bounds.right !== -1 ? this.options.bounds.right : this.root.clientLeft+ this.root.clientWidth,
-            bottom: this.options.bounds.bottom !== -1 ? this.options.bounds.bottom : this.root.clientTop+this.root.clientHeight
+            right: this.options.bounds.right !== -1 ? this.options.bounds.right : this.root.clientLeft + this.root.clientWidth,
+            bottom: this.options.bounds.bottom !== -1 ? this.options.bounds.bottom : this.root.clientTop + this.root.clientHeight
         }
     };
 
@@ -738,6 +641,95 @@ function SmartShape() {
         if (this.root && this.svg) {
             this.root.removeChild(this.svg);
         }
+    }
+
+    /**
+     * @ignore
+     * Used to setup [ResizeBox](#ResizeBox) around shape if shape scaling is enabled
+     */
+    this.setupResizeBox = () => {
+        const bounds = this.getResizeBoxBounds();
+        this.resizeBox = new ResizeBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
+            zIndex: this.options.zIndex+1,
+            id: this.options.id+"_resizebox",
+            shapeOptions:{
+                canDragShape: false,
+                visible: this.options.visible,
+            }
+        })
+        this.calcPosition();
+        this.eventListener.addResizeEventListener();
+        this.resizeBox.redraw();
+    }
+
+    /**
+     * @ignore
+     * Used to setup [Rotate](#RotateBox) around shape if shape rotation is enabled
+     */
+    this.setupRotateBox = () => {
+        const bounds = this.getResizeBoxBounds();
+        this.rotateBox = new RotateBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
+            zIndex: this.options.zIndex+1,
+            id: this.options.id+"_rotatebox",
+            shapeOptions:{
+                canDragShape: false,
+                visible: this.options.visible,
+            }
+        })
+        this.calcPosition();
+        this.eventListener.addRotateEventListener();
+        this.rotateBox.redraw();
+    }
+
+
+    /**
+     * @ignore
+     * Returns dimensions of resize box around shape according to shape dimensions
+     * @returns {{top: number, left: number, bottom: *, width: *, right: *, height: *}}
+     */
+    this.getResizeBoxBounds = () => {
+        this.calcPosition();
+        const [pointWidth,pointHeight] = this.getMaxPointSize();
+        const result = {
+            left: this.left - pointWidth,
+            right: this.right + pointWidth,
+            top: this.top - pointHeight,
+            bottom: this.bottom + pointHeight,
+            width: this.width + (pointWidth)*2,
+            height: this.height + (pointHeight)*2,
+        }
+        if (result.left < 0) {
+            this.moveTo(result.left*-1,this.top);
+            result.left = 0;
+        }
+        if (result.top < 0) {
+            this.moveTo(this.left,result.top*-1);
+            result.top = 0;
+        }
+        const bounds = this.getBounds();
+        if (result.bottom > bounds.bottom) {
+            this.moveTo(this.left,result.bottom-bounds.bottom+this.top);
+            result.bottom = bounds.bottom;
+        }
+        if (result.right > bounds.right) {
+            this.moveTo(result.right-bounds.right+this.left,this.top);
+            result.bottom = bounds.bottom;
+        }
+        return result;
+    }
+
+    /**
+     * @ignore
+     * Method finds and return the size of the biggest point in this shape
+     * @returns {array} [width,height]
+     */
+    this.getMaxPointSize = () => {
+        if (!this.points.length) {
+            return [0,0];
+        }
+        const pointWidth = this.points.map(point=>point.options.width).reduce((w1,w2) => Math.max(w1,w2));
+        const pointHeight = this.points.map(point=>point.options.height).reduce((h1,h2) => Math.max(h1,h2));
+        return [pointWidth,pointHeight];
     }
 }
 try {

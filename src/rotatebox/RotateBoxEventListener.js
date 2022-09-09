@@ -109,26 +109,6 @@ function RotateBoxEventListener(rotateBox) {
 
     /**
      * @ignore
-     * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
-     * @param handler {function} - Function that used as an event handler
-     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
-     */
-    this.addEventListener = (eventName,handler) => {
-        if (typeof(this.subscriptions[eventName]) === "undefined") {
-            this.subscriptions[eventName] = [];
-        }
-        const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.shape && event.target.shape.guid === this.rotateBox.shape.guid) {
-                handler(event)
-            }
-        });
-        this.subscriptions[eventName].push(listener);
-        return listener;
-    }
-
-    /**
-     * @ignore
      * onMouseMove event handler, triggered when user moves mouse over the shape or container element.
      * @param event {MouseEvent} Event object
      */
@@ -208,6 +188,26 @@ function RotateBoxEventListener(rotateBox) {
             point.redraw();
         });
 
+    }
+
+    /**
+     * @ignore
+     * Uniform method that used to add event handler of specified type to this object.
+     * @param eventName {string} - Name of event
+     * @param handler {function} - Function that used as an event handler
+     * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
+     */
+    this.addEventListener = (eventName,handler) => {
+        if (typeof(this.subscriptions[eventName]) === "undefined") {
+            this.subscriptions[eventName] = [];
+        }
+        const listener = EventsManager.subscribe(eventName, (event) => {
+            if (event.target.shape && event.target.shape.guid === this.rotateBox.shape.guid) {
+                handler(event)
+            }
+        });
+        this.subscriptions[eventName].push(listener);
+        return listener;
     }
 
     /**

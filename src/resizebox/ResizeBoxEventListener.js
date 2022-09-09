@@ -84,7 +84,6 @@ function ResizeBoxEventListener(resizeBox) {
                 EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.resizeBox,event);
             },1)
         });
-
     }
 
     /**
