@@ -258,7 +258,6 @@ function SmartShapeDrawHelper() {
         const filter = document.createElementNS(shape.svg.namespaceURI,filterName);
         for (let attribute in filterOptions) {
             let html_attribute = attribute;
-
             filter.setAttribute(html_attribute,filterOptions[attribute].toString());
             if (attribute === "dx") {
                 shape.svg.setAttribute("width",shape.width + parseInt(filterOptions["dx"])*2);
@@ -298,17 +297,15 @@ function SmartShapeDrawHelper() {
      * @param polygon {SVGPolygonElement} Polygon element to setup
      */
     this.setupPolygonFill = (shape, polygon) => {
-        if (shape.options.fill) {
-            if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
-                polygon.setAttribute("fill",'url("#'+shape.guid+'_pattern'+'")');
-            }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
-                ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
-                polygon.setAttribute("fill",'url("#'+shape.guid+'_gradient'+'")');
-            } else {
-                polygon.setAttribute("fill", shape.options.fill);
-            }
+        if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
+            polygon.setAttribute("fill",'url("#'+shape.guid+'_pattern'+'")');
+        }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
+            ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
+            polygon.setAttribute("fill",'url("#'+shape.guid+'_gradient'+'")');
+        } else if (shape.options.fill) {
+            polygon.setAttribute("fill", shape.options.fill);
         }
-        if (shape.options.fillOpacity) {
+        if (notNull(shape.options.fillOpacity)) {
             polygon.setAttribute("fill-opacity", shape.options.fillOpacity);
         }
     }
@@ -323,7 +320,7 @@ function SmartShapeDrawHelper() {
         if (shape.options.classes) {
             polygon.setAttribute("class",shape.options.classes);
         }
-        if (shape.options.style) {
+        if (notNull(shape.options.style) && typeof(shape.options.style) === "object") {
             for (let cssName in shape.options.style) {
                 polygon.style[cssName] = shape.options.style[cssName]
             }
