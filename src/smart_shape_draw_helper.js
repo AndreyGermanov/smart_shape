@@ -122,14 +122,14 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape for which gradient should be created
      */
     this.setupShapeFill = (shape) => {
-        if (shape.options.fillImage && typeof(shape.options.fillImage === "object")) {
+        if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const pattern = this.createImageFill(shape);
             if (pattern) {
                 defs.appendChild(pattern)
             }
             shape.svg.appendChild(defs);
-        } else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
+        } else if (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const gradient = this.createGradient(shape);
@@ -299,7 +299,7 @@ function SmartShapeDrawHelper() {
     this.setupPolygonFill = (shape, polygon) => {
         if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             polygon.setAttribute("fill",'url("#'+shape.guid+'_pattern'+'")');
-        }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient === "object") &&
+        }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
             polygon.setAttribute("fill",'url("#'+shape.guid+'_gradient'+'")');
         } else if (shape.options.fill) {
