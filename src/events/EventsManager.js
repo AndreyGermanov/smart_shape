@@ -56,7 +56,7 @@ function EventsManager() {
         this.subscriptions[eventName].length) {
             for (let handler of this.subscriptions[eventName]) {
                 handler(params)
-            };
+            }
             return true;
         }
         return false;

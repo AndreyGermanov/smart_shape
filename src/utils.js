@@ -14,9 +14,9 @@ export const getOffset = ( elem,deep=true ) => {
 
 export const uuid = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
-    }).replace(/\-/g,"");
+    }).replace(/-/g,"");
 }
 
 export const pauseEvent = (e) => {
@@ -25,7 +25,7 @@ export const pauseEvent = (e) => {
         if (e.preventDefault) e.preventDefault();
         e.cancelBubble = true;
         e.returnValue = false;
-    } catch (e) {};
+    } catch (err) {}
     return false;
 }
 

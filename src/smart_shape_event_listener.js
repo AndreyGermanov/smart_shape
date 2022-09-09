@@ -408,9 +408,9 @@ function SmartShapeEventListener(shape) {
     /**
      * @ignore
      * Internal method, triggered when browser window resized.
-     * @param event Window resize event - [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent).
+     * @param _event Window resize event - [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent).
      */
-    this.onWindowResize = (/** event **/) => {
+    this.onWindowResize = (_event) => {
         EventsManager.emit(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.shape,
             {bounds:this.shape.getBounds(),points:this.shape.points}
         )
@@ -429,8 +429,6 @@ function SmartShapeEventListener(shape) {
         }
         const listener = EventsManager.subscribe(eventName, (event) => {
             if (event.target.guid === this.shape.guid) {
-                if (eventName === ShapeEvents.SHAPE_MOUSE_CLICK) {
-                }
                 handler(event)
             }
         });

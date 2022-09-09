@@ -297,10 +297,10 @@ function ResizeBox() {
      * after user dragged corner markers.
      */
     this.adjustCenters = () => {
-        this.center_top.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
-        this.center_bottom.x = parseInt((this.left_top.x+(this.right_top.x-this.left_top.x)/2));
-        this.left_center.y = parseInt((this.left_top.y+(this.left_bottom.y-this.left_top.y)/2));
-        this.right_center.y = parseInt((this.right_top.y+(this.right_bottom.y-this.right_top.y)/2));
+        this.center_top.x = parseInt(this.left_top.x+(this.right_top.x-this.left_top.x)/2);
+        this.center_bottom.x = parseInt(this.left_top.x+(this.right_top.x-this.left_top.x)/2);
+        this.left_center.y = parseInt(this.left_top.y+(this.left_bottom.y-this.left_top.y)/2);
+        this.right_center.y = parseInt(this.right_top.y+(this.right_bottom.y-this.right_top.y)/2);
     }
 
     /**

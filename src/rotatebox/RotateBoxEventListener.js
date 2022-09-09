@@ -238,6 +238,7 @@ function RotateBoxEventListener(rotateBox) {
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_END,this.shapeMoveEnd);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.shapeClick);
         this.rotateBox.shape.points.forEach(point => {
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseDownListener);
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseUpListener);
