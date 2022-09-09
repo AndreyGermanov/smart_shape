@@ -4,7 +4,7 @@ import EventsManager from "../../../src/events/EventsManager.js";
 
 function setup() {
   const app = Cypress.$("#app").toArray()[0];
-  const shape = new SmartShape().init(app,{id:"shape1",canAddPoints:true,pointOptions:{canDelete:true}},
+  const shape = new SmartShape().init(app,{id:"shape1",canAddPoints:true,pointOptions:{canDelete:true,forceDisplay:true}},
       [[0,100],[100,0],[200,100]]);
   return [app,shape];
 }
@@ -61,7 +61,7 @@ describe('SmartShape API tests', () => {
       assert.equal(shape.points.length, 2);
       shape.deletePoint(200, 200);
       assert.equal(shape.points.length, 2);
-      const point = shape.addPoint(200, 200, {id: "point1",canDelete:true});
+      const point = shape.addPoint(200, 200, {id: "point1",canDelete:true,forceDisplay:true});
       assert.isNotNull(point)
       assert.equal(shape.points.length, 3);
       cy.get("#point1").trigger("mousedown", {button: 2, buttons: 2}).then(() => {

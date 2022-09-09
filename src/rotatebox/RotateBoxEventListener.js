@@ -143,10 +143,6 @@ function RotateBoxEventListener(rotateBox) {
         }
         let clientX = event.clientX+window.scrollX;
         let clientY = event.clientY+window.scrollY;
-        const pos = this.rotateBox.getPosition();
-        if (clientX>pos.left+20 && clientX<pos.right-20 && clientY>pos.top+20 && clientY<pos.bottom-20) {
-            return;
-        }
         const centerX = this.rotateBox.shape.left+this.rotateBox.shape.width/2;
         const centerY = this.rotateBox.shape.top+this.rotateBox.shape.height/2;
         let hypotenuse = distance(clientX,clientY,centerX,centerY);
@@ -174,7 +170,7 @@ function RotateBoxEventListener(rotateBox) {
                 angleDiff -= this.previousAngle;
             }
             this.previousAngle = angle;
-            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:Math.round(angleDiff)});
+            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:angleDiff});
         }
     }
 

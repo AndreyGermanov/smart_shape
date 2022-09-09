@@ -10,14 +10,14 @@ describe('SmartPoint events tests', () => {
   it('POINT_DRAG_MOVE event', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = getShape();
-      const left_top = shape.addPoint(0,0,{id:"left_top"});
-      const left_center = shape.addPoint(0,50,{id:"left_center"});
-      const left_bottom = shape.addPoint(0,100,{id:"left_bottom"});
-      const bottom_center = shape.addPoint(50,100,{id:"bottom_center"});
-      const right_bottom = shape.addPoint(100,100,{id:"right_bottom"});
-      const right_center = shape.addPoint(100,50,{id:"right_center"});
-      const right_top = shape.addPoint(100,0,{id:"right_top"});
-      const top_center = shape.addPoint(50,0,{id:"top_center"});
+      const left_top = shape.addPoint(0,0,{id:"left_top",forceDisplay:true});
+      const left_center = shape.addPoint(0,50,{id:"left_center",forceDisplay:true});
+      const left_bottom = shape.addPoint(0,100,{id:"left_bottom",forceDisplay:true});
+      const bottom_center = shape.addPoint(50,100,{id:"bottom_center",forceDisplay:true});
+      const right_bottom = shape.addPoint(100,100,{id:"right_bottom",forceDisplay:true});
+      const right_center = shape.addPoint(100,50,{id:"right_center",forceDisplay:true});
+      const right_top = shape.addPoint(100,0,{id:"right_top",forceDisplay:true});
+      const top_center = shape.addPoint(50,0,{id:"top_center",forceDisplay:true});
 
       const leftTopListener = (event) => {
         if (event.target.options.id !== "left_top") {

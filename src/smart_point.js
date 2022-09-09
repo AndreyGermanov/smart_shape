@@ -32,7 +32,7 @@ function SmartPoint() {
      * To restrict movement in any direction, need to remove some directions from this array.
      * @param visible {boolean} Point is visible or not. By default, `true`.
      * @param forceDisplay {boolean} If this option enabled, than this point displayed all the time, even if shape
-     * is not in SCALE or ROTATE mode
+     * is not in SCALE or ROTATE mode. By default, if the shape is in DEFAULT mode, then points not displayed on it.
      * @type {{}}
      */
     this.options = {

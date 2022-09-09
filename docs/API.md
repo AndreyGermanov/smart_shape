@@ -653,7 +653,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | bounds | <code>object</code> | Bounds for point movement. If setup, then it's impossible to drag point beyond bounds. It must be an object of the following format: `{left:number,top:number,right:number,bottom:number}`. If created using `SmartShape`, then it automatically set this object to the dimensions of shape's container. |
 | moveDirections | <code>array</code> | . Defines in which directions point can move. Can contain values from [PointMoveDirections](#PointMoveDirections) enumeration. By default, all directions allowed. Default value is: `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`. To restrict movement in any direction, need to remove some directions from this array. |
 | visible | <code>boolean</code> | Point is visible or not. By default, `true`. |
-| forceDisplay | <code>boolean</code> | If this option enabled, than this point displayed all the time, even if shape is not in SCALE or ROTATE mode |
+| forceDisplay | <code>boolean</code> | If this option enabled, than this point displayed all the time, even if shape is not in SCALE or ROTATE mode. By default, if the shape is in DEFAULT mode, then points not displayed on it. |
 
 <a name="SmartPoint+x"></a>
 

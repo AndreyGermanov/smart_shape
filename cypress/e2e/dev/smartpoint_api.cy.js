@@ -3,7 +3,7 @@ import {SmartShape} from "../../../src/smart_shape.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 function initShape() {
   const app = Cypress.$("#app").toArray()[0]
-  const shape = new SmartShape().init(app)
+  const shape = new SmartShape().init(app,{pointOptions:{forceDisplay:true}})
   return [app,shape]
 }
 describe('SmartPoint API tests', () => {
@@ -90,8 +90,8 @@ describe('SmartPoint API tests', () => {
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
-      const point1 = new SmartPoint().init(5,5, {id:"point1"});
-      const point2 = new SmartPoint().init(25,25, {id:"point2"});
+      const point1 = new SmartPoint().init(5,5, {id:"point1",forceDisplay:true});
+      const point2 = new SmartPoint().init(25,25, {id:"point2",forceDisplay:true});
       app.appendChild(point1.element);
       app.appendChild(point2.element);
       let listener1Triggered = false;
@@ -108,14 +108,14 @@ describe('SmartPoint API tests', () => {
           "Should add listener to second point");
       cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
         assert.equal(listener1Triggered,true,"Should trigger first listener");
-        cy.get("#point2").trigger("mousedown",{buttons:1}).then(() => {
+        cy.get("#point2").trigger("mousedown",{buttons:1,force:true}).then(() => {
           assert.equal(listener1Triggered,true,"Should trigger second listener");
           const shape = new SmartShape().init(app,{},[[5,5]]);
           let createListenerTriggered = false;
           EventsManager.subscribe(PointEvents.POINT_ADDED,(event) => {
             createListenerTriggered = true;
           })
-          const point = shape.addPoint(40,40,{id:"point3"});
+          const point = shape.addPoint(40,40,{id:"point3",forceDisplay:true});
           let mouseMoveListenerTriggered = false;
           point.addEventListener(PointEvents.POINT_MOUSE_MOVE, (event) => {
             mouseMoveListenerTriggered = true;

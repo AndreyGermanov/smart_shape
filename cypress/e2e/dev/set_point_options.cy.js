@@ -7,6 +7,7 @@ describe('Point options', () => {
         canDrag: true,
         canDelete: true,
         classes: 'newPoint',
+        forceDisplay:true,
         style: {
             backgroundColor:"rgb(255, 128, 0)",
             borderWidth:'3px',
