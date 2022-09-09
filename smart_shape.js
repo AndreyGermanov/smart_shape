@@ -235,10 +235,10 @@ function F(t) {
     let A = c(i, e, o, r), p = 0, g = 0;
     if (i < o && e < r && (p = c(i, e, i, r)), i > o && e < r && (g = 90, p = c(i, e, o, e)), i > o && e > r && (g = 180, p = c(i, e, i, r)), i < o && e > r && (g = 270, p = c(i, e, o, e)), A > 0) {
       let u = Math.round(w(Math.asin(p / A)) + g + this.initialAngle), v = u;
-      this.previousAngle && (v -= this.previousAngle), this.previousAngle = u, h.emit(O.ROTATE_BOX_ROTATE, this.rotateBox, { angle: v });
+      this.previousAngle && (v -= this.previousAngle), this.previousAngle = u, h.emit(O.ROTATE_BOX_ROTATE, this.rotateBox, { angle: Math.round(v) });
     }
   }, this.onPointMouseDown = (s) => {
-    switch (event.target) {
+    switch (s.target) {
       case this.rotateBox.left_top:
         this.initialAngle = -45;
         break;

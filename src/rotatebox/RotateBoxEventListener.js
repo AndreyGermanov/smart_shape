@@ -170,16 +170,16 @@ function RotateBoxEventListener(rotateBox) {
                 angleDiff -= this.previousAngle;
             }
             this.previousAngle = angle;
-            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:angleDiff});
+            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:Math.round(angleDiff)});
         }
     }
 
     /**
      * @ignore
      * onMouseDown event for marker points
-     * @param _event {MouseEvent} Standard Mouse event object
+     * @param event {MouseEvent} Standard Mouse event object
      */
-    this.onPointMouseDown = (_event) => {
+    this.onPointMouseDown = (event) => {
         switch (event.target) {
             case this.rotateBox.left_top:
                 this.initialAngle = -45;
