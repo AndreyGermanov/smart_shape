@@ -1,4 +1,4 @@
-import {SmartShape} from "../../../src/smart_shape.js";
+import SmartShape from "../../../src/SmartShape/SmartShape.js";
 describe('Test drag points', () => {
   it('Should not go beyond container element', async() => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
@@ -9,7 +9,7 @@ describe('Test drag points', () => {
       div.id = "container";
       const app = Cypress.$("#app").toArray()[0]
       app.appendChild(div)
-      const shape = new SmartShape().init(div,{stroke:"#000000",fill:"lightgreen",fillOpacity:'0.5'},[]);
+      const shape = new SmartShape().init(div,{stroke:"#000000",fill:"lightgreen",fillOpacity:'0.5',pointOptions:{forceDisplay:true}},[]);
       const point1 = shape.addPoint(0,100);
       point1.element.id = "point1"
       const point2 = shape.addPoint(100,0);
@@ -34,7 +34,7 @@ describe('Test drag points', () => {
                     assert.equal(point2.x,44)
                     assert.equal(point2.y,47)
                     cy.get("#container").trigger("mousemove",{buttons:1,clientX:550,clientY:60}).then(()=> {
-                      assert.equal(point2.x,537)
+                      assert.equal(point2.x,500)
                       assert.equal(point2.y,47)
                     })
                   })

@@ -5,7 +5,7 @@ export default defineConfig({
     build: {
         outDir : "",
         lib: {
-            entry: resolve(__dirname, 'src/smart_shape.js'),
+            entry: resolve(__dirname, 'src/index.js'),
             name: 'SmartShape',
             fileName: 'smart_shape',
         },

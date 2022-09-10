@@ -1,10 +1,10 @@
-import {SmartShape} from "../smart_shape.js";
-import {PointMoveDirections} from "../smart_point.js";
+import SmartShape from "../SmartShape/SmartShape.js";
+import {PointMoveDirections} from "../SmartPoint/SmartPoint.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
-import {ShapeEvents} from "../smart_shape_event_listener.js";
+import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {resize_lb,resize_cb,resize_ct,resize_lc,resize_lt,resize_rb,resize_rc,resize_rt} from "../../assets/graphics.js";
-import {uuid} from "../utils.js";
+import {uuid} from "../utils";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
  * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).

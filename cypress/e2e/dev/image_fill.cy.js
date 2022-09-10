@@ -1,4 +1,4 @@
-import {SmartShape} from "../../../src/smart_shape.js";
+import SmartShape from "../../../src/SmartShape/SmartShape.js";
 function initShape() {
   const app = Cypress.$("#app").toArray()[0];
   const shape = new SmartShape().init(app,{id:"shape1"},[[0,100],[100,0],[200,100]]);

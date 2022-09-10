@@ -1,5 +1,5 @@
-import SmartPoint, {PointEvents} from "../../../src/smart_point.js";
-import {SmartShape} from "../../../src/smart_shape.js";
+import SmartPoint, {PointEvents} from "../../../src/SmartPoint/SmartPoint.js";
+import SmartShape from "../../../src/SmartShape/SmartShape.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 function initShape() {
   const app = Cypress.$("#app").toArray()[0]

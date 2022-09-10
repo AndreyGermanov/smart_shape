@@ -1,5 +1,5 @@
-import SmartPoint, {PointEvents, PointMoveDirections} from "../../../src/smart_point.js";
-import {getOffset} from "../../../src/utils.js";
+import SmartPoint, {PointEvents, PointMoveDirections} from "../../../src/SmartPoint/SmartPoint.js";
+import {getOffset} from "../../../src/utils";
 describe('Point move directions tests (according to options.moveDirections setting', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];

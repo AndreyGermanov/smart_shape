@@ -1,9 +1,9 @@
-import {SmartShape} from "../smart_shape.js";
+import SmartShape from "../SmartShape/SmartShape.js";
 import RotateBoxEventListener from "./RotateBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
-import {ShapeEvents} from "../smart_shape_event_listener.js";
+import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {rotate_tl,rotate_tr,rotate_br,rotate_bl} from "../../assets/graphics.js";
-import {uuid} from "../utils.js";
+import {uuid} from "../utils";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
  * it corners, used to rotate it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/rotate_box.html).

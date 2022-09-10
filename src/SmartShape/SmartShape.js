@@ -1,10 +1,10 @@
-import SmartPoint from "./smart_point.js";
-import SmartShapeDrawHelper from "./smart_shape_draw_helper.js";
-import SmartShapeEventListener, {ShapeEvents} from "./smart_shape_event_listener.js";
-import ResizeBox from "./resizebox/ResizeBox.js";
-import RotateBox from "./rotatebox/RotateBox.js";
-import {getRotatedCoords, mergeObjects, notNull, uuid} from "./utils.js";
-import EventsManager from "./events/EventsManager.js";
+import SmartPoint from "../SmartPoint/SmartPoint.js";
+import SmartShapeDrawHelper from "./SmartShapeDrawHelper.js";
+import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
+import ResizeBox from "../ResizeBox/ResizeBox.js";
+import RotateBox from "../RotateBox/RotateBox.js";
+import {getRotatedCoords, mergeObjects, notNull, uuid} from "../utils";
+import EventsManager from "../events/EventsManager.js";
 
 /**
  * SmartShape class. Used to construct shapes.
@@ -724,11 +724,6 @@ function SmartShape() {
         return [pointWidth,pointHeight];
     }
 }
-try {
-    window.ResizeBox = ResizeBox;
-    window.SmartShape = SmartShape;
-    window.RotateBox = RotateBox;
-} catch (err) {}
 
 /**
  * Enumeration of SmartShape display modes
@@ -743,4 +738,4 @@ export const SmartShapeDisplayMode = {
     ROTATE: "rotate"
 }
 
-export {ResizeBox, RotateBox, SmartShape};
+export default SmartShape;

@@ -1,6 +1,6 @@
-import {getOffset, getRotatedCoords, pauseEvent, uuid} from "./utils.js";
-import EventsManager from "./events/EventsManager.js";
-import {ContainerEvents} from "./smart_shape_event_listener.js";
+import {getOffset, getRotatedCoords, pauseEvent, uuid} from "../utils";
+import EventsManager from "../events/EventsManager.js";
+import {ContainerEvents} from "../SmartShape/SmartShapeEventListener.js";
 /**
  * Class that represents a single point on the screen.
  * Can be created directly using class constructor, but more often they added by using `addPoint`, `addPoints`

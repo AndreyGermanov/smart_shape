@@ -1,8 +1,8 @@
 import EventsManager from "../events/EventsManager.js";
 import {RotateBoxEvents} from "./RotateBox.js";
-import {ShapeEvents} from "../smart_shape_event_listener.js";
-import {distance, radians_to_degrees} from "../utils.js";
-import {PointEvents} from "../smart_point.js";
+import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
+import {PointEvents} from "../SmartPoint/SmartPoint.js";
+import {distance, radians_to_degrees} from "../utils";
 
 /**
  * Internal helper class, that contains all event listening logic for the RotateBox.

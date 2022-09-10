@@ -1,5 +1,5 @@
-import {SmartShape,SmartShapeDisplayMode} from "../../../src/smart_shape.js";
-import {ContainerEvents, ShapeEvents} from "../../../src/smart_shape_event_listener.js";
+import SmartShape,{SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
+import {ContainerEvents, ShapeEvents} from "../../../src/SmartShape/SmartShapeEventListener.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 
 function setup() {

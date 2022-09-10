@@ -1,9 +1,9 @@
-import EventsManager from "./events/EventsManager.js";
-import {getOffset, pauseEvent} from "./utils.js";
-import {PointEvents} from "./smart_point.js";
-import {ResizeBoxEvents} from "./resizebox/ResizeBox.js";
-import {RotateBoxEvents} from "./rotatebox/RotateBox.js";
-import {createEvent} from "./events/functions.js";
+import EventsManager from "../events/EventsManager.js";
+import {getOffset, pauseEvent} from "../utils";
+import {PointEvents} from "../SmartPoint/SmartPoint.js";
+import {ResizeBoxEvents} from "../ResizeBox/ResizeBox.js";
+import {RotateBoxEvents} from "../RotateBox/RotateBox.js";
+import {createEvent} from "../events/functions.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the shape.

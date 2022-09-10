@@ -1,4 +1,4 @@
-import {SmartShape} from "../../../src/smart_shape.js";
+import SmartShape from "../../../src/SmartShape/SmartShape.js";
 describe('Point options', () => {
 
     const pointOptions = {

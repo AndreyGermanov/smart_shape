@@ -1,5 +1,4 @@
-import {SmartShape} from "../../../src/smart_shape.js";
-
+import SmartShape from "../../../src/SmartShape/SmartShape.js";
 describe('Shadow SVG filter tests', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];

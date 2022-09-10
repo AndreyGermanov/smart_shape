@@ -1,8 +1,8 @@
-import ResizeBox, {ResizeBoxEvents} from "../../../src/resizebox/ResizeBox.js";
-import {PointEvents, PointMoveDirections} from "../../../src/smart_point.js";
+import ResizeBox, {ResizeBoxEvents} from "../../../src/ResizeBox/ResizeBox.js";
+import {PointEvents, PointMoveDirections} from "../../../src/SmartPoint/SmartPoint.js";
 import EventsManager from "../../../src/events/EventsManager.js";
-import {SmartShape,SmartShapeDisplayMode} from "../../../src/smart_shape.js";
-import {ShapeEvents} from "../../../src/smart_shape_event_listener.js";
+import SmartShape,{SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
+import {ShapeEvents} from "../../../src/SmartShape/SmartShapeEventListener.js";
 describe('ResizeBox tests', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];
@@ -344,7 +344,7 @@ describe('ResizeBox tests', () => {
         cy.get("#app").trigger("mousemove",{buttons:1, clientX:130,clientY:130}).then(() => {
           assert.isTrue(handlerTriggered,"Should trigger event handler");
           assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to local object queue");
-          assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,2,"Should add event handler to global EventsManager queue");
+          assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to global EventsManager queue");
           box.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,listener);
           assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should remove event handler from local object queue");
           assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should remove event handler from global EventsManager queue");

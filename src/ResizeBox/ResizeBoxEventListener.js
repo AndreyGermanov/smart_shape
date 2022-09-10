@@ -1,8 +1,8 @@
 import EventsManager from "../events/EventsManager.js";
-import {PointEvents} from "../smart_point.js";
+import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import {ResizeBoxEvents} from "./ResizeBox.js";
-import {ShapeEvents} from "../smart_shape_event_listener.js";
-import {uuid} from "../utils.js";
+import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
+import {uuid} from "../utils";
 
 /**
  * Internal helper class, that contains all event listening logic for the ResizeBox.

@@ -1,8 +1,9 @@
-import {SmartShape,RotateBox, SmartShapeDisplayMode} from "../../../src/smart_shape.js";
+import SmartShape,{SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
+import RotateBox from "../../../src/RotateBox/RotateBox.js";
 import EventsManager from "../../../src/events/EventsManager.js";
-import {ShapeEvents} from "../../../src/smart_shape_event_listener.js";
-import {RotateBoxEvents} from "../../../src/rotatebox/RotateBox.js";
-import {PointEvents} from "../../../src/smart_point.js";
+import {ShapeEvents} from "../../../src/SmartShape/SmartShapeEventListener.js";
+import {RotateBoxEvents} from "../../../src/RotateBox/RotateBox.js";
+import {PointEvents} from "../../../src/SmartPoint/SmartPoint.js";
 
 function setup() {
   const app = Cypress.$("#app").toArray()[0];

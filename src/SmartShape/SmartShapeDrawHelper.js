@@ -4,8 +4,8 @@
  * of this object when need to draw shapes.
  * @constructor
  */
-import {SmartShapeDisplayMode} from "./smart_shape.js";
-import {notNull} from "./utils";
+import {SmartShapeDisplayMode} from "./SmartShape.js";
+import {notNull} from "../utils";
 
 function SmartShapeDrawHelper() {
 
