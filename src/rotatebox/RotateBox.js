@@ -166,23 +166,24 @@ function RotateBox() {
      * @param options {object} Options object. See [here](#RotateBox+options).
      */
     this.setOptions = (options = {}) => {
-        if (options && typeof(options) === "object") {
-            if (options.shapeOptions && typeof(options.shapeOptions) === "object") {
-                if (options.shapeOptions.pointOptions && typeof(options.shapeOptions.pointOptions) === "object") {
-                    options.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions,options.shapeOptions.pointOptions);
-                } else {
-                    options.shapeOptions.pointOptions = Object.assign({},this.options.shapeOptions.pointOptions);
-                }
-                options.shapeOptions = Object.assign(this.options.shapeOptions,options.shapeOptions);
+        if (!options || typeof(options) !== "object") {
+            return
+        }
+        if (options.shapeOptions && typeof(options.shapeOptions) === "object") {
+            if (options.shapeOptions.pointOptions && typeof(options.shapeOptions.pointOptions) === "object") {
+                options.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions,options.shapeOptions.pointOptions);
             } else {
-                options.shapeOptions = Object.assign({},this.options.shapeOptions);
+                options.shapeOptions.pointOptions = Object.assign({},this.options.shapeOptions.pointOptions);
             }
-            options.shapeOptions.zIndex = options.zIndex || this.options.zIndex;
-            options.shapeOptions.id = options.id ? options.id : this.options.id;
-            Object.assign(this.options,options);
-            if (this.shape) {
-                this.shape.setOptions(this.options.shapeOptions);
-            }
+            options.shapeOptions = Object.assign(this.options.shapeOptions,options.shapeOptions);
+        } else {
+            options.shapeOptions = Object.assign({},this.options.shapeOptions);
+        }
+        options.shapeOptions.zIndex = options.zIndex || this.options.zIndex;
+        options.shapeOptions.id = options.id ? options.id : this.options.id;
+        Object.assign(this.options,options);
+        if (this.shape) {
+            this.shape.setOptions(this.options.shapeOptions);
         }
     }
 

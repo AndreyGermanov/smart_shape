@@ -492,22 +492,7 @@ function SmartShape() {
      */
     this.switchDisplayMode = (mode=null) => {
         if (!mode) {
-            if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
-                mode = SmartShapeDisplayMode.SCALE;
-            } else if (this.options.displayMode === SmartShapeDisplayMode.SCALE) {
-                mode = SmartShapeDisplayMode.ROTATE;
-            } else {
-                mode = SmartShapeDisplayMode.DEFAULT;
-            }
-            if (mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) {
-                if (this.options.canRotate) {
-                    mode = SmartShapeDisplayMode.ROTATE;
-                } else {
-                    mode = SmartShapeDisplayMode.DEFAULT;
-                }
-            } else if (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) {
-                mode = SmartShapeDisplayMode.DEFAULT;
-            }
+            mode = this.getNextDisplayMode();
         }
         if ((mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) ||
             (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate)) {
@@ -515,6 +500,34 @@ function SmartShape() {
         }
         this.options.displayMode = mode;
         this.redraw();
+    }
+
+    /**
+     * @ignore
+     * Method returns next display mode after current one
+     * in the following sequence DEFAULT -> SCALE -> ROTATE
+     * taking in account `canScale` and `canRotate` options
+     * @returns {SmartShapeDisplayMode|string|*}
+     */
+    this.getNextDisplayMode = () => {
+        let mode;
+        if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+            mode = SmartShapeDisplayMode.SCALE;
+        } else if (this.options.displayMode === SmartShapeDisplayMode.SCALE) {
+            mode = SmartShapeDisplayMode.ROTATE;
+        } else {
+            mode = SmartShapeDisplayMode.DEFAULT;
+        }
+        if (mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) {
+            if (this.options.canRotate) {
+                mode = SmartShapeDisplayMode.ROTATE;
+            } else {
+                mode = SmartShapeDisplayMode.DEFAULT;
+            }
+        } else if (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) {
+            mode = SmartShapeDisplayMode.DEFAULT;
+        }
+        return mode
     }
 
     /**
