@@ -408,7 +408,7 @@ function J() {
     }, t.svg.id = t.options.id, t.svg.style.position = "absolute", t.svg.style.cursor = "crosshair", t.svg.style.left = t.left, t.svg.style.top = t.top, t.svg.setAttribute("width", t.width), t.svg.setAttribute("height", t.height), this.setupShapeFill(t), this.setupSVGFilters(t), t.svg.style.zIndex = t.options.zIndex;
     const s = this.drawPolygon(t);
     t.svg.appendChild(s), t.root.appendChild(t.svg), t.eventListener.setSvgEventListeners(), typeof t.options.visible < "u" && (t.svg.style.display = t.options.visible ? "" : "none"), t.points.forEach((i) => {
-      i.options.zIndex < t.options.zIndex + 1 && (i.options.zIndex = t.options.zIndex + 1), t.options.visible || (i.options.visible = !1), i.redraw(), t.options.displayMode === d.DEFAULT && !i.options.forceDisplay && (i.element.style.display = "none");
+      i.options.zIndex < t.options.zIndex + 2 && (i.options.zIndex = t.options.zIndex + 2), t.options.visible || (i.options.visible = !1), i.redraw(), t.options.displayMode === d.DEFAULT && !i.options.forceDisplay && (i.element.style.display = "none");
     }), t.resizeBox && this.redrawResizeBox(t), t.rotateBox && this.redrawRotateBox(t);
   }, this.drawPolygon = (t) => {
     let s = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
