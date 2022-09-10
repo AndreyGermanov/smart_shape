@@ -99,10 +99,12 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
-     * Method adds a listener to shape, that listens for "resize" event of ResizeBox.
-     * As a reaction, listening function scales the shape according to new coordinates
-     * of the resize box.
-     * So, when user changes the size of resize box, the shape resizes according to this.
+     * Method adds event listeners to ResizeBox, connected to it to react on them. So, the shape can change itself
+     * when some event comes from ResizeBox: when user resizes ResizeBox, it emits "resize" event. Then the shape
+     * receives this event in this method and scales the shape according to new coordinates
+     * of the resize box
+     * Also, shape intercepts other events of ResizeBox, connected to it like "mouseover",
+     * "mousemove" or "click".
      */
     this.addResizeEventListener = () => {
         if (!this.shape.resizeBox) {
@@ -129,9 +131,13 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
-     * Method adds a listener to shape, that listens for "rotate" event of RotateBox.
-     * As a reaction, listening function rotates the shape according to the angle, received
-     * from the event of resize box.
+     * Method adds event listeners to RotateBox, connected to it to react on them. So, the shape can change itself
+     * when some event comes from RotateBox: when user rotates RotateBox, it emits "rotate" event and the shape
+     * intercepts this event in this method. The `event` object, that RotateBox emits contains `angle` parameter
+     * that can be used. As a reaction to the event, listening function rotates the shape according to the angle,
+     * received from the event of rotate box.
+     * Also, shape intercepts other events of RotateBox, connected to it, like "mouseover",
+     * "mousemove" or "click".
      */
     this.addRotateEventListener = () => {
         if (!this.shape.rotateBox) {
