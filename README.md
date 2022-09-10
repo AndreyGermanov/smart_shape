@@ -5,7 +5,7 @@ Interactive vector shapes for the Web.
 Smart shape is a polygon (array of connected points) which can be attached to any HTML node and displayed on top of it. These figures are interactive and user can move them inside specified HTML container element or edit them by moving points to change a shape of figure.
 
 <p align="center">
-  <img src="https://code.germanov.dev/smart_shape/assets/logo.jpg" alt="Logo"/>
+  <img src="https://code.germanov.dev/smart_shape/assets/smart_shape.jpg" alt="Logo"/>
 </p>
 
 [Install](#Install)<br/>
