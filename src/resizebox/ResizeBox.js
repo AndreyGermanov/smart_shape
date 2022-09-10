@@ -390,7 +390,7 @@ function ResizeBox() {
 /**
  * Enumeration that defines events, that ResizeBox can emit.
  * @param RESIZE_BOX_RESIZE Emitted when user resized the shape by dragging one of marker points.
- * @enum {int}
+ * @enum {string}
  */
 export const ResizeBoxEvents = {
     RESIZE_BOX_RESIZE: "resize"
