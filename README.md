@@ -105,7 +105,7 @@ shape.setOptions({fill:"#ffff00"});
 
 After changing the options, it's required to redraw the shape to see the results by using `shape.redraw()` method.
 
-After create the shape, you can communicate with it, using various methods of [SmartShape API](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartShape). For example, you can add and delete points on shape by using `addPoint` and `deletePoint` methods. You can get any point by using `findPoint` and `findPointById` methods. The point of shape is [SmartPoint](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartPoint) object, which has its own options and methods, so you can customize point look and behavior by `setOptions` method of SmartPoint object. Also, any SmartShape and SmartPoint objects generates events for all actions which user is doing with them: cliclomg. moving, resizing, dragging, creating, destroying and so on. Your application can react on these events by attaching event listeners to these objects. Standard `addEventListener` method used for this:
+After create the shape, you can communicate with it, using various methods of [SmartShape API](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartShape). For example, you can add and delete points on shape by using `addPoint` and `deletePoint` methods. You can get any point by using `findPoint` and `findPointById` methods. The point of shape is [SmartPoint](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartPoint) object, which has its own options and methods, so you can customize point look and behavior by `setOptions` method of SmartPoint object. Also, any SmartShape and SmartPoint objects generates events for all actions which user is doing with them: clicking. moving, resizing, dragging, creating, destroying and so on. Your application can react on these events by attaching event listeners to these objects. Standard `addEventListener` method used for this:
 
 ```javascript
 shape.addEventListener("move",(event) => {
@@ -116,7 +116,7 @@ shape.addEventListener("move",(event) => {
 
 In this example, event listener will run every time when user moves the shape on the screen. `event` object contains old position of the shape and new position (left,right,top,bottom,width and height).
 
-Using the options, the event listeners and the API methods of SmartShape objects, developer can create highly customized types of shapes for specific tasks and integrate them to their applications. Look [Examples][#Examples+SmartShape] section to see source code and live applications, that use the SmartShape.
+Using the options, the event listeners and the API methods of SmartShape objects, developer can create highly customized types of shapes for specific tasks and integrate them to their applications. Look [Examples](#Examples+SmartShape) section to see source code and live applications, that use the SmartShape.
 
 Full API that available for customization is in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).
 
@@ -191,7 +191,7 @@ Examples below show how you can use SmartShape and it's derivatives in basic mod
 
 ### SmartShape in production
 
-This video shows how SmartShape used inside online text recognition tool to select an image region for perspective correction. Then, after region selected, application uses `getPointsArray()` method of SmartShape to get array of coordinates of points and send them to backend for further processing.
+The next video shows how SmartShape used inside online text recognition tool to select an image region for perspective correction. Then, after region selected, application uses `getPointsArray()` method of SmartShape to get an array of coordinates and send them to the backend for further processing.
 
 Watch on YouTube: https://youtu.be/4ee-HYCtgJ4 .
 
