@@ -1,12 +1,12 @@
+import {SmartShapeDisplayMode} from "./SmartShape.js";
+import {notNull} from "../utils";
+
 /**
  * Internal helper class that used to draw shape.
  * Should not be used directly. SmartShape objects execute methods
  * of this object when need to draw shapes.
  * @constructor
  */
-import {SmartShapeDisplayMode} from "./SmartShape.js";
-import {notNull} from "../utils";
-
 function SmartShapeDrawHelper() {
 
     /**

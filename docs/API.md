@@ -13,6 +13,8 @@
 <dd></dd>
 <dt><a href="#SmartShape">SmartShape</a></dt>
 <dd></dd>
+<dt><a href="#SmartShapeDrawHelper">SmartShapeDrawHelper</a></dt>
+<dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
 <dt><a href="#EventsManager">EventsManager</a></dt>
@@ -1089,6 +1091,17 @@ Method returns coordinates of the center of the shape.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>array</code> - Center of a shape as an array [x,y]  
+<a name="SmartShapeDrawHelper"></a>
+
+## SmartShapeDrawHelper
+**Kind**: global class  
+<a name="new_SmartShapeDrawHelper_new"></a>
+
+### new SmartShapeDrawHelper()
+Internal helper class that used to draw shape.
+Should not be used directly. SmartShape objects execute methods
+of this object when need to draw shapes.
+
 <a name="SmartShapeEventListener"></a>
 
 ## SmartShapeEventListener
