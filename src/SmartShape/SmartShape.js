@@ -723,6 +723,14 @@ function SmartShape() {
         const pointHeight = this.points.map(point=>point.options.height).reduce((h1,h2) => Math.max(h1,h2));
         return [pointWidth,pointHeight];
     }
+
+    /**
+     * Method returns coordinates of the center of the shape.
+     * @returns {array} Center of a shape as an array [x,y]
+     */
+    this.getCenter = () => {
+        return [this.left+this.width/2, this.top+this.height/2]
+    };
 }
 
 /**

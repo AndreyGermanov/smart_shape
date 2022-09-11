@@ -3,6 +3,7 @@ import {RotateBoxEvents} from "./RotateBox.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import {distance, radians_to_degrees} from "../utils";
+import {getMouseCursorPos} from "../events/functions.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the RotateBox.
@@ -121,36 +122,111 @@ function RotateBoxEventListener(rotateBox) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, {clientX:event.clientX,clientY:event.clientY});
             return
         }
-        let clientX = event.clientX+window.scrollX;
-        let clientY = event.clientY+window.scrollY;
-        const centerX = this.rotateBox.shape.left+this.rotateBox.shape.width/2;
-        const centerY = this.rotateBox.shape.top+this.rotateBox.shape.height/2;
-        let hypotenuse = distance(clientX,clientY,centerX,centerY);
-        let cathetus = 0;
-        let start_angle = 0;
-        if (clientX < centerX && clientY < centerY) {
-            cathetus = distance(clientX,clientY,clientX,centerY)
+        const [clientX,clientY] = getMouseCursorPos(event);
+        const [centerX,centerY] = this.rotateBox.shape.getCenter();
+        let angle = this.calcAngle(clientX,clientY,centerX,centerY);
+        if (angle === null) {
+            return;
+        }
+        let angleDiff = angle;
+        if (this.previousAngle) {
+            angleDiff -= this.previousAngle;
+        }
+        this.previousAngle = angle;
+        EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:Math.round(angleDiff)});
+    }
+
+    /**
+     * @ignore
+     * Method used to calculate rotation angle based on coordinates of point to which
+     * user dragged the mouse cursor and center to rotate the point around
+     * @param clientX {number} X coordinate of current mouse cursor position
+     * @param clientY {number} Y coordinate of current mouse cursor position
+     * @param centerX {number} X coordinate of center (shape center)
+     * @param centerY {number} Y coordinate of center (shape center)
+     * @returns {null|number} Rotation angle in degrees or null if impossible to calculate it
+     */
+    this.calcAngle = (clientX,clientY,centerX,centerY) => {
+        const hypotenuse = this.calcHypotenuse(clientX,clientY,centerX,centerY);
+        if (hypotenuse <= 0) {
+            return null;
+        }
+        const cathetus = this.calcCathetus(clientX,clientY,centerX,centerY);
+        const startAngle = this.calcStartAngle(clientX,clientY,centerX,centerY);
+        return Math.round(radians_to_degrees((Math.asin(cathetus/hypotenuse))) + startAngle + this.initialAngle);
+    }
+
+    /**
+     * @ignore
+     * Method used to calculate distance from point of mouse cursor and center of a shape,
+     * which is a hypotenuse of triangle, used to calculate sine of rotation angle
+     * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
+     * @param clientX {number} X coordinate of current mouse cursor position
+     * @param clientY {number} Y coordinate of current mouse cursor position
+     * @param centerX {number} X coordinate of center (shape center)
+     * @param centerY {number} Y coordinate of center (shape center)
+     * @returns {number} Length of hypotenuse
+     */
+    this.calcHypotenuse = (clientX,clientY,centerX,centerY) => {
+        return distance(clientX,clientY,centerX,centerY);
+    }
+
+    /**
+     * @ignore
+     * Method used to determine the size of opposite cathetus of triangle,
+     * that can be created from (clientX,clientY) mouse cursor point
+     * to (centerX,centerY) point of shape center. The distance, that need
+     * to calculate depends on quarter of coordinate plane with center in (centerX,centerY)
+     * in which the point (clientX,clientY) located.
+     * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
+     * Cathetus used to calculate sine of rotation angle by formula, specified here:
+     * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
+     * @param clientX {number} X coordinate of current mouse cursor position
+     * @param clientY {number} Y coordinate of current mouse cursor position
+     * @param centerX {number} X coordinate of center (shape center)
+     * @param centerY {number} Y coordinate of center (shape center)
+     * @returns {number}
+     */
+    this.calcCathetus = (clientX,clientY,centerX,centerY) => {
+        if (clientX <= centerX && clientY <= centerY) {
+            return distance(clientX,clientY,clientX,centerY)
         }
         if (clientX > centerX && clientY < centerY) {
-            start_angle = 90;
-            cathetus = distance(clientX,clientY,centerX,clientY);
+            return distance(clientX,clientY,centerX,clientY);
         }
         if (clientX > centerX && clientY > centerY) {
-            start_angle = 180;
-            cathetus = distance(clientX,clientY,clientX,centerY);
+            return distance(clientX,clientY,clientX,centerY);
         }
         if (clientX < centerX && clientY > centerY) {
-            start_angle = 270;
-            cathetus = distance(clientX,clientY,centerX,clientY);
+            return distance(clientX,clientY,centerX,clientY);
         }
-        if (hypotenuse > 0) {
-            let angle = Math.round(radians_to_degrees((Math.asin(cathetus/hypotenuse))) + start_angle + this.initialAngle);
-            let angleDiff = angle;
-            if (this.previousAngle) {
-                angleDiff -= this.previousAngle;
-            }
-            this.previousAngle = angle;
-            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:Math.round(angleDiff)});
+    }
+
+    /**
+     * @ignore
+     * Method used to determine the angle which need to subtract,
+     * depending on quarter of coordinate plane  with center in
+     * (centerX,centerY) point of shape center, when move the point
+     * (clientX,clientY) clockwise:
+     * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
+     * @param clientX {number} X coordinate of current mouse cursor position
+     * @param clientY {number} Y coordinate of current mouse cursor position
+     * @param centerX {number} X coordinate of center (shape center)
+     * @param centerY {number} Y coordinate of center (shape center)
+     * @returns {number} Angle in degrees
+     */
+    this.calcStartAngle = (clientX,clientY,centerX,centerY) => {
+        if (clientX <= centerX && clientY <= centerY) { // II
+            return 0;
+        }
+        if (clientX > centerX && clientY < centerY) { // I
+            return 90;
+        }
+        if (clientX > centerX && clientY > centerY) { // IV
+            return 180;
+        }
+        if (clientX < centerX && clientY > centerY) { /// III
+            return 270
         }
     }
 

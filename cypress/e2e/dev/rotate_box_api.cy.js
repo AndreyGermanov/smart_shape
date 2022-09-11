@@ -227,7 +227,7 @@ describe('RotateBox Tests', () => {
               cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-width","1px").then(() => {
                 cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-color","rgb(204, 204, 204)").then(() => {
                   cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-radius","0px").then(() => {
-                    cy.get("#"+box.shape.guid+"_left_top").should("have.css","z-index","1011").then(() => {
+                    cy.get("#"+box.shape.guid+"_left_top").should("have.css","z-index","1012").then(() => {
                       cy.get("#"+box.shape.guid+"_left_top").should("have.css", "background-color", "rgb(255, 255, 255)").then(() => {
                         assert.equal(box.options.zIndex, 1010);
                       });

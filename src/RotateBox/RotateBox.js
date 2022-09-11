@@ -85,10 +85,8 @@ function RotateBox() {
             pointOptions: {
                 style: {
                     borderWidth: "0px",
-                    borderColor: "rgb(204, 204, 204)",
-                    borderRadius: "0px",
                     cursor:"pointer",
-                    backgroundColor:'rgba(0,0,0,0'
+                    backgroundColor:'rgba(0,0,0,0)'
                 },
                 width:13,
                 height:13,

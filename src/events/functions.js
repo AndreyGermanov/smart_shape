@@ -16,3 +16,13 @@ export const createEvent = (origEvent,params={}) => {
     })
     return result;
 }
+
+/**
+ * @ignore
+ * Method returns coordinates of mouse cursor from Mouse event
+ * @param event {MouseEvent}
+ * @returns {array} Coordinates as an array [x,y]
+ */
+export const getMouseCursorPos = (event) => {
+    return [event.clientX+window.scrollX,event.clientY+window.scrollY];
+}

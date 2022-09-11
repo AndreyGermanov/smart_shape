@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="467.6"
+   height="180.9"
+   version="1.1"
+   id="svg76"
+   sodipodi:docname="sin-cos-tan.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata80">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview78"
+     showgrid="false"
+     inkscape:current-layer="svg76"
+     inkscape:document-rotation="0" />
+  <defs
+     id="defs14">
+    <marker
+       id="id3"
+       style="overflow:visible"
+       orient="auto">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="stroke:black;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path2" />
+    </marker>
+    <marker
+       id="id4"
+       style="overflow:visible"
+       orient="auto">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="stroke:black;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path5" />
+    </marker>
+    <marker
+       id="id2"
+       style="overflow:visible"
+       orient="auto">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="stroke:black;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path8" />
+    </marker>
+    <marker
+       id="id1"
+       style="overflow:visible"
+       orient="auto">
+      <path
+         transform="matrix(0.4,0,0,0.4,4,0)"
+         style="stroke:black;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path11" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id31737"
+       inkscape:stockid="id31737">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="stroke:#3465a4;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#3465a4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path968" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id46492"
+       inkscape:stockid="id46492">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="stroke:#3465a4;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#3465a4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path971" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id32266"
+       inkscape:stockid="id32266">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="stroke:#ce5c00;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#ce5c00"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path974" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id45851"
+       inkscape:stockid="id45851">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="stroke:#ce5c00;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#ce5c00"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path977" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id35286"
+       inkscape:stockid="id35286">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="stroke:#c4a000;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#c4a000"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path980" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id46147"
+       inkscape:stockid="id46147">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="stroke:#c4a000;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#c4a000"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path983" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id14267"
+       inkscape:stockid="id14267">
+      <path
+         transform="matrix(0.4,0,0,0.4,4,0)"
+         style="stroke:#3465a4;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#3465a4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path1154" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       orient="auto"
+       id="id24146"
+       inkscape:stockid="id24146">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="stroke:#3465a4;stroke-width:1pt;stroke-opacity:1;fill-opacity:1;fill:#3465a4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path1157" />
+    </marker>
+  </defs>
+  <rect
+     x="0.0260122"
+     y="4.74501"
+     ry="32.4"
+     width="189.3"
+     height="171.3"
+     style="color:#000000;overflow:visible;opacity:1;fill:#c2e6ff;stroke-width:2;fill-opacity:1"
+     id="rect16" />
+  <path
+     style="color:#000000;overflow:visible;fill:none;stroke:#0000ff;stroke-width:1.6"
+     d="m 420.626,137.745 h -201.4 l 201.2,-111.6 z"
+     id="path18" />
+  <text
+     x="305.297"
+     y="122.565"
+     transform="scale(1.00031,0.999693)"
+     style="fill:#3465a4;font-family:Trebuchet MS;font-size:25.1001px;stroke-width:2.53001"
+     id="text20">θ</text>
+  <path
+     style="color:#000000;overflow:visible;fill:none;stroke:#3465a4;stroke-width:1.6;marker-start:url(#id14267);marker-end:url(#id24146)"
+     d="m 287.926,102.845 a 75.1,75.1 0 0 1 8.5,32.7"
+     id="path22" />
+  <path
+     style="fill:none;stroke:#3465a4;stroke-width:0.4px"
+     d="m 218.126,171.545 v -25.4"
+     id="path24" />
+  <path
+     style="fill:none;stroke:#3465a4;stroke-width:0.4px"
+     d="m 421.026,171.445 v -25.4"
+     id="path26" />
+  <path
+     style="fill:none;stroke:#3465a4;stroke-width:1;marker-start:url(#id31737);marker-end:url(#id46492);stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 418.226,157.445 h -197.9"
+     id="path28" />
+  <path
+     style="fill:none;stroke:#ce5c00;stroke-width:0.4px"
+     d="m 214.026,134.545 -11.3,-20.8"
+     id="path30" />
+  <path
+     style="fill:none;stroke:#ce5c00;stroke-width:0.4px"
+     d="m 418.126,20.845 -11.3,-20.7"
+     id="path32" />
+  <path
+     style="fill:none;stroke:#ce5c00;stroke-width:1;marker-start:url(#id32266);marker-end:url(#id45851);stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 409.126,11.045 -199.3,110.8"
+     id="path34" />
+  <path
+     style="fill:none;stroke:#c4a000;stroke-width:0.4px"
+     d="m 467.626,139.245 h -42.4"
+     id="path36" />
+  <path
+     style="fill:none;stroke:#c4a000;stroke-width:0.4px"
+     d="m 467.426,27.045 h -42.4"
+     id="path38" />
+  <path
+     style="fill:none;stroke:#c4a000;stroke-width:1;marker-start:url(#id35286);marker-end:url(#id46147);stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 453.526,28.545 v 109.5"
+     id="path40" />
+  <text
+     x="196.65"
+     y="202.047"
+     transform="rotate(-28.8695)"
+     style="color:#000000;font-size:18.666667px;font-family:'Trebuchet MS';overflow:visible;fill:#ce5c00;stroke-width:1px;"
+     id="text42">Hypotenuse</text>
+  <text
+     x="-118.838"
+     y="446.026"
+     transform="rotate(-90)"
+     style="color:#000000;font-size:18.6667px;font-family:'Trebuchet MS';overflow:visible;fill:#c4a000;stroke-width:1px"
+     id="text44">Opposite</text>
+  <text
+     x="283.351"
+     y="175.549"
+     style="color:#000000;font-size:18.6667px;font-family:'Trebuchet MS';overflow:visible;fill:#3465a4;stroke-width:1px"
+     id="text46">Adjacent</text>
+  <path
+     style="fill:none;stroke:#3465a4;stroke-width:1.6"
+     d="m 398.026,137.345 v -21.9 h 21.5"
+     id="path48" />
+  <text
+     x="15.226"
+     y="37.845"
+     style="color:#000000;fill:#6600cc;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text50">sin θ =</text>
+  <text
+     x="77.626"
+     y="49.545"
+     style="color:#000000;fill:#d0630b;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text52">Hypotenuse</text>
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.8"
+     d="m 75.726,35.145 h 91.9"
+     id="path54" />
+  <text
+     x="87.926"
+     y="28.745"
+     style="color:#000000;fill:#c4a000;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text56">Opposite</text>
+  <text
+     x="11.526"
+     y="89.345"
+     style="color:#000000;fill:#6600cc;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text58">cos θ =</text>
+  <text
+     x="11.826"
+     y="141.345"
+     style="color:#000000;fill:#6600cc;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text60">tan θ =</text>
+  <text
+     x="77.626"
+     y="99.845"
+     style="color:#000000;fill:#d0630b;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text62">Hypotenuse</text>
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.8"
+     d="m 75.726,85.545 h 91.9"
+     id="path64" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.8"
+     d="m 75.726,138.045 h 91.9"
+     id="path66" />
+  <text
+     x="87.926"
+     y="131.545"
+     style="color:#000000;fill:#c4a000;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text68">Opposite</text>
+  <text
+     x="87.026"
+     y="79.445"
+     style="color:#000000;fill:#3465a4;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text70">Adjacent</text>
+  <text
+     x="87.026"
+     y="154.445"
+     style="color:#000000;fill:#3465a4;font-family:Trebuchet MS;font-size:16px;overflow:visible;stroke-width:1px"
+     id="text72">Adjacent</text>
+</svg>

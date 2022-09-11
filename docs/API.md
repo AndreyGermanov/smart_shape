@@ -1,8 +1,6 @@
 ## Classes
 
 <dl>
-<dt><a href="#EventsManager">EventsManager</a></dt>
-<dd></dd>
 <dt><a href="#ResizeBox">ResizeBox</a></dt>
 <dd></dd>
 <dt><a href="#ResizeBoxEventListener">ResizeBoxEventListener</a></dt>
@@ -17,86 +15,10 @@
 <dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
+<dt><a href="#EventsManager">EventsManager</a></dt>
+<dd></dd>
 </dl>
 
-<a name="EventsManager"></a>
-
-## EventsManager
-**Kind**: global class  
-
-* [EventsManager](#EventsManager)
-    * [new EventsManager()](#new_EventsManager_new)
-    * [.subscriptions](#EventsManager+subscriptions) : <code>object</code>
-    * [.subscribe(eventName, handler)](#EventsManager+subscribe) ⇒ <code>function</code>
-    * [.emit(eventName, target, params)](#EventsManager+emit) ⇒ <code>boolean</code>
-    * [.unsubscribe(eventName, handler)](#EventsManager+unsubscribe) ⇒ <code>boolean</code>
-    * [.clear()](#EventsManager+clear)
-
-<a name="new_EventsManager_new"></a>
-
-### new EventsManager()
-Used as a singleton object to emit events and subscribe to these events.
-One object can subscribe to events of specified type, other object can emit events of this type.
-Each time when object emits event, all subscribed event handlers triggered.
-
-<a name="EventsManager+subscriptions"></a>
-
-### eventsManager.subscriptions : <code>object</code>
-Hashmap of all registered event subscriptions.
-Keys are event names as strings. Values are arrays of functions.
-Several handlers can subscribe to each event by providing function that should be triggered.
-this.subscriptions[event_name] = [handler_func,handler_func ...]
-
-**Kind**: instance property of [<code>EventsManager</code>](#EventsManager)  
-<a name="EventsManager+subscribe"></a>
-
-### eventsManager.subscribe(eventName, handler) ⇒ <code>function</code>
-Add subscription to event of specified type
-
-**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
-**Returns**: <code>function</code> - Pointer to handling function, that will be added  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>string</code> | Event name to subscribe to |
-| handler | <code>function</code> | Handling function, which will be called each time when event of this type emitted. Each time, when handling function triggered, it receives a single argument - `event` {object} which contains the following fields: `type` - type of event (`eventType`), `target` - pointer to object, which emitted this event, and also any custom params, that emitter sent with this event by using `emit` method. |
-
-<a name="EventsManager+emit"></a>
-
-### eventsManager.emit(eventName, target, params) ⇒ <code>boolean</code>
-Emits event of specified name. Based on specified arguments, it constructs `event` object, that contains
-the following fields: `type` - eventName, `target` - object that emitted this event and any other fields
-that received from `params` argument. Then, all subscribers will receive this `event` object to their handling
-functions.
-
-**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
-**Returns**: <code>boolean</code> - True if this event triggered at least of one handler, or false if it does not.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>string</code> | Name of event to emit. |
-| target | <code>object</code> | Which object emitted this event. |
-| params | <code>object</code> | Event specific params. Can be any number of params. |
-
-<a name="EventsManager+unsubscribe"></a>
-
-### eventsManager.unsubscribe(eventName, handler) ⇒ <code>boolean</code>
-Removes specified handler from event with specified name.
-
-**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
-**Returns**: <code>boolean</code> - True if really removed the handler or false if you could not remove because it does not exist  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>string</code> | Name of event |
-| handler | <code>function</code> | Pointer to a function to remove. (This pointer returned from `subscribe` method and can be used here to unsubscribe |
-
-<a name="EventsManager+clear"></a>
-
-### eventsManager.clear()
-Method removes all subscriptions to events.
-
-**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
 <a name="ResizeBox"></a>
 
 ## ResizeBox
@@ -798,6 +720,7 @@ to this object.
     * [.show()](#SmartShape+show)
     * [.hide()](#SmartShape+hide)
     * [.destroy()](#SmartShape+destroy)
+    * [.getCenter()](#SmartShape+getCenter) ⇒ <code>array</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -1159,6 +1082,13 @@ But variable continue existing. To completely remove the shape,
 set the variable to 'null' after calling this method.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+getCenter"></a>
+
+### smartShape.getCenter() ⇒ <code>array</code>
+Method returns coordinates of the center of the shape.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - Center of a shape as an array [x,y]  
 <a name="SmartShapeEventListener"></a>
 
 ## SmartShapeEventListener
@@ -1175,6 +1105,84 @@ this class automatically during init process
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
 
+<a name="EventsManager"></a>
+
+## EventsManager
+**Kind**: global class  
+
+* [EventsManager](#EventsManager)
+    * [new EventsManager()](#new_EventsManager_new)
+    * [.subscriptions](#EventsManager+subscriptions) : <code>object</code>
+    * [.subscribe(eventName, handler)](#EventsManager+subscribe) ⇒ <code>function</code>
+    * [.emit(eventName, target, params)](#EventsManager+emit) ⇒ <code>boolean</code>
+    * [.unsubscribe(eventName, handler)](#EventsManager+unsubscribe) ⇒ <code>boolean</code>
+    * [.clear()](#EventsManager+clear)
+
+<a name="new_EventsManager_new"></a>
+
+### new EventsManager()
+Used as a singleton object to emit events and subscribe to these events.
+One object can subscribe to events of specified type, other object can emit events of this type.
+Each time when object emits event, all subscribed event handlers triggered.
+
+<a name="EventsManager+subscriptions"></a>
+
+### eventsManager.subscriptions : <code>object</code>
+Hashmap of all registered event subscriptions.
+Keys are event names as strings. Values are arrays of functions.
+Several handlers can subscribe to each event by providing function that should be triggered.
+this.subscriptions[event_name] = [handler_func,handler_func ...]
+
+**Kind**: instance property of [<code>EventsManager</code>](#EventsManager)  
+<a name="EventsManager+subscribe"></a>
+
+### eventsManager.subscribe(eventName, handler) ⇒ <code>function</code>
+Add subscription to event of specified type
+
+**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
+**Returns**: <code>function</code> - Pointer to handling function, that will be added  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Event name to subscribe to |
+| handler | <code>function</code> | Handling function, which will be called each time when event of this type emitted. Each time, when handling function triggered, it receives a single argument - `event` {object} which contains the following fields: `type` - type of event (`eventType`), `target` - pointer to object, which emitted this event, and also any custom params, that emitter sent with this event by using `emit` method. |
+
+<a name="EventsManager+emit"></a>
+
+### eventsManager.emit(eventName, target, params) ⇒ <code>boolean</code>
+Emits event of specified name. Based on specified arguments, it constructs `event` object, that contains
+the following fields: `type` - eventName, `target` - object that emitted this event and any other fields
+that received from `params` argument. Then, all subscribers will receive this `event` object to their handling
+functions.
+
+**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
+**Returns**: <code>boolean</code> - True if this event triggered at least of one handler, or false if it does not.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event to emit. |
+| target | <code>object</code> | Which object emitted this event. |
+| params | <code>object</code> | Event specific params. Can be any number of params. |
+
+<a name="EventsManager+unsubscribe"></a>
+
+### eventsManager.unsubscribe(eventName, handler) ⇒ <code>boolean</code>
+Removes specified handler from event with specified name.
+
+**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
+**Returns**: <code>boolean</code> - True if really removed the handler or false if you could not remove because it does not exist  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventName | <code>string</code> | Name of event |
+| handler | <code>function</code> | Pointer to a function to remove. (This pointer returned from `subscribe` method and can be used here to unsubscribe |
+
+<a name="EventsManager+clear"></a>
+
+### eventsManager.clear()
+Method removes all subscriptions to events.
+
+**Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
 <a name="ResizeBoxEvents"></a>
 
 ## ResizeBoxEvents : <code>enum</code>
