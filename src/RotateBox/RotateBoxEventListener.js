@@ -178,7 +178,7 @@ function RotateBoxEventListener(rotateBox) {
      * to (centerX,centerY) point of shape center. The distance, that need
      * to calculate depends on quarter of coordinate plane with center in (centerX,centerY)
      * in which the point (clientX,clientY) located.
-     * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
+     * https://code.germanov.dev/smart_shape/assets/quarters.jpeg
      * Cathetus used to calculate sine of rotation angle by formula, specified here:
      * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
      * @param clientX {number} X coordinate of current mouse cursor position
