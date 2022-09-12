@@ -521,6 +521,8 @@ function SmartShape() {
     this.getNextDisplayMode = () => {
         let mode;
         if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+            mode = SmartShapeDisplayMode.SELECTED;
+        } else if (this.options.displayMode === SmartShapeDisplayMode.SELECTED) {
             mode = SmartShapeDisplayMode.SCALE;
         } else if (this.options.displayMode === SmartShapeDisplayMode.SCALE) {
             mode = SmartShapeDisplayMode.ROTATE;
@@ -744,13 +746,15 @@ function SmartShape() {
 
 /**
  * Enumeration of SmartShape display modes
- * @param DEFAULT basic display mode without resize or rotate boxes
+ * @param DEFAULT basic display mode without resize or rotate boxes and points are hidden
+ * @param SELECTED In this mode the points displayed on shape, but resize and rotate boxes are hidden
  * @param SCALE In this mode the shape displayed with resize box around it
  * @param ROTATE In this mode the shape displayed with rotate box around it
  * @enum {string}
  */
 export const SmartShapeDisplayMode = {
     DEFAULT: "default",
+    SELECTED: "selected",
     SCALE: "scale",
     ROTATE: "rotate"
 }

@@ -1258,7 +1258,8 @@ Enumeration of SmartShape display modes
 
 | Param | Description |
 | --- | --- |
-| DEFAULT | basic display mode without resize or rotate boxes |
+| DEFAULT | basic display mode without resize or rotate boxes and points are hidden |
+| SELECTED | In this mode the points displayed on shape, but resize and rotate boxes are hidden |
 | SCALE | In this mode the shape displayed with resize box around it |
 | ROTATE | In this mode the shape displayed with rotate box around it |
 
