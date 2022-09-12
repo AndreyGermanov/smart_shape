@@ -156,6 +156,12 @@ function SmartShapeEventListener(shape) {
         this.rotateClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
             this.click(event);
         })
+        this.rotatePointDragStartEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_START, (_event) => {
+            this.shape.initCenter = this.shape.getCenter();
+        })
+        this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_END, (_event) => {
+            this.shape.initCenter = null;
+        })
     }
 
     /**
@@ -480,6 +486,8 @@ function SmartShapeEventListener(shape) {
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.rotateClickEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateMouseMoveEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.rotateMouseDownEventListener);
+            this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.rotatePointDragStartEventListener);
+            this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.rotatePointDragEndEventListener);
         }
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];
@@ -525,7 +533,9 @@ export const ShapeEvents = {
     SHAPE_MOUSE_OVER: "mouseover",
     SHAPE_MOUSE_OUT: "mouseout",
     SHAPE_MOUSE_CLICK: "click",
-    SHAPE_DESTROY: "destroy"
+    SHAPE_DESTROY: "destroy",
+    POINT_DRAG_START: "point_drag_start",
+    POINT_DRAG_END: "point_drag_end"
 }
 
 export default SmartShapeEventListener;

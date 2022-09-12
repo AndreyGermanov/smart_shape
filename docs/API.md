@@ -700,6 +700,7 @@ to this object.
     * [.guid](#SmartShape+guid) : <code>string</code>
     * [.resizeBox](#SmartShape+resizeBox) : [<code>ResizeBox</code>](#ResizeBox)
     * [.rotateBox](#SmartShape+rotateBox) : [<code>RotateBox</code>](#RotateBox)
+    * [.initCenter](#SmartShape+initCenter) : <code>array</code>
     * [.init(root, options, points)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
@@ -845,6 +846,13 @@ Internal global unique identifier of shape. Generated automatically.
 ### smartShape.rotateBox : [<code>RotateBox</code>](#RotateBox)
 [RotateBox](#RotateBox) component, used to rotate shape if
 `canRotate` option enabled
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+initCenter"></a>
+
+### smartShape.initCenter : <code>array</code>
+Initial center of shape, when user started rotating the shape
+using Rotate Box
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>

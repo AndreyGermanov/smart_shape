@@ -182,6 +182,12 @@ function SmartShape() {
     this.rotateBox = null;
 
     /**
+     * Initial center of shape, when user started rotating the shape
+     * using Rotate Box
+     * @type {array} Coordinates as an array [x,y]
+     */
+    this.initCenter = null;
+    /**
      * Method used to construct SmartShape object with specified `points` and
      * with specified `options`.
      * Then it binds this object to specified `root` HTML node and displays it
@@ -422,8 +428,11 @@ function SmartShape() {
      */
     this.rotateBy = (angle) => {
         this.calcPosition();
-        const centerX = this.left+this.width/2;
-        const centerY = this.top+this.height/2;
+        let centerX = this.left+this.width/2;
+        let centerY = this.top+this.height/2;
+        if (this.initCenter) {
+            [centerX,centerY] = this.initCenter;
+        }
         if (!this.isInBounds(...getRotatedCoords(angle,this.left,this.top,centerX,centerY)) ||
             !this.isInBounds(...getRotatedCoords(angle,this.right,this.top,centerX,centerY)) ||
             !this.isInBounds(...getRotatedCoords(angle,this.left,this.bottom,centerX,centerY)) ||
