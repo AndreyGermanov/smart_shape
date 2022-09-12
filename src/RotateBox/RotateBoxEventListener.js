@@ -100,11 +100,17 @@ function RotateBoxEventListener(rotateBox) {
             point.mousemove = this.mousemove;
             point.mouseDownListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
                 this.onPointMouseDown(event);
+                setTimeout(() => {
+                    EventsManager.emit(ShapeEvents.POINT_DRAG_START,this.rotateBox,{point})
+                },1)
+
             });
             point.mouseUpListener = point.addEventListener(PointEvents.POINT_DRAG_END, (event) => {
                 this.onPointMouseUp(event);
+                setTimeout(() => {
+                    EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.rotateBox,{point})
+                },1)
             });
-
         });
     }
 
