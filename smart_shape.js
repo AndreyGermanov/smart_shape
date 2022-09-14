@@ -271,7 +271,7 @@ function R(t) {
   }, this.checkCanDeletePoints = () => {
     this.shape.points.find((s) => s.options.canDelete === !0) && (this.nocontextmenu = this.shape.root.addEventListener("contextmenu", (s) => s.preventDefault()));
   }, this.onPointDragMove = (s) => {
-    this.shape.redraw();
+    this.shape.isShapePoint(s.target) && this.shape.redraw();
   }, this.onPointDestroyed = (s) => {
     !this.shape.isShapePoint(s.target) || (this.shape.points.splice(this.shape.points.indexOf(s.target), 1), this.shape.root.removeChild(s.target.element), this.shape.redraw());
   }, this.onWindowResize = (s) => {

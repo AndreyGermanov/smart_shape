@@ -302,8 +302,10 @@ function SmartShapeEventListener(shape) {
      * @param _event Custom event object. Contains SmartPoint object as an `event.target`,
      * `event.oldX` and `event.oldY` as a previous point coordinates before previous drag event.
      */
-    this.onPointDragMove = (_event) => {
-        this.shape.redraw();
+    this.onPointDragMove = (event) => {
+        if (this.shape.isShapePoint(event.target)) {
+            this.shape.redraw();
+        }
     }
 
     /**
