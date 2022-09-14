@@ -61,7 +61,22 @@ function SmartShapeManager() {
         EventsManager.subscribe(ShapeEvents.SHAPE_MOUSE_ENTER, this.onShapeMouseEnter);
         EventsManager.subscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
         EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragEnd);
+        window.addEventListener("resize", this.onWindowResize);
     }
+
+    /**
+     * @ignore
+     * Internal method, triggered when browser window resized.
+     * @param _event Window resize event - [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent).
+     */
+    this.onWindowResize = (_event) => {
+        this.shapes.forEach(shape => {
+            EventsManager.emit(ContainerEvents.CONTAINER_BOUNDS_CHANGED,shape,
+                {bounds:shape.getBounds(),points:shape.points}
+            )
+        })
+    }
+
 
     /**
      * @ignore
@@ -80,6 +95,13 @@ function SmartShapeManager() {
         }
     }
 
+    /**
+     * @ignore
+     * Executed when shape destroyed. Used to remove the shape from the list
+     * and remove all listeners, attached to the container of this shape
+     * if no other shapes attached to the same container
+     * @param event {ShapeEvents.SHAPE_DESTROY} Event object
+     */
     this.onShapeDestroy = (event) => {
         const shape = event.target;
         const root = shape.root;
@@ -255,6 +277,7 @@ function SmartShapeManager() {
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
             this.draggedShape = null;
+            return
         }
         if (this.draggedShape) {
             if (event.buttons !== 1) {
@@ -324,6 +347,18 @@ function SmartShapeManager() {
 export const SmartShapeManagerEvents = {
     MANAGER_ADD_CONTAINER_EVENT_LISTENERS: "manager_add_container_event_listeners",
     MANAGER_REMOVE_CONTAINER_EVENT_LISTENERS: "manager_remove_container_event_listeners"
+}
+
+/**
+ * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
+ @param CONTAINER_BOUNDS_CHANGED Emitted by shape when dimensions of container changed, e.g. browser
+ window resized. Sends the event with the following fields: `bounds` -an object with the following fields:
+ left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)
+ with array of all points of this shape, which could be affected by this bounds change.
+ @enum {string}
+ */
+export const ContainerEvents = {
+    CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
 }
 
 export default new SmartShapeManager().init();

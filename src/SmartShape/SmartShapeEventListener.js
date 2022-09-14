@@ -1,3 +1,4 @@
+import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 import EventsManager from "../events/EventsManager.js";
 import {getOffset, pauseEvent} from "../utils";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
@@ -50,7 +51,6 @@ function SmartShapeEventListener(shape) {
      * Internal method that installs HTML DOM event listeners to the shape, and it's container
      */
     this.setEventListeners = () => {
-        window.addEventListener("resize", this.onWindowResize);
         EventsManager.subscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
         EventsManager.subscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
@@ -324,17 +324,6 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
-     * Internal method, triggered when browser window resized.
-     * @param _event Window resize event - [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent).
-     */
-    this.onWindowResize = (_event) => {
-        EventsManager.emit(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.shape,
-            {bounds:this.shape.getBounds(),points:this.shape.points}
-        )
-    }
-
-    /**
-     * @ignore
      * Uniform method that used to add event handler of specified type to this object.
      * @param eventName {string} Name of event
      * @param handler {function} Function that used as an event handler
@@ -395,18 +384,6 @@ function SmartShapeEventListener(shape) {
             this.subscriptions[eventName] = [];
         }
     }
-}
-
-/**
- * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
- @param CONTAINER_BOUNDS_CHANGED Emitted by shape when dimensions of container changed, e.g. browser
- window resized. Sends the event with the following fields: `bounds` -an object with the following fields:
- left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)
- with array of all points of this shape, which could be affected by this bounds change.
- @enum {string}
-*/
-export const ContainerEvents = {
-    CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
 }
 
 /**

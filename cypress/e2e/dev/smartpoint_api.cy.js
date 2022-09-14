@@ -1,5 +1,5 @@
-import SmartPoint, {PointEvents} from "../../../src/SmartPoint/SmartPoint.js";
 import SmartShape from "../../../src/SmartShape/SmartShape.js";
+import SmartPoint, {PointEvents} from "../../../src/SmartPoint/SmartPoint.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 function initShape() {
   const app = Cypress.$("#app").toArray()[0]
@@ -233,11 +233,11 @@ describe('SmartPoint API tests', () => {
               "Should add point added event to global EventsManager");
           assert.equal(EventsManager.subscriptions[PointEvents.POINT_MOUSE_MOVE].length,1,
               "Should add point mouse move event to global EventsManager");
-          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_START].length,2,
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_START].length,1,
               "Should add point drag start event to global EventsManager");
           assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,2,
               "Should add point drag move event to global EventsManager");
-          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,2,
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,1,
               "Should add point drag end event to global EventsManager");
           assert.equal(EventsManager.subscriptions[PointEvents.POINT_DESTROYED].length,2,
               "Should add point destroy event to global EventsManager");
@@ -258,11 +258,11 @@ describe('SmartPoint API tests', () => {
               "Should remove point added event from global EventsManager");
           assert.equal(EventsManager.subscriptions[PointEvents.POINT_MOUSE_MOVE].length,0,
               "Should remove point mouse move event from global EventsManager");
-          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_START].length,1,
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_START].length,0,
               "Should remove point drag start event from global EventsManager");
           assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,1,
               "Should remove point drag move event from global EventsManager");
-          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,1,
+          assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,0,
               "Should remove point drag end event from global EventsManager");
           assert.equal(EventsManager.subscriptions[PointEvents.POINT_DESTROYED].length,1,
               "Should remove point destroy event from global EventsManager");

@@ -1,3 +1,4 @@
+import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 import SmartPoint from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "./SmartShapeDrawHelper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
@@ -5,8 +6,6 @@ import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
 import {getRotatedCoords, mergeObjects, notNull, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
-import {SmartShapeManager} from "../index.js";
-
 /**
  * SmartShape class. Used to construct shapes.
  * @constructor

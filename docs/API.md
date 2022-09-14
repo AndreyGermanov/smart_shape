@@ -1365,17 +1365,6 @@ Enumeration of SmartShape display modes
 | SCALE | In this mode the shape displayed with resize box around it |
 | ROTATE | In this mode the shape displayed with rotate box around it |
 
-<a name="ContainerEvents"></a>
-
-## ContainerEvents : <code>enum</code>
-Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
-
-**Kind**: global enum  
-
-| Param | Description |
-| --- | --- |
-| CONTAINER_BOUNDS_CHANGED | Emitted by shape when dimensions of container changed, e.g. browser  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)  with array of all points of this shape, which could be affected by this bounds change. |
-
 <a name="ShapeEvents"></a>
 
 ## ShapeEvents : <code>enum</code>
@@ -1407,4 +1396,15 @@ Events that SmartShapeManager can emit.
 | --- | --- |
 | MANAGER_ADD_CONTAINER_LISTENERS | Emits each time when add SmartShape event listeners to container for shapes (usually after first shape added to it) |
 | MANAGER_REMOVE_CONTAINER_LISTENERS | Emits each time when remove SmartShape event listeners from container for shapes (usually after last shape removed from container) |
+
+<a name="ContainerEvents"></a>
+
+## ContainerEvents : <code>enum</code>
+Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| CONTAINER_BOUNDS_CHANGED | Emitted by shape when dimensions of container changed, e.g. browser  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)  with array of all points of this shape, which could be affected by this bounds change. |
 

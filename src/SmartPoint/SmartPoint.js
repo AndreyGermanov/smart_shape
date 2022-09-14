@@ -1,6 +1,6 @@
 import {getOffset, getRotatedCoords, pauseEvent, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
-import {ContainerEvents} from "../SmartShape/SmartShapeEventListener.js";
+import {ContainerEvents} from "../SmartShapeManager/SmartShapeManager.js";
 import {createEvent} from "../events/functions.js";
 /**
  * Class that represents a single point on the screen.
