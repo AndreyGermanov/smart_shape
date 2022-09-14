@@ -56,6 +56,7 @@ function SmartShapeManager() {
      */
     this.setEventListeners = () => {
         EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,this.onShapeCreated);
+        EventsManager.subscribe(ShapeEvents.SHAPE_DESTROY,this.onShapeDestroy);
         EventsManager.subscribe(ShapeEvents.SHAPE_MOVE_START, this.onShapeMoveStart);
         EventsManager.subscribe(ShapeEvents.SHAPE_MOUSE_ENTER, this.onShapeMouseEnter);
         EventsManager.subscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
@@ -76,6 +77,23 @@ function SmartShapeManager() {
             if (this.getShapesByContainer(shape.root).length === 1) {
                 this.addContainerEvents(shape)
             }
+        }
+    }
+
+    this.onShapeDestroy = (event) => {
+        const shape = event.target;
+        const root = shape.root;
+        if (!notNull(shape.root) || !this.getShape(shape)) {
+            return
+        }
+        this.shapes.splice(this.shapes.indexOf(shape),1);
+        if (this.getShapesByContainer(root).length === 0) {
+            this.containerEventListeners
+                .filter(item => item.container === root)
+                .forEach(item => {
+                    item.container.removeEventListener(item.name,item.listener);
+                    this.containerEventListeners.splice(this.containerEventListeners.indexOf(item),1);
+                })
         }
     }
 
@@ -201,8 +219,8 @@ function SmartShapeManager() {
         if (this.containerEventListeners.find(event=>event.container === container && event.name === eventName)) {
             return
         }
-        const listener = container.addEventListener(eventName,handler);
-        this.containerEventListeners.push({container:container,name:eventName,listener:listener})
+        container.addEventListener(eventName,handler);
+        this.containerEventListeners.push({id:container.id,container:container,name:eventName,listener:handler})
     }
 
     /**
@@ -290,6 +308,7 @@ function SmartShapeManager() {
                 console.error(err);
             }
         })
+        this.containerEventListeners = [];
         this.shapes = [];
     }
 }

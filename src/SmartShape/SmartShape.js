@@ -211,8 +211,6 @@ function SmartShape() {
         }
         this.root = root;
         this.root.style.position = "relative";
-        this.draggedPoint = null;
-        this.root.draggedShape = null;
         this.setOptions(options);
         this.eventListener = new SmartShapeEventListener(this);
         this.setupPoints(points,Object.assign({},this.options.pointOptions));
@@ -648,6 +646,12 @@ function SmartShape() {
         EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
         if (this.eventListener) {
             this.eventListener.destroy();
+        }
+        if (this.resizeBox) {
+            this.resizeBox.destroy();
+        }
+        if (this.rotateBox) {
+            this.rotateBox.destroy();
         }
         if (this.root && this.svg) {
             this.root.removeChild(this.svg);
