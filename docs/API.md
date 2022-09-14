@@ -17,6 +17,8 @@
 <dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
+<dt><a href="#SmartShapeManager">SmartShapeManager</a></dt>
+<dd></dd>
 <dt><a href="#EventsManager">EventsManager</a></dt>
 <dd></dd>
 </dl>
@@ -785,6 +787,7 @@ Options of shape as an object. Can have the following parameters.
 | bounds | <code>object</code> | Bounds for shape movement and points dragging. This is an object with `left`, `top`, `right` and `bottom` values. By default, all values are equal -1, which means that bounds not specified. If bounds not specified, then left, top, right and bottom of container element will be used for this |
 | visible | <code>boolean</code> | Shape is visible or not. By default, `true`. |
 | displayMode | [<code>SmartShapeDisplayMode</code>](#SmartShapeDisplayMode) | In which mode the shape is displayed: default mode or with resize or rotate box around it. See [SmartShapeDisplayMode](#SmartShapeDisplayMode) |
+| managed | <code>boolean</code> | Should this shape be managed by [SmartShapeManager](#SmartShapeManager). Default: true |
 
 <a name="SmartShape+left"></a>
 
@@ -1126,6 +1129,105 @@ this class automatically during init process
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
 
+<a name="SmartShapeManager"></a>
+
+## SmartShapeManager
+**Kind**: global class  
+
+* [SmartShapeManager](#SmartShapeManager)
+    * [new SmartShapeManager()](#new_SmartShapeManager_new)
+    * [.shapes](#SmartShapeManager+shapes) : <code>array</code>
+    * [.activeShape](#SmartShapeManager+activeShape) : [<code>SmartShape</code>](#SmartShape)
+    * [.draggedShape](#SmartShapeManager+draggedShape) : [<code>SmartShape</code>](#SmartShape)
+    * [.containerEventListeners](#SmartShapeManager+containerEventListeners) : <code>array</code>
+    * [.findShapeByPoint(point)](#SmartShapeManager+findShapeByPoint) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
+    * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
+    * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
+    * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
+
+<a name="new_SmartShapeManager_new"></a>
+
+### new SmartShapeManager()
+Object that keeps collection of shapes and keep track of
+their activity. This object is instantiated automatically by
+when first shape created. Then it listens lifecycle events of shapes
+to keep their collection, correctly switch activity status and
+handle other global events related to shapes and their containers
+
+<a name="SmartShapeManager+shapes"></a>
+
+### smartShapeManager.shapes : <code>array</code>
+Array of [SmartShape's](#SmartShape) objects
+
+**Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+activeShape"></a>
+
+### smartShapeManager.activeShape : [<code>SmartShape</code>](#SmartShape)
+Which shape is currently selected
+
+**Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+draggedShape"></a>
+
+### smartShapeManager.draggedShape : [<code>SmartShape</code>](#SmartShape)
+Which shape user is currently dragging
+
+**Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+containerEventListeners"></a>
+
+### smartShapeManager.containerEventListeners : <code>array</code>
+List of event listeners, attached to containers of shapes in format
+{container: DOM-link to container, name: name of event, listener: handler function}
+
+**Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+findShapeByPoint"></a>
+
+### smartShapeManager.findShapeByPoint(point) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
+Method returns a shape to which specified point object belongs
+or null
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+
+| Param | Type |
+| --- | --- |
+| point | [<code>SmartPoint</code>](#SmartPoint) | 
+
+<a name="SmartShapeManager+getShapeByGuid"></a>
+
+### smartShapeManager.getShapeByGuid(guid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
+Returns shape by GUID
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>null</code> \| [<code>SmartShape</code>](#SmartShape) - The shape object  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| guid | <code>string</code> | GUID of shape |
+
+<a name="SmartShapeManager+getShapesByContainer"></a>
+
+### smartShapeManager.getShapesByContainer(container) ⇒ <code>array</code>
+Returns an array of shapes that connected to specified DOM container
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| container | <code>HTMLElement</code> | Link to container |
+
+<a name="SmartShapeManager+addContainerEvent"></a>
+
+### smartShapeManager.addContainerEvent(container, eventName, handler)
+Method adds event handler of specified event of specified HTML container.
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| container | <code>object</code> | Container |
+| eventName | <code>string</code> | Name of event |
+| handler | <code>function</code> | Event handling function |
+
 <a name="EventsManager"></a>
 
 ## EventsManager
@@ -1293,4 +1395,16 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 | SHAPE_MOUSE_OUT | Emitted when mouse cursor goes away from shape |
 | SHAPE_MOUSE_CLICK | Emitted when click on shape |
 | SHAPE_DESTROY | Emitted right before shape is destroyed |
+
+<a name="SmartShapeManagerEvents"></a>
+
+## SmartShapeManagerEvents : <code>enum</code>
+Events that SmartShapeManager can emit.
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| MANAGER_ADD_CONTAINER_LISTENERS | Emits each time when add SmartShape event listeners to container for shapes (usually after first shape added to it) |
+| MANAGER_REMOVE_CONTAINER_LISTENERS | Emits each time when remove SmartShape event listeners from container for shapes (usually after last shape removed from container) |
 

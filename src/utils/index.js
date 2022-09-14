@@ -35,9 +35,7 @@ export const pauseEvent = (e) => {
  * @param degrees {number} Angle in degrees
  * @returns {number} Angle in radians
  */
-export const degrees_to_radians = (degrees) =>  {
-    return degrees * (Math.PI/180);
-}
+export const degrees_to_radians = (degrees) =>  degrees * (Math.PI/180);
 
 /**
  * @ignore
@@ -45,9 +43,7 @@ export const degrees_to_radians = (degrees) =>  {
  * @param radians {number} Angle in radians
  * @returns {number} Angle in degrees
  */
-export const radians_to_degrees = (radians) => {
-    return radians * (180/Math.PI);
-}
+export const radians_to_degrees = (radians) => radians * (180/Math.PI);
 
 /**
  * @ignore

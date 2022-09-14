@@ -5,6 +5,7 @@ import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
 import {getRotatedCoords, mergeObjects, notNull, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
+import {SmartShapeManager} from "../index.js";
 
 /**
  * SmartShape class. Used to construct shapes.
@@ -89,6 +90,7 @@ function SmartShape() {
      * @param visible {boolean} Shape is visible or not. By default, `true`.
      * @param displayMode {SmartShapeDisplayMode} In which mode the shape is displayed: default mode or with resize
      * or rotate box around it. See [SmartShapeDisplayMode](#SmartShapeDisplayMode)
+     * @param managed {boolean} Should this shape be managed by [SmartShapeManager](#SmartShapeManager). Default: true
      * @type {object}
      */
     this.options = {
@@ -116,7 +118,8 @@ function SmartShape() {
         zIndex: 1000,
         bounds: {left:-1,top:-1,right:-1,bottom:-1},
         visible:true,
-        displayMode: SmartShapeDisplayMode.DEFAULT
+        displayMode: SmartShapeDisplayMode.DEFAULT,
+        managed: true
     };
 
     /**
@@ -202,13 +205,18 @@ function SmartShape() {
             console.error("Root HTML node not specified. Could not create shape.")
             return
         }
+        if (SmartShapeManager.getShape(this)) {
+            console.error("This shape already initialized");
+            return
+        }
         this.root = root;
         this.root.style.position = "relative";
         this.draggedPoint = null;
         this.root.draggedShape = null;
         this.setOptions(options);
-        this.eventListener = new SmartShapeEventListener(this).run();
+        this.eventListener = new SmartShapeEventListener(this);
         this.setupPoints(points,Object.assign({},this.options.pointOptions));
+        this.eventListener.run();
         this.applyDisplayMode();
         EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
@@ -312,8 +320,9 @@ function SmartShape() {
         }
         pointOptions.bounds = this.getBounds();
         pointOptions.zIndex = this.options.zIndex+1;
-        const point = new SmartPoint().init(x, y, pointOptions)
+        const point = new SmartPoint();
         this.points.push(point);
+        point.init(x, y, pointOptions)
         this.root.appendChild(point.element);
         return point;
     }
@@ -428,8 +437,7 @@ function SmartShape() {
      */
     this.rotateBy = (angle) => {
         this.calcPosition();
-        let centerX = this.left+this.width/2;
-        let centerY = this.top+this.height/2;
+        let [centerX,centerY] = this.getCenter()
         if (this.initCenter) {
             [centerX,centerY] = this.initCenter;
         }
@@ -658,6 +666,7 @@ function SmartShape() {
             shapeOptions:{
                 canDragShape: false,
                 visible: this.options.visible,
+                managed: false
             }
         })
         this.calcPosition();
@@ -677,6 +686,7 @@ function SmartShape() {
             shapeOptions:{
                 canDragShape: false,
                 visible: this.options.visible,
+                managed: false
             }
         })
         this.calcPosition();

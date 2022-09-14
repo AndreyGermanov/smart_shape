@@ -1,4 +1,5 @@
-import SmartPoint, {PointEvents, PointMoveDirections} from "../../../src/SmartPoint/SmartPoint.js";
+import SmartShape from "../../../src/SmartShape/SmartShape.js";
+import SmartPoint, {PointMoveDirections} from "../../../src/SmartPoint/SmartPoint.js";
 import {getOffset} from "../../../src/utils";
 describe('Point move directions tests (according to options.moveDirections setting', () => {
   const setup = () => {
