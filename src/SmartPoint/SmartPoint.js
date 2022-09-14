@@ -1,6 +1,7 @@
 import {getOffset, getRotatedCoords, pauseEvent, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {ContainerEvents} from "../SmartShape/SmartShapeEventListener.js";
+import {createEvent} from "../events/functions.js";
 /**
  * Class that represents a single point on the screen.
  * Can be created directly using class constructor, but more often they added by using `addPoint`, `addPoints`
@@ -243,7 +244,7 @@ function SmartPoint() {
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
-        EventsManager.emit(PointEvents.POINT_MOUSE_MOVE,this,{clientX:event.clientX,clientY:event.clientY})
+        EventsManager.emit(PointEvents.POINT_MOUSE_MOVE,this,createEvent(event))
         if (event.buttons !== 1 || !this.options.canDrag) {
             return
         }

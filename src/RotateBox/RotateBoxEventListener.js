@@ -61,8 +61,7 @@ function RotateBoxEventListener(rotateBox) {
 
     /**
      * @ignore
-     * Setup event handlers for different events, to this rotate box
-     * should react.
+     * Setup event handlers for different events, to which rotate box should react.
      */
     this.setEventListeners = () => {
         this.shapeMouseEnter = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,(event) => {
@@ -139,7 +138,7 @@ function RotateBoxEventListener(rotateBox) {
             angleDiff -= this.previousAngle;
         }
         this.previousAngle = angle;
-        EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:Math.round(angleDiff)});
+        EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBox,{angle:angleDiff});
     }
 
     /**
@@ -159,12 +158,12 @@ function RotateBoxEventListener(rotateBox) {
         }
         const cathetus = this.calcCathetus(clientX,clientY,centerX,centerY);
         const startAngle = this.calcStartAngle(clientX,clientY,centerX,centerY);
-        return Math.round(radians_to_degrees((Math.asin(cathetus/hypotenuse))) + startAngle + this.initialAngle);
+        return Math.round(radians_to_degrees(Math.asin(cathetus/hypotenuse)) + startAngle + this.initialAngle);
     }
 
     /**
      * @ignore
-     * Method used to calculate distance from point of mouse cursor and center of a shape,
+     * Method used to calculate distance from point of mouse cursor to center of a shape,
      * which is a hypotenuse of triangle, used to calculate sine of rotation angle
      * https://code.germanov.dev/smart_shape/assets/sin-cos-tan.svg
      * @param clientX {number} X coordinate of current mouse cursor position
@@ -269,7 +268,6 @@ function RotateBoxEventListener(rotateBox) {
             point.setOptions({visible:true});
             point.redraw();
         });
-
     }
 
     /**

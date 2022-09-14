@@ -307,14 +307,12 @@ describe('ResizeBox tests', () => {
           box2.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
             destroyTriggered = true;
           });
-
+          console.log("FAILED TEST");
           cy.get("#box2").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
             cy.get("#box2").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
               cy.get("#box2").trigger("mousedown", {buttons: 1}).then(() => {
                 cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
                   cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
-                    box.destroy();
-                    box2.destroy();
                     setTimeout(() => {
                       assert.isTrue(createTriggered, "Should trigger shape create event");
                       assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
@@ -322,8 +320,10 @@ describe('ResizeBox tests', () => {
                       assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
                       assert.isTrue(moveTriggered, "Should trigger shape move event");
                       assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                      box.destroy();
+                      box2.destroy();
                       assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
-                    },10)
+                    },100)
                   });
                 });
               });
@@ -347,7 +347,7 @@ describe('ResizeBox tests', () => {
           assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should add event handler to global EventsManager queue");
           box.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,listener);
           assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should remove event handler from local object queue");
-          assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should remove event handler from global EventsManager queue");
+          assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should remove event handler from global EventsManager queue");
         });
       });
     });
@@ -432,7 +432,7 @@ describe('ResizeBox tests', () => {
               cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-width","1px").then(() => {
                 cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-color","rgb(204, 204, 204)").then(() => {
                   cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-radius","0px").then(() => {
-                    cy.get("#"+box.shape.guid+"_left_top").should("have.css","z-index","1011").then(() => {
+                    cy.get("#"+box.shape.guid+"_left_top").should("have.css","z-index","1012").then(() => {
                       cy.get("#"+box.shape.guid+"_left_top").should("have.css", "background-color", "rgb(255, 255, 255)").then(() => {
                         assert.equal(box.options.zIndex, 1010);
                       });
@@ -463,7 +463,7 @@ describe('ResizeBox tests', () => {
       assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in local queue");
       assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in global queue");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,4,"Should contain point drag move event handlers for all points in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,4,"Should contain point drag end event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,3,"Should contain point drag end event handlers for all points in global queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
           "Should register SHAPE_CREATE event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
@@ -478,28 +478,6 @@ describe('ResizeBox tests', () => {
           "Should register SHAPE_MOVE_END event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,1,
           "Should register SHAPE_DESTROY event in local queue");
-
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,2,
-          "Should register SHAPE_CREATE in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,2,
-          "Should register SHAPE_MOUSE_ENTER in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,2,
-          "Should register SHAPE_MOUSE_MOVE in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,3,
-          "Should register SHAPE_MOVE_START in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,4,
-          "Should register SHAPE_MOVE in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,4,
-          "Should register SHAPE_MOVE_END in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,2,
-          "Should register SHAPE_DESTROY in global EventsManager"
-      );
 
       box.destroy();
       assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in local queue after destroy");

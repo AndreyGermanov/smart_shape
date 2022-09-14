@@ -98,7 +98,7 @@ describe('SmartShape API tests', () => {
   })
 
   it('destroy', () => {
-    EventsManager.clear();
+    //EventsManager.clear();
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = setup();
       cy.get("#shape1").should("exist").then(() => {
@@ -128,28 +128,6 @@ describe('SmartShape API tests', () => {
         assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,1,
             "Should register SHAPE_DESTROY event in local queue");
 
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,2,
-            "Should register SHAPE_CREATE in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
-            "Should register SHAPE_MOUSE_ENTER in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,1,
-            "Should register SHAPE_MOUSE_MOVE in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,2,
-            "Should register SHAPE_MOVE_START in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,2,
-            "Should register SHAPE_MOVE in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,2,
-            "Should register SHAPE_MOVE_END in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,2,
-            "Should register SHAPE_DESTROY in global EventsManager"
-        );
-
         shape.destroy();
 
         assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
@@ -168,28 +146,6 @@ describe('SmartShape API tests', () => {
             "Should register SHAPE_MOVE_END event in local queue");
         assert.equal(shape.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
             "Should register SHAPE_DESTROY event in local queue");
-
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
-            "Should register SHAPE_CREATE in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
-            "Should register SHAPE_MOUSE_ENTER in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,0,
-            "Should register SHAPE_MOUSE_MOVE in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,0,
-            "Should register SHAPE_MOVE_START in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,0,
-            "Should register SHAPE_MOVE in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,0,
-            "Should register SHAPE_MOVE_END in global EventsManager"
-        );
-        assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
-            "Should register SHAPE_DESTROY in global EventsManager"
-        );
 
         cy.get("#point1").should("not.exist").then(() => {
           assert.equal(shape.points.length, 0);
@@ -493,6 +449,7 @@ describe('SmartShape API tests', () => {
 
   it("addEventListener", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const [app, shape] = setup();
       const body = Cypress.$("body").toArray()[0];
       const app2 = document.createElement("div");
@@ -519,7 +476,6 @@ describe('SmartShape API tests', () => {
       shape2.destroy();
       let createTriggered = false;
       let destroyTriggered = false;
-      let mouseMoveTriggered = false;
       let mouseEnterTriggered = false;
       let moveStartTriggered = false;
       let moveEndTriggered = false;
@@ -533,10 +489,7 @@ describe('SmartShape API tests', () => {
           createTriggered = true;
         }
       });
-      shape3.init(app,{id:"shape3",canScale:true,canRotate:true},[[200,200],[250,150],[300,100],[400,50]]);
-      shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
-        mouseMoveTriggered = true;
-      });
+      shape3.init(app2,{id:"shape3",canScale:true,canRotate:true},[[200,200],[250,150],[300,100],[400,50]]);
       shape3.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER, (event) => {
         mouseEnterTriggered = true;
       });
@@ -561,41 +514,41 @@ describe('SmartShape API tests', () => {
       shape3.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
         destroyTriggered = true;
       });
-
       cy.get("#shape3").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
         cy.get("#shape3").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
           cy.get("#shape3").trigger("mousedown", {buttons: 1}).then(() => {
-            cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
-              cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
-                cy.get("#shape3").trigger("mouseover").then(() => {
-                  cy.get("#shape3").trigger("mouseout").then(() => {
-                    cy.get("#shape3").click({force: true}).then(() => {
-                      assert.equal(shape3.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED display mode on first click");
+            cy.wait(100).then(()=> {
+              cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
+                cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
+                  cy.get("#shape3").trigger("mouseover").then(() => {
+                    cy.get("#shape3").trigger("mouseout").then(() => {
                       cy.get("#shape3").click({force: true}).then(() => {
-                        assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.SCALE, "Should switch to SCALE display mode on second click");
+                        assert.equal(shape3.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED display mode on first click");
                         cy.get("#shape3").click({force: true}).then(() => {
-                          assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.ROTATE, "Should switch to ROTATE display mode on third click");
+                          assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.SCALE, "Should switch to SCALE display mode on second click");
                           cy.get("#shape3").click({force: true}).then(() => {
-                            assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.DEFAULT, "Should switch to DEFAULT display mode on fourth click");
-                            shape3.destroy();
-                            assert.isTrue(createTriggered, "Should trigger shape create event");
-                            assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
-                            assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
-                            assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
-                            assert.isTrue(moveTriggered, "Should trigger shape move event");
-                            assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
-                            assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
-                            assert.isTrue(clickTriggered, "Should trigger shape click event");
-                            assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
-                            assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                            assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.ROTATE, "Should switch to ROTATE display mode on third click");
+                            cy.get("#shape3").click({force: true}).then(() => {
+                              assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.DEFAULT, "Should switch to DEFAULT display mode on fourth click");
+                              shape3.destroy();
+                              assert.isTrue(createTriggered, "Should trigger shape create event");
+                              assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                              assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                              assert.isTrue(moveTriggered, "Should trigger shape move event");
+                              assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
+                              assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
+                              assert.isTrue(clickTriggered, "Should trigger shape click event");
+                              assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                              assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                            });
                           });
                         });
-                      });
+                      })
                     })
                   })
-                })
+                });
               });
-            });
+            })
           });
         });
       });

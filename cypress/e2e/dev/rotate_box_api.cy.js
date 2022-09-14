@@ -116,8 +116,6 @@ describe('RotateBox Tests', () => {
           cy.get("#box2").trigger("mousedown", {buttons: 1}).then(() => {
             cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
               cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
-                box.destroy();
-                box2.destroy();
                 setTimeout(() => {
                   assert.isTrue(createTriggered, "Should trigger shape create event");
                   assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
@@ -125,8 +123,10 @@ describe('RotateBox Tests', () => {
                   assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
                   assert.isTrue(moveTriggered, "Should trigger shape move event");
                   assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                  box.destroy();
+                  box2.destroy();
                   assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
-                },10)
+                },100)
               });
             });
           });
@@ -259,7 +259,7 @@ describe('RotateBox Tests', () => {
       assert.equal(box.eventListener.subscriptions[RotateBoxEvents.ROTATE_BOX_ROTATE].length,1,"Should contain registered resize event handler in local queue");
       assert.equal(EventsManager.subscriptions[RotateBoxEvents.ROTATE_BOX_ROTATE].length,1,"Should contain registered resize event handler in global queue");
       assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,3,"Should contain point drag move event handlers for all points in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,7,"Should contain point drag end event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,6,"Should contain point drag end event handlers for all points in global queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
           "Should register SHAPE_CREATE event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
@@ -284,13 +284,13 @@ describe('RotateBox Tests', () => {
       assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,2,
           "Should register SHAPE_MOUSE_MOVE in global EventsManager"
       );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,7,
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,6,
           "Should register SHAPE_MOVE_START in global EventsManager"
       );
       assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,3,
           "Should register SHAPE_MOVE in global EventsManager"
       );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,7,
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,6,
           "Should register SHAPE_MOVE_END in global EventsManager"
       );
       assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,2,
