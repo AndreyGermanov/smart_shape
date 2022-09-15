@@ -219,8 +219,8 @@ function SmartShape() {
         this.root.style.position = "relative";
         this.setOptions(options);
         this.eventListener = new SmartShapeEventListener(this);
-        this.setupPoints(points,Object.assign({},this.options.pointOptions));
         this.groupHelper = new SmartShapeGroupHelper(this).init();
+        this.setupPoints(points,Object.assign({},this.options.pointOptions));
         this.eventListener.run();
         this.applyDisplayMode();
         EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
@@ -744,7 +744,7 @@ function SmartShape() {
     this.getResizeBoxBounds = () => {
         this.calcPosition();
         let pos = this.getPosition(true);
-        const parent = this.getRootParent();
+        const parent = this.groupHelper.getRootParent();
         if (parent) {
             pos = parent.getPosition(true);
         }

@@ -89,7 +89,7 @@ function z() {
     const [e, o] = _(t, this.x, this.y, i, s);
     this.x = e, this.y = o;
   }, this.setEventListeners = () => {
-    this.element.addEventListener("mouseup", this.mouseup), this.element.addEventListener("mousedown", this.mousedown), n.subscribe(x.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange);
+    this.element.addEventListener("mouseup", this.mouseup), this.element.addEventListener("mousedown", this.mousedown), n.subscribe(v.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange);
   }, this.mousedown = (t) => {
     t.buttons === 1 && this.options.canDrag && (n.emit(p.POINT_DRAG_START, this), R(t));
   }, this.mousemove = (t) => {
@@ -107,7 +107,7 @@ function z() {
   }, this.onBoundsChange = (t) => {
     t.points.find((i) => i === this) && (this.options.bounds = t.bounds);
   }, this.destroy = () => {
-    this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), n.unsubscribe(x.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange), n.emit(p.POINT_DESTROYED, this);
+    this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), n.unsubscribe(v.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange), n.emit(p.POINT_DESTROYED, this);
     for (let t in this.subscriptions)
       this.subscriptions[t].forEach((s) => n.unsubscribe(t, s)), this.subscriptions[t] = [];
   }, this.addEventListener = (t, i) => {
@@ -356,7 +356,7 @@ function D(t) {
   }, this.mouseenter = (i) => {
     n.emit(h.SHAPE_MOUSE_ENTER, this.shape, f(i));
   }, this.mouseover = (i) => {
-    v.draggedShape || n.emit(h.SHAPE_MOUSE_OVER, this.shape, f(i));
+    x.draggedShape || n.emit(h.SHAPE_MOUSE_OVER, this.shape, f(i));
   }, this.mouseout = (i) => {
     n.emit(h.SHAPE_MOUSE_OUT, this.shape, f(i));
   }, this.click = (i) => {
@@ -409,7 +409,7 @@ function X() {
   }, this.onWindowResize = (t) => {
     this.shapes.forEach((i) => {
       n.emit(
-        x.CONTAINER_BOUNDS_CHANGED,
+        v.CONTAINER_BOUNDS_CHANGED,
         i,
         { bounds: i.getBounds(), points: i.points }
       );
@@ -489,9 +489,9 @@ function X() {
 const Z = {
   MANAGER_ADD_CONTAINER_EVENT_LISTENERS: "manager_add_container_event_listeners",
   MANAGER_REMOVE_CONTAINER_EVENT_LISTENERS: "manager_remove_container_event_listeners"
-}, x = {
+}, v = {
   CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
-}, v = new X().init();
+}, x = new X().init();
 function q() {
   this.draw = (t) => {
     if (t.points.length < 1)
@@ -601,7 +601,7 @@ function tt(t) {
       s.push(...e.getChildren());
     return s;
   }, this.shouldAddChild = (i) => !i || typeof i != "object" || typeof i.getChildren > "u" || this.children.indexOf(i) !== -1 ? !1 : i === this.shape ? void 0 : i.getChildren().indexOf(this.shape) !== -1 || i.getParent() ? !1 : this.getParentsList().indexOf(i) === -1, this.getParent = () => {
-    const i = SmartShapeManager.shapes;
+    const i = x.shapes;
     for (let s of i)
       if (s.getChildren().indexOf(this.shape) !== -1)
         return s;
@@ -653,11 +653,11 @@ function P() {
       console.error("Root HTML node not specified. Could not create shape.");
       return;
     }
-    if (v.getShape(this)) {
+    if (x.getShape(this)) {
       console.error("This shape already initialized");
       return;
     }
-    return this.root = t, this.root.style.position = "relative", this.setOptions(i), this.eventListener = new D(this), this.setupPoints(s, Object.assign({}, this.options.pointOptions)), this.groupHelper = new tt(this).init(), this.eventListener.run(), this.applyDisplayMode(), n.emit(h.SHAPE_CREATE, this, {}), this;
+    return this.root = t, this.root.style.position = "relative", this.setOptions(i), this.eventListener = new D(this), this.groupHelper = new tt(this).init(), this.setupPoints(s, Object.assign({}, this.options.pointOptions)), this.eventListener.run(), this.applyDisplayMode(), n.emit(h.SHAPE_CREATE, this, {}), this;
   }, this.setOptions = (t) => {
     !t || typeof t != "object" || (t.pointOptions = b(this.options.pointOptions, t.pointOptions), t.style = b(this.options.style, t.style), t.bounds = b(this.options.bounds, t.bounds), c(t.visible) && t.visible !== this.options.visible && (this.points.forEach((i) => i.options.visible = t.visible), this.resizeBox && this.resizeBox.setOptions({ shapeOptions: { visible: t.visible } }), this.rotateBox && this.rotateBox.setOptions({ shapeOptions: { visible: t.visible } })), this.options = b(this.options, t), this.points.forEach((i) => {
       i.setOptions(b({}, this.options.pointOptions)), i.options.bounds = this.getBounds(), i.options.zIndex <= this.options.zIndex && (i.options.zIndex = this.options.zIndex + 1), i.redraw();
@@ -781,7 +781,7 @@ function P() {
   }, this.getResizeBoxBounds = () => {
     this.calcPosition();
     let t = this.getPosition(!0);
-    const i = this.getRootParent();
+    const i = this.groupHelper.getRootParent();
     i && (t = i.getPosition(!0));
     const [s, e] = this.getMaxPointSize(), o = {
       left: t.left - s,
@@ -958,12 +958,12 @@ const S = {
   RESIZE_BOX_RESIZE: "resize"
 };
 try {
-  window.ResizeBox = M, window.SmartShape = P, window.RotateBox = T, window.SmartShapeManager = v;
+  window.ResizeBox = M, window.SmartShape = P, window.RotateBox = T, window.SmartShapeManager = x;
 } catch {
 }
 export {
   M as ResizeBox,
   T as RotateBox,
   P as SmartShape,
-  v as SmartShapeManager
+  x as SmartShapeManager
 };

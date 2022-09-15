@@ -1,3 +1,4 @@
+import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 /**
  * Class used as an extension to [SmartShape](#SmartShape) class to add
  * shape groups functionality. The feature works the following way:
