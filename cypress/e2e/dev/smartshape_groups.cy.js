@@ -2,6 +2,15 @@ import {SmartShape} from "../../../src/index.js";
 import SmartShapeManager from "../../../src/SmartShapeManager/SmartShapeManager.js";
 import {SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
 
+function setup() {
+  const app = Cypress.$("#app").toArray()[0];
+  app.style.width = '800px';
+  app.style.height = '800px';
+  const shape = new SmartShape().init(app,{id:"shape1",canAddPoints:true,pointOptions:{canDelete:true}},
+      [[0,200],[0,0],[200,0],[200,200]]);
+  return [app,shape];
+}
+
 describe('SmartShape groups tests', () => {
   it('addChild', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
