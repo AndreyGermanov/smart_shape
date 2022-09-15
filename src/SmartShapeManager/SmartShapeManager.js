@@ -131,6 +131,11 @@ function SmartShapeManager() {
         }
         this.activeShape = event.target;
         this.draggedShape = event.target;
+        const parent = event.target.getRootParent();
+        if (parent) {
+            this.draggedShape = parent;
+            this.activeShape = parent;
+        }
         this.shapes
             .filter(shape=>shape.guid !== event.target.guid &&
                 shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT)
@@ -162,6 +167,10 @@ function SmartShapeManager() {
         const shape = this.findShapeByPoint(event.target);
         if (shape) {
             this.draggedShape = shape;
+            const parent = shape.getRootParent();
+            if (parent) {
+                this.draggedShape = parent;
+            }
             this.draggedShape.draggedPoint = event.target;
         }
     }

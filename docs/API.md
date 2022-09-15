@@ -17,6 +17,8 @@
 <dd></dd>
 <dt><a href="#SmartShapeEventListener">SmartShapeEventListener</a></dt>
 <dd></dd>
+<dt><a href="#SmartShapeGroupHelper">SmartShapeGroupHelper</a></dt>
+<dd></dd>
 <dt><a href="#SmartShapeManager">SmartShapeManager</a></dt>
 <dd></dd>
 <dt><a href="#EventsManager">EventsManager</a></dt>
@@ -692,6 +694,7 @@ to this object.
     * [.root](#SmartShape+root) : <code>object</code>
     * [.points](#SmartShape+points) : <code>array</code>
     * [.svg](#SmartShape+svg) : <code>object</code>
+    * [.groupHelper](#SmartShape+groupHelper) : [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
     * [.options](#SmartShape+options) : <code>object</code>
     * [.left](#SmartShape+left) : <code>number</code>
     * [.top](#SmartShape+top) : <code>number</code>
@@ -713,6 +716,7 @@ to this object.
     * [.findPointById(id)](#SmartShape+findPointById) ⇒ <code>null</code> \| <code>object</code>
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
     * [.moveTo(x, y)](#SmartShape+moveTo)
+    * [.moveBy(stepX, stepY)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.rotateBy(angle)](#SmartShape+rotateBy)
     * [.redraw()](#SmartShape+redraw)
@@ -725,7 +729,7 @@ to this object.
     * [.show()](#SmartShape+show)
     * [.hide()](#SmartShape+hide)
     * [.destroy()](#SmartShape+destroy)
-    * [.getCenter()](#SmartShape+getCenter) ⇒ <code>array</code>
+    * [.getCenter(forGroup)](#SmartShape+getCenter) ⇒ <code>array</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -751,6 +755,12 @@ Array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint
 ### smartShape.svg : <code>object</code>
 [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
 SmartShape constructs SVG element based on provided point coordinates and options.
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+groupHelper"></a>
+
+### smartShape.groupHelper : [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
+Helper object that used to manage children shapes of this shape
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+options"></a>
@@ -970,7 +980,7 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 
 ### smartShape.moveTo(x, y)
 Moves shape to specific position. It only changes coordinates of points, but do not
-redraws the shape on new position. So, you need to call `redraw` yourself after move.
+redraw the shape on new position. So, you need to call `redraw` yourself after move.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 
@@ -978,6 +988,19 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 | --- | --- | --- |
 | x | <code>number</code> | new X coordinate |
 | y | <code>number</code> | new Y coordinate |
+
+<a name="SmartShape+moveBy"></a>
+
+### smartShape.moveBy(stepX, stepY)
+Moves shape by specified number of pixels by X and Y. It only changes coordinates of points, but do not
+redraw the shape on new position. So, you need to call `redraw` yourself after move.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stepX | <code>number</code> | number of pixels to move horizontally |
+| stepY | <code>number</code> | number of pixes to move vertically |
 
 <a name="SmartShape+scaleTo"></a>
 
@@ -1097,11 +1120,16 @@ set the variable to 'null' after calling this method.
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+getCenter"></a>
 
-### smartShape.getCenter() ⇒ <code>array</code>
+### smartShape.getCenter(forGroup) ⇒ <code>array</code>
 Method returns coordinates of the center of the shape.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>array</code> - Center of a shape as an array [x,y]  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| forGroup | <code>boolean</code> | Should get center of all shapes in the group. Default: false |
+
 <a name="SmartShapeDrawHelper"></a>
 
 ## SmartShapeDrawHelper
@@ -1128,6 +1156,147 @@ this class automatically during init process
 | Param | Type | Description |
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Link to owner Shape instance |
+
+<a name="SmartShapeGroupHelper"></a>
+
+## SmartShapeGroupHelper
+**Kind**: global class  
+
+* [SmartShapeGroupHelper](#SmartShapeGroupHelper)
+    * [new SmartShapeGroupHelper(shape)](#new_SmartShapeGroupHelper_new)
+    * [.shape](#SmartShapeGroupHelper+shape) : [<code>SmartShape</code>](#SmartShape)
+    * [.children](#SmartShapeGroupHelper+children) : <code>array</code>
+    * [.parent](#SmartShapeGroupHelper+parent) : <code>object</code>
+    * [.init()](#SmartShapeGroupHelper+init) ⇒ [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
+    * [.addChild(child)](#SmartShapeGroupHelper+addChild)
+    * [.removeChild(child)](#SmartShapeGroupHelper+removeChild)
+    * [.getChildren(all)](#SmartShapeGroupHelper+getChildren) ⇒ <code>array</code>
+    * [.getParent()](#SmartShapeGroupHelper+getParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.getRootParent()](#SmartShapeGroupHelper+getRootParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.getParentsList(plist)](#SmartShapeGroupHelper+getParentsList) ⇒ <code>array</code>
+    * [.getPosition(forGroup)](#SmartShapeGroupHelper+getPosition) ⇒ <code>object</code>
+
+<a name="new_SmartShapeGroupHelper_new"></a>
+
+### new SmartShapeGroupHelper(shape)
+Class used as an extension to [SmartShape](#SmartShape) class to add
+shape groups functionality. The feature works the following way:
+
+Each shape can have a children shapes. If shape has children, then
+all actions, that user do with the shape propagated to all children:
+when user drags the shape, all children draged with it, if user resizes the shape,
+then all children resized with it. If user rotates the shape, then all shapes
+rotates with it.
+
+You should not use this class directly. SmartShape class instantiates it.
+When init, this class extends provided SmartShape object by adding all it's methods to it
+and then you can use them right from your [SmartShape](#SmartShape) instance.
+For example, methods `addChild` and `removeChild` declared here can be used
+right from SmartShape object, e.g. `shape.addChild(child)`, `shape.removeChild(child)`
+and all other methods, declared here.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>SmartShape</code>](#SmartShape) | SmartShape object to extend |
+
+<a name="SmartShapeGroupHelper+shape"></a>
+
+### smartShapeGroupHelper.shape : [<code>SmartShape</code>](#SmartShape)
+SmartShape object to extend
+
+**Kind**: instance property of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+<a name="SmartShapeGroupHelper+children"></a>
+
+### smartShapeGroupHelper.children : <code>array</code>
+Array of children of current shape
+
+**Kind**: instance property of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+<a name="SmartShapeGroupHelper+parent"></a>
+
+### smartShapeGroupHelper.parent : <code>object</code>
+Object, that used to move all original methods of SmartShape class
+before override, to be able to call them if needed
+
+**Kind**: instance property of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+<a name="SmartShapeGroupHelper+init"></a>
+
+### smartShapeGroupHelper.init() ⇒ [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
+Initialization method. This function adds all methods of this
+class to provided `shape` object, extending it this way
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+<a name="SmartShapeGroupHelper+addChild"></a>
+
+### smartShapeGroupHelper.addChild(child)
+Method used to add specified shape as a child of current shape
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>SmartShape</code>](#SmartShape) | Shape to add |
+
+<a name="SmartShapeGroupHelper+removeChild"></a>
+
+### smartShapeGroupHelper.removeChild(child)
+Method used to remove specified shape from children list of current shape
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>SmartShape</code>](#SmartShape) | SmartShape object to add |
+
+<a name="SmartShapeGroupHelper+getChildren"></a>
+
+### smartShapeGroupHelper.getChildren(all) ⇒ <code>array</code>
+Method returns array of children of current shape
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| all | <code>boolean</code> | If true, then it returns deep list, including all children of each children of this shape |
+
+<a name="SmartShapeGroupHelper+getParent"></a>
+
+### smartShapeGroupHelper.getParent() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method returns parent of current shape or null
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+<a name="SmartShapeGroupHelper+getRootParent"></a>
+
+### smartShapeGroupHelper.getRootParent() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method returns top parent of current shape
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Parent shape or null  
+<a name="SmartShapeGroupHelper+getParentsList"></a>
+
+### smartShapeGroupHelper.getParentsList(plist) ⇒ <code>array</code>
+Method returns a list of parents of current shape ordered from nearest to root
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| plist | <code>array</code> | Temporary list of parents from previous recursive call |
+
+<a name="SmartShapeGroupHelper+getPosition"></a>
+
+### smartShapeGroupHelper.getPosition(forGroup) ⇒ <code>object</code>
+Method overrides SmartShape's getPosition method to return position
+of all group if forGroup parameter is set
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+**Returns**: <code>object</code> - Position object {left,top,right,bottom,width,height}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| forGroup | <code>boolean</code> | If true, then it calculates left, top, right and bottom of this shape and all its children |
 
 <a name="SmartShapeManager"></a>
 

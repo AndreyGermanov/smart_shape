@@ -97,9 +97,15 @@ function SmartShapeEventListener(shape) {
             return;
         }
         this.resizeBoxListener = this.shape.resizeBox.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, (event) => {
+            const parent = this.shape.getRootParent();
+            if (parent) {
+                EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,parent.resizeBox,{newPos:event.newPos,oldPos:event.oldPos});
+                return
+            }
             const diffX = event.newPos.left - event.oldPos.left;
             const diffY = event.newPos.top - event.oldPos.top;
-            this.shape.moveTo(this.shape.left+diffX,this.shape.top+diffY);
+            this.shape.moveBy(diffX,diffY);
+            this.shape.getChildren(true).forEach(child => child.moveBy(diffX,diffY))
             const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
             this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
             this.shape.redraw();
@@ -130,6 +136,11 @@ function SmartShapeEventListener(shape) {
             return;
         }
         this.rotateBoxListener = this.shape.rotateBox.addEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE, (event) => {
+            const parent = this.shape.getRootParent();
+            if (parent) {
+                EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,parent.rotateBox,{angle:event.angle});
+                return
+            }
             this.shape.rotateBy(event.angle);
             this.shape.redraw()
         });
@@ -180,14 +191,14 @@ function SmartShapeEventListener(shape) {
         if (stepX === null || stepY === null) {
             return
         }
-        const oldPos = this.shape.getPosition();
-        for (let index in this.shape.points) {
-            this.shape.points[index].x += stepX;
-            this.shape.points[index].y += stepY;
-            this.shape.points[index].redraw();
-        }
-        this.shape.redraw()
-        const newPos = this.shape.getPosition();
+        const oldPos = this.shape.getPosition(true);
+        this.shape.moveBy(stepX,stepY);
+        this.shape.redraw();
+        this.shape.getChildren(true).forEach(child => {
+            child.moveBy(stepX,stepY);
+            child.redraw();
+        });
+        const newPos = this.shape.getPosition(true);
         EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,{oldPos,newPos});
     }
 
@@ -244,18 +255,19 @@ function SmartShapeEventListener(shape) {
      */
     this.calcMovementOffset = (event) => {
         this.shape.calcPosition();
+        const pos = this.shape.getPosition(true);
         let stepX = event.movementX;
         let stepY = event.movementY;
         let clientX = event.clientX+window.scrollX;
         let clientY = event.clientY+window.scrollY;
-        const newX = this.shape.left + stepX;
-        const newY = this.shape.top + stepY;
+        const newX = pos.left + stepX;
+        const newY = pos.top + stepY;
         const offset = getOffset(this.shape.root, true);
         const bounds = this.shape.getBounds();
-        if (newX < bounds.left || newX+this.shape.width > bounds.right) {
+        if (newX < bounds.left || newX+pos.width > bounds.right) {
             return [null, null]
         }
-        if (newY < bounds.top || newY+this.shape.height > bounds.bottom) {
+        if (newY < bounds.top || newY+pos.height > bounds.bottom) {
             return [null, null]
         }
         if (clientX<newX+offset.left) {
@@ -264,11 +276,11 @@ function SmartShapeEventListener(shape) {
         if (clientY<newY+offset.top) {
             stepY = clientY - (newY+offset.top);
         }
-        if (clientX>newX+this.shape.width+offset.left) {
-            stepX = clientX -  (this.shape.width+offset.left+this.shape.left);
+        if (clientX>newX+pos.width+offset.left) {
+            stepX = clientX -  (pos.width+offset.left+pos.left);
         }
-        if (clientY>newY+this.shape.height+offset.right) {
-            stepY = clientY -  (this.shape.height+offset.top+this.shape.top);
+        if (clientY>newY+pos.height+offset.right) {
+            stepY = clientY -  (pos.height+offset.top+pos.top);
         }
         return [stepX, stepY];
     }

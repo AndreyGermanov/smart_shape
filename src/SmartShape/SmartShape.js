@@ -1,6 +1,7 @@
 import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 import SmartPoint from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "./SmartShapeDrawHelper.js";
+import SmartShapeGroupHelper from "./SmartShapeGroupHelper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
 import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
@@ -32,6 +33,12 @@ function SmartShape() {
      * @type {object}
      */
     this.svg = null;
+
+    /**
+     * Helper object that used to manage children shapes of this shape
+     * @type {SmartShapeGroupHelper}
+     */
+    this.groupHelper = null;
 
     /**
      * Options of shape as an object. Can have the following parameters.
@@ -213,6 +220,7 @@ function SmartShape() {
         this.setOptions(options);
         this.eventListener = new SmartShapeEventListener(this);
         this.setupPoints(points,Object.assign({},this.options.pointOptions));
+        this.groupHelper = new SmartShapeGroupHelper(this).init();
         this.eventListener.run();
         this.applyDisplayMode();
         EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
@@ -390,7 +398,7 @@ function SmartShape() {
 
     /**
      * Moves shape to specific position. It only changes coordinates of points, but do not
-     * redraws the shape on new position. So, you need to call `redraw` yourself after move.
+     * redraw the shape on new position. So, you need to call `redraw` yourself after move.
      * @param x {number} new X coordinate
      * @param y {number} new Y coordinate
      */
@@ -403,6 +411,20 @@ function SmartShape() {
     }
 
     /**
+     * Moves shape by specified number of pixels by X and Y. It only changes coordinates of points, but do not
+     * redraw the shape on new position. So, you need to call `redraw` yourself after move.
+     * @param stepX {number} number of pixels to move horizontally
+     * @param stepY {number} number of pixes to move vertically
+     */
+    this.moveBy = (stepX, stepY) => {
+        for (let index in this.points) {
+            this.points[index].x += stepX;
+            this.points[index].y += stepY;
+            this.points[index].redraw();
+        }
+    }
+
+    /**
      * Scales image to fit specified `width` and `height`. It only changes coordinates of points, but do not
      * redraws the shape on new position. So, you need to call `redraw` yourself after scale.
      * @param width {number} new width
@@ -411,20 +433,30 @@ function SmartShape() {
     this.scaleTo = (width,height) => {
         const bounds = this.getBounds();
         this.calcPosition();
-        if (this.width>=10 && width<10) {
+        const pos = this.getPosition(true)
+        if (pos.width>=10 && width<10) {
             width = 10;
         }
-        if (this.height>=10 && height<10) {
+        if (pos.height>=10 && height<10) {
             height = 10;
         }
-        let newWidth = this.left + width > bounds.right ? bounds.right - this.left : width;
-        let newHeight = this.top + height > bounds.bottom ? bounds.bottom - this.top : height;
-        let scaleX = newWidth/this.width;
-        let scaleY = newHeight/this.height;
+        let newWidth = pos.left + width > bounds.right ? bounds.right - pos.left : width;
+        let newHeight = pos.top + height > bounds.bottom ? bounds.bottom - pos.top : height;
+        let scaleX = newWidth/pos.width;
+        let scaleY = newHeight/pos.height;
         this.points.forEach(point => {
-            point.x = (point.x-this.left)*scaleX+this.left;
-            point.y = (point.y-this.top)*scaleY+this.top}
+            point.x = (point.x-pos.left)*scaleX+pos.left;
+            point.y = (point.y-pos.top)*scaleY+pos.top}
         );
+        this.getChildren(true).forEach(child => {
+            child.points.forEach(point => {
+                //const pos1 = child.getPosition()
+                point.x = (point.x-pos.left)*scaleX+pos.left;
+                point.y = (point.y-pos.top)*scaleY+pos.top}
+            );
+            child.calcPosition();
+        })
+        this.getChildren(true).forEach(child => child.redraw());
         this.calcPosition();
     }
 
@@ -434,17 +466,22 @@ function SmartShape() {
      */
     this.rotateBy = (angle) => {
         this.calcPosition();
-        let [centerX,centerY] = this.getCenter()
+        const pos = this.getPosition(true)
+        let [centerX,centerY] = this.getCenter(true)
         if (this.initCenter) {
             [centerX,centerY] = this.initCenter;
         }
-        if (!this.isInBounds(...getRotatedCoords(angle,this.left,this.top,centerX,centerY)) ||
-            !this.isInBounds(...getRotatedCoords(angle,this.right,this.top,centerX,centerY)) ||
-            !this.isInBounds(...getRotatedCoords(angle,this.left,this.bottom,centerX,centerY)) ||
-            !this.isInBounds(...getRotatedCoords(angle,this.right,this.bottom,centerX,centerY))) {
+        if (!this.isInBounds(...getRotatedCoords(angle,pos.left,pos.top,centerX,centerY)) ||
+            !this.isInBounds(...getRotatedCoords(angle,pos.right,pos.top,centerX,centerY)) ||
+            !this.isInBounds(...getRotatedCoords(angle,pos.left,pos.bottom,centerX,centerY)) ||
+            !this.isInBounds(...getRotatedCoords(angle,pos.right,pos.bottom,centerX,centerY))) {
             return
         }
         this.points.forEach(point => point.rotateBy(angle,centerX,centerY));
+        this.getChildren(true).forEach(child => {
+            child.points.forEach(point => point.rotateBy(angle,centerX,centerY));
+            child.redraw();
+        })
     }
 
     /**
@@ -706,30 +743,35 @@ function SmartShape() {
      */
     this.getResizeBoxBounds = () => {
         this.calcPosition();
+        let pos = this.getPosition(true);
+        const parent = this.getRootParent();
+        if (parent) {
+            pos = parent.getPosition(true);
+        }
         const [pointWidth,pointHeight] = this.getMaxPointSize();
         const result = {
-            left: this.left - pointWidth,
-            right: this.right + pointWidth,
-            top: this.top - pointHeight,
-            bottom: this.bottom + pointHeight,
-            width: this.width + (pointWidth)*2,
-            height: this.height + (pointHeight)*2,
+            left: pos.left - pointWidth,
+            right: pos.right + pointWidth,
+            top: pos.top - pointHeight,
+            bottom: pos.bottom + pointHeight,
+            width: pos.width + (pointWidth)*2,
+            height: pos.height + (pointHeight)*2,
         }
         if (result.left < 0) {
-            this.moveTo(result.left*-1,this.top);
+            this.moveTo(result.left*-1,pos.top);
             result.left = 0;
         }
         if (result.top < 0) {
-            this.moveTo(this.left,result.top*-1);
+            this.moveTo(pos.left,result.top*-1);
             result.top = 0;
         }
         const bounds = this.getBounds();
         if (result.bottom > bounds.bottom) {
-            this.moveTo(this.left,result.bottom-bounds.bottom+this.top);
+            this.moveTo(pos.left,result.bottom-bounds.bottom+pos.top);
             result.bottom = bounds.bottom;
         }
         if (result.right > bounds.right) {
-            this.moveTo(result.right-bounds.right+this.left,this.top);
+            this.moveTo(result.right-bounds.right+pos.left,pos.top);
             result.bottom = bounds.bottom;
         }
         return result;
@@ -751,10 +793,12 @@ function SmartShape() {
 
     /**
      * Method returns coordinates of the center of the shape.
+     * @param forGroup {boolean} Should get center of all shapes in the group. Default: false
      * @returns {array} Center of a shape as an array [x,y]
      */
-    this.getCenter = () => {
-        return [this.left+this.width/2, this.top+this.height/2]
+    this.getCenter = (forGroup=false) => {
+        const pos = this.getPosition(forGroup)
+        return [pos.left+pos.width/2, pos.top+pos.height/2]
     };
 }
 
