@@ -223,8 +223,8 @@ describe('SmartShape API tests', () => {
       shape.switchDisplayMode();
       assert.equal(shape.options.displayMode, SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED mode");
       assert.equal(shape.points[0].element.style.display,'',"Points should be displayed in DEFAULT display mode");
-      assert.isNull(shape.resizeBox,"Resize box by default is null");
-      assert.isNull(shape.rotateBox,"Rotate box by default is null");
+      assert.isNull(shape.resizeBox,"Resize box in selected mode is null");
+      assert.isNull(shape.rotateBox,"Rotate box in selected mode is null");
       assert.equal(shape.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should not switch to SCALE because canScale option disabled");
       shape.setOptions({canScale:true});
       shape.switchDisplayMode();
@@ -256,6 +256,18 @@ describe('SmartShape API tests', () => {
       shape.setOptions({canRotate:false});
       shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
       assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if ROTATE is disabled");
+      shape.setOptions({canScale:true,canRotate:true});
+      shape.points.forEach(point=>point.setOptions({canDrag:false}));
+      shape.redraw();
+      shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      assert.equal(shape.options.displayMode, SmartShapeDisplayMode.DEFAULT,
+          "Should not switch to SELECTED because it's not allowed to drag points"
+      );
+      shape.switchDisplayMode();
+      assert.equal(shape.options.displayMode, SmartShapeDisplayMode.SCALE,
+          "Should skip selected and switch directly to SCALED, because it's not allowed to drag points"
+      );
     });
   });
 
