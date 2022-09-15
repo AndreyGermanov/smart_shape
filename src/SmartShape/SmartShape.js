@@ -509,7 +509,8 @@ function SmartShape() {
             mode = this.getNextDisplayMode();
         }
         if ((mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) ||
-            (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate)) {
+            (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) ||
+            (mode === SmartShapeDisplayMode.SELECTED && !this.points.filter(point=>point.options.canDrag).length)) {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         this.options.displayMode = mode;
@@ -534,13 +535,13 @@ function SmartShape() {
         } else {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
+        if (mode === SmartShapeDisplayMode.SELECTED && !this.points.filter(point=>point.options.canDrag).length) {
+            mode = SmartShapeDisplayMode.SCALE
+        }
         if (mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) {
-            if (this.options.canRotate) {
-                mode = SmartShapeDisplayMode.ROTATE;
-            } else {
-                mode = SmartShapeDisplayMode.DEFAULT;
-            }
-        } else if (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) {
+            mode = SmartShapeDisplayMode.ROTATE
+        }
+        if (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         return mode
