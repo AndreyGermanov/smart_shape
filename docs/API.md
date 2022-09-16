@@ -715,8 +715,8 @@ to this object.
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.findPointById(id)](#SmartShape+findPointById) ⇒ <code>null</code> \| <code>object</code>
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
-    * [.moveTo(x, y)](#SmartShape+moveTo)
-    * [.moveBy(stepX, stepY)](#SmartShape+moveBy)
+    * [.moveTo(x, y, redraw)](#SmartShape+moveTo)
+    * [.moveBy(stepX, stepY, redraw)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.rotateBy(angle)](#SmartShape+rotateBy)
     * [.redraw()](#SmartShape+redraw)
@@ -978,7 +978,7 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 **Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
 <a name="SmartShape+moveTo"></a>
 
-### smartShape.moveTo(x, y)
+### smartShape.moveTo(x, y, redraw)
 Moves shape to specific position. It only changes coordinates of points, but do not
 redraw the shape on new position. So, you need to call `redraw` yourself after move.
 
@@ -988,12 +988,12 @@ redraw the shape on new position. So, you need to call `redraw` yourself after m
 | --- | --- | --- |
 | x | <code>number</code> | new X coordinate |
 | y | <code>number</code> | new Y coordinate |
+| redraw | <code>boolean</code> | should the function redraw the shape after move. True by default |
 
 <a name="SmartShape+moveBy"></a>
 
-### smartShape.moveBy(stepX, stepY)
-Moves shape by specified number of pixels by X and Y. It only changes coordinates of points, but do not
-redraw the shape on new position. So, you need to call `redraw` yourself after move.
+### smartShape.moveBy(stepX, stepY, redraw)
+Moves shape by specified number of pixels by X and Y.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 
@@ -1001,6 +1001,7 @@ redraw the shape on new position. So, you need to call `redraw` yourself after m
 | --- | --- | --- |
 | stepX | <code>number</code> | number of pixels to move horizontally |
 | stepY | <code>number</code> | number of pixes to move vertically |
+| redraw | <code>boolean</code> | should the function redraw the shape after move. True by default |
 
 <a name="SmartShape+scaleTo"></a>
 

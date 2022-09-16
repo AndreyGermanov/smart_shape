@@ -323,7 +323,7 @@ function SmartShape() {
         if (!pointOptions || !Object.keys(pointOptions).length) {
             pointOptions = Object.assign({},this.options.pointOptions) || {};
         } else {
-            pointOptions = mergeObjects(this.options.pointOptions,pointOptions);
+            pointOptions = mergeObjects(Object.assign({},this.options.pointOptions),pointOptions);
         }
         pointOptions.bounds = this.getBounds();
         pointOptions.zIndex = this.options.zIndex+1;
@@ -403,34 +403,44 @@ function SmartShape() {
      * redraw the shape on new position. So, you need to call `redraw` yourself after move.
      * @param x {number} new X coordinate
      * @param y {number} new Y coordinate
+     * @param redraw {boolean} should the function redraw the shape after move. True by default
      */
-    this.moveTo = (x,y) => {
+    this.moveTo = (x,y,redraw= true) => {
         const bounds = this.getBounds();
         const pos = this.getPosition(true);
         let newX = x+pos.width > bounds.right ? bounds.right - pos.width : x;
         let newY = y+pos.height > bounds.bottom ? bounds.bottom - pos.height: y;
-        this.moveBy(newX-pos.left,newY-pos.top);
+        this.moveBy(newX-pos.left,newY-pos.top, redraw);
         this.calcPosition();
     }
 
     /**
-     * Moves shape by specified number of pixels by X and Y. It only changes coordinates of points, but do not
-     * redraw the shape on new position. So, you need to call `redraw` yourself after move.
+     * Moves shape by specified number of pixels by X and Y.
      * @param stepX {number} number of pixels to move horizontally
      * @param stepY {number} number of pixes to move vertically
+     * @param redraw {boolean} should the function redraw the shape after move. True by default
      */
-    this.moveBy = (stepX, stepY) => {
+    this.moveBy = (stepX, stepY,redraw=true) => {
         for (let index in this.points) {
             this.points[index].x += stepX;
             this.points[index].y += stepY;
-            this.points[index].redraw();
+            if (redraw) {
+                this.points[index].redraw();
+            }
         }
-        this.redraw();
         this.calcPosition();
-        this.getChildren(true).forEach(child => {
-            child.moveBy(stepX,stepY);
-            child.redraw();
-        });
+        const children = this.getChildren(true)
+        if (children.length) {
+            if (redraw) {
+                this.redraw();
+            }
+            children.forEach(child => {
+                child.moveBy(stepX, stepY);
+                if (redraw) {
+                    child.redraw();
+                }
+            });
+        }
     }
 
     /**
@@ -779,20 +789,20 @@ function SmartShape() {
             height: pos.height + (pointHeight)*2,
         }
         if (result.left < 0) {
-            this.moveBy(result.left*-1,pos.top);
+            this.moveTo(result.left*-1,pos.top,false);
             result.left = 0;
         }
         if (result.top < 0) {
-            this.moveBy(pos.left,result.top*-1);
+            this.moveTo(pos.left,result.top*-1,false);
             result.top = 0;
         }
         const bounds = this.getBounds();
         if (result.bottom > bounds.bottom) {
-            this.moveTo(pos.left,result.bottom-bounds.bottom+pos.top);
+            this.moveTo(pos.left,result.bottom-bounds.bottom+pos.top,false);
             result.bottom = bounds.bottom;
         }
         if (result.right > bounds.right) {
-            this.moveTo(result.right-bounds.right+pos.left,pos.top);
+            this.moveTo(result.right-bounds.right+pos.left,pos.top,false);
             result.bottom = bounds.bottom;
         }
         return result;

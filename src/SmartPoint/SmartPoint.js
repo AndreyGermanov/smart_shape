@@ -61,6 +61,7 @@ function SmartPoint() {
             PointMoveDirections.BOTTOM
         ],
         visible: true,
+        hidden:false,
         forceDisplay: false
     };
 

@@ -435,22 +435,22 @@ describe('SmartShape API tests', () => {
       assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[50,50],[150,50],[150,150],[50,150]],"Should rotate shape correctly");
       shape.moveTo(0,0)
       shape.redraw();
-      shape.rotateBy(30);
+      shape.rotateBy(30,null,null,true);
       shape.redraw();
       assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[0,0],[100,0],[100,100],[0,100]],"Should not rotate beyond left bound");
       shape.moveTo(50,280)
       shape.redraw();
-      shape.rotateBy(30);
+      shape.rotateBy(30,null,null,true);
       shape.redraw();
       assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[50,280],[150,280],[150,380],[50,380]],"Should not rotate beyond bottom bound");
       shape.moveTo(280,120);
       shape.redraw()
-      shape.rotateBy(30)
+      shape.rotateBy(30,null,null,true)
       shape.redraw();
       assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[280,120],[380,120],[380,220],[280,220]],"Should not rotate beyond right bound");
       shape.moveTo(100,20);
       shape.redraw();
-      shape.rotateBy(30);
+      shape.rotateBy(30,null,null,true);
       shape.redraw();
       assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[100,20],[200,20],[200,120],[100,120]],"Should not rotate beyond top bound");
       shape.moveTo(150,150);

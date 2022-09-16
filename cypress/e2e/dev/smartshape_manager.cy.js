@@ -5,10 +5,12 @@ import {SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
 
 describe('SmartShape Manager tests', () => {
   beforeEach(() => {
+    SmartShapeManager.clear();
     SmartShapeManager.shapes = [];
   })
   it('should add created shape to manager', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
       const shape = new SmartShape();
       shape.init(app,{id:"shape1"},[[0,100],[100,0],[200,100]]);
@@ -20,6 +22,7 @@ describe('SmartShape Manager tests', () => {
 
   it('getShapesByContainer', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
       assert.equal(SmartShapeManager.getShapesByContainer(app).length, 0, "Should return empty array")
       const shape = new SmartShape();
@@ -41,6 +44,7 @@ describe('SmartShape Manager tests', () => {
 
   it("should add resize box and rotate box as a shapes with unmanaged state", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
       assert.equal(SmartShapeManager.shapes.length, 0, "Should return empty array");
       const shape = new SmartShape();

@@ -68,6 +68,7 @@ function z() {
       g.BOTTOM
     ],
     visible: !0,
+    hidden: !1,
     forceDisplay: !1
   }, this.x = 0, this.y = 0, this.element = null, this.guid = m(), this.subscriptions = {}, this.init = (t, i, s = null) => (this.x = parseInt(t), this.y = parseInt(i), this.element = this.createPointUI(), this.setOptions(s), this.setEventListeners(), n.emit(p.POINT_ADDED, this), this), this.setOptions = (t) => {
     t && typeof t == "object" && (t.style && typeof t.style == "object" && (t.style = Object.assign(this.options.style, t.style)), Object.assign(this.options, t)), this.options.id && (this.element.id = this.options.id);
@@ -672,7 +673,7 @@ function P() {
   }, this.putPoint = (t, i, s = null) => {
     if (this.findPoint(t, i))
       return console.error(`Point with x=${t} and y=${i} already exists`), null;
-    !s || !Object.keys(s).length ? s = Object.assign({}, this.options.pointOptions) || {} : s = E(this.options.pointOptions, s), s.bounds = this.getBounds(), s.zIndex = this.options.zIndex + 1;
+    !s || !Object.keys(s).length ? s = Object.assign({}, this.options.pointOptions) || {} : s = E(Object.assign({}, this.options.pointOptions), s), s.bounds = this.getBounds(), s.zIndex = this.options.zIndex + 1;
     const e = new z();
     return this.points.push(e), e.init(t, i, s), this.root.appendChild(e.element), e;
   }, this.deleteAllPoints = () => {
@@ -690,16 +691,18 @@ function P() {
   }, this.getPointsArray = () => {
     let t = [];
     return this.points && typeof this.points == "object" && this.points.length && (t = this.points.map((i) => [i.x, i.y])), t;
-  }, this.moveTo = (t, i) => {
-    const s = this.getBounds(), e = this.getPosition(!0);
-    let o = t + e.width > s.right ? s.right - e.width : t, r = i + e.height > s.bottom ? s.bottom - e.height : i;
-    this.moveBy(o - e.left, r - e.top), this.calcPosition();
-  }, this.moveBy = (t, i) => {
-    for (let s in this.points)
-      this.points[s].x += t, this.points[s].y += i, this.points[s].redraw();
-    this.redraw(), this.calcPosition(), this.getChildren(!0).forEach((s) => {
-      s.moveBy(t, i), s.redraw();
-    });
+  }, this.moveTo = (t, i, s = !0) => {
+    const e = this.getBounds(), o = this.getPosition(!0);
+    let r = t + o.width > e.right ? e.right - o.width : t, d = i + o.height > e.bottom ? e.bottom - o.height : i;
+    this.moveBy(r - o.left, d - o.top, s), this.calcPosition();
+  }, this.moveBy = (t, i, s = !0) => {
+    for (let o in this.points)
+      this.points[o].x += t, this.points[o].y += i, this.points[o].redraw();
+    this.calcPosition();
+    const e = this.getChildren(!0);
+    e.length && (s && this.redraw(), e.forEach((o) => {
+      o.moveBy(t, i), s && o.redraw();
+    }));
   }, this.scaleTo = (t, i) => {
     const s = this.getBounds();
     this.calcPosition();
@@ -796,9 +799,9 @@ function P() {
       width: t.width + s * 2,
       height: t.height + e * 2
     };
-    o.left < 0 && (this.moveBy(o.left * -1, t.top), o.left = 0), o.top < 0 && (this.moveBy(t.left, o.top * -1), o.top = 0);
+    o.left < 0 && (this.moveBy(o.left * -1, t.top, !1), o.left = 0), o.top < 0 && (this.moveBy(t.left, o.top * -1, !1), o.top = 0);
     const r = this.getBounds();
-    return o.bottom > r.bottom && (this.moveTo(t.left, o.bottom - r.bottom + t.top), o.bottom = r.bottom), o.right > r.right && (this.moveTo(o.right - r.right + t.left, t.top), o.bottom = r.bottom), o;
+    return o.bottom > r.bottom && (this.moveTo(t.left, o.bottom - r.bottom + t.top, !1), o.bottom = r.bottom), o.right > r.right && (this.moveTo(o.right - r.right + t.left, t.top, !1), o.bottom = r.bottom), o;
   }, this.getMaxPointSize = () => {
     if (!this.points.length)
       return [0, 0];
