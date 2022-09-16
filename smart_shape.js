@@ -697,7 +697,7 @@ function P() {
     this.moveBy(r - o.left, d - o.top, s), this.calcPosition();
   }, this.moveBy = (t, i, s = !0) => {
     for (let o in this.points)
-      this.points[o].x += t, this.points[o].y += i, this.points[o].redraw();
+      this.points[o].x += t, this.points[o].y += i, s && this.points[o].redraw();
     this.calcPosition();
     const e = this.getChildren(!0);
     e.length && (s && this.redraw(), e.forEach((o) => {
@@ -799,7 +799,7 @@ function P() {
       width: t.width + s * 2,
       height: t.height + e * 2
     };
-    o.left < 0 && (this.moveBy(o.left * -1, t.top, !1), o.left = 0), o.top < 0 && (this.moveBy(t.left, o.top * -1, !1), o.top = 0);
+    o.left < 0 && (this.moveTo(o.left * -1, t.top, !1), o.left = 0), o.top < 0 && (this.moveTo(t.left, o.top * -1, !1), o.top = 0);
     const r = this.getBounds();
     return o.bottom > r.bottom && (this.moveTo(t.left, o.bottom - r.bottom + t.top, !1), o.bottom = r.bottom), o.right > r.right && (this.moveTo(o.right - r.right + t.left, t.top, !1), o.bottom = r.bottom), o;
   }, this.getMaxPointSize = () => {
