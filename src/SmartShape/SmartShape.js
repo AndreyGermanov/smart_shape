@@ -322,6 +322,8 @@ function SmartShape() {
         }
         if (!pointOptions || !Object.keys(pointOptions).length) {
             pointOptions = Object.assign({},this.options.pointOptions) || {};
+        } else {
+            pointOptions = mergeObjects(this.options.pointOptions,pointOptions);
         }
         pointOptions.bounds = this.getBounds();
         pointOptions.zIndex = this.options.zIndex+1;
@@ -450,7 +452,6 @@ function SmartShape() {
         );
         this.getChildren(true).forEach(child => {
             child.points.forEach(point => {
-                //const pos1 = child.getPosition()
                 point.x = (point.x-pos.left)*scaleX+pos.left;
                 point.y = (point.y-pos.top)*scaleY+pos.top}
             );

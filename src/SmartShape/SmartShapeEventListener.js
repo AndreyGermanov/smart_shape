@@ -193,12 +193,14 @@ function SmartShapeEventListener(shape) {
         }
         const oldPos = this.shape.getPosition(true);
         this.shape.moveBy(stepX,stepY);
-        this.shape.redraw();
         this.shape.getChildren(true).forEach(child => {
             child.moveBy(stepX,stepY);
-            child.redraw();
         });
-        const newPos = this.shape.getPosition(true);
+        this.shape.redraw();
+        this.shape.getChildren(true).forEach(child => {
+            child.redraw();
+        })
+        const newPos = this.shape.getPosition();
         EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,{oldPos,newPos});
     }
 
@@ -311,7 +313,7 @@ function SmartShapeEventListener(shape) {
     /**
      * @ignore
      * Internal method, that triggered when user drags the point
-     * @param _event Custom event object. Contains SmartPoint object as an `event.target`,
+     * @param event Custom event object. Contains SmartPoint object as an `event.target`,
      * `event.oldX` and `event.oldY` as a previous point coordinates before previous drag event.
      */
     this.onPointDragMove = (event) => {
