@@ -406,9 +406,10 @@ function SmartShape() {
      */
     this.moveTo = (x,y) => {
         const bounds = this.getBounds();
-        let newX = x+this.width > bounds.right ? bounds.right - this.width : x;
-        let newY = y+this.height > bounds.bottom ? bounds.bottom - this.height: y;
-        this.points.forEach(point => { point.x += (newX-this.left); point.y += (newY-this.top)});
+        const pos = this.getPosition(true);
+        let newX = x+pos.width > bounds.right ? bounds.right - pos.width : x;
+        let newY = y+pos.height > bounds.bottom ? bounds.bottom - pos.height: y;
+        this.moveBy(newX-pos.left,newY-pos.top);
         this.calcPosition();
     }
 
@@ -424,6 +425,12 @@ function SmartShape() {
             this.points[index].y += stepY;
             this.points[index].redraw();
         }
+        this.redraw();
+        this.calcPosition();
+        this.getChildren(true).forEach(child => {
+            child.moveBy(stepX,stepY);
+            child.redraw();
+        });
     }
 
     /**
@@ -465,17 +472,27 @@ function SmartShape() {
      * Method used to rotate this shape by specified angle around it's center.
      * @param angle {number} Angle in degrees. Positive - clockwise, Negative - counterclock-wise
      */
-    this.rotateBy = (angle) => {
+    this.rotateBy = (angle,centerX=null,centerY=null,checkBounds=false) => {
         this.calcPosition();
-        const pos = this.getPosition(true)
-        let [centerX,centerY] = this.getCenter(true)
+        const pos = this.getPosition(true);
+        let [shapeCenterX,shapeCenterY] = this.getCenter(true)
+        const parent = this.getRootParent();
+        if (parent) {
+            [shapeCenterX,shapeCenterY] = parent.getCenter(true);
+        }
+        if (!centerX) {
+            centerX = shapeCenterX;
+        }
+        if (!centerY) {
+            centerY = shapeCenterY
+        };
         if (this.initCenter) {
             [centerX,centerY] = this.initCenter;
         }
-        if (!this.isInBounds(...getRotatedCoords(angle,pos.left,pos.top,centerX,centerY)) ||
+        if (checkBounds && (!this.isInBounds(...getRotatedCoords(angle,pos.left,pos.top,centerX,centerY)) ||
             !this.isInBounds(...getRotatedCoords(angle,pos.right,pos.top,centerX,centerY)) ||
             !this.isInBounds(...getRotatedCoords(angle,pos.left,pos.bottom,centerX,centerY)) ||
-            !this.isInBounds(...getRotatedCoords(angle,pos.right,pos.bottom,centerX,centerY))) {
+            !this.isInBounds(...getRotatedCoords(angle,pos.right,pos.bottom,centerX,centerY)))) {
             return
         }
         this.points.forEach(point => point.rotateBy(angle,centerX,centerY));
@@ -495,10 +512,10 @@ function SmartShape() {
     this.isInBounds = (x,y) => {
         const [width,height] = this.getMaxPointSize();
         const bounds = this.getBounds();
-        return (x > bounds.left + width /2) &&
-            (x < bounds.right - width/2) &&
-            (y > bounds.top + height/2) &&
-            (y < bounds.bottom - height/2)
+        return (x >= bounds.left + width /2) &&
+            (x <= bounds.right - width/2) &&
+            (y >= bounds.top + height/2) &&
+            (y <= bounds.bottom - height/2)
     }
 
     /**
@@ -692,8 +709,11 @@ function SmartShape() {
             this.rotateBox.destroy();
         }
         if (this.root && this.svg) {
-            this.root.removeChild(this.svg);
+            try {
+                this.root.removeChild(this.svg);
+            } catch (err) {}
         }
+        this.getChildren(true).forEach(child=>child.destroy());
     }
 
     /**
@@ -745,7 +765,7 @@ function SmartShape() {
     this.getResizeBoxBounds = () => {
         this.calcPosition();
         let pos = this.getPosition(true);
-        const parent = this.groupHelper.getRootParent();
+        const parent = this.getRootParent();
         if (parent) {
             pos = parent.getPosition(true);
         }
@@ -759,11 +779,11 @@ function SmartShape() {
             height: pos.height + (pointHeight)*2,
         }
         if (result.left < 0) {
-            this.moveTo(result.left*-1,pos.top);
+            this.moveBy(result.left*-1,pos.top);
             result.left = 0;
         }
         if (result.top < 0) {
-            this.moveTo(pos.left,result.top*-1);
+            this.moveBy(pos.left,result.top*-1);
             result.top = 0;
         }
         const bounds = this.getBounds();

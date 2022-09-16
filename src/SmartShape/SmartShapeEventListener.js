@@ -193,13 +193,7 @@ function SmartShapeEventListener(shape) {
         }
         const oldPos = this.shape.getPosition(true);
         this.shape.moveBy(stepX,stepY);
-        this.shape.getChildren(true).forEach(child => {
-            child.moveBy(stepX,stepY);
-        });
         this.shape.redraw();
-        this.shape.getChildren(true).forEach(child => {
-            child.redraw();
-        })
         const newPos = this.shape.getPosition();
         EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,{oldPos,newPos});
     }

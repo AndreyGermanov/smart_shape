@@ -172,7 +172,7 @@ function SmartPoint() {
         element.style.left = (this.x-parseInt(this.options.width/2))+"px";
         element.style.top = (this.y-parseInt(this.options.height/2))+"px";
         element.style.zIndex = this.options.zIndex;
-        if (!this.options.canDrag || !this.options.visible) {
+        if (!this.options.canDrag || !this.options.visible || this.options.hidden) {
             element.style.display = 'none';
         } else {
             element.style.display = '';
