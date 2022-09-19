@@ -50,15 +50,22 @@ describe('SmartShape Manager tests', () => {
       const shape = new SmartShape();
       shape.init(app, {id: "shape1", canScale: true, canRotate: true}, [[0, 100], [100, 0], [200, 100]]);
       assert.equal(SmartShapeManager.shapes.length, 1, "Should return list with shapes");
-      cy.get("#shape1").trigger("click",{buttons:1,force:true}).then(() => {
-        cy.get("#shape1").trigger("click",{buttons:1,force:true}).then(() => {
-          assert.equal(SmartShapeManager.shapes.length, 2, "Should add resize box to shapes list");
-          assert.isFalse(shape.resizeBox.shape.options.managed, "Resize box should be unmanaged")
-          cy.get("#shape1").trigger("click", {buttons:1,force:true}).then(() => {
-            assert.equal(SmartShapeManager.shapes.length, 3, "Should add rotate box to shapes list");
-            assert.isFalse(shape.rotateBox.shape.options.managed, "Rotate box should be unmanaged")
-          });
+      cy.get("#shape1").trigger("mousedown",{buttons:1,force:true}).then(() => {
+        cy.wait(200).then(() => {
+          cy.get("#shape1").trigger("mousedown",{buttons:1,force:true}).then(() => {
+            cy.wait(200).then(() => {
+              assert.equal(SmartShapeManager.shapes.length, 2, "Should add resize box to shapes list");
+              assert.isFalse(shape.resizeBox.shape.options.managed, "Resize box should be unmanaged")
+              cy.get("#shape1").trigger("mousedown", {buttons:1,force:true}).then(() => {
+                cy.wait(200).then(() => {
+                  assert.equal(SmartShapeManager.shapes.length, 3, "Should add rotate box to shapes list");
+                  assert.isFalse(shape.rotateBox.shape.options.managed, "Rotate box should be unmanaged")
+                })
+              });
+            })
+          })
         })
+
       })
     });
   });
@@ -130,4 +137,70 @@ describe('SmartShape Manager tests', () => {
       assert.equal(SmartShapeManager.containerEventListeners.length,0, "Should remove all event listeners");
     });
   });
+
+  it('getMaxZIndex', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "500px";
+      const shape1 = new SmartShape();
+      shape1.init(app,{zIndex:1002},[[0,100],[100,0],[200,100]]);
+      const shape2 = new SmartShape();
+      shape2.init(app, {zIndex:1005}, [[0,400],[100,300],[200,400]]);
+      const shape3 = new SmartShape();
+      shape3.init(app, {zIndex:1005}, [[300,100],[400,0],[500,100]]);
+      assert.equal(SmartShapeManager.getMaxZIndex(),1005,"Should return correct global zIndex");
+      assert.equal(SmartShapeManager.getMaxZIndex(app),1005,
+          "Should return correct zIndex of shapes inside specified container");
+    });
+  })
+
+  it('activateShape', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "500px";
+      const shape1 = new SmartShape();
+      shape1.init(app,{zIndex:1002,id:"shape1"},[[0,100],[100,0],[200,100]]);
+      const shape2 = new SmartShape();
+      shape2.init(app, {zIndex:1003,id:"shape2"}, [[0,400],[100,300],[200,400]]);
+      const shape3 = new SmartShape();
+      shape3.init(app, {zIndex:1005,id:"shape3"}, [[300,100],[400,0],[500,100]]);
+      shape2.addChild(shape3);
+      cy.get("#shape1").trigger("mousedown",{buttons:1}).then(() => {
+        cy.wait(200).then(() => {
+          assert.equal(SmartShapeManager.activeShape,shape1,"Should activate correct shape");
+          assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
+          cy.get("#shape2").trigger("mousedown", {buttons:1}).then(() => {
+            cy.wait(200).then(() => {
+              assert.equal(SmartShapeManager.activeShape,shape2,"Should activate correct shape");
+              assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
+              assert.equal(shape1.svg.style.zIndex,1002, "Should return back previous zIndex to previous shape");
+              assert.equal(shape3.svg.style.zIndex,1008,
+                  "Should increase zIndex of active shape's children proportionally to selected shape"
+              );
+              cy.get("#shape1").trigger("mousedown", {buttons:1}).then(() => {
+                cy.wait(200).then(() => {
+                  assert.equal(SmartShapeManager.activeShape,shape1,"Should activate correct shape");
+                  assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
+                  assert.equal(shape2.svg.style.zIndex,1003, "Should return back previous zIndex to previous shape");
+                  assert.equal(shape3.svg.style.zIndex,1005,
+                      "Should increase zIndex of active shape's children proportionally to selected shape"
+                  );
+                  cy.get("#shape3").trigger("mousedown", {buttons:1}).then(() => {
+                    cy.wait(200).then(() => {
+                      assert.equal(SmartShapeManager.activeShape,shape2,"Should activate parent shape if click on child shape");
+                      assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
+                      assert.equal(shape1.svg.style.zIndex,1002, "Should return back previous zIndex to previous shape");
+                      assert.equal(shape3.svg.style.zIndex,1008,
+                          "Should increase zIndex of active shape's children proportionally to selected shape"
+                      );
+                    })
+                  });
+                })
+              });
+            })
+          });
+        })
+      });
+    });
+  })
 })

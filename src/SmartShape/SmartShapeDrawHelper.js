@@ -23,9 +23,20 @@ function SmartShapeDrawHelper() {
             shape.root.removeChild(shape.svg);
             shape.svg = null;
         }
-        shape.calcPosition();
         shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         shape.svg.ondragstart = function() { return false; }
+        this.updateOptions(shape);
+        const polygon = this.drawPolygon(shape);
+        shape.svg.appendChild(polygon);
+        shape.root.appendChild(shape.svg);
+        shape.eventListener.setSvgEventListeners()
+    }
+
+    this.updateOptions = (shape) => {
+        if (typeof(shape.options.visible) !== "undefined") {
+            shape.svg.style.display = shape.options.visible ? '' : 'none';
+        }
+        shape.calcPosition();
         shape.svg.id = shape.options.id;
         shape.svg.style.position = 'absolute';
         shape.svg.style.cursor = 'crosshair';
@@ -36,13 +47,6 @@ function SmartShapeDrawHelper() {
         this.setupShapeFill(shape);
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
-        const polygon = this.drawPolygon(shape);
-        shape.svg.appendChild(polygon);
-        shape.root.appendChild(shape.svg);
-        shape.eventListener.setSvgEventListeners()
-        if (typeof(shape.options.visible) !== "undefined") {
-            shape.svg.style.display = shape.options.visible ? '' : 'none';
-        }
         shape.points.forEach(point => {
             if (point.options.zIndex < shape.options.zIndex+2) {
                 point.options.zIndex = shape.options.zIndex + 2;
@@ -98,6 +102,7 @@ function SmartShapeDrawHelper() {
         shape.resizeBox.top = bounds.top;
         shape.resizeBox.width = bounds.width;
         shape.resizeBox.height = bounds.height;
+        shape.resizeBox.shape.options.zIndex = shape.options.zIndex+1;
         shape.resizeBox.redraw();
     }
 
@@ -113,6 +118,8 @@ function SmartShapeDrawHelper() {
         shape.rotateBox.top = bounds.top;
         shape.rotateBox.width = bounds.width;
         shape.rotateBox.height = bounds.height;
+        shape.rotateBox.shape.options.zIndex = shape.options.zIndex+1;
+
         shape.rotateBox.redraw();
     }
 

@@ -467,6 +467,7 @@ describe('SmartShape API tests', () => {
       const [app,shape] = setup();
       const body = Cypress.$("body").toArray()[0];
       const app2 = document.createElement("div");
+      app2.id = "app2"
       app2.style.width = "700px";
       app2.style.height = "400px";
       body.appendChild(app2);
@@ -524,33 +525,44 @@ describe('SmartShape API tests', () => {
       shape3.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
         destroyTriggered = true;
       });
+
       cy.get("#shape3").trigger("mouseenter",{clientX:125,clientY:125}).then(() => {
         cy.get("#shape3").trigger("mousemove", {clientX: 125, clientY: 125}).then(() => {
           cy.get("#shape3").trigger("mousedown", {buttons: 1}).then(() => {
-            cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 3}).then(() => {
-              cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
+            cy.get("#app2").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 3}).then(() => {
+              cy.get("#app2").trigger("mouseup", {buttons: 1}).then(() => {
+                SmartShapeManager.draggedShape = null;
                 cy.get("#shape3").trigger("mouseover").then(() => {
                   cy.get("#shape3").trigger("mouseout").then(() => {
+                    shape3.options.displayMode = SmartShapeDisplayMode.DEFAULT;
                     cy.get("#shape3").click({force: true}).then(() => {
-                      assert.equal(shape3.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED display mode on first click");
-                      cy.get("#shape3").click({force: true}).then(() => {
-                        assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.SCALE, "Should switch to SCALE display mode on second click");
+                      cy.wait(200).then(() => {
+                        assert.equal(shape3.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED display mode on first click");
                         cy.get("#shape3").click({force: true}).then(() => {
-                          assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.ROTATE, "Should switch to ROTATE display mode on third click");
-                          cy.get("#shape3").click({force: true}).then(() => {
-                            assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.DEFAULT, "Should switch to DEFAULT display mode on fourth click");
-                            assert.isTrue(createTriggered, "Should trigger shape create event");
-                            assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
-                            assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
-                            assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
-                            assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
-                            assert.isTrue(clickTriggered, "Should trigger shape click event");
-                            assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
-                            shape3.destroy();
-                            assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                          cy.wait(200).then(() => {
+                            assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.SCALE, "Should switch to SCALE display mode on second click");
+                            cy.get("#shape3").click({force: true}).then(() => {
+                              cy.wait(200).then(() => {
+                                assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.ROTATE, "Should switch to ROTATE display mode on third click");
+                                cy.get("#shape3").click({force: true}).then(() => {
+                                  cy.wait(200).then(() => {
+                                    assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.DEFAULT, "Should switch to DEFAULT display mode on fourth click");
+                                    assert.isTrue(createTriggered, "Should trigger shape create event");
+                                    assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                                    assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                                    assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
+                                    assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
+                                    assert.isTrue(clickTriggered, "Should trigger shape click event");
+                                    assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
+                                    shape3.destroy();
+                                    assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                                  });
+                                })
+                              });
+                            })
                           });
-                        });
-                      });
+                        })
+                      })
                     })
                   })
                 })
