@@ -17,7 +17,7 @@ function SmartShape() {
     /**
      * The HTML container element to which the shape will be injected. This can be any block element,
      * that can have children (div,span etc.)
-     * @type {object}
+     * @type {HTMLElement}
      */
     this.root = null
 
@@ -420,7 +420,7 @@ function SmartShape() {
      * @param stepY {number} number of pixes to move vertically
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      */
-    this.moveBy = (stepX, stepY,redraw=true) => {
+    this.moveBy = (stepX, stepY,redraw= true) => {
         for (let index in this.points) {
             this.points[index].x += stepX;
             this.points[index].y += stepY;
@@ -481,6 +481,12 @@ function SmartShape() {
     /**
      * Method used to rotate this shape by specified angle around it's center.
      * @param angle {number} Angle in degrees. Positive - clockwise, Negative - counterclock-wise
+     * @param centerX {number} X coordinate of center around which to rotate the shape. By default it's a center
+     * of the shape
+     * @param centerY {number} Y coordinate of center around which to rotate the shape. By default it's a center
+     * of the shape
+     * @param checkBounds {boolean} Should the function check that shape won't go beyond defined bounds or
+     * container bounds after rotation. By default false.
      */
     this.rotateBy = (angle,centerX=null,centerY=null,checkBounds=false) => {
         this.calcPosition();
@@ -495,7 +501,7 @@ function SmartShape() {
         }
         if (!centerY) {
             centerY = shapeCenterY
-        };
+        }
         if (this.initCenter) {
             [centerX,centerY] = this.initCenter;
         }

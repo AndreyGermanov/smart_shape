@@ -3,6 +3,7 @@ import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {notNull} from "../utils/index.js";
 import {SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
+import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
 
 /**
  * Object that keeps collection of shapes and keep track of
@@ -87,8 +88,10 @@ function SmartShapeManager() {
     this.onShapeCreated = (event) => {
         const shape = event.target;
         if (notNull(shape.root) && !this.getShape(shape)) {
-            this.shapes.push(shape)
-            this.activeShape = shape;
+            this.shapes.push(shape);
+            if (!this.activeShape) {
+                this.activeShape = shape;
+            }
             if (this.getShapesByContainer(shape.root).length === 1) {
                 this.addContainerEvents(shape)
             }
@@ -129,17 +132,14 @@ function SmartShapeManager() {
         if (!this.getShapeByGuid(event.target.guid) || !event.target.options.managed) {
             return
         }
-        this.activeShape = event.target;
-        this.draggedShape = event.target;
         const parent = event.target.getRootParent();
         if (parent) {
+            this.activateShape(parent);
             this.draggedShape = parent;
-            this.activeShape = parent;
+        } else {
+            this.activateShape(event.target);
+            this.draggedShape = event.target;
         }
-        this.shapes
-            .filter(shape=>shape.guid !== event.target.guid &&
-                shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT)
-           .forEach(shape=>shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT))
     }
 
     /**
@@ -227,6 +227,78 @@ function SmartShapeManager() {
     this.getShapesByContainer = (container) => this.shapes.filter(shape => shape.root === container);
 
     /**
+     * Method returns zIndex of the topmost shape either in specified container or globally
+     * @param container {HTMLElement|null} Container to search in or null if search through all shapes
+     * @returns {number} zIndex of the topmost shape
+     */
+    this.getMaxZIndex = (container=null) => {
+        let shapes = this.shapes;
+        if (container) {
+            shapes = this.getShapesByContainer(container);
+        }
+        shapes = shapes.filter(shape=>shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1);
+        if (!shapes.length) {
+            return 0;
+        }
+        return shapes.map(shape=>shape.options.zIndex || 0).reduce((max,zIndex) => zIndex>max ? zIndex : max );
+    }
+
+    /**
+     * Method used to make specified shape active and move it on top according to zIndex
+     * @param shape {SmartShape} Shape to activate
+     */
+    this.activateShape = (shape) => {
+        if (this.activeShape === shape) {
+            this.activeShape.switchDisplayMode();
+            return;
+        }
+        if (typeof(shape.id) !== "undefined" &&
+            (shape.id.search("_resizebox") !== -1 || shape.id.search("_rotatebox") !== -1)) {
+            return
+        }
+        if (this.activeShape) {
+            this.deactivateShape(this.activeShape);
+        }
+        const maxZIndex = this.getMaxZIndex(shape.root) + 1;
+        const diff = maxZIndex - shape.options.zIndex;
+        shape.options.prevZIndex = shape.options.zIndex;
+        shape.options.zIndex += diff;
+        SmartShapeDrawHelper.updateOptions(shape);
+        shape.getChildren(true).forEach(child => {
+            child.options.prevZIndex = child.options.zIndex;
+            child.options.zIndex += diff;
+            SmartShapeDrawHelper.updateOptions(child);
+        });
+        this.activeShape = shape;
+        this.activeShape.switchDisplayMode();
+    }
+
+    /**
+     * @ignore
+     * Method used to deactivate specified shape and return it
+     * to the zIndex position, which it had before activation
+     * @param shape
+     */
+    this.deactivateShape = (shape) => {
+        if (typeof(shape.options.prevZIndex) !== "undefined") {
+            shape.options.zIndex = shape.options.prevZIndex;
+            SmartShapeDrawHelper.updateOptions(shape);
+        }
+        if (shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+            shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+        }
+        shape.getChildren(true).forEach(child => {
+            if (typeof(child.options.prevZIndex) !== "undefined") {
+                child.options.zIndex = child.options.prevZIndex;
+                SmartShapeDrawHelper.updateOptions(child);
+                if (child.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+                    child.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                }
+            }
+        })
+    }
+
+    /**
      * @ignore
      * Method used to attach required event listeners to HTML container of specified shape
      * Should run once for each container.
@@ -234,7 +306,7 @@ function SmartShapeManager() {
      */
     this.addContainerEvents = (shape) => {
         this.addContainerEvent(shape.root,"mousemove",this.mousemove)
-        this.addContainerEvent(shape.root,"mouseup",this.mouseup)
+        this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
         this.addContainerEvent(shape.root,"dblclick",this.doubleclick)
         this.checkCanDeletePoints(shape);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)

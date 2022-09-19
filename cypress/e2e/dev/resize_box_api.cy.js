@@ -307,7 +307,6 @@ describe('ResizeBox tests', () => {
           box2.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
             destroyTriggered = true;
           });
-          console.log("FAILED TEST");
           cy.get("#box2").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
             cy.get("#box2").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
               cy.get("#box2").trigger("mousedown", {buttons: 1}).then(() => {

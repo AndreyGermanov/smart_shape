@@ -691,7 +691,7 @@ to this object.
 
 * [SmartShape](#SmartShape)
     * [new SmartShape()](#new_SmartShape_new)
-    * [.root](#SmartShape+root) : <code>object</code>
+    * [.root](#SmartShape+root) : <code>HTMLElement</code>
     * [.points](#SmartShape+points) : <code>array</code>
     * [.svg](#SmartShape+svg) : <code>object</code>
     * [.groupHelper](#SmartShape+groupHelper) : [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
@@ -718,7 +718,7 @@ to this object.
     * [.moveTo(x, y, redraw)](#SmartShape+moveTo)
     * [.moveBy(stepX, stepY, redraw)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
-    * [.rotateBy(angle)](#SmartShape+rotateBy)
+    * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
     * [.redraw()](#SmartShape+redraw)
     * [.switchDisplayMode(mode)](#SmartShape+switchDisplayMode)
     * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
@@ -739,7 +739,7 @@ SmartShape class. Used to construct shapes.
 **Returns**: SmartShape object that should be initialised using `init` method.  
 <a name="SmartShape+root"></a>
 
-### smartShape.root : <code>object</code>
+### smartShape.root : <code>HTMLElement</code>
 The HTML container element to which the shape will be injected. This can be any block element,
 that can have children (div,span etc.)
 
@@ -1018,7 +1018,7 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 
 <a name="SmartShape+rotateBy"></a>
 
-### smartShape.rotateBy(angle)
+### smartShape.rotateBy(angle, centerX, centerY, checkBounds)
 Method used to rotate this shape by specified angle around it's center.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1026,6 +1026,9 @@ Method used to rotate this shape by specified angle around it's center.
 | Param | Type | Description |
 | --- | --- | --- |
 | angle | <code>number</code> | Angle in degrees. Positive - clockwise, Negative - counterclock-wise |
+| centerX | <code>number</code> | X coordinate of center around which to rotate the shape. By default it's a center of the shape |
+| centerY | <code>number</code> | Y coordinate of center around which to rotate the shape. By default it's a center of the shape |
+| checkBounds | <code>boolean</code> | Should the function check that shape won't go beyond defined bounds or container bounds after rotation. By default false. |
 
 <a name="SmartShape+redraw"></a>
 
@@ -1313,6 +1316,8 @@ of all group if forGroup parameter is set
     * [.findShapeByPoint(point)](#SmartShapeManager+findShapeByPoint) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
+    * [.getMaxZIndex(container)](#SmartShapeManager+getMaxZIndex) ⇒ <code>number</code>
+    * [.activateShape(shape)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
 
 <a name="new_SmartShapeManager_new"></a>
@@ -1384,6 +1389,29 @@ Returns an array of shapes that connected to specified DOM container
 | Param | Type | Description |
 | --- | --- | --- |
 | container | <code>HTMLElement</code> | Link to container |
+
+<a name="SmartShapeManager+getMaxZIndex"></a>
+
+### smartShapeManager.getMaxZIndex(container) ⇒ <code>number</code>
+Method returns zIndex of the topmost shape either in specified container or globally
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>number</code> - zIndex of the topmost shape  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| container | <code>HTMLElement</code> \| <code>null</code> | Container to search in or null if search through all shapes |
+
+<a name="SmartShapeManager+activateShape"></a>
+
+### smartShapeManager.activateShape(shape)
+Method used to make specified shape active and move it on top according to zIndex
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>SmartShape</code>](#SmartShape) | Shape to activate |
 
 <a name="SmartShapeManager+addContainerEvent"></a>
 

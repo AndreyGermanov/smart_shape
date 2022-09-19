@@ -167,7 +167,10 @@ function SmartShapeEventListener(shape) {
      */
     this.mousedown = (event) => {
         pauseEvent(event);
-        EventsManager.emit(ShapeEvents.SHAPE_MOVE_START, this.shape, createEvent(event));
+        setTimeout(() => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START, this.shape, createEvent(event));
+        },100);
+
     }
 
     /**
@@ -212,7 +215,7 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mouseover = (event) => {
-        if (SmartShapeManager.draggedShape) {
+        if (SmartShapeManager.draggedShape === this.shape) {
             return
         }
         EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OVER,this.shape,createEvent(event));
@@ -233,7 +236,6 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.click = (event) => {
-        this.shape.switchDisplayMode();
         if (event.type !== SmartShapeEventListener.SHAPE_MOUSE_CLICK) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK, this.shape, createEvent(event));
         }
