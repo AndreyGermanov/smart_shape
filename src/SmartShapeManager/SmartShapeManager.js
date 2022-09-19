@@ -318,7 +318,7 @@ function SmartShapeManager() {
      * @param eventName {string} Name of event
      * @param handler {function} Event handling function
      */
-    this.addContainerEvent = (container,eventName,handler,id) => {
+    this.addContainerEvent = (container,eventName,handler) => {
         if (this.containerEventListeners.find(event=>event.container === container && event.name === eventName)) {
             return
         }

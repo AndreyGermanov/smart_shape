@@ -501,7 +501,7 @@ function SmartShape() {
         }
         if (!centerY) {
             centerY = shapeCenterY
-        };
+        }
         if (this.initCenter) {
             [centerX,centerY] = this.initCenter;
         }
