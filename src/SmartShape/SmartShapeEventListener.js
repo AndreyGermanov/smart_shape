@@ -105,7 +105,6 @@ function SmartShapeEventListener(shape) {
             const diffX = event.newPos.left - event.oldPos.left;
             const diffY = event.newPos.top - event.oldPos.top;
             this.shape.moveBy(diffX,diffY);
-            this.shape.getChildren(true).forEach(child => child.moveBy(diffX,diffY))
             const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
             this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
             this.shape.redraw();

@@ -324,9 +324,10 @@ function ResizeBox() {
      * @returns {object} Position with fields:
      * `top`,`left`,`right`,`bottom`,`width`,`height`
      */
-    this.getPosition = () => (
-        {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
-    )
+    this.getPosition = () => {
+        return  {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
+    }
+
 
     /**
      * Method used to redraw resize box
