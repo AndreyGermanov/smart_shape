@@ -32,8 +32,8 @@ const n = new L(), y = (t, i = !0) => {
   }
   return !1;
 }, w = (t) => t * (Math.PI / 180), I = (t) => t * (180 / Math.PI), _ = (t, i, s, e, o) => {
-  const r = w(t), d = (i - e) * Math.cos(r) - (s - o) * Math.sin(r) + e, l = (i - e) * Math.sin(r) + (s - o) * Math.cos(r) + o;
-  return [d, l];
+  const r = w(t), d = (i - e) * Math.cos(r) - (s - o) * Math.sin(r) + e, A = (i - e) * Math.sin(r) + (s - o) * Math.cos(r) + o;
+  return [d, A];
 }, b = (t, i, s, e) => Math.sqrt(Math.pow(s - t, 2) + Math.pow(e - i, 2)), c = (t) => typeof t < "u" && t !== null, E = (t, i) => t && typeof t == "object" && i && typeof i == "object" ? Object.assign(t, i) : t, f = (t, i = {}) => {
   const s = {};
   for (let e in t)
@@ -182,14 +182,14 @@ function U(t) {
     let d = this.calcAngle(s, e, o, r);
     if (d === null)
       return;
-    let l = d;
-    this.previousAngle && (l -= this.previousAngle), this.previousAngle = d, n.emit(O.ROTATE_BOX_ROTATE, this.rotateBox, { angle: l });
+    let A = d;
+    this.previousAngle && (A -= this.previousAngle), this.previousAngle = d, n.emit(B.ROTATE_BOX_ROTATE, this.rotateBox, { angle: A });
   }, this.calcAngle = (i, s, e, o) => {
     const r = this.calcHypotenuse(i, s, e, o);
     if (r <= 0)
       return null;
-    const d = this.calcCathetus(i, s, e, o), l = this.calcStartAngle(i, s, e, o);
-    return Math.round(I(Math.asin(d / r)) + l + this.initialAngle);
+    const d = this.calcCathetus(i, s, e, o), A = this.calcStartAngle(i, s, e, o);
+    return Math.round(I(Math.asin(d / r)) + A + this.initialAngle);
   }, this.calcHypotenuse = (i, s, e, o) => b(i, s, e, o), this.calcCathetus = (i, s, e, o) => {
     if (i <= e && s <= o)
       return b(i, s, i, o);
@@ -287,7 +287,7 @@ function T() {
     this.eventListener.removeEventListener(t, i);
   };
 }
-const O = {
+const B = {
   ROTATE_BOX_ROTATE: "rotate"
 };
 function D(t) {
@@ -307,7 +307,7 @@ function D(t) {
         return;
       }
       const e = i.newPos.left - i.oldPos.left, o = i.newPos.top - i.oldPos.top;
-      this.shape.moveBy(e, o), this.shape.getChildren(!0).forEach((l) => l.moveBy(e, o));
+      this.shape.moveBy(e, o);
       const [r, d] = this.shape.getMaxPointSize();
       this.shape.scaleTo(i.newPos.width - r * 2, i.newPos.height - d * 2), this.shape.redraw();
     }), this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(h.SHAPE_MOVE_START, (i) => {
@@ -318,10 +318,10 @@ function D(t) {
       this.click(i);
     }));
   }, this.addRotateEventListener = () => {
-    !this.shape.rotateBox || (this.rotateBoxListener = this.shape.rotateBox.addEventListener(O.ROTATE_BOX_ROTATE, (i) => {
+    !this.shape.rotateBox || (this.rotateBoxListener = this.shape.rotateBox.addEventListener(B.ROTATE_BOX_ROTATE, (i) => {
       const s = this.shape.getRootParent();
       if (s) {
-        n.emit(O.ROTATE_BOX_ROTATE, s.rotateBox, { angle: i.angle });
+        n.emit(B.ROTATE_BOX_ROTATE, s.rotateBox, { angle: i.angle });
         return;
       }
       this.shape.rotateBy(i.angle), this.shape.redraw();
@@ -364,8 +364,8 @@ function D(t) {
     this.shape.calcPosition();
     const s = this.shape.getPosition(!0);
     let e = i.movementX, o = i.movementY, r = i.clientX + window.scrollX, d = i.clientY + window.scrollY;
-    const l = s.left + e, A = s.top + o, u = y(this.shape.root, !0), B = this.shape.getBounds();
-    return l < B.left || l + s.width > B.right ? [null, null] : A < B.top || A + s.height > B.bottom ? [null, null] : (r < l + u.left && (e = r - (l + u.left)), d < A + u.top && (o = d - (A + u.top)), r > l + s.width + u.left && (e = r - (s.width + u.left + s.left)), d > A + s.height + u.right && (o = d - (s.height + u.top + s.top)), [e, o]);
+    const A = s.left + e, l = s.top + o, u = y(this.shape.root, !0), O = this.shape.getBounds();
+    return A < O.left || A + s.width > O.right ? [null, null] : l < O.top || l + s.height > O.bottom ? [null, null] : (r < A + u.left && (e = r - (A + u.left)), d < l + u.top && (o = d - (l + u.top)), r > A + s.width + u.left && (e = r - (s.width + u.left + s.left)), d > l + s.height + u.right && (o = d - (s.height + u.top + s.top)), [e, o]);
   }, this.onPointAdded = (i) => {
     !this.shape.isShapePoint(i.target) || this.checkCanDeletePoints();
   }, this.checkCanDeletePoints = () => {
@@ -383,7 +383,7 @@ function D(t) {
   }, this.removeEventListener = (i, s) => {
     this.subscriptions[i].splice(this.subscriptions[i].indexOf(s), 1), n.unsubscribe(i, s);
   }, this.destroy = () => {
-    window.removeEventListener("resize", this.onWindowResize), n.unsubscribe(p.POINT_ADDED, this.onPointAdded), n.unsubscribe(p.POINT_DRAG_MOVE, this.onPointDragMove), n.unsubscribe(p.POINT_DESTROYED, this.onPointDestroyed), this.shape.resizeBox && (this.shape.resizeBox.removeEventListener(S.RESIZE_BOX_RESIZE, this.resizeBoxListener), this.shape.resizeBox.removeEventListener(h.SHAPE_MOUSE_CLICK, this.resizeClickEventListener), this.shape.resizeBox.removeEventListener(h.SHAPE_MOUSE_MOVE, this.resizeMouseMoveEventListener), this.shape.resizeBox.removeEventListener(h.SHAPE_MOVE_START, this.resizeMouseDownEventListener)), this.shape.rotateBox && (this.shape.rotateBox.removeEventListener(O.ROTATE_BOX_ROTATE, this.rotateBoxListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOUSE_CLICK, this.rotateClickEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOUSE_MOVE, this.rotateMouseMoveEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOVE_START, this.rotateMouseDownEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOVE_START, this.rotatePointDragStartEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOVE_START, this.rotatePointDragEndEventListener));
+    window.removeEventListener("resize", this.onWindowResize), n.unsubscribe(p.POINT_ADDED, this.onPointAdded), n.unsubscribe(p.POINT_DRAG_MOVE, this.onPointDragMove), n.unsubscribe(p.POINT_DESTROYED, this.onPointDestroyed), this.shape.resizeBox && (this.shape.resizeBox.removeEventListener(S.RESIZE_BOX_RESIZE, this.resizeBoxListener), this.shape.resizeBox.removeEventListener(h.SHAPE_MOUSE_CLICK, this.resizeClickEventListener), this.shape.resizeBox.removeEventListener(h.SHAPE_MOUSE_MOVE, this.resizeMouseMoveEventListener), this.shape.resizeBox.removeEventListener(h.SHAPE_MOVE_START, this.resizeMouseDownEventListener)), this.shape.rotateBox && (this.shape.rotateBox.removeEventListener(B.ROTATE_BOX_ROTATE, this.rotateBoxListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOUSE_CLICK, this.rotateClickEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOUSE_MOVE, this.rotateMouseMoveEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOVE_START, this.rotateMouseDownEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOVE_START, this.rotatePointDragStartEventListener), this.shape.rotateBox.removeEventListener(h.SHAPE_MOVE_START, this.rotatePointDragEndEventListener));
     for (let i in this.subscriptions)
       this.subscriptions[i].forEach((e) => n.unsubscribe(i, e)), this.subscriptions[i] = [];
   };
@@ -708,25 +708,25 @@ function P() {
     this.calcPosition();
     const e = this.getPosition(!0);
     e.width >= 10 && t < 10 && (t = 10), e.height >= 10 && i < 10 && (i = 10);
-    let o = e.left + t > s.right ? s.right - e.left : t, r = e.top + i > s.bottom ? s.bottom - e.top : i, d = o / e.width, l = r / e.height;
+    let o = e.left + t > s.right ? s.right - e.left : t, r = e.top + i > s.bottom ? s.bottom - e.top : i, d = o / e.width, A = r / e.height;
     this.points.forEach(
-      (A) => {
-        A.x = (A.x - e.left) * d + e.left, A.y = (A.y - e.top) * l + e.top;
+      (l) => {
+        l.x = (l.x - e.left) * d + e.left, l.y = (l.y - e.top) * A + e.top;
       }
-    ), this.getChildren(!0).forEach((A) => {
-      A.points.forEach(
+    ), this.getChildren(!0).forEach((l) => {
+      l.points.forEach(
         (u) => {
-          u.x = (u.x - e.left) * d + e.left, u.y = (u.y - e.top) * l + e.top;
+          u.x = (u.x - e.left) * d + e.left, u.y = (u.y - e.top) * A + e.top;
         }
-      ), A.calcPosition();
-    }), this.getChildren(!0).forEach((A) => A.redraw()), this.calcPosition();
+      ), l.calcPosition();
+    }), this.getChildren(!0).forEach((l) => l.redraw()), this.calcPosition();
   }, this.rotateBy = (t, i = null, s = null, e = !1) => {
     this.calcPosition();
     const o = this.getPosition(!0);
     let [r, d] = this.getCenter(!0);
-    const l = this.getRootParent();
-    l && ([r, d] = l.getCenter(!0)), i || (i = r), s || (s = d), this.initCenter && ([i, s] = this.initCenter), !(e && (!this.isInBounds(..._(t, o.left, o.top, i, s)) || !this.isInBounds(..._(t, o.right, o.top, i, s)) || !this.isInBounds(..._(t, o.left, o.bottom, i, s)) || !this.isInBounds(..._(t, o.right, o.bottom, i, s)))) && (this.points.forEach((A) => A.rotateBy(t, i, s)), this.getChildren(!0).forEach((A) => {
-      A.points.forEach((u) => u.rotateBy(t, i, s)), A.redraw();
+    const A = this.getRootParent();
+    A && ([r, d] = A.getCenter(!0)), i || (i = r), s || (s = d), this.initCenter && ([i, s] = this.initCenter), !(e && (!this.isInBounds(..._(t, o.left, o.top, i, s)) || !this.isInBounds(..._(t, o.right, o.top, i, s)) || !this.isInBounds(..._(t, o.left, o.bottom, i, s)) || !this.isInBounds(..._(t, o.right, o.bottom, i, s)))) && (this.points.forEach((l) => l.rotateBy(t, i, s)), this.getChildren(!0).forEach((l) => {
+      l.points.forEach((u) => u.rotateBy(t, i, s)), l.redraw();
     }));
   }, this.isInBounds = (t, i) => {
     const [s, e] = this.getMaxPointSize(), o = this.getBounds();
