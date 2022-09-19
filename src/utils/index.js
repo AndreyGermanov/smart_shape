@@ -86,3 +86,7 @@ export const mergeObjects = (obj1, obj2) => {
     }
     return obj1;
 }
+
+export const round = (number,precission) => {
+    return Math.round(number*precission)/precission;
+}

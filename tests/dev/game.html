@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>An empty page used by Cypress tests</title>
+</head>
+<body>
+<div id="app" style="width:100%;height:100vh;background-position-y:100px"></div>
+<script type="module">
+    function getRandom (min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    import {background,spaceship,fireball,shotSound,asteroids as asteroidImgs} from "./game.js";
+    import {SmartShape} from "../../src/index.js";
+    const app = document.querySelector("#app");
+    app.style.backgroundImage = "url('"+background+"')";
+    app.style.backgroundPositionY = "20px";
+    let pos = 0;
+    const img = new Image();
+    const shots = [];
+    const asteroids = [];
+    const shotAudio = new Audio();
+    shotAudio.src = shotSound;
+    img.addEventListener("load", () => {
+        img.style.left = (app.clientWidth/2 - img.width/2)+"px";
+        img.style.top = (app.clientHeight - img.height)+"px";
+        img.style.position = "absolute";
+    })
+    app.appendChild(img);
+    img.src = spaceship;
+
+    setInterval(() => {
+        app.style.backgroundPositionY = pos+"px";
+        pos +=1;
+        for (let shot of shots) {
+            shot.y -= 3;
+            shot.img.style.top = shot.y+"px";
+            if (shot.y < 0) {
+                shots.splice(shots.indexOf(shot),1);
+                app.removeChild(shot.img);
+            }
+        }
+        for (let asteroid of asteroids) {
+            asteroid.y += 3;
+            asteroid.img.style.top = asteroid.y+"px";
+            if (asteroid.angle >= 360) {
+                asteroid.angle = 0;
+            } else {
+                asteroid.angle += 5;
+            }
+            if (asteroid.y>app.clientHeight-120) {
+                app.removeChild(asteroid.img);
+                asteroids.splice(asteroids.indexOf(asteroid),1);
+            }
+        }
+    },1);
+
+    setInterval(() => {
+        if (asteroids.length>5) {
+            return;
+        }
+        const x = getRandom(img.width/2,app.clientWidth-img.width);
+        const asteroid = {x:x,y:0,img:new Image(),angle:0}
+        asteroid.img.src = asteroidImgs[getRandom(0,5)];
+        asteroid.img.style.top = asteroid.y+"px";
+        asteroid.img.style.left = asteroid.x+"px";
+        asteroid.img.style.position = "absolute";
+        app.appendChild(asteroid.img);
+        asteroids.push(asteroid);
+    },1000)
+
+    app.addEventListener('dblclick', (event) => {
+        if(document.selection && document.selection.empty) {
+            document.selection.empty();
+        } else if(window.getSelection) {
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+        }
+    })
+    app.addEventListener("mousemove", (event) => {
+        if (event.clientX+img.width>app.clientWidth || event.clientX < img.width/2) {
+            return;
+        }
+        img.style.left = (event.clientX-img.width/2)+"px";
+    });
+
+    app.addEventListener("mousedown", (event) => {
+        shotAudio.pause();
+        shotAudio.currentTime = 0;
+        const shot = {x:event.clientX-32,y:parseInt(img.style.top)-64,img:new Image()};
+        shot.img.src = fireball;
+        shot.img.style.left = shot.x+"px";
+        shot.img.style.top = shot.y+"px";
+        shot.img.style.position = "absolute";
+        app.appendChild(shot.img);
+        shots.push(shot);
+        shotAudio.play();
+    })
+</script>
+</body>
+</html>
