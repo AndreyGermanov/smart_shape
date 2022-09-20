@@ -108,6 +108,7 @@ function SmartShapeEventListener(shape) {
             const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
             this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
             this.shape.redraw();
+            EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
         });
         this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
             this.mousedown(event);

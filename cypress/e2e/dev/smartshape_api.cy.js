@@ -484,9 +484,6 @@ describe('SmartShape API tests', () => {
           "Should register subscription to event of first shape");
       assert.equal(shape2.eventListener.subscriptions[ContainerEvents.CONTAINER_BOUNDS_CHANGED].length, 1,
           "Should register subscription to event of second shape");
-      window.dispatchEvent(new Event('resize'));
-      assert.equal(listener1Triggered, true, "Should trigger first listener");
-      assert.equal(listener2Triggered, true, "Should trigger second listener");
       shape.destroy();
       shape2.destroy();
       let createTriggered = false;
@@ -533,34 +530,37 @@ describe('SmartShape API tests', () => {
               cy.get("#app2").trigger("mouseup", {buttons: 1}).then(() => {
                 SmartShapeManager.draggedShape = null;
                 cy.get("#shape3").trigger("mouseover").then(() => {
-                  cy.get("#shape3").trigger("mouseout").then(() => {
-                    shape3.options.displayMode = SmartShapeDisplayMode.DEFAULT;
-                    cy.get("#shape3").click({force: true}).then(() => {
-                      cy.wait(200).then(() => {
-                        assert.equal(shape3.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED display mode on first click");
-                        cy.get("#shape3").click({force: true}).then(() => {
-                          cy.wait(200).then(() => {
-                            assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.SCALE, "Should switch to SCALE display mode on second click");
-                            cy.get("#shape3").click({force: true}).then(() => {
-                              cy.wait(200).then(() => {
-                                assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.ROTATE, "Should switch to ROTATE display mode on third click");
-                                cy.get("#shape3").click({force: true}).then(() => {
-                                  cy.wait(200).then(() => {
-                                    assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.DEFAULT, "Should switch to DEFAULT display mode on fourth click");
-                                    assert.isTrue(createTriggered, "Should trigger shape create event");
-                                    assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
-                                    assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
-                                    assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
-                                    assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
-                                    assert.isTrue(clickTriggered, "Should trigger shape click event");
-                                    assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
-                                    shape3.destroy();
-                                    assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
-                                  });
-                                })
-                              });
-                            })
-                          });
+                  cy.wait(200).then(() => {
+                    cy.get("#shape3").trigger("mouseout").then(() => {
+                      shape3.options.displayMode = SmartShapeDisplayMode.DEFAULT;
+                      cy.get("#shape3").click({force: true}).then(() => {
+                        cy.wait(200).then(() => {
+                          assert.equal(shape3.options.displayMode,SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED display mode on first click");
+                          cy.get("#shape3").click({force: true}).then(() => {
+                            cy.wait(200).then(() => {
+                              assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.SCALE, "Should switch to SCALE display mode on second click");
+                              cy.get("#shape3").click({force: true}).then(() => {
+                                cy.wait(200).then(() => {
+                                  assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.ROTATE, "Should switch to ROTATE display mode on third click");
+                                  cy.get("#shape3").click({force: true}).then(() => {
+                                    cy.wait(200).then(() => {
+                                      assert.equal(shape3.options.displayMode, SmartShapeDisplayMode.DEFAULT, "Should switch to DEFAULT display mode on fourth click");
+                                      assert.isTrue(createTriggered, "Should trigger shape create event");
+                                      assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
+                                      assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
+                                      assert.isTrue(mouseOverTriggered, "Should trigger shape mouse over event");
+                                      assert.isTrue(mouseOutTriggered, "Should trigger shape mouse out event");
+                                      assert.isTrue(clickTriggered, "Should trigger shape click event");
+                                      setTimeout(() => {
+                                        shape3.destroy();
+                                        assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
+                                      },200);
+                                    });
+                                  })
+                                });
+                              })
+                            });
+                          })
                         })
                       })
                     })
@@ -606,4 +606,14 @@ describe('SmartShape API tests', () => {
           "Should remove subscription from second shape");
     });
   });
+
+  it("belongsToShape", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const [app, shape] = setup();
+      assert.isTrue(shape.belongsToShape(0,100),"Point on border should belong to shape");
+      assert.isTrue(shape.belongsToShape(15,90),"Point inside shape should belong to shape");
+      assert.isFalse(shape.belongsToShape(5,40),"Point above border should not belong to shape");
+      assert.isFalse(shape.belongsToShape(195,60),"Point above border on the right side should not belong to shape");
+    });
+  })
 })

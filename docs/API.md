@@ -724,6 +724,7 @@ to this object.
     * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
+    * [.belongsToShape(x, y)](#SmartShape+belongsToShape) ⇒ <code>boolean</code>
     * [.addEventListener(eventName, handler)](#SmartShape+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartShape+removeEventListener)
     * [.show()](#SmartShape+show)
@@ -1075,6 +1076,20 @@ Method returns true if specified point exists in the array of this shape or fals
 | Param | Description |
 | --- | --- |
 | point | [SmartPoint](#SmartPoint) object of point to search |
+
+<a name="SmartShape+belongsToShape"></a>
+
+### smartShape.belongsToShape(x, y) ⇒ <code>boolean</code>
+Method returns true if point with specified coordinates lays
+inside shape or false otherwise.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>boolean</code> - True if (x,y) belongs to shape and false otherwise  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | X coodrinate |
+| y | <code>number</code> | Y coordinate |
 
 <a name="SmartShape+addEventListener"></a>
 
