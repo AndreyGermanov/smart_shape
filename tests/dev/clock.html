@@ -130,26 +130,26 @@
         clock.init(div,{fill:"none",id:"clock",strokeWidth:0,pointOptions:{canDrag:false,visible:false},canScale:true,canRotate:true},[[0,0],[200,0],[200,200],[0,200]]);
         for (let angle=0;angle<=360;angle+=6) {
           let secondsTick = new SmartShape();
-          secondsTick.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,10],[98,10]]);
+          secondsTick.init(div,{id:"secondTick"+angle, zIndex:1005, fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,10],[98,10]]);
           secondsTick.rotateBy(angle,100,100);
           secondsTick.redraw();
           clock.addChild(secondsTick);
         }
         for (let angle=0;angle<=360;angle+=30) {
           let minutesTick = new SmartShape();
-          minutesTick.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,20],[98,20]]);
+          minutesTick.init(div,{id:"minuteTick"+angle, zIndex:1005, fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,20],[98,20]]);
           minutesTick.rotateBy(angle,100,100);
           minutesTick.redraw();
           clock.addChild(minutesTick);
         }
         const secondsHand = new SmartShape();
-        secondsHand.init(div,{fill:"black",id:"second",strokeWidth:0,pointOptions:{visible:false}},[[98,100],[100,10],[102,100]]);
+        secondsHand.init(div,{fill:"black",id:"second", zIndex:1006, strokeWidth:0,pointOptions:{visible:false}},[[98,100],[100,10],[102,100]]);
         clock.addChild(secondsHand);
         const minuteHand = new SmartShape();
-        minuteHand.init(div,{fill:"black",id:"minute",strokeWidth:0,pointOptions:{visible:false}},[[97,100],[100,30],[103,100]]);
+        minuteHand.init(div,{fill:"black",id:"minute", zIndex:1006, strokeWidth:0,pointOptions:{visible:false}},[[97,100],[100,30],[103,100]]);
         clock.addChild(minuteHand);
         const hourHand = new SmartShape();
-        hourHand.init(div,{fill:"black",id:"hour",strokeWidth:0,pointOptions:{visible:false}},[[95,100],[100,50],[105,100]])
+        hourHand.init(div,{fill:"black",id:"hour", zIndex:1006, strokeWidth:0,pointOptions:{visible:false}},[[95,100],[100,50],[105,100]])
         clock.addChild(hourHand);
         let prevHourAngle = 0;
         let prevMinuteAngle = 0;
@@ -357,32 +357,32 @@
         }
         const i_cords = [[0,0],[25,0],[25,150],[0,150]]
         const i = new SmartShape();
-        i.init(div,{},i_cords);
+        i.init(div,{id:"i"},i_cords);
         const l_cords = [[0,0],[0,150],[100,150],[100,125],[25,125],[25,0]]
         const l = new SmartShape();
-        l.init(div,{},l_cords);
+        l.init(div,{id:"l"},l_cords);
 
         const e = new SmartShape();
         const e_cords = [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]];
-        e.init(div,{},e_cords);
+        e.init(div,{id:"e1"},e_cords);
 
         const e2 = new SmartShape();
-        e2.init(div,{},e_cords);
+        e2.init(div,{id:"e2"},e_cords);
 
         const m = new SmartShape();
         const m_cords = [[0,0],[50,60],[100,0],[100,150],[75,150],[75,75],[50,100],[25,75],[25,150],[0,150]]
-        m.init(div,{},m_cords);
+        m.init(div,{id:"m"},m_cords);
 
         const f = new SmartShape();
         const f_cords = [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 150], [0, 150]];
-        f.init(div, {}, f_cords);
+        f.init(div, {id:"f"}, f_cords);
 
         const t_cords = [[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]];
         const t = new SmartShape();
-        t.init(div,{},t_cords);
+        t.init(div,{id:"t"},t_cords);
 
         const t2 = new SmartShape();
-        t2.init(div,{},t_cords);
+        t2.init(div,{id:"t2"},t_cords);
 
         let startX = document.body.clientWidth/2 - 490/2;
         let startY = 450;

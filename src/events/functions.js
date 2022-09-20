@@ -24,5 +24,5 @@ export const createEvent = (origEvent,params={}) => {
  * @returns {array} Coordinates as an array [x,y]
  */
 export const getMouseCursorPos = (event) => {
-    return [event.clientX+window.scrollX,event.clientY+window.scrollY];
+    return [event.pageX,event.pageY];
 }
