@@ -114,3 +114,21 @@ export const isPointInsidePolygon = (polygon,point) => {
     } while (i !== 0);
     return (count % 2 === 1)
 }
+
+/**
+ * @ignore
+ * Returns true if two rectangles overlap each other
+ * @param rect1 {object} First rectangle coordinates in format {left,top,right,bottom}
+ * @param rect2 {object} Second rectangle coordinates in format {left,top,right,bottom}
+ * @returns {boolean} True if rectangles overlap and false otherwise
+ */
+export const rectsOverlap = (rect1,rect2) => {
+    if (rect1.left === rect1.right || rect1.top === rect1.bottom || rect2.left === rect2.right || rect2.top === rect2.bottom)
+        return false;
+
+    if (rect1.left > rect2.right || rect2.left > rect1.left) {
+        return false;
+    }
+
+    return !(rect1.bottom > rect2.top || rect2.bottom > rect1.top);
+}

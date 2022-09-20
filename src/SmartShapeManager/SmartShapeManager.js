@@ -4,6 +4,7 @@ import {notNull} from "../utils/index.js";
 import {SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
+import {createEvent} from "../events/functions.js";
 
 /**
  * Object that keeps collection of shapes and keep track of
@@ -32,6 +33,12 @@ function SmartShapeManager() {
      * @type {SmartShape}
      */
     this.draggedShape = null;
+
+    /**
+     * The shape under mouse cursor
+     * @type {SmartShape}
+     */
+    this.shapeOnCursor = null;
 
     /**
      * List of event listeners, attached to containers of shapes in format
@@ -308,6 +315,8 @@ function SmartShapeManager() {
         this.addContainerEvent(shape.root,"mousemove",this.mousemove)
         this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
         this.addContainerEvent(shape.root,"dblclick",this.doubleclick)
+        this.addContainerEvent(shape.root, "mousedown", this.mousedown);
+        this.addContainerEvent(shape.root, "click", this.click);
         this.checkCanDeletePoints(shape);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)
     }
@@ -358,7 +367,6 @@ function SmartShapeManager() {
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
             this.draggedShape = null;
-            return
         }
         if (this.draggedShape) {
             if (event.buttons !== 1) {
@@ -367,7 +375,50 @@ function SmartShapeManager() {
                 return
             }
             this.draggedShape.eventListener.mousemove(event);
+        } else {
+            this.processShapesUnderCursor(event);
         }
+    }
+
+    /**
+     * @ignore
+     * Method that runs all the time when user moves cursor
+     * over the container. Used to set which shape is currently on
+     * cursor, which shape is currently under the mouse cursor
+     * and trigger mouseover/mouseout events for previous shape
+     * and current shape.
+     * @param event {MouseEvent} Mouse movement object
+     */
+    this.processShapesUnderCursor = (event) => {
+        const [clientX,clientY] = [event.clientX,event.clientY];
+        const shapeOnCursor = this.getShapeOnCursor(clientX, clientY);
+        if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor) {
+            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));
+            this.shapeOnCursor.svg.style.cursor = "default";
+        }
+        this.shapeOnCursor = shapeOnCursor;
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.mouseover(createEvent(event, {target:shapeOnCursor}));
+            this.shapeOnCursor.eventListener.mouseenter(createEvent(event, {target:shapeOnCursor}));
+            this.shapeOnCursor.svg.style.cursor = "crosshair";
+        }
+    };
+
+    /**
+     * Internal method used to determine the shape which is under
+     * mouse cursor right now.
+     * @param x {number} X coordinate of mouse cursor
+     * @param y {number} Y coordinate of mouse cursor
+     * @returns {SmartShape|null} Either SmartShape object or null
+     */
+    this.getShapeOnCursor = (x,y) => {
+        const matchedShapes = this.shapes.filter(shape => shape.belongsToShape(x,y)
+            && shape.options.id.search("_resizebox") === -1
+            && shape.options.id.search("_rotatebox") === -1);
+        if (!matchedShapes.length) {
+            return null;
+        }
+        return matchedShapes.reduce((prevShape,shape) => shape.options.zIndex >= prevShape.options.zIndex ? shape : prevShape);
     }
 
     /**
@@ -385,6 +436,30 @@ function SmartShapeManager() {
                 this.activeShape.addPoint(event.clientX-this.activeShape.root.offsetLeft + window.scrollX,
                     event.clientY-this.activeShape.root.offsetTop + window.scrollY,{forceDisplay:true});
             }
+        }
+    }
+
+    /**
+     * @ignore
+     * onMouseDown event handler for shape's container. If cursor points on some shape,
+     * forwards this event to this shape.
+     * @param event {MouseEvent} Mouse down event
+     */
+    this.mousedown = (event) => {
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.mousedown(createEvent(event,{target:this.shapeOnCursor}));
+        }
+    }
+
+    /**
+     * @ignore
+     * onClicj event handler for shape's container. If cursor points on some shape,
+     * forwards this event to this shape.
+     * @param event {MouseEvent} Mouse click event
+     */
+    this.click = (event) => {
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.click(createEvent(event,{target:this.shapeOnCursor}));
         }
     }
 

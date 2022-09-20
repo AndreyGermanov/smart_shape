@@ -19,7 +19,6 @@ function SmartShapeDrawHelper() {
             return
         }
         if (shape.svg) {
-            shape.eventListener.removeSvgEventListeners();
             shape.root.removeChild(shape.svg);
             shape.svg = null;
         }
@@ -29,7 +28,6 @@ function SmartShapeDrawHelper() {
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
         shape.root.appendChild(shape.svg);
-        shape.eventListener.setSvgEventListeners()
     }
 
     this.updateOptions = (shape) => {
@@ -39,7 +37,7 @@ function SmartShapeDrawHelper() {
         shape.calcPosition();
         shape.svg.id = shape.options.id;
         shape.svg.style.position = 'absolute';
-        shape.svg.style.cursor = 'crosshair';
+        shape.svg.style.cursor = 'default';
         shape.svg.style.left = shape.left;
         shape.svg.style.top = shape.top;
         shape.svg.setAttribute("width",shape.width);

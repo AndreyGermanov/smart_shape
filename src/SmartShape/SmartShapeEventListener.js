@@ -58,33 +58,6 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
-     * Internal method that binds DOM event listeners from SVG element of shape
-     * each time when it redraws itself
-     */
-    this.setSvgEventListeners = () => {
-        shape.svg.addEventListener("mousedown",this.mousedown);
-        shape.svg.addEventListener("mouseenter",this.mouseenter);
-        shape.svg.addEventListener("mouseover",this.mouseover);
-        shape.svg.addEventListener("mouseout",this.mouseout);
-        shape.svg.addEventListener("click",this.click);
-    }
-
-    /**
-     * @ignore
-     * Internal method that removes DOM event listeners from SVG element of shape
-     * each time when it destroys before redrawing itself
-     */
-    this.removeSvgEventListeners = () => {
-        shape.svg.removeEventListener("mousedown",this.mousedown);
-        shape.svg.removeEventListener("mouseenter",this.mouseenter);
-        shape.svg.removeEventListener("mouseover",this.mouseover);
-        shape.svg.removeEventListener("mouseout",this.mouseout);
-        shape.svg.removeEventListener("click",this.click);
-    }
-
-
-    /**
-     * @ignore
      * Method adds event listeners to ResizeBox, connected to it to react on them. So, the shape can change itself
      * when some event comes from ResizeBox: when user resizes ResizeBox, it emits "resize" event. Then the shape
      * receives this event in this method and scales the shape according to new coordinates

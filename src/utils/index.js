@@ -1,4 +1,4 @@
-import {getRotatedCoords, distance, degrees_to_radians, radians_to_degrees,isPointInsidePolygon} from "./geometry.js";
+import {getRotatedCoords, distance, degrees_to_radians, radians_to_degrees,isPointInsidePolygon,rectsOverlap} from "./geometry.js";
 
 export const getOffset = ( elem,deep=true ) => {
     let x = 0;
@@ -48,4 +48,4 @@ export const round = (number,precission) => {
     return Math.round(number*precission)/precission;
 }
 
-export {radians_to_degrees,degrees_to_radians,getRotatedCoords,distance,isPointInsidePolygon};
+export {radians_to_degrees,degrees_to_radians,getRotatedCoords,distance,isPointInsidePolygon,rectsOverlap};

@@ -5,7 +5,7 @@ import SmartShapeGroupHelper from "./SmartShapeGroupHelper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
 import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
-import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon} from "../utils";
+import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon, getOffset} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 /**
  * SmartShape class. Used to construct shapes.
@@ -679,7 +679,8 @@ function SmartShape() {
         if (this.findPoint(x,y)) {
             return true;
         }
-        return isPointInsidePolygon(this.getPointsArray(),[x,y]);
+        const points = this.getPointsArray().map(point => [point[0]+getOffset(this.root).left,point[1]+getOffset(this.root).top])
+        return isPointInsidePolygon(points,[x,y]);
     }
 
     /**
