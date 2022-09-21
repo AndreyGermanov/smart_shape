@@ -19,6 +19,7 @@ function SmartShapeDrawHelper() {
             return
         }
         if (shape.svg) {
+            shape.eventListener.removeSvgEventListeners();
             shape.root.removeChild(shape.svg);
             shape.svg = null;
         }
@@ -26,11 +27,15 @@ function SmartShapeDrawHelper() {
         shape.svg.ondragstart = function() { return false; }
         this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
+        shape.eventListener.setSvgEventListeners();
         shape.svg.appendChild(polygon);
         shape.root.appendChild(shape.svg);
     }
 
     this.updateOptions = (shape) => {
+        if (!shape.svg || typeof(shape.svg) === "undefined") {
+            return
+        }
         if (typeof(shape.options.visible) !== "undefined") {
             shape.svg.style.display = shape.options.visible ? '' : 'none';
         }
@@ -57,12 +62,9 @@ function SmartShapeDrawHelper() {
                 point.element.style.display = 'none';
             }
         });
-        if (shape.resizeBox) {
-            this.redrawResizeBox(shape);
-        }
-        if (shape.rotateBox) {
-            this.redrawRotateBox(shape);
-        }
+        let parent = shape.getRootParent();
+        this.redrawResizeBox(parent || shape);
+        this.redrawRotateBox(parent || shape);
     }
 
     /**
@@ -95,6 +97,9 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      */
     this.redrawResizeBox = (shape) => {
+        if (!shape.resizeBox) {
+            return
+        }
         const bounds = shape.getResizeBoxBounds();
         shape.resizeBox.left = bounds.left;
         shape.resizeBox.top = bounds.top;
@@ -111,6 +116,9 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      */
     this.redrawRotateBox = (shape) => {
+        if (!shape.rotateBox) {
+            return
+        }
         const bounds = shape.getResizeBoxBounds();
         shape.rotateBox.left = bounds.left;
         shape.rotateBox.top = bounds.top;

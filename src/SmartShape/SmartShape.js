@@ -675,11 +675,14 @@ function SmartShape() {
      * @param y {number} Y coordinate
      * @returns {boolean} True if (x,y) belongs to shape and false otherwise
      */
-    this.belongsToShape = (x,y) => {
+    this.belongsToShape = (x,y,applyOffset=true) => {
         if (this.findPoint(x,y)) {
             return true;
         }
-        const points = this.getPointsArray().map(point => [point[0]+getOffset(this.root).left,point[1]+getOffset(this.root).top])
+        let points = this.getPointsArray();
+        if (applyOffset) {
+            points = points.map(point => [point[0] + getOffset(this.root).left, point[1] + getOffset(this.root).top])
+        }
         return isPointInsidePolygon(points,[x,y]);
     }
 
@@ -798,6 +801,7 @@ function SmartShape() {
         let pos = this.getPosition(true);
         const parent = this.getRootParent();
         if (parent) {
+            parent.calcPosition();
             pos = parent.getPosition(true);
         }
         const [pointWidth,pointHeight] = this.getMaxPointSize();

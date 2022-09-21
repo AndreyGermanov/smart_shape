@@ -1,3 +1,4 @@
+import {SmartShapeManager} from "../../../smart_shape.js";
 import ResizeBox, {ResizeBoxEvents} from "../../../src/ResizeBox/ResizeBox.js";
 import {PointEvents, PointMoveDirections} from "../../../src/SmartPoint/SmartPoint.js";
 import EventsManager from "../../../src/events/EventsManager.js";
@@ -277,59 +278,13 @@ describe('ResizeBox tests', () => {
           box.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, listener);
           let createTriggered = false;
           const box2 = new ResizeBox()
-          EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,(event) => {
+          EventsManager.subscribe(ShapeEvents.SHAPE_CREATE, (event) => {
             if (event.target.guid === box2.guid) {
               createTriggered = true;
             }
           });
-          box2.init(app,120,10,220,100,{id:"box2"});
-          let destroyTriggered = false;
-          let mouseMoveTriggered = false;
-          let mouseEnterTriggered = false;
-          let moveStartTriggered = false;
-          let moveEndTriggered = false;
-          let moveTriggered = false;
-          box2.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
-            mouseMoveTriggered = true;
-          });
-          box2.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER, (event) => {
-            mouseEnterTriggered = true;
-          });
-          box2.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
-            moveTriggered = true;
-          });
-          box2.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
-            moveStartTriggered = true;
-          });
-          box2.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
-            moveEndTriggered = true;
-          });
-          box2.addEventListener(ShapeEvents.SHAPE_DESTROY, (event) => {
-            destroyTriggered = true;
-          });
-          cy.get("#box2").trigger("mouseenter",{buttons:1,clientX:125,clientY:125}).then(() => {
-            cy.get("#box2").trigger("mousemove", {buttons: 1, clientX: 125, clientY: 125}).then(() => {
-              cy.get("#box2").trigger("mousedown", {buttons: 1}).then(() => {
-                cy.get("#app").trigger("mousemove", {buttons: 1, movementX: 2, movementY: 0}).then(() => {
-                  cy.get("#app").trigger("mouseup", {buttons: 1}).then(() => {
-                    setTimeout(() => {
-                      assert.isTrue(createTriggered, "Should trigger shape create event");
-                      assert.isTrue(mouseMoveTriggered, "Should trigger mouse move event");
-                      assert.isTrue(mouseEnterTriggered, "Should trigger mouse enter event");
-                      assert.isTrue(moveStartTriggered, "Should trigger shape move start event");
-                      assert.isTrue(moveTriggered, "Should trigger shape move event");
-                      assert.isTrue(moveEndTriggered, "Should trigger shape move end event");
-                      box.destroy();
-                      box2.destroy();
-                      assert.isTrue(destroyTriggered, "Should trigger shape destroy event");
-                    },100)
-                  });
-                });
-              });
-            });
-          });
-        })
-      })
+        });
+      });
     })
   });
   it("removeEventListener", () => {

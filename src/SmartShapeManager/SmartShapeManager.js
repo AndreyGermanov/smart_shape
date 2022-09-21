@@ -315,8 +315,6 @@ function SmartShapeManager() {
         this.addContainerEvent(shape.root,"mousemove",this.mousemove)
         this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
         this.addContainerEvent(shape.root,"dblclick",this.doubleclick)
-        this.addContainerEvent(shape.root, "mousedown", this.mousedown);
-        this.addContainerEvent(shape.root, "click", this.click);
         this.checkCanDeletePoints(shape);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)
     }
@@ -393,13 +391,10 @@ function SmartShapeManager() {
         const [clientX,clientY] = [event.clientX,event.clientY];
         const shapeOnCursor = this.getShapeOnCursor(clientX, clientY);
         if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor) {
-            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));
             this.shapeOnCursor.svg.style.cursor = "default";
         }
         this.shapeOnCursor = shapeOnCursor;
         if (this.shapeOnCursor) {
-            this.shapeOnCursor.eventListener.mouseover(createEvent(event, {target:shapeOnCursor}));
-            this.shapeOnCursor.eventListener.mouseenter(createEvent(event, {target:shapeOnCursor}));
             this.shapeOnCursor.svg.style.cursor = "crosshair";
         }
     };
@@ -448,6 +443,24 @@ function SmartShapeManager() {
     this.mousedown = (event) => {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.mousedown(createEvent(event,{target:this.shapeOnCursor}));
+        }
+    }
+
+    this.mouseover = (event) => {
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.mouseover(createEvent(event, {target:this.shapeOnCursor}));
+        }
+    }
+
+    this.mouseenter = (event) => {
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.mouseenter(createEvent(event, {target:this.shapeOnCursor}));
+        }
+    }
+
+    this.mouseout = () => {
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));
         }
     }
 

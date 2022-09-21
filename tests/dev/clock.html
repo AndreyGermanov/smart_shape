@@ -127,7 +127,7 @@
       let timeLeftShapes = [];
       function setClock() {
         const clock = new SmartShape();
-        clock.init(div,{fill:"none",id:"clock",strokeWidth:0,pointOptions:{canDrag:false,visible:false},canScale:true,canRotate:true},[[0,0],[200,0],[200,200],[0,200]]);
+        clock.init(div,{fill:"none",id:"clock",strokeWidth:0,pointOptions:{canDrag:false,visible:false},canScale:true,canRotate:true},[]);
         for (let angle=0;angle<=360;angle+=6) {
           let secondsTick = new SmartShape();
           secondsTick.init(div,{id:"secondTick"+angle, zIndex:1005, fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,10],[98,10]]);

@@ -56,6 +56,31 @@ function SmartShapeEventListener(shape) {
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
     }
 
+    this.setSvgEventListeners = () => {
+        this.svg_mouseover = this.shape.svg.addEventListener("mouseover", (event) => {
+            SmartShapeManager.mouseover(event);
+        });
+        this.svg_mouseout = this.shape.svg.addEventListener("mouseout", (event) => {
+            SmartShapeManager.mouseout(event);
+        });
+        this.svg_mouseenter = this.shape.svg.addEventListener("mouseenter", (event) => {
+            SmartShapeManager.mouseenter(event);
+        });
+        this.svg_mousedown = this.shape.svg.addEventListener("mousedown", (event) => {
+            SmartShapeManager.mousedown(event);
+        });
+        this.svg_click = this.shape.svg.addEventListener("click", (event) => {
+           SmartShapeManager.click(event);
+        });
+    }
+
+    this.removeSvgEventListeners = () => {
+        this.shape.svg.removeEventListener("mouseover", this.svg_mouseover);
+        this.shape.svg.removeEventListener("mouseout", this.svg_mouseout);
+        this.shape.svg.removeEventListener("mouseenter", this.svg_mouseenter);
+        this.shape.svg.removeEventListener("mousedown",this.svg_mousedown);
+        this.shape.svg.removeEventListener("click",this.svg_click);
+    }
     /**
      * @ignore
      * Method adds event listeners to ResizeBox, connected to it to react on them. So, the shape can change itself
@@ -114,8 +139,13 @@ function SmartShapeEventListener(shape) {
                 EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,parent.rotateBox,{angle:event.angle});
                 return
             }
-            this.shape.rotateBy(event.angle);
-            this.shape.redraw()
+            if (parent) {
+                parent.rotateBy(event.angle);
+                parent.redraw();
+            } else {
+                this.shape.rotateBy(event.angle);
+                this.shape.redraw()
+            }
         });
         this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
             this.mousedown(event);
@@ -127,7 +157,7 @@ function SmartShapeEventListener(shape) {
             this.click(event);
         })
         this.rotatePointDragStartEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_START, (_event) => {
-            this.shape.initCenter = this.shape.getCenter();
+            this.shape.initCenter = this.shape.getCenter(true);
         })
         this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_END, (_event) => {
             this.shape.initCenter = null;
