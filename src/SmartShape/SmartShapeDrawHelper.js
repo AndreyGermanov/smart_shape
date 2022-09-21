@@ -181,9 +181,15 @@ function SmartShapeDrawHelper() {
         }
         for (let step of gradientOptions.steps) {
             const stepNode = document.createElementNS(shape.svg.namespaceURI,"stop");
-            stepNode.setAttribute("offset",step.offset);
-            stepNode.setAttribute("stop-color",step.stopColor);
-            stepNode.setAttribute("stop-opacity",step.stopOpacity);
+            if (notNull(step.stopColor)) {
+                stepNode.setAttribute("offset", step.offset);
+            }
+            if (notNull(step.stopColor)) {
+                stepNode.setAttribute("stop-color", step.stopColor);
+            }
+            if (notNull(step.stopOpacity)) {
+                stepNode.setAttribute("stop-opacity", step.stopOpacity);
+            }
             gradient.appendChild(stepNode);
         }
         return gradient;
@@ -339,6 +345,82 @@ function SmartShapeDrawHelper() {
         }
     }
 
+    /**
+     * @ignore
+     * Method used to return shape as an SVG document.
+     * @param shape {SmartShape} Shape object
+     * @returns {string} String body of SVG document
+     */
+    this.toSvg = (shape) => {
+        const div = document.createElement("div");
+        const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+        const pos = shape.getPosition(true);
+        svg.appendChild(this.getSvgDefs(shape));
+        this.addSvgPolygons(shape,svg);
+        svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
+        const viewBox = "0 0 " + pos.width + " " + pos.height;
+        svg.setAttribute("viewBox",viewBox);
+        div.appendChild(svg);
+        return '<?xml version="1.0" encoding="UTF-8"?>'+div.innerHTML.replace(/&quot;/g,"'");
+    }
+
+    /**
+     * @ignore
+     * Method used to generate `defs` tag for SVG document export feature.
+     * It goes through all children of this shape and appends contents of all child `defs`
+     * to root defs or current shape and returns resulting `defs` element
+     * @param shape {SmartShape} Shape object
+     * @returns {HTMLOrSVGElement} defs tag
+     */
+    this.getSvgDefs = (shape) => {
+        const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
+        if (shape.svg) {
+            const shape_defs = shape.svg.querySelector("defs");
+            if (shape_defs) {
+                defs.innerHTML = shape_defs.innerHTML;
+            }
+        }
+        shape.getChildren(true).forEach(child => {
+            const child_defs = child.svg.querySelector("defs");
+            if (child_defs) {
+                defs.innerHTML += child_defs.innerHTML;
+            }
+        })
+        return defs;
+    }
+
+    /**
+     * @ignore
+     * Method used for SVG export feature to add all polygons from the shape and all
+     * it's children to resulting `svg` document
+     * @param shape {SmartShape} shape object
+     * @param svg {HTMLOrSVGElement} svg element to add polygons to
+     */
+    this.addSvgPolygons = (shape,svg) => {
+        const pos = shape.getPosition(true);
+        if (shape.svg) {
+            let polygon = shape.svg.querySelector("polygon");
+            if (polygon) {
+                polygon = polygon.cloneNode()
+                const points = shape.points.map(point =>
+                    "" + (point.x - pos.left) + "," + (point.y - pos.top)
+                ).join(" ");
+                polygon.setAttribute("points", points);
+                svg.appendChild(polygon);
+            }
+        }
+        shape.getChildren(true).forEach(child => {
+            let child_polygon = child.svg.querySelector("polygon");
+            if (child_polygon) {
+                child_polygon = child_polygon.cloneNode();
+                const points = child.points.map(point =>
+                    ""+(point.x - pos.left)+","+(point.y - pos.top)
+                ).join(" ");
+                child_polygon.setAttribute("points",points);
+                svg.appendChild(child_polygon);
+            }
+        })
+    }
 }
 
 export default new SmartShapeDrawHelper();
