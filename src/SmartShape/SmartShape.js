@@ -856,6 +856,14 @@ function SmartShape() {
         const pos = this.getPosition(forGroup)
         return [pos.left+pos.width/2, pos.top+pos.height/2]
     };
+
+    /**
+     * Method exports shape and all its children to SVG document.
+     * @returns {string} Body of SVG document as a string
+     */
+    this.toSvg = () => {
+        return SmartShapeDrawHelper.toSvg(this);
+    }
 }
 
 /**

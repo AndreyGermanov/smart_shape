@@ -446,18 +446,36 @@ function SmartShapeManager() {
         }
     }
 
+    /**
+     * @ignore
+     * onMouseOver event handler for shape's container. If cursor points on some shape,
+     * forwards this event to this shape.
+     * @param event {MouseEvent} Mouse over event
+     */
     this.mouseover = (event) => {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.mouseover(createEvent(event, {target:this.shapeOnCursor}));
         }
     }
 
+    /**
+     * @ignore
+     * onMouseEnter event handler for shape's container. If cursor points on some shape,
+     * forwards this event to this shape.
+     * @param event {MouseEvent} Mouse enter event
+     */
     this.mouseenter = (event) => {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.mouseenter(createEvent(event, {target:this.shapeOnCursor}));
         }
     }
 
+    /**
+     * @ignore
+     * onMouseOut event handler for shape's container. If cursor outs from some shape
+     * forwards this event to this shape.
+     * @param event {MouseEvent} Mouse out event
+     */
     this.mouseout = () => {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));

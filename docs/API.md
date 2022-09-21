@@ -731,6 +731,7 @@ to this object.
     * [.hide()](#SmartShape+hide)
     * [.destroy()](#SmartShape+destroy)
     * [.getCenter(forGroup)](#SmartShape+getCenter) ⇒ <code>array</code>
+    * [.toSvg()](#SmartShape+toSvg) ⇒ <code>string</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -1149,6 +1150,13 @@ Method returns coordinates of the center of the shape.
 | --- | --- | --- |
 | forGroup | <code>boolean</code> | Should get center of all shapes in the group. Default: false |
 
+<a name="SmartShape+toSvg"></a>
+
+### smartShape.toSvg() ⇒ <code>string</code>
+Method exports shape and all its children to SVG document.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>string</code> - Body of SVG document as a string  
 <a name="SmartShapeDrawHelper"></a>
 
 ## SmartShapeDrawHelper
@@ -1327,6 +1335,7 @@ of all group if forGroup parameter is set
     * [.shapes](#SmartShapeManager+shapes) : <code>array</code>
     * [.activeShape](#SmartShapeManager+activeShape) : [<code>SmartShape</code>](#SmartShape)
     * [.draggedShape](#SmartShapeManager+draggedShape) : [<code>SmartShape</code>](#SmartShape)
+    * [.shapeOnCursor](#SmartShapeManager+shapeOnCursor) : [<code>SmartShape</code>](#SmartShape)
     * [.containerEventListeners](#SmartShapeManager+containerEventListeners) : <code>array</code>
     * [.findShapeByPoint(point)](#SmartShapeManager+findShapeByPoint) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
@@ -1334,6 +1343,7 @@ of all group if forGroup parameter is set
     * [.getMaxZIndex(container)](#SmartShapeManager+getMaxZIndex) ⇒ <code>number</code>
     * [.activateShape(shape)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
+    * [.getShapeOnCursor(x, y)](#SmartShapeManager+getShapeOnCursor) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShapeManager_new"></a>
 
@@ -1360,6 +1370,12 @@ Which shape is currently selected
 
 ### smartShapeManager.draggedShape : [<code>SmartShape</code>](#SmartShape)
 Which shape user is currently dragging
+
+**Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+shapeOnCursor"></a>
+
+### smartShapeManager.shapeOnCursor : [<code>SmartShape</code>](#SmartShape)
+The shape under mouse cursor
 
 **Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
 <a name="SmartShapeManager+containerEventListeners"></a>
@@ -1440,6 +1456,20 @@ Method adds event handler of specified event of specified HTML container.
 | container | <code>object</code> | Container |
 | eventName | <code>string</code> | Name of event |
 | handler | <code>function</code> | Event handling function |
+
+<a name="SmartShapeManager+getShapeOnCursor"></a>
+
+### smartShapeManager.getShapeOnCursor(x, y) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Internal method used to determine the shape which is under
+mouse cursor right now.
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Either SmartShape object or null  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | X coordinate of mouse cursor |
+| y | <code>number</code> | Y coordinate of mouse cursor |
 
 <a name="EventsManager"></a>
 

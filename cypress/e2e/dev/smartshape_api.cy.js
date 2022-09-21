@@ -531,4 +531,47 @@ describe('SmartShape API tests', () => {
       assert.isFalse(shape.belongsToShape(195,60, false),"Point above border on the right side should not belong to shape");
     });
   })
+
+  it("toSvg", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape1 = new SmartShape().init(app,{fillGradient:{
+          type:"linear",
+          gradientTransform: "rotate(90)",
+          steps: [
+            {
+              offset: "30%",
+              stopColor: "#ffaa00",
+              stopOpacity: "1"
+            },
+            {
+              offset: "60%",
+              stopColor: "#ff0000",
+              stopOpacity: "0.5"
+            },
+            {
+              offset: "100%",
+              stopColor: "#ffaa00",
+              stopOpacity: "1"
+            }
+          ],
+        }},[[0,100],[100,0],[200,100]]);
+      const shape2 = new SmartShape().init(app,{filters:{
+          feDropShadow: {
+            dx: 10, dy: 10, "flood-opacity": 0.5, stdDeviation: 3, "flood-color": "#000000"
+          }}},[[400,100],[500,0],[600,100],[500,200]]);
+      shape1.addChild(shape2);
+      const svgString = shape1.toSvg();
+      const div = document.createElement("div");
+      div.innerHTML = svgString;
+      const svg = div.querySelector("svg");
+      assert.isNotNull(svg,"Should contain SVG element as a root");
+      let defs = svg.querySelectorAll("defs")
+      assert.equal(defs.length,1,"Should be single 'defs' tag inside");
+      defs = defs[0];
+      assert.equal(defs.children.length,2, "Should be 2 defs inside");
+      const polygons = svg.querySelectorAll("polygon");
+      assert.equal(polygons.length, 2, "Should be two 'polygons' inside svg");
+    })
+  });
 })
