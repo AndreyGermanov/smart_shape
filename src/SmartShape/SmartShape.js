@@ -1,12 +1,13 @@
 import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 import SmartPoint from "../SmartPoint/SmartPoint.js";
-import SmartShapeDrawHelper from "./SmartShapeDrawHelper.js";
+import SmartShapeDrawHelper, {PngExportTypes} from "./SmartShapeDrawHelper.js";
 import SmartShapeGroupHelper from "./SmartShapeGroupHelper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
 import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
 import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon, getOffset} from "../utils";
 import EventsManager from "../events/EventsManager.js";
+import {applyAspectRatio} from "../utils/geometry.js";
 /**
  * SmartShape class. Used to construct shapes.
  * @constructor
@@ -429,16 +430,13 @@ function SmartShape() {
             }
         }
         this.calcPosition();
-        const children = this.getChildren(true)
+        const children = this.getChildren()
+        if (redraw) {
+            this.redraw();
+        }
         if (children.length) {
-            if (redraw) {
-                this.redraw();
-            }
             children.forEach(child => {
-                child.moveBy(stepX, stepY);
-                if (redraw) {
-                    child.redraw();
-                }
+                child.moveBy(stepX, stepY, redraw);
             });
         }
     }
@@ -446,13 +444,19 @@ function SmartShape() {
     /**
      * Scales image to fit specified `width` and `height`. It only changes coordinates of points, but do not
      * redraws the shape on new position. So, you need to call `redraw` yourself after scale.
-     * @param width {number} new width
-     * @param height {number} new height
+     * @param width {number|null} new width. If not specified, then will be calculated automatically based on height to
+     * preserve aspect ratio
+     * @param height {number|null} new height. If not specifie, then will be calculated automatically based on width
+     * to preserve aspect ratio
      */
-    this.scaleTo = (width,height) => {
+    this.scaleTo = (width=null,height= null) => {
         const bounds = this.getBounds();
         this.calcPosition();
-        const pos = this.getPosition(true)
+        if (!width && !height) {
+            return null;
+        }
+        const pos = this.getPosition(true);
+        [width,height] = applyAspectRatio(width,height,pos.width,pos.height);
         if (pos.width>=10 && width<10) {
             width = 10;
         }
@@ -562,7 +566,7 @@ function SmartShape() {
         }
         this.points.forEach(point => {
             point.setOptions({zIndex: this.options.zIndex + 1});
-            point.redraw();
+            point.element.style.zIndex = point.options.zIndex;
             if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
                 point.element.style.display = 'none';
             }
@@ -864,14 +868,28 @@ function SmartShape() {
     this.toSvg = () => {
         return SmartShapeDrawHelper.toSvg(this);
     }
+
+    /**
+     * Method exports shape and all its children as a PNG image
+     * @param {PngExportTypes} type Format of returned result - `dataurl` or `blob`. By default `dataurl`
+     * @param {number|null} width Width of image. If not specified, then calculate based on height or current
+     * width of shape
+     * @param {number|null} height Height of image. If not specified, then calculate based on width or current
+     * height of shape
+     * @return {Promise} Promise that resolves either to DataURL string or to BLOB object, depending on value of
+     * `type` argument
+     */
+    this.toPng = (type= PngExportTypes.DATAURL,width=null,height=null) => {
+        return SmartShapeDrawHelper.toPng(this,type,width,height);
+    }
 }
 
 /**
  * Enumeration of SmartShape display modes
- * @param DEFAULT basic display mode without resize or rotate boxes and points are hidden
- * @param SELECTED In this mode the points displayed on shape, but resize and rotate boxes are hidden
- * @param SCALE In this mode the shape displayed with resize box around it
- * @param ROTATE In this mode the shape displayed with rotate box around it
+ * @param default basic display mode without resize or rotate boxes and points are hidden
+ * @param selected In this mode the points displayed on shape, but resize and rotate boxes are hidden
+ * @param scale In this mode the shape displayed with resize box around it
+ * @param rotate In this mode the shape displayed with rotate box around it
  * @enum {string}
  */
 export const SmartShapeDisplayMode = {
