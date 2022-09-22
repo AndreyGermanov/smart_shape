@@ -495,7 +495,7 @@ set the variable to 'null' after calling this method.
 
 ### rotateBox.addEventListener(eventName, handler) ⇒ <code>function</code>
 Uniform method that used to add event handler of specified type to this object.
-RotateBox can emit events, defined in [RotateBoxEvents](#RotabeBoxEvents) enumeration. So, you can
+RotateBox can emit events, defined in [RotateBoxEvents](#RotateBoxEvents) enumeration. So, you can
 listen any of these events.
 
 **Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
@@ -1103,7 +1103,7 @@ inside shape or false otherwise.
 
 ### smartShape.addEventListener(eventName, handler) ⇒ <code>function</code>
 Uniform method that used to add event handler of specified type to this object.
-SmartShape can emit events, defined in [SmartShape](#ShapeEvents) enumeration. So, you can
+SmartShape can emit events, defined in [ShapeEvents](#ShapeEvents) enumeration. So, you can
 listen any of these events.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  

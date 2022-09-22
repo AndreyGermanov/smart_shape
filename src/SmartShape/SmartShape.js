@@ -692,7 +692,7 @@ function SmartShape() {
 
     /**
      * Uniform method that used to add event handler of specified type to this object.
-     * SmartShape can emit events, defined in [SmartShape](#ShapeEvents) enumeration. So, you can
+     * SmartShape can emit events, defined in [ShapeEvents](#ShapeEvents) enumeration. So, you can
      * listen any of these events.
      * @param eventName {string} - Name of event. Use one of names, defined for [ShapeEvents](#ShapeEvents).
      * @param handler {function} - Function that used as an event handler
