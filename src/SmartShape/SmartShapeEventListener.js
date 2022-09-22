@@ -2,8 +2,8 @@ import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 import EventsManager from "../events/EventsManager.js";
 import {getOffset, pauseEvent} from "../utils";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
-import {ResizeBoxEvents} from "../ResizeBox/ResizeBox.js";
-import {RotateBoxEvents} from "../RotateBox/RotateBox.js";
+import {RotateBoxEvents} from "../RotateBox/RotateBoxEventListener.js";
+import {ResizeBoxEvents} from "../ResizeBox/ResizeBoxEventListener.js";
 import {createEvent} from "../events/functions.js";
 
 /**
@@ -58,19 +58,22 @@ function SmartShapeEventListener(shape) {
 
     this.setSvgEventListeners = () => {
         this.svg_mouseover = this.shape.svg.addEventListener("mouseover", (event) => {
-            SmartShapeManager.mouseover(event);
+            SmartShapeManager.mouseover(createEvent(event,{target:this.shape}));
         });
         this.svg_mouseout = this.shape.svg.addEventListener("mouseout", (event) => {
-            SmartShapeManager.mouseout(event);
+            SmartShapeManager.mouseout(createEvent(event,{target:this.shape}));
         });
         this.svg_mouseenter = this.shape.svg.addEventListener("mouseenter", (event) => {
-            SmartShapeManager.mouseenter(event);
+            SmartShapeManager.mouseenter(createEvent(event,{target:this.shape}));
         });
         this.svg_mousedown = this.shape.svg.addEventListener("mousedown", (event) => {
-            SmartShapeManager.mousedown(event);
+            SmartShapeManager.mousedown(createEvent(event,{target:this.shape}));
         });
         this.svg_click = this.shape.svg.addEventListener("click", (event) => {
-           SmartShapeManager.click(event);
+           SmartShapeManager.click(createEvent(event,{target:this.shape}));
+        });
+        this.svg_dblclick = this.shape.svg.addEventListener("dblclick", (event) => {
+            SmartShapeManager.doubleclick(createEvent(event,{target:this.shape}))
         });
     }
 
@@ -80,6 +83,7 @@ function SmartShapeEventListener(shape) {
         this.shape.svg.removeEventListener("mouseenter", this.svg_mouseenter);
         this.shape.svg.removeEventListener("mousedown",this.svg_mousedown);
         this.shape.svg.removeEventListener("click",this.svg_click);
+        this.shape.svg.removeEventListener("dblclick",this.svg_dblclick);
     }
     /**
      * @ignore
@@ -116,7 +120,22 @@ function SmartShapeEventListener(shape) {
         });
         this.resizeClickEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
             this.click(event);
-        })
+        });
+        this.resizeDblClickEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
+            this.svg_dblclick(event);
+        });
+        this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
+            this.svg_mousedown(event)
+        });
+        this.resizeMouseUpEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.shape,createEvent(event))
+        });
+        this.resizeMouseOverEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
+            this.svg_mouseover(event);
+        });
+        this.resizeMouseOutEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
+            this.svg_mouseout(event);
+        });
     }
 
     /**
@@ -142,9 +161,11 @@ function SmartShapeEventListener(shape) {
             if (parent) {
                 parent.rotateBy(event.angle);
                 parent.redraw();
+                EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,parent,event);
             } else {
                 this.shape.rotateBy(event.angle);
                 this.shape.redraw()
+                EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.shape,event);
             }
         });
         this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
@@ -156,11 +177,32 @@ function SmartShapeEventListener(shape) {
         this.rotateClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
             this.click(event);
         })
+        this.rotateDblClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
+            this.svg_dblclick(event);
+        });
+        this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
+            this.svg_mousedown(event)
+        });
+        this.rotateMouseUpEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.shape,createEvent(event))
+        });
+        this.rotateMouseOverEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
+            this.svg_mouseover(event);
+        });
+        this.rotateMouseOutEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
+            this.svg_mouseout(event);
+        });
         this.rotatePointDragStartEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_START, (_event) => {
             this.shape.initCenter = this.shape.getCenter(true);
         })
         this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_END, (_event) => {
             this.shape.initCenter = null;
+            this.shape.points.forEach(point=> {
+                if (!point.options.hidden) {
+                    point.element.style.display = '';
+                }
+            })
+
         })
     }
 
@@ -171,10 +213,10 @@ function SmartShapeEventListener(shape) {
      */
     this.mousedown = (event) => {
         pauseEvent(event);
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.shape,createEvent(event));
         setTimeout(() => {
-            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START, this.shape, createEvent(event));
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START, this.shape, createEvent(event,{pos:this.shape.getPosition(true)}));
         },100);
-
     }
 
     /**
@@ -187,6 +229,7 @@ function SmartShapeEventListener(shape) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE, this.shape, createEvent(event));
         }
         if (this.shape.draggedPoint) {
+            EventsManager.emit(ShapeEvents.POINT_DRAG_MOVE,this.shape,{point:this.shape.draggedPoint});
             this.shape.draggedPoint.mousemove(event);
             return
         }
@@ -200,8 +243,8 @@ function SmartShapeEventListener(shape) {
         const oldPos = this.shape.getPosition(true);
         this.shape.moveBy(stepX,stepY);
         this.shape.redraw();
-        const newPos = this.shape.getPosition();
-        EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,{oldPos,newPos});
+        const newPos = this.shape.getPosition(true);
+        EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,createEvent(event,{oldPos,newPos}));
     }
 
     /**
@@ -240,11 +283,17 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.click = (event) => {
-        if (event.type !== SmartShapeEventListener.SHAPE_MOUSE_CLICK) {
-            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK, this.shape, createEvent(event));
-        }
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK, this.shape, createEvent(event));
     }
 
+    /**
+     * @ignore
+     * onDblClick event handler, triggered when user double-clicks on shape
+     * @param event {MouseEvent} Event object
+     */
+    this.doubleclick = (event) => {
+        EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, this.shape, createEvent(event));
+    }
 
     /**
      * @ignore
@@ -347,7 +396,7 @@ function SmartShapeEventListener(shape) {
             this.subscriptions[eventName] = [];
         }
         const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.guid === this.shape.guid) {
+            if (event.target && event.target.guid === this.shape.guid) {
                 handler(event)
             }
         });
@@ -373,7 +422,6 @@ function SmartShapeEventListener(shape) {
      * Used to remove all event listeners when destroy the object
      */
     this.destroy = () => {
-        window.removeEventListener("resize",this.onWindowResize);
         EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
@@ -382,6 +430,10 @@ function SmartShapeEventListener(shape) {
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.resizeClickEventListener);
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.resizeMouseMoveEventListener);
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.resizeMouseDownEventListener);
+            this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_UP,this.resizeMouseUpEventListener);
+            this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.resizeDblClickEventListener);
+            this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.resizeMouseOverEventListener);
+            this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.resizeMouseOutEventListener);
         }
         if (this.shape.rotateBox) {
             this.shape.rotateBox.removeEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBoxListener);
@@ -390,6 +442,10 @@ function SmartShapeEventListener(shape) {
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.rotateMouseDownEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.rotatePointDragStartEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.rotatePointDragEndEventListener);
+            this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_UP,this.rotateMouseUpEventListener);
+            this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.rotateDblClickEventListener);
+            this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.rotateMouseOverEventListener);
+            this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.rotateMouseOutEventListener);
         }
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];
@@ -401,16 +457,44 @@ function SmartShapeEventListener(shape) {
 
 /**
  * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
- * @param SHAPE_CREATE Emitted right after shape is created and initialized
- * @param SHAPE_MOVE_START Emitted when user presses left mouse button on shape to start dragging
- * @param SHAPE_MOVE Emitted when user drags shape
- * @param SHAPE_MOVE_END Emitted when user releases mouse button to stop drag the shape
- * @param SHAPE_MOUSE_MOVE Emitted when user moves mouse over shape
- * @param SHAPE_MOUSE_ENTER Emitted when mouse cursor enters shape
- * @param SHAPE_MOUSE_OVER Emitted when mouse cursor goes inside shape
- * @param SHAPE_MOUSE_OUT Emitted when mouse cursor goes away from shape
- * @param SHAPE_MOUSE_CLICK Emitted when click on shape
- * @param SHAPE_DESTROY Emitted right before shape is destroyed
+ * @param create {ShapeEvents.SHAPE_CREATE}Emitted right after shape is created and initialized.
+ * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
+ * @param move_start {MouseEvent} Emitted when user presses left mouse button on shape to start dragging.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional
+ * field `pos`, which is a position of shape when movement started.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param move Emitted when user drags shape.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also
+ * includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after
+ * previous movement. Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param move_end Emitted when user releases mouse button to stop drag the shape.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional
+ * field `pos`, which is a position of shape when movement started.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param mousemove Emitted when user moves mouse over shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
+ * @param mouseover Emitted when mouse cursor goes inside shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
+ * @param mouseout Emitted when mouse cursor goes away from shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
+ * @param click Emitted when click on shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
+ * @param dblclick Emitted when double-click on shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
+ * @param resize Emitted when user resized the shape using resize box. Event object includes fields `oldPos` and
+ * `newPos` which are positions of shape before and after resizing.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param rotate Emitted when user rotated the shape using rotate box Event object includes the `angle` field,
+ * which is a rotation angle.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param point_drag_start Emitted when user starts dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_drag_move Emitted when user dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_drag_end Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param destroy Emitted right before shape is destroyed
+ * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
  * @enum {string}
  */
 export const ShapeEvents = {
@@ -422,10 +506,16 @@ export const ShapeEvents = {
     SHAPE_MOUSE_ENTER: "mouseenter",
     SHAPE_MOUSE_OVER: "mouseover",
     SHAPE_MOUSE_OUT: "mouseout",
+    SHAPE_MOUSE_DOWN: "mousedown",
+    SHAPE_MOUSE_UP: "mouseup",
     SHAPE_MOUSE_CLICK: "click",
+    SHAPE_MOUSE_DOUBLE_CLICK: "dblclick",
     SHAPE_DESTROY: "destroy",
     POINT_DRAG_START: "point_drag_start",
-    POINT_DRAG_END: "point_drag_end"
+    POINT_DRAG_MOVE: "point_drag_move",
+    POINT_DRAG_END: "point_drag_end",
+    SHAPE_RESIZE: "resize",
+    SHAPE_ROTATE: "rotate",
 }
 
 export default SmartShapeEventListener;

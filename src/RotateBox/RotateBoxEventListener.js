@@ -1,5 +1,4 @@
 import EventsManager from "../events/EventsManager.js";
-import {RotateBoxEvents} from "./RotateBox.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import {distance, radians_to_degrees} from "../utils";
@@ -95,19 +94,49 @@ function RotateBoxEventListener(rotateBox) {
                 EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.rotateBox,event);
             },1)
         });
+        this.shapeMouseDown = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.rotateBox,event);
+            },1)
+        });
+        this.shapeMouseUp = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.rotateBox,event);
+            },1)
+        });
+        this.shapeMouseOver = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OVER,this.rotateBox,event);
+            },1)
+        });
+        this.shapeMouseOut = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OUT,this.rotateBox,event);
+            },1)
+        });
+        this.shapeDoubleClick = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.rotateBox,event);
+            },1)
+        });
+        this.shapePointDragMove = this.rotateBox.shape.addEventListener(ShapeEvents.POINT_DRAG_MOVE, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.POINT_DRAG_MOVE,this.rotateBox,event);
+            },1)
+        });
         this.rotateBox.shape.points.forEach(point => {
             point.mousemove = this.mousemove;
             point.mouseDownListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
                 this.onPointMouseDown(event);
                 setTimeout(() => {
-                    EventsManager.emit(ShapeEvents.POINT_DRAG_START,this.rotateBox,{point})
+                    EventsManager.emit(ShapeEvents.POINT_DRAG_START,this.rotateBox,{point:point})
                 },1)
 
             });
             point.mouseUpListener = point.addEventListener(PointEvents.POINT_DRAG_END, (event) => {
                 this.onPointMouseUp(event);
                 setTimeout(() => {
-                    EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.rotateBox,{point})
+                    EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.rotateBox,{point:point})
                 },1)
             });
         });
@@ -196,13 +225,13 @@ function RotateBoxEventListener(rotateBox) {
         if (clientX <= centerX && clientY <= centerY) {
             return distance(clientX,clientY,clientX,centerY)
         }
-        if (clientX > centerX && clientY < centerY) {
+        if (clientX >= centerX && clientY <= centerY) {
             return distance(clientX,clientY,centerX,clientY);
         }
-        if (clientX > centerX && clientY > centerY) {
+        if (clientX >= centerX && clientY >= centerY) {
             return distance(clientX,clientY,clientX,centerY);
         }
-        if (clientX < centerX && clientY > centerY) {
+        if (clientX <= centerX && clientY >= centerY) {
             return distance(clientX,clientY,centerX,clientY);
         }
     }
@@ -224,13 +253,13 @@ function RotateBoxEventListener(rotateBox) {
         if (clientX <= centerX && clientY <= centerY) { // II
             return 0;
         }
-        if (clientX > centerX && clientY < centerY) { // I
+        if (clientX >= centerX && clientY <= centerY) { // I
             return 90;
         }
-        if (clientX > centerX && clientY > centerY) { // IV
+        if (clientX >= centerX && clientY >= centerY) { // IV
             return 180;
         }
-        if (clientX < centerX && clientY > centerY) { /// III
+        if (clientX <= centerX && clientY >= centerY) { /// III
             return 270
         }
     }
@@ -273,7 +302,9 @@ function RotateBoxEventListener(rotateBox) {
     /**
      * @ignore
      * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
+     * RotateBox can emit events, defined in [RotateBoxEvents](#RotabeBoxEvents) enumeration. So, you can
+     * listen any of these events.
+     * @param eventName {string} - Name of event. Use one of name, defined in [RotateBoxEvents](#RotateBoxEvents)
      * @param handler {function} - Function that used as an event handler
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */
@@ -282,7 +313,7 @@ function RotateBoxEventListener(rotateBox) {
             this.subscriptions[eventName] = [];
         }
         const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.shape && event.target.shape.guid === this.rotateBox.shape.guid) {
+            if (event.target && event.target.shape && event.target.shape.guid === this.rotateBox.shape.guid) {
                 handler(event)
             }
         });
@@ -319,11 +350,60 @@ function RotateBoxEventListener(rotateBox) {
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
         this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.shapeClick);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOWN,this.shapeMouseDown);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_UP,this.shapeMouseUp);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.shapeMouseOver);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.shapeMouseOut);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.shapeDoubleClick);
+        this.rotateBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_MOVE,this.shapePointDragMove);
         this.rotateBox.shape.points.forEach(point => {
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseDownListener);
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseUpListener);
         });
     }
 }
+
+/**
+ * Enumeration that defines events, that RotateBox can emit.
+ * @param ROTATE_BOX_ROTATE Emitted when user rotate the shape by dragging one of marker points.
+ * The event object of this type contains `angle` option, which is an angle of rotation in degrees.
+ * @param create {ShapeEvents.SHAPE_CREATE} Emitted right after shape is created and initialized.
+ * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
+ * @param move_start {MouseEvent} Emitted when user presses left mouse button on shape to start dragging.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional
+ * field `pos`, which is a position of shape when movement started.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param move Emitted when user drags shape.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also
+ * includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after
+ * previous movement. Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param move_end Emitted when user releases mouse button to stop drag the shape.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional
+ * field `pos`, which is a position of shape when movement started.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param mousemove Emitted when user moves mouse over shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
+ * @param mouseover Emitted when mouse cursor goes inside shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
+ * @param mouseout Emitted when mouse cursor goes away from shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
+ * @param click Emitted when click on shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
+ * @param dblclick Emitted when double-click on shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
+ * @param point_drag_start Emitted when user starts dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_drag_move Emitted when user dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_drag_end Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param destroy Emitted right before shape is destroyed
+ * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
+ * @enum {string}
+ */
+export const RotateBoxEvents = {
+    ROTATE_BOX_ROTATE: "rotate"
+};
 
 export default RotateBoxEventListener;

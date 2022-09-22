@@ -175,6 +175,9 @@ function SmartShapeGroupHelper(shape) {
         let children = this.getChildren(true);
         children.push(this.shape);
         children = children.filter(child=>child.points.length);
+        if (!children.length) {
+            return pos;
+        }
         pos.left = children.map(item => item.left).reduce((minLeft,left) => left < minLeft ? left : minLeft);
         pos.top = children.map(item => item.top).reduce((minTop,top) => top < minTop ? top : minTop);
         pos.right = children.map(item => item.right).reduce((maxRight,right) => right > maxRight ? right : maxRight);

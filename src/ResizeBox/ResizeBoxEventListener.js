@@ -1,6 +1,5 @@
 import EventsManager from "../events/EventsManager.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
-import {ResizeBoxEvents} from "./ResizeBox.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {uuid} from "../utils";
 
@@ -82,6 +81,51 @@ function ResizeBoxEventListener(resizeBox) {
         this.shapeClick = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
             setTimeout(() => {
                 EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.resizeBox,event);
+            },1)
+        });
+        this.shapeMouseDown = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.resizeBox,event);
+            },1)
+        });
+        this.shapeMouseUp = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.resizeBox,event);
+            },1)
+        });
+        this.shapeMouseMove = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.resizeBox,event);
+            },1)
+        });
+        this.shapeMouseOver = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OVER,this.resizeBox,event);
+            },1)
+        });
+        this.shapeMouseOut = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OUT,this.resizeBox,event);
+            },1)
+        });
+        this.shapeDoubleClick = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.resizeBox,event);
+            },1)
+        });
+        this.shapePointDragStart = this.resizeBox.shape.addEventListener(ShapeEvents.POINT_DRAG_START, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.POINT_DRAG_START,this.resizeBox,event);
+            },1)
+        });
+        this.shapePointDragMove = this.resizeBox.shape.addEventListener(ShapeEvents.POINT_DRAG_MOVE, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.POINT_DRAG_MOVE,this.resizeBox,event);
+            },1)
+        });
+        this.shapePointDragEnd = this.resizeBox.shape.addEventListener(ShapeEvents.POINT_DRAG_END, (event) => {
+            setTimeout(() => {
+                EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.resizeBox,event);
             },1)
         });
     }
@@ -236,7 +280,9 @@ function ResizeBoxEventListener(resizeBox) {
     /**
      * @ignore
      * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
+     * ResizeBox can emit events, defined in [ResizeBoxEvents](#ResizeBoxEvents) enumeration. So, you can
+     * listen any of these events.
+     * @param eventName {string} - Name of event. Use one of names, defined in [ResizeBoxEvents](#ResizeBoxEvents)
      * @param handler {function} - Function that used as an event handler
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */
@@ -245,7 +291,7 @@ function ResizeBoxEventListener(resizeBox) {
             this.subscriptions[eventName] = [];
         }
         const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.guid && event.target.guid === this.resizeBox.guid) {
+            if (event.target && event.target.guid && event.target.guid === this.resizeBox.guid) {
                 handler(event)
             }
         });
@@ -282,9 +328,62 @@ function ResizeBoxEventListener(resizeBox) {
         this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
         this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
         this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.shapeClick);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOWN,this.shapeMouseDown);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_UP,this.shapeMouseUp);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.shapeMouseOver);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.shapeMouseOver);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.shapeDoubleClick);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_START,this.shapePointDragStart);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_MOVE,this.shapePointDragMove);
+        this.resizeBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_END,this.shapePointDragEnd);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE,this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_END,this.onPointDragMove);
     }
 }
 
 export default ResizeBoxEventListener;
+
+/**
+ * Enumeration that defines events, that ResizeBox can emit.
+ * @param RESIZE_BOX_RESIZE Emitted when user resized the shape by dragging one of marker points.
+ * Event object includes fields `oldPos` and
+ * `newPos` which are positions of shape before and after resizing.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param create {ShapeEvents.SHAPE_CREATE} Emitted right after shape is created and initialized.
+ * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
+ * @param move_start {MouseEvent} Emitted when user presses left mouse button on shape to start dragging.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional
+ * field `pos`, which is a position of shape when movement started.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param move Emitted when user drags shape.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also
+ * includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after
+ * previous movement. Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param move_end Emitted when user releases mouse button to stop drag the shape.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional
+ * field `pos`, which is a position of shape when movement started.
+ * Position is an object with following fields "left,top,right,bottom,width,height"
+ * @param mousemove Emitted when user moves mouse over shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
+ * @param mouseover Emitted when mouse cursor goes inside shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
+ * @param mouseout Emitted when mouse cursor goes away from shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
+ * @param click Emitted when click on shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
+ * @param dblclick Emitted when double-click on shape
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
+ * @param point_drag_start Emitted when user starts dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_drag_move Emitted when user dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_drag_end Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
+ * It is a [SmartPoint](#SmartPoint) object.
+ * @param destroy Emitted right before shape is destroyed
+ * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
+ * @enum {string}
+ */
+export const ResizeBoxEvents = {
+    RESIZE_BOX_RESIZE: "resize"
+};

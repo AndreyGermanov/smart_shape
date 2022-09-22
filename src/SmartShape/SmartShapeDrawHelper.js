@@ -21,20 +21,19 @@ function SmartShapeDrawHelper() {
         }
         if (shape.svg) {
             try {
-                shape.eventListener.removeSvgEventListeners();
-                shape.root.removeChild(shape.svg);
-                shape.svg = null;
+                shape.svg.innerHTML = "";
             } catch (err) {
 
             }
+        } else {
+            shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            shape.svg.ondragstart = function () { return false; }
+            shape.eventListener.setSvgEventListeners();
+            shape.root.appendChild(shape.svg);
         }
-        shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-        shape.svg.ondragstart = function() { return false; }
         this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
-        shape.eventListener.setSvgEventListeners();
         shape.svg.appendChild(polygon);
-        shape.root.appendChild(shape.svg);
     }
 
     this.updateOptions = (shape) => {

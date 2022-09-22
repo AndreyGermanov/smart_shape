@@ -179,6 +179,7 @@ function SmartShapeManager() {
                 this.draggedShape = parent;
             }
             this.draggedShape.draggedPoint = event.target;
+            EventsManager.emit(ShapeEvents.POINT_DRAG_START,shape,{point:event.target})
         }
     }
 
@@ -188,7 +189,7 @@ function SmartShapeManager() {
      * Clears "dragging" status of this point
      * @param event {PointEvents.POINT_DRAG_END} Event object
      */
-    this.onPointDragEnd = (_event) => {
+    this.onPointDragEnd = (event) => {
         if (this.draggedShape) {
             this.draggedShape.draggedPoint = null;
         }
@@ -314,7 +315,7 @@ function SmartShapeManager() {
     this.addContainerEvents = (shape) => {
         this.addContainerEvent(shape.root,"mousemove",this.mousemove)
         this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
-        this.addContainerEvent(shape.root,"dblclick",this.doubleclick)
+        this.addContainerEvent(shape.root,"dblclick",this.doubleclick);
         this.checkCanDeletePoints(shape);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)
     }
@@ -335,6 +336,46 @@ function SmartShapeManager() {
 
     /**
      * @ignore
+     * OnDblClick event handler, triggered when user double-clicks on shape or on shape container element
+     * @param event {MouseEvent} Event object
+     */
+    this.doubleclick = (event) => {
+        if (this.shapeOnCursor) {
+            this.shapeOnCursor.eventListener.doubleclick(createEvent(event,{target:this.shapeOnCursor}))
+        }
+        try {
+            event.stopPropagation();
+        } catch (err) {}
+        if (!this.activeShape) {
+            return
+        }
+        if (this.activeShape.options.canAddPoints && !this.activeShape.draggedPoint) {
+            if (this.activeShape.options.maxPoints === -1 || this.activeShape.points.length < this.activeShape.options.maxPoints) {
+                this.activeShape.addPoint(event.clientX-this.activeShape.root.offsetLeft + window.scrollX,
+                    event.clientY-this.activeShape.root.offsetTop + window.scrollY,{forceDisplay:true});
+            }
+        }
+    }
+
+    /**
+     * @ignore
+     * onMouseDown event handler for shape's container. If cursor points on some shape,
+     * forwards this event to this shape.
+     * @param event {MouseEvent} Mouse down event
+     */
+    this.mousedown = (event) => {
+        if (this.shapeOnCursor) {
+            const parent = this.shapeOnCursor.getRootParent();
+            if (parent) {
+                this.shapeOnCursor = parent;
+            }
+            this.draggedShape = this.shapeOnCursor;
+            this.shapeOnCursor.eventListener.mousedown(createEvent(event,{target:this.shapeOnCursor}));
+        }
+    }
+
+    /**
+     * @ignore
      * OnMouseUp event handler, triggered when user releases mouse button on shape or on shape container element
      * @param event {MouseEvent} Event object
      */
@@ -350,11 +391,14 @@ function SmartShapeManager() {
             }
         }
         if (dragshape.draggedPoint) {
+            EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.draggedShape,{point:dragshape.draggedPoint})
             dragshape.draggedPoint.mouseup(event);
             dragshape.draggedPoint = null;
+        } else {
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,dragshape,{});
         }
         this.draggedShape = null;
-        EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,dragshape);
+        EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,dragshape,{pos:dragshape.getPosition(true)});
     }
 
     /**
@@ -375,74 +419,6 @@ function SmartShapeManager() {
             this.draggedShape.eventListener.mousemove(event);
         } else {
             this.processShapesUnderCursor(event);
-        }
-    }
-
-    /**
-     * @ignore
-     * Method that runs all the time when user moves cursor
-     * over the container. Used to set which shape is currently on
-     * cursor, which shape is currently under the mouse cursor
-     * and trigger mouseover/mouseout events for previous shape
-     * and current shape.
-     * @param event {MouseEvent} Mouse movement object
-     */
-    this.processShapesUnderCursor = (event) => {
-        const [clientX,clientY] = [event.clientX,event.clientY];
-        const shapeOnCursor = this.getShapeOnCursor(clientX, clientY);
-        if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor) {
-            this.shapeOnCursor.svg.style.cursor = "default";
-        }
-        this.shapeOnCursor = shapeOnCursor;
-        if (this.shapeOnCursor) {
-            this.shapeOnCursor.svg.style.cursor = "crosshair";
-        }
-    };
-
-    /**
-     * Internal method used to determine the shape which is under
-     * mouse cursor right now.
-     * @param x {number} X coordinate of mouse cursor
-     * @param y {number} Y coordinate of mouse cursor
-     * @returns {SmartShape|null} Either SmartShape object or null
-     */
-    this.getShapeOnCursor = (x,y) => {
-        const matchedShapes = this.shapes.filter(shape => shape.belongsToShape(x,y)
-            && shape.options.id.search("_resizebox") === -1
-            && shape.options.id.search("_rotatebox") === -1);
-        if (!matchedShapes.length) {
-            return null;
-        }
-        return matchedShapes.reduce((prevShape,shape) => shape.options.zIndex >= prevShape.options.zIndex ? shape : prevShape);
-    }
-
-    /**
-     * @ignore
-     * OnDblClick event handler, triggered when user double-clicks on shape or on shape container element
-     * @param event {MouseEvent} Event object
-     */
-    this.doubleclick = (event) => {
-        event.stopPropagation();
-        if (!this.activeShape) {
-            return
-        }
-        if (this.activeShape.options.canAddPoints && !this.activeShape.draggedPoint) {
-            if (this.activeShape.options.maxPoints === -1 || this.activeShape.points.length < this.activeShape.options.maxPoints) {
-                this.activeShape.addPoint(event.clientX-this.activeShape.root.offsetLeft + window.scrollX,
-                    event.clientY-this.activeShape.root.offsetTop + window.scrollY,{forceDisplay:true});
-            }
-        }
-    }
-
-    /**
-     * @ignore
-     * onMouseDown event handler for shape's container. If cursor points on some shape,
-     * forwards this event to this shape.
-     * @param event {MouseEvent} Mouse down event
-     */
-    this.mousedown = (event) => {
-        if (this.shapeOnCursor) {
-            this.shapeOnCursor.eventListener.mousedown(createEvent(event,{target:this.shapeOnCursor}));
         }
     }
 
@@ -476,9 +452,9 @@ function SmartShapeManager() {
      * forwards this event to this shape.
      * @param event {MouseEvent} Mouse out event
      */
-    this.mouseout = () => {
+    this.mouseout = (event) => {
         if (this.shapeOnCursor) {
-            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));
+            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:event.target}));
         }
     }
 
@@ -492,6 +468,50 @@ function SmartShapeManager() {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.click(createEvent(event,{target:this.shapeOnCursor}));
         }
+    }
+
+    /**
+     * @ignore
+     * Method that runs all the time when user moves cursor
+     * over the container. Used to set which shape is currently on
+     * cursor, which shape is currently under the mouse cursor
+     * and trigger mouseover/mouseout events for previous shape
+     * and current shape.
+     * @param event {MouseEvent} Mouse movement object
+     */
+    this.processShapesUnderCursor = (event) => {
+        const [clientX,clientY] = [event.clientX,event.clientY];
+        const shapeOnCursor = this.getShapeOnCursor(clientX, clientY);
+        if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor && this.shapeOnCursor.svg) {
+            this.shapeOnCursor.svg.style.cursor = "default";
+            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}))
+        }
+        if (shapeOnCursor && shapeOnCursor !== this.shapeOnCursor) {
+            shapeOnCursor.eventListener.mouseover(createEvent(event,{target:shapeOnCursor}))
+        }
+        this.shapeOnCursor = shapeOnCursor;
+        if (this.shapeOnCursor) {
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeOnCursor,createEvent(event));
+            this.shapeOnCursor.svg.style.cursor = "crosshair";
+        }
+
+    };
+
+    /**
+     * Internal method used to determine the shape which is under
+     * mouse cursor right now.
+     * @param x {number} X coordinate of mouse cursor
+     * @param y {number} Y coordinate of mouse cursor
+     * @returns {SmartShape|null} Either SmartShape object or null
+     */
+    this.getShapeOnCursor = (x,y) => {
+        const matchedShapes = this.shapes.filter(shape => shape.belongsToShape(x,y)
+            && shape.options.id.search("_resizebox") === -1
+            && shape.options.id.search("_rotatebox") === -1);
+        if (!matchedShapes.length) {
+            return null;
+        }
+        return matchedShapes.reduce((prevShape,shape) => shape.options.zIndex >= prevShape.options.zIndex ? shape : prevShape);
     }
 
     /**

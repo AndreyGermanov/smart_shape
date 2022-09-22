@@ -651,7 +651,7 @@ describe('SmartShape API tests', () => {
       shapes["excl"].redraw();
       shapes["w"].addChild(shapes["excl"]);
       const blob = await shapes["w"].toPng("blob",500);
-      assert.equal(blob.size,7774,"Should return correct BLOB");
+      assert.equal(blob.size,7628,"Should return correct BLOB");
     })
   });
 })

@@ -296,14 +296,6 @@ function RotateBox() {
     }
 }
 
-/**
- * Enumeration that defines events, that RotateBox can emit.
- * @param ROTATE_BOX_ROTATE Emitted when user rotate the shape by dragging one of marker points.
- * The event object of this type contains `angle` option, which is an angle of rotation in degrees.
- * @enum {string}
- */
-export const RotateBoxEvents = {
-    ROTATE_BOX_ROTATE: "rotate"
-};
+
 
 export default RotateBox;
