@@ -428,6 +428,7 @@ function SmartShapeDrawHelper() {
     }
 
     /**
+     * @ignore
      * Method exports shape and all its children as a PNG image
      * @param {SmartShape} shape Shape object to export
      * @param {PngExportTypes} type Format of returned result - `dataurl` or `blob`. By default `dataurl`

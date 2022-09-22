@@ -1177,33 +1177,12 @@ Method exports shape and all its children as a PNG image
 
 ## SmartShapeDrawHelper
 **Kind**: global class  
-
-* [SmartShapeDrawHelper](#SmartShapeDrawHelper)
-    * [new SmartShapeDrawHelper()](#new_SmartShapeDrawHelper_new)
-    * [.toPng(shape, type, width, height)](#SmartShapeDrawHelper+toPng) ⇒ <code>Promise</code>
-
 <a name="new_SmartShapeDrawHelper_new"></a>
 
 ### new SmartShapeDrawHelper()
 Internal helper class that used to draw shape.
 Should not be used directly. SmartShape objects execute methods
 of this object when need to draw shapes.
-
-<a name="SmartShapeDrawHelper+toPng"></a>
-
-### smartShapeDrawHelper.toPng(shape, type, width, height) ⇒ <code>Promise</code>
-Method exports shape and all its children as a PNG image
-
-**Kind**: instance method of [<code>SmartShapeDrawHelper</code>](#SmartShapeDrawHelper)  
-**Returns**: <code>Promise</code> - Promise that resolves either to DataURL string or to BLOB object, depending on value of
-`type` argument  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| shape | [<code>SmartShape</code>](#SmartShape) | Shape object to export |
-| type | [<code>PngExportTypes</code>](#PngExportTypes) | Format of returned result - `dataurl` or `blob`. By default `dataurl` |
-| width | <code>number</code> \| <code>null</code> | Width of image. If not specified, then calculate based on height or current width of shape |
-| height | <code>number</code> \| <code>null</code> | Height of image. If not specified, then calculate based on width or current height of shape |
 
 <a name="SmartShapeEventListener"></a>
 
