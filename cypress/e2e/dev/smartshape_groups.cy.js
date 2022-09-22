@@ -125,6 +125,7 @@ describe('SmartShape groups tests', () => {
       const child2 = new SmartShape().init(app, {id: "shape3"}, [[50, 100], [100, 50], [150, 100]])
       shape.addChild(child);
       child.addChild(child2);
+      SmartShapeManager.shapeOnCursor = child2;
       cy.get("#shape3").trigger("mousedown",{buttons:1}).then(() => {
         assert.equal(SmartShapeManager.draggedShape,shape,"Should activate parent for dragging")
       })

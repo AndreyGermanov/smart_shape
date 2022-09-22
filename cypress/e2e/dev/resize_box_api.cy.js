@@ -1,9 +1,10 @@
-import {SmartShapeManager} from "../../../smart_shape.js";
-import ResizeBox, {ResizeBoxEvents} from "../../../src/ResizeBox/ResizeBox.js";
+import SmartShape,{SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
+import {ResizeBoxEvents} from "../../../src/ResizeBox/ResizeBoxEventListener.js";
+import ResizeBox from "../../../src/ResizeBox/ResizeBox.js";
 import {PointEvents, PointMoveDirections} from "../../../src/SmartPoint/SmartPoint.js";
 import EventsManager from "../../../src/events/EventsManager.js";
-import SmartShape,{SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
 import {ShapeEvents} from "../../../src/SmartShape/SmartShapeEventListener.js";
+
 describe('ResizeBox tests', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];
@@ -416,8 +417,8 @@ describe('ResizeBox tests', () => {
       box.addEventListener(ShapeEvents.SHAPE_DESTROY, () => {});
       assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in local queue");
       assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,4,"Should contain point drag move event handlers for all points in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,3,"Should contain point drag end event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,2,"Should contain point drag move event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,1,"Should contain point drag end event handlers for all points in global queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
           "Should register SHAPE_CREATE event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
@@ -451,31 +452,6 @@ describe('ResizeBox tests', () => {
           "Should register SHAPE_MOVE_END event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
           "Should register SHAPE_DESTROY event in local queue");
-
-      assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,0,"Should not contain registered resize event handler in global queue after destroy");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,0,"Should not contain point drag move event handlers for all points in global queue after destroy");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,0,"Should not contain point drag end event handlers for all points in global queue after destroy");
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_CREATE].length,0,
-          "Should register SHAPE_CREATE in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,0,
-          "Should register SHAPE_MOUSE_ENTER in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,0,
-          "Should register SHAPE_MOUSE_MOVE in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,0,
-          "Should register SHAPE_MOVE_START in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,0,
-          "Should register SHAPE_MOVE in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,0,
-          "Should register SHAPE_MOVE_END in global EventsManager"
-      );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
-          "Should register SHAPE_DESTROY in global EventsManager"
-      );
     });
   });
   it("Should correctly enable scale feature on SmartShape instance", () => {

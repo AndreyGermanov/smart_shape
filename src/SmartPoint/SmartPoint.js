@@ -1,3 +1,4 @@
+import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
 import {getOffset, getRotatedCoords, pauseEvent, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {ContainerEvents} from "../SmartShapeManager/SmartShapeManager.js";
@@ -224,6 +225,11 @@ function SmartPoint() {
     this.setEventListeners = () => {
         this.element.addEventListener("mouseup",this.mouseup);
         this.element.addEventListener("mousedown", this.mousedown);
+        this.element.addEventListener("mouseover", this.mouseover);
+        this.element.addEventListener("mouseout", this.mouseout);
+        this.element.addEventListener("click", this.click);
+        this.element.addEventListener("dblclick", this.doubleclick);
+        this.element.addEventListener("mousemove", this.mousemove);
         EventsManager.subscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
     }
 
@@ -233,8 +239,9 @@ function SmartPoint() {
      * @param event {MouseEvent} Event object
      */
     this.mousedown = (event) => {
+        EventsManager.emit(PointEvents.POINT_MOUSE_DOWN,this,createEvent(event));
         if (event.buttons === 1 && this.options.canDrag) {
-            EventsManager.emit(PointEvents.POINT_DRAG_START,this);
+            EventsManager.emit(PointEvents.POINT_DRAG_START,this,createEvent(event));
             pauseEvent(event);
         }
     }
@@ -246,14 +253,15 @@ function SmartPoint() {
      */
     this.mousemove = (event) => {
         EventsManager.emit(PointEvents.POINT_MOUSE_MOVE,this,createEvent(event))
-        if (event.buttons !== 1 || !this.options.canDrag) {
+        if (event.buttons !== 1 || !this.options.canDrag || !SmartShapeManager.draggedShape ||
+            SmartShapeManager.draggedShape.draggedPoint !== this) {
             return
         }
         const oldX = this.x;
         const oldY = this.y;
         const offset = getOffset(this.element.parentNode,true);
         if (!this.checkFitBounds(this.x + event.movementX, this.y + event.movementY)) {
-            EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
+            EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,createEvent(event,{oldX,oldY}));
             return;
         }
         let newX = event.clientX + window.scrollX - offset.left - this.options.width/2;
@@ -263,7 +271,43 @@ function SmartPoint() {
         this.y = newY;
         this.element.style.left = (this.x)+"px";
         this.element.style.top = (this.y)+"px";
-        EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this,{oldX,oldY});
+        EventsManager.emit(PointEvents.POINT_DRAG_MOVE,this, createEvent(event,{oldX,oldY}));
+    }
+
+    /**
+     * @ignore
+     * onMouseOver event handler, triggered when mouse cursor enters point's DIV element.
+     * @param event {MouseEvent} Event object
+     */
+    this.mouseover = (event) => {
+        EventsManager.emit(PointEvents.POINT_MOUSE_OVER,this,createEvent(event));
+    }
+
+    /**
+     * @ignore
+     * onMouseOut event handler, triggered when mouse cursor leaves point's DIV element.
+     * @param event {MouseEvent} Event object
+     */
+    this.mouseout = (event) => {
+        EventsManager.emit(PointEvents.POINT_MOUSE_OUT,this,createEvent(event));
+    }
+
+    /**
+     * @ignore
+     * onClick event handler, triggered when user clicks on point's DIV element.
+     * @param event {MouseEvent} Event object
+     */
+    this.click = (event) => {
+        EventsManager.emit(PointEvents.POINT_MOUSE_CLICK,this,createEvent(event));
+    }
+
+    /**
+     * @ignore
+     * onClick event handler, triggered when user double-clicks on point's DIV element.
+     * @param event {MouseEvent} Event object
+     */
+    this.doubleclick = (event) => {
+        EventsManager.emit(PointEvents.POINT_MOUSE_DOUBLE_CLICK,this,createEvent(event));
     }
 
     /**
@@ -324,7 +368,10 @@ function SmartPoint() {
      * @param event {MouseEvent} Event object
      */
     this.mouseup = (event) => {
-        EventsManager.emit(PointEvents.POINT_DRAG_END,this);
+        EventsManager.emit(PointEvents.POINT_MOUSE_UP, this, createEvent(event));
+        if (event.button !==2) {
+            EventsManager.emit(PointEvents.POINT_DRAG_END,this, createEvent(event));
+        }
         if (event.button === 2 && this.options.canDelete) {
             this.destroy();
         }
@@ -350,6 +397,11 @@ function SmartPoint() {
     this.destroy = () => {
         this.element.removeEventListener("mouseup",this.mouseup);
         this.element.removeEventListener("mousedown", this.mousedown);
+        this.element.removeEventListener("mouseover", this.mouseover);
+        this.element.removeEventListener("mouseout", this.mouseout);
+        this.element.removeEventListener("click", this.click);
+        this.element.removeEventListener("dblclick", this.doubleclick);
+        this.element.removeEventListener("mousemove", this.mousemove);
         EventsManager.unsubscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
         EventsManager.emit(PointEvents.POINT_DESTROYED,this);
         for (let eventName in this.subscriptions) {
@@ -361,7 +413,9 @@ function SmartPoint() {
 
     /**
      * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
+     * SmartPoint can emit events, defined in [PointEvents](#PointEvents) enumeration. So, you can
+     * listen any of these events.
+     * @param eventName {string} - Name of event. Use one of names, defined in [PointEvents](#PointEvents)
      * @param handler {function} - Function that used as an event handler
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */
@@ -370,7 +424,7 @@ function SmartPoint() {
             this.subscriptions[eventName] = [];
         }
         const listener = EventsManager.subscribe(eventName, (event) => {
-            if (event.target.guid === this.guid) {
+            if (event.target && event.target.guid === this.guid) {
                 handler(event)
             }
         });
@@ -395,12 +449,29 @@ function SmartPoint() {
 
 /**
  * Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) object.
- * @param POINT_ADDED Emitted when point created
- * @param POINT_DRAG_START Emitted when user press mouse button on point before start dragging it
- * @param POINT_DRAG_MOVE Emitted when user drags point by a mouse. As an arguments to event passed
- * `oldX` and `oldY` coordinates, which was before event start.
- * @param POINT_DRAG_END Emitted when user releases mouse button after pressing it
- * @param POINT_DESTROYED Emitted when point destroyed point (by pressing right mouse button on it or
+ * @param create Emitted when point created. Event contains SmartPoint object in `target` field
+ * @param drag_start Emitted when user press mouse button on point before start dragging it.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object
+ * @param drag Emitted when user drags point by a mouse.
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
+ * and two additional fields: `oldX` and `oldY` coordinates, which was before event start.
+ * @param drag_end Emitted when user releases mouse button after pressing it on point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object
+ * @param mousedown Emitted when user presses mouse button on point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object
+ * @param mouseup Emitted when user releases mouse button on point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object
+ * @param mouseover Emitted when mouse cursor goes inside point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
+ * @param mousemove Emitted when mouse cursor moves on top of point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
+ * @param mouseout Emitted when mouse cursor goes away from point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
+ * @param click Emitted when click on point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
+ * @param dblclick Emitted when double-click on point
+ * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
+ * @param destroy Emitted when point destroyed (by pressing right mouse button on it or
  * programmatically using `destroy` method)
  * @enum {string}
  */
@@ -410,7 +481,13 @@ export const PointEvents = {
     POINT_DRAG_START: "move_start",
     POINT_DRAG_MOVE: "move",
     POINT_DRAG_END: "move_end",
-    POINT_MOUSE_MOVE: "mousemove"
+    POINT_MOUSE_DOWN: "mousedown",
+    POINT_MOUSE_MOVE: "mousemove",
+    POINT_MOUSE_UP: "mouseup",
+    POINT_MOUSE_OVER: "mouseover",
+    POINT_MOUSE_OUT: "mouseout",
+    POINT_MOUSE_CLICK: "click",
+    POINT_MOUSE_DOUBLE_CLICK: "dblclick"
 };
 
 /**

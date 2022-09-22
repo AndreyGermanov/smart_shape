@@ -662,13 +662,15 @@ removes this point from shape's points array.
 
 ### smartPoint.addEventListener(eventName, handler) ⇒ <code>function</code>
 Uniform method that used to add event handler of specified type to this object.
+SmartPoint can emit events, defined in [PointEvents](#PointEvents) enumeration. So, you can
+listen any of these events.
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
 **Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Name of event |
+| eventName | <code>string</code> | Name of event. Use one of names, defined in [PointEvents](#PointEvents) |
 | handler | <code>function</code> | Function that used as an event handler |
 
 <a name="SmartPoint+removeEventListener"></a>
@@ -1097,13 +1099,15 @@ inside shape or false otherwise.
 
 ### smartShape.addEventListener(eventName, handler) ⇒ <code>function</code>
 Uniform method that used to add event handler of specified type to this object.
+SmartShape can emit events, defined in [SmartShape](#ShapeEvents) enumeration. So, you can
+listen any of these events.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Name of event |
+| eventName | <code>string</code> | Name of event. Use one of names, defined for [ShapeEvents](#ShapeEvents). |
 | handler | <code>function</code> | Function that used as an event handler |
 
 <a name="SmartShape+removeEventListener"></a>
@@ -1572,9 +1576,22 @@ Enumeration that defines events, that ResizeBox can emit.
 
 **Kind**: global enum  
 
-| Param | Description |
-| --- | --- |
-| RESIZE_BOX_RESIZE | Emitted when user resized the shape by dragging one of marker points. |
+| Param | Type | Description |
+| --- | --- | --- |
+| RESIZE_BOX_RESIZE |  | Emitted when user resized the shape by dragging one of marker points. Event object includes fields `oldPos` and `newPos` which are positions of shape before and after resizing. Position is an object with following fields "left,top,right,bottom,width,height" |
+| create | <code>ShapeEvents.SHAPE\_CREATE</code> | Emitted right after shape is created and initialized. Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
+| move_start | <code>MouseEvent</code> | Emitted when user presses left mouse button on shape to start dragging. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional field `pos`, which is a position of shape when movement started. Position is an object with following fields "left,top,right,bottom,width,height" |
+| move |  | Emitted when user drags shape. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after previous movement. Position is an object with following fields "left,top,right,bottom,width,height" |
+| move_end |  | Emitted when user releases mouse button to stop drag the shape. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional field `pos`, which is a position of shape when movement started. Position is an object with following fields "left,top,right,bottom,width,height" |
+| mousemove |  | Emitted when user moves mouse over shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object |
+| mouseover |  | Emitted when mouse cursor goes inside shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object |
+| mouseout |  | Emitted when mouse cursor goes away from shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object |
+| click |  | Emitted when click on shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object |
+| dblclick |  | Emitted when double-click on shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object |
+| point_drag_start |  | Emitted when user starts dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_drag_move |  | Emitted when user dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_drag_end |  | Emitted when user finishes dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| destroy |  | Emitted right before shape is destroyed Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
 
 <a name="RotateBoxEvents"></a>
 
@@ -1583,9 +1600,22 @@ Enumeration that defines events, that RotateBox can emit.
 
 **Kind**: global enum  
 
-| Param | Description |
-| --- | --- |
-| ROTATE_BOX_ROTATE | Emitted when user rotate the shape by dragging one of marker points. The event object of this type contains `angle` option, which is an angle of rotation in degrees. |
+| Param | Type | Description |
+| --- | --- | --- |
+| ROTATE_BOX_ROTATE |  | Emitted when user rotate the shape by dragging one of marker points. The event object of this type contains `angle` option, which is an angle of rotation in degrees. |
+| create | <code>ShapeEvents.SHAPE\_CREATE</code> | Emitted right after shape is created and initialized. Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
+| move_start | <code>MouseEvent</code> | Emitted when user presses left mouse button on shape to start dragging. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional field `pos`, which is a position of shape when movement started. Position is an object with following fields "left,top,right,bottom,width,height" |
+| move |  | Emitted when user drags shape. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after previous movement. Position is an object with following fields "left,top,right,bottom,width,height" |
+| move_end |  | Emitted when user releases mouse button to stop drag the shape. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional field `pos`, which is a position of shape when movement started. Position is an object with following fields "left,top,right,bottom,width,height" |
+| mousemove |  | Emitted when user moves mouse over shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object |
+| mouseover |  | Emitted when mouse cursor goes inside shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object |
+| mouseout |  | Emitted when mouse cursor goes away from shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object |
+| click |  | Emitted when click on shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object |
+| dblclick |  | Emitted when double-click on shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object |
+| point_drag_start |  | Emitted when user starts dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_drag_move |  | Emitted when user dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_drag_end |  | Emitted when user finishes dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| destroy |  | Emitted right before shape is destroyed Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
 
 <a name="PointEvents"></a>
 
@@ -1596,11 +1626,18 @@ Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) obj
 
 | Param | Description |
 | --- | --- |
-| POINT_ADDED | Emitted when point created |
-| POINT_DRAG_START | Emitted when user press mouse button on point before start dragging it |
-| POINT_DRAG_MOVE | Emitted when user drags point by a mouse. As an arguments to event passed `oldX` and `oldY` coordinates, which was before event start. |
-| POINT_DRAG_END | Emitted when user releases mouse button after pressing it |
-| POINT_DESTROYED | Emitted when point destroyed point (by pressing right mouse button on it or programmatically using `destroy` method) |
+| create | Emitted when point created. Event contains SmartPoint object in `target` field |
+| drag_start | Emitted when user press mouse button on point before start dragging it. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object |
+| drag | Emitted when user drags point by a mouse. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object and two additional fields: `oldX` and `oldY` coordinates, which was before event start. |
+| drag_end | Emitted when user releases mouse button after pressing it on point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object |
+| mousedown | Emitted when user presses mouse button on point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object |
+| mouseup | Emitted when user releases mouse button on point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object |
+| mouseover | Emitted when mouse cursor goes inside point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object |
+| mousemove | Emitted when mouse cursor moves on top of point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object |
+| mouseout | Emitted when mouse cursor goes away from point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object |
+| click | Emitted when click on point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object |
+| dblclick | Emitted when double-click on point Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object |
+| destroy | Emitted when point destroyed (by pressing right mouse button on it or programmatically using `destroy` method) |
 
 <a name="PointMoveDirections"></a>
 
@@ -1643,18 +1680,23 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 
 **Kind**: global enum  
 
-| Param | Description |
-| --- | --- |
-| SHAPE_CREATE | Emitted right after shape is created and initialized |
-| SHAPE_MOVE_START | Emitted when user presses left mouse button on shape to start dragging |
-| SHAPE_MOVE | Emitted when user drags shape |
-| SHAPE_MOVE_END | Emitted when user releases mouse button to stop drag the shape |
-| SHAPE_MOUSE_MOVE | Emitted when user moves mouse over shape |
-| SHAPE_MOUSE_ENTER | Emitted when mouse cursor enters shape |
-| SHAPE_MOUSE_OVER | Emitted when mouse cursor goes inside shape |
-| SHAPE_MOUSE_OUT | Emitted when mouse cursor goes away from shape |
-| SHAPE_MOUSE_CLICK | Emitted when click on shape |
-| SHAPE_DESTROY | Emitted right before shape is destroyed |
+| Param | Type | Description |
+| --- | --- | --- |
+| create | <code>ShapeEvents.SHAPE\_CREATE</code> | Emitted right after shape is created and initialized. Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
+| move_start | <code>MouseEvent</code> | Emitted when user presses left mouse button on shape to start dragging. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional field `pos`, which is a position of shape when movement started. Position is an object with following fields "left,top,right,bottom,width,height" |
+| move |  | Emitted when user drags shape. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after previous movement. Position is an object with following fields "left,top,right,bottom,width,height" |
+| move_end |  | Emitted when user releases mouse button to stop drag the shape. Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional field `pos`, which is a position of shape when movement started. Position is an object with following fields "left,top,right,bottom,width,height" |
+| mousemove |  | Emitted when user moves mouse over shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object |
+| mouseover |  | Emitted when mouse cursor goes inside shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object |
+| mouseout |  | Emitted when mouse cursor goes away from shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object |
+| click |  | Emitted when click on shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object |
+| dblclick |  | Emitted when double-click on shape Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object |
+| resize |  | Emitted when user resized the shape using resize box. Event object includes fields `oldPos` and `newPos` which are positions of shape before and after resizing. Position is an object with following fields "left,top,right,bottom,width,height" |
+| rotate |  | Emitted when user rotated the shape using rotate box Event object includes the `angle` field, which is a rotation angle. Position is an object with following fields "left,top,right,bottom,width,height" |
+| point_drag_start |  | Emitted when user starts dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_drag_move |  | Emitted when user dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_drag_end |  | Emitted when user finishes dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| destroy |  | Emitted right before shape is destroyed Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
 
 <a name="SmartShapeManagerEvents"></a>
 

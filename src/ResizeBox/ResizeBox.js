@@ -1,5 +1,6 @@
 import SmartShape from "../SmartShape/SmartShape.js";
 import {PointMoveDirections} from "../SmartPoint/SmartPoint.js";
+import {ResizeBoxEvents} from "./ResizeBoxEventListener.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
@@ -387,14 +388,5 @@ function ResizeBox() {
         this.eventListener.removeEventListener(eventName,listener);
     }
 }
-
-/**
- * Enumeration that defines events, that ResizeBox can emit.
- * @param RESIZE_BOX_RESIZE Emitted when user resized the shape by dragging one of marker points.
- * @enum {string}
- */
-export const ResizeBoxEvents = {
-    RESIZE_BOX_RESIZE: "resize"
-};
 
 export default ResizeBox;
