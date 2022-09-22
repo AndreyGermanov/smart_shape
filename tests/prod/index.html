@@ -70,6 +70,7 @@
         a2.addChild(a2_sub);
         const p = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:480,offsetY:215,filters:filters,canScale:true,canRotate:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[50,75],[25,75],[25,150],[0,150]])
         const p_sub = new SmartShape().init(body,{fill:'white',pointOptions:shapePointOptions,offsetX:480,offsetY:215,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]]);
+        p.addChild(p_sub);
         const e = new SmartShape().init(body,{fillImage:grassFill,pointOptions:shapePointOptions,offsetX:635,offsetY:215,filters:filters,canScale:true,canRotate:true,id:"esymb"},[[0,0],[100,0],[100,25],[25,25],[25,60],[100,60],[100,85],[25,85],[25,120],[100,120],[100,150],[0,150]])
       })
   </script>
