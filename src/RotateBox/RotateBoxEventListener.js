@@ -366,7 +366,7 @@ function RotateBoxEventListener(rotateBox) {
 
 /**
  * Enumeration that defines events, that RotateBox can emit.
- * @param ROTATE_BOX_ROTATE Emitted when user rotate the shape by dragging one of marker points.
+ * @param rotate {RotateBoxEvents.ROTATE_BOX_ROTATE} Emitted when user rotate the shape by dragging one of marker points.
  * The event object of this type contains `angle` option, which is an angle of rotation in degrees.
  * @param create {ShapeEvents.SHAPE_CREATE} Emitted right after shape is created and initialized.
  * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
@@ -374,31 +374,31 @@ function RotateBoxEventListener(rotateBox) {
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional
  * field `pos`, which is a position of shape when movement started.
  * Position is an object with following fields "left,top,right,bottom,width,height"
- * @param move Emitted when user drags shape.
+ * @param move {MouseEvent} Emitted when user drags shape.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also
  * includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after
  * previous movement. Position is an object with following fields "left,top,right,bottom,width,height"
- * @param move_end Emitted when user releases mouse button to stop drag the shape.
+ * @param move_end {MouseEvent} Emitted when user releases mouse button to stop drag the shape.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional
  * field `pos`, which is a position of shape when movement started.
  * Position is an object with following fields "left,top,right,bottom,width,height"
- * @param mousemove Emitted when user moves mouse over shape
+ * @param mousemove {MouseEvent} Emitted when user moves mouse over shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
- * @param mouseover Emitted when mouse cursor goes inside shape
+ * @param mouseover {MouseEvent} Emitted when mouse cursor goes inside shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
- * @param mouseout Emitted when mouse cursor goes away from shape
+ * @param mouseout {MouseEvent} Emitted when mouse cursor goes away from shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
- * @param click Emitted when click on shape
+ * @param click {MouseEvent} Emitted when click on shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
- * @param dblclick Emitted when double-click on shape
+ * @param dblclick {MouseEvent} Emitted when double-click on shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
- * @param point_drag_start Emitted when user starts dragging one of shape's point. Event Includes `point` field.
+ * @param point_drag_start {MouseEvent} Emitted when user starts dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
- * @param point_drag_move Emitted when user dragging one of shape's point. Event Includes `point` field.
+ * @param point_drag_move {MouseEvent} Emitted when user dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
- * @param point_drag_end Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
+ * @param point_drag_end {MouseEvent} Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
- * @param destroy Emitted right before shape is destroyed
+ * @param destroy {ShapeEvents.SHAPE_DESTROY} Emitted right before shape is destroyed
  * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
  * @enum {string}
  */

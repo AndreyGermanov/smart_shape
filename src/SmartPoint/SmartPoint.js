@@ -449,29 +449,29 @@ function SmartPoint() {
 
 /**
  * Enumeration of event names, that can be emitted by [SmartPoint](#SmartPoint) object.
- * @param create Emitted when point created. Event contains SmartPoint object in `target` field
- * @param drag_start Emitted when user press mouse button on point before start dragging it.
+ * @param create {PointEvents.POINT_ADDED} Emitted when point created. Event contains SmartPoint object in `target` field
+ * @param drag_start {MouseEvent} Emitted when user press mouse button on point before start dragging it.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object
- * @param drag Emitted when user drags point by a mouse.
+ * @param drag {MouseEvent} Emitted when user drags point by a mouse.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
  * and two additional fields: `oldX` and `oldY` coordinates, which was before event start.
- * @param drag_end Emitted when user releases mouse button after pressing it on point
+ * @param drag_end {MouseEvent} Emitted when user releases mouse button after pressing it on point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object
- * @param mousedown Emitted when user presses mouse button on point
+ * @param mousedown {MouseEvent} Emitted when user presses mouse button on point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object
- * @param mouseup Emitted when user releases mouse button on point
+ * @param mouseup {MouseEvent} Emitted when user releases mouse button on point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object
- * @param mouseover Emitted when mouse cursor goes inside point
+ * @param mouseover {MouseEvent} Emitted when mouse cursor goes inside point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
- * @param mousemove Emitted when mouse cursor moves on top of point
+ * @param mousemove {MouseEvent} Emitted when mouse cursor moves on top of point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
- * @param mouseout Emitted when mouse cursor goes away from point
+ * @param mouseout {MouseEvent} Emitted when mouse cursor goes away from point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
- * @param click Emitted when click on point
+ * @param click {MouseEvent} Emitted when click on point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
- * @param dblclick Emitted when double-click on point
+ * @param dblclick {MouseEvent} Emitted when double-click on point
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
- * @param destroy Emitted when point destroyed (by pressing right mouse button on it or
+ * @param destroy {PointEvents.POINT_DESTROYED} Emitted when point destroyed (by pressing right mouse button on it or
  * programmatically using `destroy` method)
  * @enum {string}
  */

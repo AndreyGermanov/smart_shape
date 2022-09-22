@@ -457,43 +457,43 @@ function SmartShapeEventListener(shape) {
 
 /**
  * Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) object.
- * @param create {ShapeEvents.SHAPE_CREATE}Emitted right after shape is created and initialized.
+ * @param create {ShapeEvents.SHAPE_CREATE} Emitted right after shape is created and initialized.
  * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
  * @param move_start {MouseEvent} Emitted when user presses left mouse button on shape to start dragging.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousedown object with additional
  * field `pos`, which is a position of shape when movement started.
  * Position is an object with following fields "left,top,right,bottom,width,height"
- * @param move Emitted when user drags shape.
+ * @param move {MouseEvent} Emitted when user drags shape.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object, but also
  * includes additional properties `oldPos` - shape position before previous movement. `newPos` - shape position after
  * previous movement. Position is an object with following fields "left,top,right,bottom,width,height"
- * @param move_end Emitted when user releases mouse button to stop drag the shape.
+ * @param move_end {MouseEvent} Emitted when user releases mouse button to stop drag the shape.
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseup object with additional
  * field `pos`, which is a position of shape when movement started.
  * Position is an object with following fields "left,top,right,bottom,width,height"
- * @param mousemove Emitted when user moves mouse over shape
+ * @param mousemove {MouseEvent} Emitted when user moves mouse over shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mousemove object
- * @param mouseover Emitted when mouse cursor goes inside shape
+ * @param mouseover {MouseEvent} Emitted when mouse cursor goes inside shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseover object
- * @param mouseout Emitted when mouse cursor goes away from shape
+ * @param mouseout {MouseEvent} Emitted when mouse cursor goes away from shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) mouseout object
- * @param click Emitted when click on shape
+ * @param click {MouseEvent} Emitted when click on shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) click object
- * @param dblclick Emitted when double-click on shape
+ * @param dblclick {MouseEvent} Emitted when double-click on shape
  * Standard [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) dblclick object
- * @param resize Emitted when user resized the shape using resize box. Event object includes fields `oldPos` and
+ * @param resize {ResizeBoxEvents.RESIZE_BOX_RESIZE} Emitted when user resized the shape using resize box. Event object includes fields `oldPos` and
  * `newPos` which are positions of shape before and after resizing.
  * Position is an object with following fields "left,top,right,bottom,width,height"
- * @param rotate Emitted when user rotated the shape using rotate box Event object includes the `angle` field,
+ * @param rotate {RotateBoxEvents.ROTATE_BOX_ROTATE} Emitted when user rotated the shape using rotate box Event object includes the `angle` field,
  * which is a rotation angle.
  * Position is an object with following fields "left,top,right,bottom,width,height"
- * @param point_drag_start Emitted when user starts dragging one of shape's point. Event Includes `point` field.
+ * @param point_drag_start {MouseEvent} Emitted when user starts dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
- * @param point_drag_move Emitted when user dragging one of shape's point. Event Includes `point` field.
+ * @param point_drag_move {MouseEvent} Emitted when user dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
- * @param point_drag_end Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
+ * @param point_drag_end {MouseEvent} Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
- * @param destroy Emitted right before shape is destroyed
+ * @param destroy {ShapeEvents.SHAPE_DESTROY} Emitted right before shape is destroyed
  * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
  * @enum {string}
  */
