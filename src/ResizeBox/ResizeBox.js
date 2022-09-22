@@ -1,6 +1,5 @@
 import SmartShape from "../SmartShape/SmartShape.js";
 import {PointMoveDirections} from "../SmartPoint/SmartPoint.js";
-import {ResizeBoxEvents} from "./ResizeBoxEventListener.js";
 import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
@@ -369,7 +368,9 @@ function ResizeBox() {
 
     /**
      * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
+     * ResizeBox can emit events, defined in [ResizeBoxEvents](#ResizeBoxEvents) enumeration. So, you can
+     * listen any of these events.
+     * @param eventName {string} - Name of event. Use one of names, defined in [ResizeBoxEvents](#ResizeBoxEvents)
      * @param handler {function} - Function that used as an event handler
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */

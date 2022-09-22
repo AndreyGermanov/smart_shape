@@ -254,13 +254,15 @@ set the variable to 'null' after calling this method.
 
 ### resizeBox.addEventListener(eventName, handler) ⇒ <code>function</code>
 Uniform method that used to add event handler of specified type to this object.
+ResizeBox can emit events, defined in [ResizeBoxEvents](#ResizeBoxEvents) enumeration. So, you can
+listen any of these events.
 
 **Kind**: instance method of [<code>ResizeBox</code>](#ResizeBox)  
 **Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Name of event |
+| eventName | <code>string</code> | Name of event. Use one of names, defined in [ResizeBoxEvents](#ResizeBoxEvents) |
 | handler | <code>function</code> | Function that used as an event handler |
 
 <a name="ResizeBox+removeEventListener"></a>
@@ -493,13 +495,15 @@ set the variable to 'null' after calling this method.
 
 ### rotateBox.addEventListener(eventName, handler) ⇒ <code>function</code>
 Uniform method that used to add event handler of specified type to this object.
+RotateBox can emit events, defined in [RotateBoxEvents](#RotabeBoxEvents) enumeration. So, you can
+listen any of these events.
 
 **Kind**: instance method of [<code>RotateBox</code>](#RotateBox)  
 **Returns**: <code>function</code> - - Pointer to added event handler. Should be used to remove event listener later.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Name of event |
+| eventName | <code>string</code> | Name of event. Use one of name, defined in [RotateBoxEvents](#RotateBoxEvents) |
 | handler | <code>function</code> | Function that used as an event handler |
 
 <a name="RotateBox+removeEventListener"></a>

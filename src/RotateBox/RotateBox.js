@@ -276,7 +276,9 @@ function RotateBox() {
 
     /**
      * Uniform method that used to add event handler of specified type to this object.
-     * @param eventName {string} - Name of event
+     * RotateBox can emit events, defined in [RotateBoxEvents](#RotabeBoxEvents) enumeration. So, you can
+     * listen any of these events.
+     * @param eventName {string} - Name of event. Use one of name, defined in [RotateBoxEvents](#RotateBoxEvents)
      * @param handler {function} - Function that used as an event handler
      * @returns {function} - Pointer to added event handler. Should be used to remove event listener later.
      */
