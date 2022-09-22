@@ -574,4 +574,84 @@ describe('SmartShape API tests', () => {
       assert.equal(polygons.length, 2, "Should be two 'polygons' inside svg");
     })
   });
+
+  it("toPng", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(async() => {
+      const div1 = Cypress.$("#app").toArray()[0];
+      const gradient = {
+        type: "linear",
+        gradientTransform: "rotate(90)",
+        steps: [
+          {
+            offset: "20%",
+            stopColor: "#00ff00",
+          },
+          {
+            offset: "60%",
+            stopColor: "#006600",
+          },
+          {
+            offset: "100%",
+            stopColor: "#00ff00",
+          },
+        ]
+      }
+      const shapes = [];
+      shapes["w"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [25, 0], [50, 100], [75, 50], [100, 100], [125, 0], [150, 0], [100, 150], [75, 90], [50, 150]])
+      shapes["e"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+      shapes["e2"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+      shapes["k"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [25, 0], [25, 50], [75, 0], [100, 0], [40, 65], [100, 150], [75, 150], [25, 75], [25, 150], [0, 150]])
+      shapes["e3"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]])
+      shapes["n"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 150], [0, 0], [35, 0], [75, 125], [75, 0], [100, 0], [100, 150], [65, 150], [25, 25], [25, 150]])
+      shapes["d"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [75, 0], [100, 25], [100, 125], [75, 150], [0, 150]])
+      shapes["d_sub"] = new SmartShape().init(div1, {fill:"black",zIndex:1001},
+          [[18, 13], [67, 13], [82, 26], [82, 125], [67, 137], [18, 137]])
+      shapes["d"].addChild(shapes["d_sub"]);
+      shapes["excl"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 0], [25, 0], [25, 100], [0, 100]])
+      shapes["excl_sub"] = new SmartShape().init(div1, {fillGradient:gradient,strokeWidth:0},
+          [[0, 125], [25, 125], [25, 150], [0, 150]])
+      shapes["excl"].addChild(shapes["excl_sub"]);
+
+      shapes["w"].scaleTo(null,30);
+      shapes["w"].redraw();
+      shapes["e"].scaleTo(null,30);
+      shapes["e"].moveTo(35,0);
+      shapes["e"].redraw();
+      shapes["w"].addChild(shapes["e"]);
+      shapes["e2"].scaleTo(null,30);
+      shapes["e2"].moveTo(65,0);
+      shapes["e2"].redraw();
+      shapes["w"].addChild(shapes["e2"]);
+      shapes["k"].scaleTo(null,30);
+      shapes["k"].moveTo(95,0);
+      shapes["k"].redraw();
+      shapes["w"].addChild(shapes["k"]);
+      shapes["e3"].scaleTo(null,30);
+      shapes["e3"].moveTo(125,0);
+      shapes["e3"].redraw();
+      shapes["w"].addChild(shapes["e3"]);
+      shapes["n"].scaleTo(null,30);
+      shapes["n"].moveTo(155,0);
+      shapes["n"].redraw();
+      shapes["w"].addChild(shapes["n"]);
+      shapes["d"].scaleTo(null,30);
+      shapes["d"].moveTo(185,0);
+      shapes["d"].redraw();
+      shapes["w"].addChild(shapes["d"]);
+      shapes["excl"].scaleTo(null,30);
+      shapes["excl"].moveTo(215,0);
+      shapes["excl"].redraw();
+      shapes["w"].addChild(shapes["excl"]);
+      const blob = await shapes["w"].toPng("blob",500);
+      assert.equal(blob.size,7774,"Should return correct BLOB");
+    })
+  });
 })

@@ -732,6 +732,7 @@ to this object.
     * [.destroy()](#SmartShape+destroy)
     * [.getCenter(forGroup)](#SmartShape+getCenter) ⇒ <code>array</code>
     * [.toSvg()](#SmartShape+toSvg) ⇒ <code>string</code>
+    * [.toPng(type, width, height)](#SmartShape+toPng) ⇒ <code>Promise</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -1015,8 +1016,8 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| width | <code>number</code> | new width |
-| height | <code>number</code> | new height |
+| width | <code>number</code> \| <code>null</code> | new width. If not specified, then will be calculated automatically based on height to preserve aspect ratio |
+| height | <code>number</code> \| <code>null</code> | new height. If not specifie, then will be calculated automatically based on width to preserve aspect ratio |
 
 <a name="SmartShape+rotateBy"></a>
 
@@ -1157,6 +1158,21 @@ Method exports shape and all its children to SVG document.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>string</code> - Body of SVG document as a string  
+<a name="SmartShape+toPng"></a>
+
+### smartShape.toPng(type, width, height) ⇒ <code>Promise</code>
+Method exports shape and all its children as a PNG image
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>Promise</code> - Promise that resolves either to DataURL string or to BLOB object, depending on value of
+`type` argument  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| type | [<code>PngExportTypes</code>](#PngExportTypes) | Format of returned result - `dataurl` or `blob`. By default `dataurl` |
+| width | <code>number</code> \| <code>null</code> | Width of image. If not specified, then calculate based on height or current width of shape |
+| height | <code>number</code> \| <code>null</code> | Height of image. If not specified, then calculate based on width or current height of shape |
+
 <a name="SmartShapeDrawHelper"></a>
 
 ## SmartShapeDrawHelper
@@ -1603,10 +1619,22 @@ Enumeration of SmartShape display modes
 
 | Param | Description |
 | --- | --- |
-| DEFAULT | basic display mode without resize or rotate boxes and points are hidden |
-| SELECTED | In this mode the points displayed on shape, but resize and rotate boxes are hidden |
-| SCALE | In this mode the shape displayed with resize box around it |
-| ROTATE | In this mode the shape displayed with rotate box around it |
+| default | basic display mode without resize or rotate boxes and points are hidden |
+| selected | In this mode the points displayed on shape, but resize and rotate boxes are hidden |
+| scale | In this mode the shape displayed with resize box around it |
+| rotate | In this mode the shape displayed with rotate box around it |
+
+<a name="PngExportTypes"></a>
+
+## PngExportTypes : <code>enum</code>
+Enumeration of PNG export types for SmartShape.toPng() function
+
+**Kind**: global enum  
+
+| Param | Description |
+| --- | --- |
+| dataurl | Return PNG as a DataURL string |
+| blob | Return PNG as a BLOB object |
 
 <a name="ShapeEvents"></a>
 

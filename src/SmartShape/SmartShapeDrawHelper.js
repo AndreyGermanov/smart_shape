@@ -1,5 +1,6 @@
 import {SmartShapeDisplayMode} from "./SmartShape.js";
-import {notNull} from "../utils";
+import {dataURLtoBlob, notNull} from "../utils";
+import {applyAspectRatio} from "../utils/geometry.js";
 
 /**
  * Internal helper class that used to draw shape.
@@ -19,9 +20,13 @@ function SmartShapeDrawHelper() {
             return
         }
         if (shape.svg) {
-            shape.eventListener.removeSvgEventListeners();
-            shape.root.removeChild(shape.svg);
-            shape.svg = null;
+            try {
+                shape.eventListener.removeSvgEventListeners();
+                shape.root.removeChild(shape.svg);
+                shape.svg = null;
+            } catch (err) {
+
+            }
         }
         shape.svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         shape.svg.ondragstart = function() { return false; }
@@ -421,6 +426,60 @@ function SmartShapeDrawHelper() {
             }
         })
     }
+
+    /**
+     * @ignore
+     * Method exports shape and all its children as a PNG image
+     * @param {SmartShape} shape Shape object to export
+     * @param {PngExportTypes} type Format of returned result - `dataurl` or `blob`. By default `dataurl`
+     * @param {number|null} width Width of image. If not specified, then calculate based on height or current
+     * width of shape
+     * @param {number|null} height Height of image. If not specified, then calculate based on width or current
+     * height of shape
+     * @return {Promise} Promise that resolves either to DataURL string or to BLOB object, depending on value of
+     * `type` argument
+     */
+    this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null) => {
+        return new Promise(resolve => {
+            const pos = shape.getPosition(true);
+            [width, height] = applyAspectRatio(width,height,pos.width,pos.height);
+            shape.scaleTo(width,height);
+            const svgString = this.toSvg(shape);
+            shape.scaleTo(pos.width,pos.height);
+            const img = new Image();
+            const svg = new Blob([svgString],{type:"image/svg+xml"});
+            const DOMURL = window.URL || window.webkitURL || window;
+            const url = DOMURL.createObjectURL(svg);
+            img.addEventListener("load", () => {
+                const canvas = document.createElement("canvas");
+                img.width = width;
+                img.height = height;
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img,0,0)
+                DOMURL.revokeObjectURL(url);
+                const result = canvas.toDataURL("image/png");
+                if (type === PngExportTypes.BLOB) {
+                    resolve(dataURLtoBlob(result));
+                    return
+                }
+                resolve(result)
+            })
+            img.src = url;
+        })
+    }
+}
+
+/**
+ * Enumeration of PNG export types for SmartShape.toPng() function
+ * @param dataurl Return PNG as a DataURL string
+ * @param blob Return PNG as a BLOB object
+ * @enum {string}
+ */
+export const PngExportTypes = {
+    DATAURL: "dataurl",
+    BLOB: "blob"
 }
 
 export default new SmartShapeDrawHelper();
