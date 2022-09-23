@@ -23,8 +23,8 @@ const n = new H(), V = (e) => e * (Math.PI / 180), k = (e) => e * (180 / Math.PI
     let f = (d[1] - a[1]) * (E[0] - d[0]) - (d[0] - a[0]) * (E[1] - d[1]);
     return f === 0 ? 0 : f > 0 ? 1 : 2;
   }, o = (a, d, E, f) => {
-    let T = i(a, d, E), b = i(a, d, f), I = i(E, f, a), U = i(E, f, d);
-    return T !== b && I !== U || T === 0 && s(a, E, d) || b === 0 && s(a, f, d) || I === 0 && s(E, a, f) ? !0 : !!(U === 0 && s(E, d, f));
+    let T = i(a, d, E), b = i(a, d, f), I = i(E, f, a), C = i(E, f, d);
+    return T !== b && I !== C || T === 0 && s(a, E, d) || b === 0 && s(a, f, d) || I === 0 && s(E, a, f) ? !0 : !!(C === 0 && s(E, d, f));
   };
   if (e.length < 3)
     return !1;
@@ -43,7 +43,7 @@ const n = new H(), V = (e) => e * (Math.PI / 180), k = (e) => e * (180 / Math.PI
     l = a;
   } while (l !== 0);
   return u % 2 === 1;
-}, C = (e, t, s, i) => !e && !t ? [s, i] : e && t ? [e, t] : (e || (e = t * (s / i)), t || (t = e * (i / s)), [e, t]), L = (e, t = !0) => {
+}, U = (e, t, s, i) => !e && !t ? [s, i] : e && t ? [e, t] : (e || (e = t * (s / i)), t || (t = e * (i / s)), [e, t]), L = (e, t = !0) => {
   let s = 0, i = 0;
   if (!t)
     return { top: e.offsetTop - e.scrollTop, left: e.offsetLeft - e.scrollLeft };
@@ -350,10 +350,6 @@ function J(e) {
     }), this.shapeMouseUp = this.resizeBox.shape.addEventListener(h.SHAPE_MOUSE_UP, (t) => {
       setTimeout(() => {
         n.emit(h.SHAPE_MOUSE_UP, this.resizeBox, t);
-      }, 1);
-    }), this.shapeMouseMove = this.resizeBox.shape.addEventListener(h.SHAPE_MOUSE_MOVE, (t) => {
-      setTimeout(() => {
-        n.emit(h.SHAPE_MOUSE_MOVE, this.resizeBox, t);
       }, 1);
     }), this.shapeMouseOver = this.resizeBox.shape.addEventListener(h.SHAPE_MOUSE_OVER, (t) => {
       setTimeout(() => {
@@ -747,7 +743,7 @@ function Q() {
     });
   }, this.toPng = (e, t = R.DATAURL, s = null, i = null) => new Promise((o) => {
     const r = e.getPosition(!0);
-    [s, i] = C(s, i, r.width, r.height), e.scaleTo(s, i);
+    [s, i] = U(s, i, r.width, r.height), e.scaleTo(s, i);
     const u = this.toSvg(e);
     e.scaleTo(r.width, r.height);
     const l = new Image(), a = new Blob([u], { type: "image/svg+xml" }), d = window.URL || window.webkitURL || window, E = d.createObjectURL(a);
@@ -1064,7 +1060,7 @@ function D() {
     if (this.calcPosition(), !e && !t)
       return null;
     const i = this.getPosition(!0);
-    [e, t] = C(e, t, i.width, i.height), i.width >= 10 && e < 10 && (e = 10), i.height >= 10 && t < 10 && (t = 10);
+    [e, t] = U(e, t, i.width, i.height), i.width >= 10 && e < 10 && (e = 10), i.height >= 10 && t < 10 && (t = 10);
     let o = i.left + e > s.right ? s.right - i.left : e, r = i.top + t > s.bottom ? s.bottom - i.top : t, u = o / i.width, l = r / i.height;
     this.points.forEach(
       (a) => {
