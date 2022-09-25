@@ -21,10 +21,9 @@ function SmartShapeDrawHelper() {
         }
         if (shape.svg) {
             try {
+                shape.eventListener.removeSvgEventListeners();
                 shape.svg.innerHTML = "";
-            } catch (err) {
-
-            }
+            } catch (err) {}
         } else {
             shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             shape.svg.ondragstart = function () { return false; }
@@ -282,10 +281,10 @@ function SmartShapeDrawHelper() {
         for (let attribute in filterOptions) {
             filter.setAttribute(attribute,filterOptions[attribute].toString());
             if (attribute === "dx") {
-                shape.svg.setAttribute("width",shape.width + parseInt(filterOptions["dx"])*2);
+                shape.svg.setAttribute("width",(shape.width + parseInt(filterOptions["dx"])*2).toString());
             }
             if (attribute === "dy") {
-                shape.svg.setAttribute("height",shape.height + parseInt(filterOptions["dy"])*2);
+                shape.svg.setAttribute("height",(shape.height + parseInt(filterOptions["dy"])*2).toString());
             }
         }
         return filter;
@@ -398,7 +397,7 @@ function SmartShapeDrawHelper() {
      * Method used for SVG export feature to add all polygons from the shape and all
      * it's children to resulting `svg` document
      * @param shape {SmartShape} shape object
-     * @param svg {HTMLOrSVGElement} svg element to add polygons to
+     * @param svg {SVGElement} svg element to add polygons to
      */
     this.addSvgPolygons = (shape,svg) => {
         const pos = shape.getPosition(true);

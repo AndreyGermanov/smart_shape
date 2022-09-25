@@ -211,8 +211,8 @@ describe('RotateBox Tests', () => {
       box.addEventListener(ShapeEvents.SHAPE_DESTROY, () => {});
       assert.equal(box.eventListener.subscriptions[RotateBoxEvents.ROTATE_BOX_ROTATE].length,1,"Should contain registered resize event handler in local queue");
       assert.equal(EventsManager.subscriptions[RotateBoxEvents.ROTATE_BOX_ROTATE].length,1,"Should contain registered resize event handler in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,1,"Should contain point drag move event handlers for all points in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,4,"Should contain point drag end event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,3,"Should contain point drag move event handlers for all points in global queue");
+      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,6,"Should contain point drag end event handlers for all points in global queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
           "Should register SHAPE_CREATE event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
@@ -237,13 +237,13 @@ describe('RotateBox Tests', () => {
       assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOUSE_MOVE].length,2,
           "Should register SHAPE_MOUSE_MOVE in global EventsManager"
       );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,2,
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_START].length,6,
           "Should register SHAPE_MOVE_START in global EventsManager"
       );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,2,
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE].length,3,
           "Should register SHAPE_MOVE in global EventsManager"
       );
-      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,2,
+      assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_MOVE_END].length,6,
           "Should register SHAPE_MOVE_END in global EventsManager"
       );
       assert.equal(EventsManager.subscriptions[ShapeEvents.SHAPE_DESTROY].length,2,

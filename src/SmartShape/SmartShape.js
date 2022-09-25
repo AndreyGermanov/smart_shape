@@ -31,7 +31,7 @@ function SmartShape() {
     /**
      * [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
      * SmartShape constructs SVG element based on provided point coordinates and options.
-     * @type {object}
+     * @type {HTMLOrSVGElement}
      */
     this.svg = null;
 

@@ -516,6 +516,19 @@ export const ShapeEvents = {
     POINT_DRAG_END: "point_drag_end",
     SHAPE_RESIZE: "resize",
     SHAPE_ROTATE: "rotate",
+
+    /**
+     * Method returns an object of all ShapeEvents that
+     * related to mouse.*
+     * @returns {array} Array of objects in a format "key:,name:"
+     */
+    getShapeMouseEvents: () => {
+        return Object.keys(ShapeEvents)
+            .filter(key=> {
+                return ["SHAPE_CREATE","SHAPE_DESTROY","SHAPE_RESIZE","SHAPE_ROTATE"].indexOf(key) === -1 &&
+                    typeof(ShapeEvents[key])!== "function"
+            }).map(key => {return {key:key,name:ShapeEvents[key]} })
+    }
 }
 
 export default SmartShapeEventListener;

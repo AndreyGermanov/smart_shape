@@ -48,6 +48,8 @@ function RotateBoxEventListener(rotateBox) {
      */
     this.previousAngle = 0;
 
+    this.shapeEventListeners = {};
+
     /**
      * @ignore
      * Initializes and starts this event listener
@@ -63,67 +65,7 @@ function RotateBoxEventListener(rotateBox) {
      * Setup event handlers for different events, to which rotate box should react.
      */
     this.setEventListeners = () => {
-        this.shapeMouseEnter = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,(event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_ENTER,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMouseMove = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMoveStart = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMoveEnd = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
-            setTimeout(() => {
-                this.previousAngle = 0;
-                EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMove = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.rotateBox,event);
-            },1)
-        });
-        this.shapeClick = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMouseDown = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMouseUp = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMouseOver = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OVER,this.rotateBox,event);
-            },1)
-        });
-        this.shapeMouseOut = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OUT,this.rotateBox,event);
-            },1)
-        });
-        this.shapeDoubleClick = this.rotateBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.rotateBox,event);
-            },1)
-        });
-        this.shapePointDragMove = this.rotateBox.shape.addEventListener(ShapeEvents.POINT_DRAG_MOVE, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.POINT_DRAG_MOVE,this.rotateBox,event);
-            },1)
-        });
+        this.interceptEventsFromShape();
         this.rotateBox.shape.points.forEach(point => {
             point.mousemove = this.mousemove;
             point.mouseDownListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
@@ -144,15 +86,29 @@ function RotateBoxEventListener(rotateBox) {
 
     /**
      * @ignore
+     * Method intercepts all mouse events from underlying shape
+     * and re-emits them like they come from RotateBox
+     */
+    this.interceptEventsFromShape = () => {
+        ShapeEvents.getShapeMouseEvents().forEach(item => {
+            this.shapeEventListeners[item.name] = this.rotateBox.shape.addEventListener(item.name,(event) => {
+                setTimeout(() => {
+                    if (item.key === "SHAPE_MOVE_END") {
+                        this.previousAngle = 0;
+                    }
+                    EventsManager.emit(item.name,this.rotateBox,event);
+                },1)
+            });
+        })
+    }
+
+    /**
+     * @ignore
      * onMouseMove event handler, triggered when user moves mouse over the shape or container element.
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
-            if (this.rotateBox.shape.root.draggedShape) {
-                this.rotateBox.shape.root.draggedShape.draggedPoint = null;
-                this.rotateBox.shape.root.draggedShape = null;
-            }
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, {clientX:event.clientX,clientY:event.clientY});
             return
         }
@@ -330,7 +286,9 @@ function RotateBoxEventListener(rotateBox) {
      * It was returned from [addEventListener](#RotateBox+addEventListener) method.
      */
     this.removeEventListener = (eventName,listener) => {
-        this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener),1);
+        if (this.subscriptions[eventName] && typeof(this.subscriptions[eventName]) !== "undefined") {
+            this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener), 1);
+        }
         EventsManager.unsubscribe(eventName,listener)
     }
 
@@ -344,19 +302,11 @@ function RotateBoxEventListener(rotateBox) {
             handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
             this.subscriptions[eventName] = [];
         }
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.shapeMoveStart);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE,this.shapeMove);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_END,this.shapeMoveEnd);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.shapeClick);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOWN,this.shapeMouseDown);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_UP,this.shapeMouseUp);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.shapeMouseOver);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.shapeMouseOut);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.shapeDoubleClick);
-        this.rotateBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_MOVE,this.shapePointDragMove);
+        Object.keys(this.shapeEventListeners).forEach(
+            key => {
+                this.rotateBox.removeEventListener(key, this.shapeEventListeners[key])
+            }
+        )
         this.rotateBox.shape.points.forEach(point => {
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseDownListener);
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseUpListener);
