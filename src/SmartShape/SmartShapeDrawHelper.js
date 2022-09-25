@@ -108,7 +108,7 @@ function SmartShapeDrawHelper() {
         shape.resizeBox.top = bounds.top;
         shape.resizeBox.width = bounds.width;
         shape.resizeBox.height = bounds.height;
-        shape.resizeBox.shape.options.zIndex = shape.options.zIndex+1;
+        shape.resizeBox.options.zIndex = shape.options.zIndex+1;
         shape.resizeBox.redraw();
     }
 
@@ -127,8 +127,7 @@ function SmartShapeDrawHelper() {
         shape.rotateBox.top = bounds.top;
         shape.rotateBox.width = bounds.width;
         shape.rotateBox.height = bounds.height;
-        shape.rotateBox.shape.options.zIndex = shape.options.zIndex+1;
-
+        shape.rotateBox.options.zIndex = shape.options.zIndex+1;
         shape.rotateBox.redraw();
     }
 

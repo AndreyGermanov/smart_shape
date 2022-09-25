@@ -187,9 +187,9 @@ function SmartShapeManager() {
      * @ignore
      * Executed when user ends dragging point in the shape.
      * Clears "dragging" status of this point
-     * @param event {PointEvents.POINT_DRAG_END} Event object
+     * @param _event {PointEvents.POINT_DRAG_END} Event object
      */
-    this.onPointDragEnd = (event) => {
+    this.onPointDragEnd = (_event) => {
         if (this.draggedShape) {
             this.draggedShape.draggedPoint = null;
         }
@@ -289,7 +289,6 @@ function SmartShapeManager() {
      */
     this.deactivateShape = (shape) => {
         if (typeof(shape.options.prevZIndex) !== "undefined") {
-            shape.options.zIndex = shape.options.prevZIndex;
             SmartShapeDrawHelper.updateOptions(shape);
         }
         if (shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
@@ -297,7 +296,6 @@ function SmartShapeManager() {
         }
         shape.getChildren(true).forEach(child => {
             if (typeof(child.options.prevZIndex) !== "undefined") {
-                child.options.zIndex = child.options.prevZIndex;
                 SmartShapeDrawHelper.updateOptions(child);
                 if (child.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
                     child.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);

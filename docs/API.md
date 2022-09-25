@@ -699,7 +699,7 @@ to this object.
     * [new SmartShape()](#new_SmartShape_new)
     * [.root](#SmartShape+root) : <code>HTMLElement</code>
     * [.points](#SmartShape+points) : <code>array</code>
-    * [.svg](#SmartShape+svg) : <code>object</code>
+    * [.svg](#SmartShape+svg) : <code>HTMLOrSVGElement</code>
     * [.groupHelper](#SmartShape+groupHelper) : [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
     * [.options](#SmartShape+options) : <code>object</code>
     * [.left](#SmartShape+left) : <code>number</code>
@@ -761,7 +761,7 @@ Array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+svg"></a>
 
-### smartShape.svg : <code>object</code>
+### smartShape.svg : <code>HTMLOrSVGElement</code>
 [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
 SmartShape constructs SVG element based on provided point coordinates and options.
 

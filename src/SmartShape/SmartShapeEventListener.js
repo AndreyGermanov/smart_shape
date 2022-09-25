@@ -413,7 +413,9 @@ function SmartShapeEventListener(shape) {
      * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
      */
     this.removeEventListener = (eventName,listener) => {
-        this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener),1);
+        if (this.subscriptions[eventName] && typeof(this.subscriptions[eventName]) !== "undefined") {
+            this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener), 1);
+        }
         EventsManager.unsubscribe(eventName,listener)
     }
 

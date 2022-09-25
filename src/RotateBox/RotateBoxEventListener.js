@@ -2,7 +2,7 @@ import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import {distance, radians_to_degrees} from "../utils";
-import {getMouseCursorPos} from "../events/functions.js";
+import {createEvent, getMouseCursorPos} from "../events/functions.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the RotateBox.
@@ -70,16 +70,12 @@ function RotateBoxEventListener(rotateBox) {
             point.mousemove = this.mousemove;
             point.mouseDownListener = point.addEventListener(PointEvents.POINT_DRAG_START, (event) => {
                 this.onPointMouseDown(event);
-                setTimeout(() => {
                     EventsManager.emit(ShapeEvents.POINT_DRAG_START,this.rotateBox,{point:point})
-                },1)
 
             });
             point.mouseUpListener = point.addEventListener(PointEvents.POINT_DRAG_END, (event) => {
                 this.onPointMouseUp(event);
-                setTimeout(() => {
                     EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.rotateBox,{point:point})
-                },1)
             });
         });
     }
@@ -92,12 +88,10 @@ function RotateBoxEventListener(rotateBox) {
     this.interceptEventsFromShape = () => {
         ShapeEvents.getShapeMouseEvents().forEach(item => {
             this.shapeEventListeners[item.name] = this.rotateBox.shape.addEventListener(item.name,(event) => {
-                setTimeout(() => {
-                    if (item.key === "SHAPE_MOVE_END") {
-                        this.previousAngle = 0;
-                    }
-                    EventsManager.emit(item.name,this.rotateBox,event);
-                },1)
+                if (item.key === "SHAPE_MOVE_END") {
+                    this.previousAngle = 0;
+                }
+                EventsManager.emit(item.name,this.rotateBox,event);
             });
         })
     }
@@ -109,7 +103,7 @@ function RotateBoxEventListener(rotateBox) {
      */
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
-            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, {clientX:event.clientX,clientY:event.clientY});
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, createEvent(event,{clientX:event.clientX,clientY:event.clientY}));
             return
         }
         const [clientX,clientY] = getMouseCursorPos(event);
@@ -309,7 +303,7 @@ function RotateBoxEventListener(rotateBox) {
         )
         this.rotateBox.shape.points.forEach(point => {
             point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseDownListener);
-            point.removeEventListener(PointEvents.POINT_DRAG_START, point.mouseUpListener);
+            point.removeEventListener(PointEvents.POINT_DRAG_END, point.mouseUpListener);
         });
     }
 }

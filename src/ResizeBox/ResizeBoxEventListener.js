@@ -2,6 +2,7 @@ import EventsManager from "../events/EventsManager.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {uuid} from "../utils";
+import {createEvent} from "../events/functions.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the ResizeBox.
@@ -34,6 +35,8 @@ function ResizeBoxEventListener(resizeBox) {
 
     this.guid = uuid();
 
+    this.shapeEventListeners = {};
+
     /**
      * @ignore
      * Initializes and starts this event listener
@@ -52,77 +55,11 @@ function ResizeBoxEventListener(resizeBox) {
     this.setEventListeners = () => {
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.subscribe(PointEvents.POINT_DRAG_END, this.onPointDragMove);
-        this.shapeMouseEnter = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,(event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_ENTER,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMouseMove = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,(event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMoveStart = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMoveEnd = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE_END, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOVE_END,this.resizeBox,event);
-            },1)
-
-        });
-        this.shapeMove = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOVE, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.resizeBox,event);
-            },1)
-        });
-        this.shapeClick = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_CLICK,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMouseDown = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMouseUp = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMouseOver = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OVER,this.resizeBox,event);
-            },1)
-        });
-        this.shapeMouseOut = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_OUT,this.resizeBox,event);
-            },1)
-        });
-        this.shapeDoubleClick = this.resizeBox.shape.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.resizeBox,event);
-            },1)
-        });
-        this.shapePointDragStart = this.resizeBox.shape.addEventListener(ShapeEvents.POINT_DRAG_START, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.POINT_DRAG_START,this.resizeBox,event);
-            },1)
-        });
-        this.shapePointDragMove = this.resizeBox.shape.addEventListener(ShapeEvents.POINT_DRAG_MOVE, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.POINT_DRAG_MOVE,this.resizeBox,event);
-            },1)
-        });
-        this.shapePointDragEnd = this.resizeBox.shape.addEventListener(ShapeEvents.POINT_DRAG_END, (event) => {
-            setTimeout(() => {
-                EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.resizeBox,event);
-            },1)
-        });
+        ShapeEvents.getShapeMouseEvents().forEach(item => {
+            this.shapeEventListeners[item.name] = this.resizeBox.shape.addEventListener(item.name,(event) => {
+                EventsManager.emit(item.name,this.resizeBox,event);
+            });
+        })
     }
 
     /**
@@ -173,6 +110,7 @@ function ResizeBoxEventListener(resizeBox) {
         this.resizeBox.calcPosition();
         const newPos = this.resizeBox.getPosition();
         this.resizeBox.redraw();
+        EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.resizeBox,createEvent(event,{point:event.target}));
         EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBox,{oldPos,newPos});
     }
 
@@ -303,7 +241,9 @@ function ResizeBoxEventListener(resizeBox) {
      * It was returned from [addEventListener](#ResizeBox+addEventListener) method.
      */
     this.removeEventListener = (eventName,listener) => {
-        this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener),1);
+        if (this.subscriptions[eventName] && typeof(this.subscriptions[eventName]) !== "undefined") {
+            this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener), 1);
+        }
         EventsManager.unsubscribe(eventName,listener)
     }
 
@@ -317,21 +257,11 @@ function ResizeBoxEventListener(resizeBox) {
             handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));
             this.subscriptions[eventName] = [];
         }
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_START,this.shapeMoveStart);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE,this.shapeMove);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOVE_END,this.shapeMoveEnd);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_ENTER,this.shapeMouseEnter);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.shapeClick);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOWN,this.shapeMouseDown);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_UP,this.shapeMouseUp);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeMouseMove);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.shapeMouseOver);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.shapeMouseOver);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.shapeDoubleClick);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_START,this.shapePointDragStart);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_MOVE,this.shapePointDragMove);
-        this.resizeBox.shape.removeEventListener(ShapeEvents.POINT_DRAG_END,this.shapePointDragEnd);
+        Object.keys(this.shapeEventListeners).forEach(
+            key => {
+                this.resizeBox.removeEventListener(key, this.shapeEventListeners[key])
+            }
+        )
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE,this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_END,this.onPointDragMove);
     }

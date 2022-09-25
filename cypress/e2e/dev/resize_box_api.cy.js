@@ -123,107 +123,6 @@ describe('ResizeBox tests', () => {
       checkAndGetPoints(box);
     });
   })
-  it("Should correctly resize box when move markers", () => {
-    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, box] = setup();
-      const [left_top,center_top,right_top,left_bottom,center_bottom,right_bottom,left_center,right_center] = checkAndGetPoints(box);
-      const box_id = box.shape.guid;
-      cy.get("#"+box_id+"_right_top").trigger("mousedown",{buttons:1}).then(() => {
-        cy.get("#app").trigger("mousemove",{buttons:1,clientX:120,clientY:20}).then(() => {
-          assert.equal(right_center.x,right_top.x);
-          assert.equal(right_bottom.x,right_top.x);
-          assert.equal(center_top.y,right_top.y);
-          assert.equal(left_top.y,right_top.y);
-          assert.equal(center_top.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-          assert.equal(center_bottom.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-          assert.equal(left_center.y,parseInt((left_top.y+(left_bottom.y-left_top.y)/2)));
-          assert.equal(right_center.y,parseInt((right_top.y+(right_bottom.y-right_top.y)/2)));
-          cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-            cy.get("#"+box_id+"_right_center").trigger("mousedown",{buttons:1}).then( () => {
-              cy.get("#app").trigger("mousemove", {buttons:1, clientX: 150, clientY: right_center.y}).then(() => {
-                assert.equal(right_top.x,right_center.x);
-                assert.equal(right_bottom.x,right_center.x);
-                assert.equal(center_top.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                assert.equal(center_bottom.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-                  cy.get("#"+box_id+"_right_bottom").trigger("mousedown",{buttons:1}).then(() => {
-                    cy.get("#app").trigger("mousemove",{buttons:1,clientX:170,clientY:120}).then(() => {
-                      assert.equal(right_top.x,right_bottom.x);
-                      assert.equal(right_center.x,right_bottom.x);
-                      assert.equal(center_bottom.y,right_bottom.y);
-                      assert.equal(left_bottom.y,right_bottom.y);
-                      assert.equal(center_top.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                      assert.equal(center_bottom.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                      assert.equal(left_center.y,parseInt((left_top.y+(left_bottom.y-left_top.y)/2)));
-                      assert.equal(right_center.y,parseInt((right_top.y+(right_bottom.y-right_top.y)/2)));
-                      cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-                        cy.get("#"+box_id+"_center_bottom").trigger("mousedown",{buttons:1}).then(() => {
-                          cy.get("#app").trigger("mousemove",{buttons:1,clientX:center_bottom.x,clientY:140}).then(() => {
-                            assert.equal(left_bottom.y,center_bottom.y);
-                            assert.equal(right_bottom.y,center_bottom.y);
-                            assert.equal(left_center.y,parseInt((left_top.y+(left_bottom.y-left_top.y)/2)));
-                            assert.equal(right_center.y,parseInt((right_top.y+(right_bottom.y-right_top.y)/2)));
-                            cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-                              cy.get("#"+box_id+"_left_bottom").trigger("mousedown",{buttons:1}).then(() => {
-                                cy.get("#app").trigger("mousemove",{buttons:1,clientX:10,clientY:160}).then(() => {
-                                  assert.equal(center_bottom.y,left_bottom.y);
-                                  assert.equal(right_bottom.y,left_bottom.y);
-                                  assert.equal(left_center.x,left_bottom.x);
-                                  assert.equal(left_top.x,left_bottom.x);
-                                  assert.equal(center_top.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                                  assert.equal(center_bottom.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                                  assert.equal(left_center.y,parseInt((left_top.y+(left_bottom.y-left_top.y)/2)));
-                                  assert.equal(right_center.y,parseInt((right_top.y+(right_bottom.y-right_top.y)/2)));
-                                  cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-                                    cy.get("#"+box_id+"_left_center").trigger("mousedown",{buttons:1}).then(() => {
-                                      cy.get("#app").trigger("mousemove",{buttons:1,clientX:20,clientY:left_center.y}).trigger(() => {
-                                        assert.equal(left_top.x,left_center.x);
-                                        assert.equal(left_bottom.x,left_center.x);
-                                        assert.equal(center_top.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                                        assert.equal(center_bottom.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                                        cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-                                          cy.get("#"+box_id+"_left_top").trigger("mousedown",{buttons:1}).then(() => {
-                                            cy.get("#app").trigger("mousemove",{buttons:1,clientX:40,clientY:40}).then(() => {
-                                              assert.equal(left_center.x,left_top.x);
-                                              assert.equal(left_bottom.x,left_top.x)
-                                              assert.equal(center_top.y,left_top.y);
-                                              assert.equal(right_top.y,left_top.y);
-                                              assert.equal(center_top.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                                              assert.equal(center_bottom.x,parseInt((left_top.x+(right_top.x-left_top.x)/2)));
-                                              assert.equal(left_center.y,parseInt((left_top.y+(left_bottom.y-left_top.y)/2)));
-                                              assert.equal(right_center.y,parseInt((right_top.y+(right_bottom.y-right_top.y)/2)));
-                                              cy.get("#app").trigger("mouseup", {buttons:1}).then(() => {
-                                                cy.get("#"+box_id+"_center_top").trigger("mousedown",{buttons:1}).then(() => {
-                                                  cy.get("#app").trigger("mousemove",{buttons:1,clientX:center_top.x,clientY:60}).then(() => {
-                                                    assert.equal(left_top.y,center_top.y);
-                                                    assert.equal(right_top.y,center_top.y);
-                                                    assert.equal(left_center.y,parseInt((left_top.y+(left_bottom.y-left_top.y)/2)));
-                                                    assert.equal(right_center.y,parseInt((right_top.y+(right_bottom.y-right_top.y)/2)));
-                                                  });
-                                                });
-                                              });
-                                            });
-                                          })
-                                        });
-                                      });
-                                    });
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    })
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-  });
   it("Should recalculate ResizeBox position and dimensions after move markers", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, box] = setup();
@@ -415,10 +314,6 @@ describe('ResizeBox tests', () => {
       box.addEventListener(ShapeEvents.SHAPE_MOVE, () => {});
       box.addEventListener(ShapeEvents.SHAPE_MOVE_END, () => {});
       box.addEventListener(ShapeEvents.SHAPE_DESTROY, () => {});
-      assert.equal(box.eventListener.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in local queue");
-      assert.equal(EventsManager.subscriptions[ResizeBoxEvents.RESIZE_BOX_RESIZE].length,1,"Should contain registered resize event handler in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_MOVE].length,2,"Should contain point drag move event handlers for all points in global queue");
-      assert.equal(EventsManager.subscriptions[PointEvents.POINT_DRAG_END].length,1,"Should contain point drag end event handlers for all points in global queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_CREATE].length,1,
           "Should register SHAPE_CREATE event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_MOUSE_ENTER].length,1,
