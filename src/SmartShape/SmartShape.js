@@ -98,6 +98,10 @@ function SmartShape() {
      * @param displayMode {SmartShapeDisplayMode} In which mode the shape is displayed: default mode or with resize
      * or rotate box around it. See [SmartShapeDisplayMode](#SmartShapeDisplayMode)
      * @param managed {boolean} Should this shape be managed by [SmartShapeManager](#SmartShapeManager). Default: true
+     * @param minWidth {number} Minimum width of shape. By default `-1` - unlimited
+     * @param minHeight {number} Minimum height of shape. By default `-1` - unlimited
+     * @param maxWidth {number} Maximum width of shape. By default `-1` - unlimited
+     * @param maxHeight {number} Maximum width of shape. By default `-1` - unlimited
      * @type {object}
      */
     this.options = {
@@ -126,7 +130,11 @@ function SmartShape() {
         bounds: {left:-1,top:-1,right:-1,bottom:-1},
         visible:true,
         displayMode: SmartShapeDisplayMode.DEFAULT,
-        managed: true
+        managed: true,
+        minWidth: -1,
+        minHeight : -1,
+        maxWidth: -1,
+        maxHeight: -1
     };
 
     /**
@@ -456,7 +464,7 @@ function SmartShape() {
             return null;
         }
         const pos = this.getPosition(true);
-        [width,height] = applyAspectRatio(width,height,pos.width,pos.height);
+        [width,height] = this.applyScaleRestriction(...applyAspectRatio(width,height,pos.width,pos.height));
         if (pos.width>=10 && width<10) {
             width = 10;
         }
@@ -480,6 +488,32 @@ function SmartShape() {
         })
         this.getChildren(true).forEach(child => child.redraw());
         this.calcPosition();
+    }
+
+    /**
+     * @ignore
+     * Method returns width and height of shape after applying
+     * `minWidth`, `minHeight`, `maxWidth` and `maxHeight` restrictions
+     * to it
+     * @param width {number} Original width
+     * @param height {number} Original height
+     * @returns {array} Returns array in a format [width,height] which is not
+     * less than minWidth and minHeight and not greater than maxWidth and maxHeight
+     */
+    this.applyScaleRestriction = (width,height) => {
+        if (this.options.minWidth !== -1 && width < this.options.minWidth) {
+            width = this.options.minWidth;
+        }
+        if (this.options.minWidth !== -1 && height < this.options.minHeight) {
+            height = this.options.minHeight;
+        }
+        if (this.options.minWidth !== -1 && width > this.options.maxWidth) {
+            width = this.options.maxWidth;
+        }
+        if (this.options.minWidth !== -1 && height > this.options.maxHeight) {
+            height = this.options.maxHeight;
+        }
+        return [width,height];
     }
 
     /**
