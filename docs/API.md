@@ -807,6 +807,10 @@ Options of shape as an object. Can have the following parameters.
 | visible | <code>boolean</code> | Shape is visible or not. By default, `true`. |
 | displayMode | [<code>SmartShapeDisplayMode</code>](#SmartShapeDisplayMode) | In which mode the shape is displayed: default mode or with resize or rotate box around it. See [SmartShapeDisplayMode](#SmartShapeDisplayMode) |
 | managed | <code>boolean</code> | Should this shape be managed by [SmartShapeManager](#SmartShapeManager). Default: true |
+| minWidth | <code>number</code> | Minimum width of shape. By default `-1` - unlimited |
+| minHeight | <code>number</code> | Minimum height of shape. By default `-1` - unlimited |
+| maxWidth | <code>number</code> | Maximum width of shape. By default `-1` - unlimited |
+| maxHeight | <code>number</code> | Maximum width of shape. By default `-1` - unlimited |
 
 <a name="SmartShape+left"></a>
 
