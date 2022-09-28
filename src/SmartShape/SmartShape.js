@@ -5,7 +5,7 @@ import SmartShapeGroupHelper from "./SmartShapeGroupHelper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
 import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
-import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon, getOffset} from "../utils";
+import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon, getOffset, readJSON} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {applyAspectRatio} from "../utils/geometry.js";
 /**
@@ -40,6 +40,8 @@ function SmartShape() {
      * @type {SmartShapeGroupHelper}
      */
     this.groupHelper = null;
+
+    this.eventListener = new SmartShapeEventListener(this);
 
     /**
      * Options of shape as an object. Can have the following parameters.
@@ -227,9 +229,10 @@ function SmartShape() {
         this.root = root;
         this.root.style.position = "relative";
         this.setOptions(options);
-        this.eventListener = new SmartShapeEventListener(this);
         this.groupHelper = new SmartShapeGroupHelper(this).init();
-        this.setupPoints(points,Object.assign({},this.options.pointOptions));
+        if (points && points.length) {
+            this.setupPoints(points, Object.assign({}, this.options.pointOptions));
+        }
         this.eventListener.run();
         this.applyDisplayMode();
         EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
@@ -273,10 +276,8 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      */
     this.setupPoints = (points,pointOptions) => {
-        if (points && typeof(points) === "object") {
-            this.points = [];
-            this.addPoints(points,Object.assign({},pointOptions));
-        }
+        this.points = [];
+        this.addPoints(points,Object.assign({},pointOptions));
     }
 
     /**
@@ -917,6 +918,68 @@ function SmartShape() {
      */
     this.toPng = (type= PngExportTypes.DATAURL,width=null,height=null) => {
         return SmartShapeDrawHelper.toPng(this,type,width,height);
+    }
+
+    /**
+     * Method used to save shape to JSON string.
+     * Returns string with JSON object or JSON array, depending on should it save children too
+     * @param includeChildren {boolean} If true, then it appends JSONs
+     * of all children to `children` property of resulting JSON.
+     * @returns {string} Serialized JSON as string.
+     */
+    this.toJSON = (includeChildren=true) => {
+        return JSON.stringify(this.getJSON(includeChildren))
+    }
+
+    /**
+     * @ignore
+     * Method used to save shape to Javascript object
+     * Returns JSON object or JSON array, depending on should it save children too
+     * @param includeChildren {boolean} If true, then it appends JSONs
+     * of all children to `children` property of resulting JSON
+     * @returns {object} Javascript object with shape and it's children, if `includeChildren` is true.
+     */
+    this.getJSON = (includeChildren = true) => {
+        const result = {
+            options: this.options
+        }
+        result.points = this.points.map(point => point.getJSON());
+        if (includeChildren) {
+            let children = this.getChildren();
+            if (children.length) {
+                result.children = children.map(child => child.getJSON(includeChildren));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Method used to load shape data from specified JSON string, that previously serialized by `toJSON` method
+     * @param root {HTMLElement} HTML container to insert loaded shape
+     * @param jsonString {string} JSON-Serialized shape data
+     * @param includeChildren {boolean} Should load children of this shape if existed. True by default.
+     * @returns {SmartShape|null} Loaded SmartShape object or null in case of JSON reading errors
+     */
+    this.fromJSON = (root,jsonString,includeChildren = true) => {
+        const jsonObj = readJSON(jsonString);
+        if (!jsonObj) {
+            return null;
+        }
+        this.root = root;
+        this.setOptions(jsonObj.options);
+        if (!this.svg) {
+            this.init(root,this.options,null);
+        }
+        jsonObj.points.forEach(point => {
+            this.addPoint(point.x,point.y,point.options)
+        })
+        if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {
+            this.getChildren(true).forEach(child=>child.destroy());
+            jsonObj.children.forEach(child => {
+                this.addChild(new SmartShape().fromJSON(root,JSON.stringify(child)));
+            })
+        }
+        return this;
     }
 }
 

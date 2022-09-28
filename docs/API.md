@@ -552,6 +552,8 @@ this class automatically during init process
     * [.redraw()](#SmartPoint+redraw)
     * [.show()](#SmartPoint+show)
     * [.hide()](#SmartPoint+hide)
+    * [.toJSON()](#SmartPoint+toJSON) ⇒ <code>string</code>
+    * [.fromJSON(jsonString)](#SmartPoint+fromJSON) ⇒ [<code>SmartPoint</code>](#SmartPoint)
     * [.destroy()](#SmartPoint+destroy)
     * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
@@ -654,6 +656,26 @@ Method used to display point if it has hidden
 Method used to hide point
 
 **Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+<a name="SmartPoint+toJSON"></a>
+
+### smartPoint.toJSON() ⇒ <code>string</code>
+Method used to serialize point to JSON string
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+**Returns**: <code>string</code> - JSON string with serialized point object  
+<a name="SmartPoint+fromJSON"></a>
+
+### smartPoint.fromJSON(jsonString) ⇒ [<code>SmartPoint</code>](#SmartPoint)
+Method used to construct point object from JSON string representation,
+received by using `toJSON()` method.
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+**Returns**: [<code>SmartPoint</code>](#SmartPoint) - constructed point or null in case of error  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsonString | <code>string</code> | String with JSON-serialized point object |
+
 <a name="SmartPoint+destroy"></a>
 
 ### smartPoint.destroy()
@@ -739,6 +761,8 @@ to this object.
     * [.getCenter(forGroup)](#SmartShape+getCenter) ⇒ <code>array</code>
     * [.toSvg()](#SmartShape+toSvg) ⇒ <code>string</code>
     * [.toPng(type, width, height)](#SmartShape+toPng) ⇒ <code>Promise</code>
+    * [.toJSON(includeChildren)](#SmartShape+toJSON) ⇒ <code>string</code>
+    * [.fromJSON(root, jsonString, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -1185,6 +1209,33 @@ Method exports shape and all its children as a PNG image
 | width | <code>number</code> \| <code>null</code> | Width of image. If not specified, then calculate based on height or current width of shape |
 | height | <code>number</code> \| <code>null</code> | Height of image. If not specified, then calculate based on width or current height of shape |
 
+<a name="SmartShape+toJSON"></a>
+
+### smartShape.toJSON(includeChildren) ⇒ <code>string</code>
+Method used to save shape to JSON string.
+Returns string with JSON object or JSON array, depending on should it save children too
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>string</code> - Serialized JSON as string.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| includeChildren | <code>boolean</code> | If true, then it appends JSONs of all children to `children` property of resulting JSON. |
+
+<a name="SmartShape+fromJSON"></a>
+
+### smartShape.fromJSON(root, jsonString, includeChildren) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method used to load shape data from specified JSON string, that previously serialized by `toJSON` method
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Loaded SmartShape object or null in case of JSON reading errors  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| root | <code>HTMLElement</code> | HTML container to insert loaded shape |
+| jsonString | <code>string</code> | JSON-Serialized shape data |
+| includeChildren | <code>boolean</code> | Should load children of this shape if existed. True by default. |
+
 <a name="SmartShapeDrawHelper"></a>
 
 ## SmartShapeDrawHelper
@@ -1365,6 +1416,7 @@ of all group if forGroup parameter is set
     * [.draggedShape](#SmartShapeManager+draggedShape) : [<code>SmartShape</code>](#SmartShape)
     * [.shapeOnCursor](#SmartShapeManager+shapeOnCursor) : [<code>SmartShape</code>](#SmartShape)
     * [.containerEventListeners](#SmartShapeManager+containerEventListeners) : <code>array</code>
+    * [.createShape(root, options, points)](#SmartShapeManager+createShape) ⇒ <code>object</code>
     * [.findShapeByPoint(point)](#SmartShapeManager+findShapeByPoint) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
@@ -1372,6 +1424,10 @@ of all group if forGroup parameter is set
     * [.activateShape(shape)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
     * [.getShapeOnCursor(x, y)](#SmartShapeManager+getShapeOnCursor) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.toJSON(shapes)](#SmartShapeManager+toJSON) ⇒ <code>string</code>
+    * [.fromJSON(root, jsonString)](#SmartShapeManager+fromJSON) ⇒ <code>array</code> \| <code>null</code>
+    * [.findShapesByOptionValue(name, value)](#SmartShapeManager+findShapesByOptionValue) ⇒ <code>array</code>
+    * [.findShapeById(id)](#SmartShapeManager+findShapeById) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShapeManager_new"></a>
 
@@ -1413,6 +1469,22 @@ List of event listeners, attached to containers of shapes in format
 {container: DOM-link to container, name: name of event, listener: handler function}
 
 **Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+createShape"></a>
+
+### smartShapeManager.createShape(root, options, points) ⇒ <code>object</code>
+Method used to construct SmartShape object with specified `points` and
+with specified `options`.
+Then it binds this object to specified `root` HTML node and displays it
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>object</code> - constructed SmartShape object  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| root | <code>HTMLElement</code> | HTML DOM node af a container element |
+| options | <code>object</code> | Options object to construct this shape (See [SmartShape options](#SmartShape+options)) |
+| points | <code>array</code> | 2D Array of points for shape polygon. Each element is [x,y] coordinate array |
+
 <a name="SmartShapeManager+findShapeByPoint"></a>
 
 ### smartShapeManager.findShapeByPoint(point) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
@@ -1498,6 +1570,58 @@ mouse cursor right now.
 | --- | --- | --- |
 | x | <code>number</code> | X coordinate of mouse cursor |
 | y | <code>number</code> | Y coordinate of mouse cursor |
+
+<a name="SmartShapeManager+toJSON"></a>
+
+### smartShapeManager.toJSON(shapes) ⇒ <code>string</code>
+Method used to export shapes to JSON.
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>string</code> - JSON string with array of SmartShape objects. If not specified, then exports all
+shapes, that exists in SmartShapeManager.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shapes | <code>array</code> | Array of [SmartShape](#SmartShape) objects to export |
+
+<a name="SmartShapeManager+fromJSON"></a>
+
+### smartShapeManager.fromJSON(root, jsonString) ⇒ <code>array</code> \| <code>null</code>
+Method loads shapes from JSON string, previously serialized by `toJSON` method
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>array</code> \| <code>null</code> - array of loaded [SmartShape](#SmartShape) objects or null in case
+of JSON reading error  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| root | <code>HTMLElement</code> | Container element to bind shapes to |
+| jsonString | <code>string</code> | JSON string with array of shape definitions |
+
+<a name="SmartShapeManager+findShapesByOptionValue"></a>
+
+### smartShapeManager.findShapesByOptionValue(name, value) ⇒ <code>array</code>
+Method returns all shapes which have option with specified `name` and specified `value`
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects that match condition  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | Name of option to check |
+| value | <code>any</code> | Value of option to check |
+
+<a name="SmartShapeManager+findShapeById"></a>
+
+### smartShapeManager.findShapeById(id) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method returns shape by specified ID
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - SmartShape object or null if no shape with specified ID found  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | ID to check |
 
 <a name="EventsManager"></a>
 

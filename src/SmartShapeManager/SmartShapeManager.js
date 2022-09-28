@@ -1,9 +1,10 @@
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
-import {notNull} from "../utils/index.js";
+import {notNull, readJSON} from "../utils/index.js";
 import {SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
+import SmartShape from "../SmartShape/SmartShape.js";
 import {createEvent} from "../events/functions.js";
 
 /**
@@ -84,6 +85,18 @@ function SmartShapeManager() {
             )
         })
     }
+
+    /**
+     * Method used to construct SmartShape object with specified `points` and
+     * with specified `options`.
+     * Then it binds this object to specified `root` HTML node and displays it
+     * @param root {HTMLElement} HTML DOM node af a container element
+     * @param options {object} Options object to construct this shape (See [SmartShape options](#SmartShape+options))
+     * @param points {array} 2D Array of points for shape polygon.
+     * Each element is [x,y] coordinate array
+     * @returns {object} constructed SmartShape object
+     */
+    this.createShape = (root,options,points) => new SmartShape().init(root,options,points);
 
 
     /**
@@ -524,6 +537,67 @@ function SmartShapeManager() {
     }
 
     /**
+     * Method used to export shapes to JSON.
+     * @param shapes {array} Array of [SmartShape](#SmartShape) objects to export
+     * @returns {string} JSON string with array of SmartShape objects. If not specified, then exports all
+     * shapes, that exists in SmartShapeManager.
+     */
+    this.toJSON = (shapes=null) => {
+        if (!shapes) {
+            shapes = this.shapes;
+        }
+        shapes = shapes.filter(shape => (
+                shape.options.id.search("_resizebox") === -1 &&
+                shape.options.id.search("_rotatabox") === -1 &&
+                !shape.getParent()
+        ))
+        return JSON.stringify(shapes.map(shape => shape.getJSON()))
+    }
+
+    /**
+     * Method loads shapes from JSON string, previously serialized by `toJSON` method
+     * @param root {HTMLElement} Container element to bind shapes to
+     * @param jsonString {string} JSON string with array of shape definitions
+     * @returns {array|null} array of loaded [SmartShape](#SmartShape) objects or null in case
+     * of JSON reading error
+     */
+    this.fromJSON = (root,jsonString) => {
+        const jsonObj = readJSON(jsonString);
+        if (!jsonObj) {
+            return null;
+        }
+        const result = [];
+        for (let obj of jsonObj) {
+            if (obj.options.id && this.findShapeById(obj.options.id)) {
+                continue
+            }
+            result.push(new SmartShape().fromJSON(root,JSON.stringify(obj)));
+        }
+        return result;
+    }
+
+    /**
+     * Method returns all shapes which have option with specified `name` and specified `value`
+     * @param name {string} Name of option to check
+     * @param value {any} Value of option to check
+     * @returns {array} Array of [SmartShape](#SmartShape) objects that match condition
+     */
+    this.findShapesByOptionValue = (name,value) => this.shapes.filter(shape => shape.options[name] === value);
+
+    /**
+     * Method returns shape by specified ID
+     * @param id {string} ID to check
+     * @returns {SmartShape|null} SmartShape object or null if no shape with specified ID found
+     */
+    this.findShapeById = (id) => {
+        const result = this.findShapesByOptionValue("id",id);
+        if (result && result.length) {
+            return result[0]
+        }
+        return null;
+    }
+
+    /**
      * @ignore
      * Method used to clean manager object. Removes all shapes from list and
      * attached containers event listeners
@@ -537,8 +611,11 @@ function SmartShapeManager() {
             }
         })
         this.containerEventListeners = [];
-        this.shapes = [];
+        while (this.shapes.length) {
+            this.shapes[0].destroy();
+        }
     }
+
 }
 
 /**

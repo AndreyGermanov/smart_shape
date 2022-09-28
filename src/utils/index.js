@@ -59,4 +59,23 @@ export const dataURLtoBlob = (dataURI) => {
     return new Blob([ab], {type: mimeString});
 }
 
+export const readJSON = (jsonString) => {
+    try {
+        return JSON.parse(jsonString);
+    } catch (err) {
+        return null;
+    }
+}
+
+export const CSStoJsStyleName = (cssName) => {
+    let result = cssName;
+    let index = result.indexOf("-");
+    while (index !== -1) {
+        result = result.replace("-"+result[index+1],result[index+1].toString().toUpperCase())
+        index = result.indexOf("-");
+    }
+    return result;
+
+}
+
 export {radians_to_degrees,degrees_to_radians,getRotatedCoords,distance,isPointInsidePolygon,rectsOverlap};
