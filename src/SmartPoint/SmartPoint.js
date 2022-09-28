@@ -1,5 +1,5 @@
 import SmartShapeManager,{ContainerEvents} from "../SmartShapeManager/SmartShapeManager.js";
-import {getOffset, getRotatedCoords, pauseEvent, uuid} from "../utils";
+import {CSStoJsStyleName, getOffset, getRotatedCoords, pauseEvent, readJSON, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {createEvent} from "../events/functions.js";
 
@@ -43,13 +43,12 @@ function SmartPoint() {
         height:10,
         classes: "",
         style: {
-            borderWidth:"1px",
-            borderStyle:"solid",
-            borderColor:"black",
-            borderRadius: "25px",
-            position:'absolute',
-            cursor:'pointer',
-            backgroundColor: "red",
+            "border-width":"1px",
+            "border-style":"solid",
+            "border-color":"black",
+            "border-radius": "25px",
+            "cursor":'pointer',
+            "background-color": "red",
         },
         canDrag: true,
         canDelete: false,
@@ -113,7 +112,7 @@ function SmartPoint() {
         this.x = parseInt(x);
         this.y = parseInt(y);
         this.element = this.createPointUI();
-        this.setOptions(options);
+        this.setOptions(Object.assign({},options));
         this.setEventListeners();
         EventsManager.emit(PointEvents.POINT_ADDED,this);
         return this;
@@ -166,7 +165,7 @@ function SmartPoint() {
         element.style = this.options.style;
         if (typeof(this.options.style) === "object") {
             for (let cssName in this.options.style) {
-                element.style[cssName] = this.options.style[cssName]
+                element.style[CSStoJsStyleName(cssName)] = this.options.style[cssName]
             }
         }
         element.style.width = this.options.width+"px";
@@ -179,6 +178,7 @@ function SmartPoint() {
         } else {
             element.style.display = '';
         }
+        element.style.position = 'absolute';
         return element
     }
 
@@ -387,6 +387,52 @@ function SmartPoint() {
         if (event.points.find(item => item === this)) {
             this.options.bounds = event.bounds;
         }
+    }
+
+    /**
+     * Method used to serialize point to JSON string
+     * @returns {string} JSON string with serialized point object
+     */
+    this.toJSON = () => {
+        return JSON.stringify(this.getJSON());
+    }
+
+    /**
+     * @ignore
+     * Internal method returns point as a JSON object
+     * @returns {object} JSON object with point parameters
+     */
+    this.getJSON = () => {
+        return {
+            x: this.x,
+            y: this.y,
+            options: this.options,
+        }
+    }
+
+    /**
+     * Method used to construct point object from JSON string representation,
+     * received by using `toJSON()` method.
+     * @param jsonString {string} String with JSON-serialized point object
+     * @returns {SmartPoint} constructed point or null in case of error
+     */
+    this.fromJSON = (jsonString) => {
+        const jsonObj = readJSON(jsonString);
+        if (!jsonObj) {
+            return null;
+        }
+        this.x = jsonObj.x;
+        this.y = jsonObj.y;
+        let isNew = false;
+        if (!this.element) {
+            isNew = true;
+            this.element = document.createElement("div");
+        }
+        this.setOptions(jsonObj.options);
+        if (isNew) {
+            EventsManager.emit(PointEvents.POINT_ADDED,this);
+        }
+        return this;
     }
 
     /**
