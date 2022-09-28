@@ -932,6 +932,25 @@ function SmartShape() {
     }
 
     /**
+     * Method creates complete copy of current shape
+     * @returns {SmartShape|null} Created shape object or null in case of errors
+     */
+    this.clone = () => {
+        const json = this.toJSON();
+        const result = new SmartShape().fromJSON(this.root,json);
+        if (!result) {
+            return null
+        }
+        result.options.id += "_clone";
+        result.options.name += " Clone";
+        result.getChildren(true).forEach(child => {
+            child.options.id += "_clone";
+            child.options.name += " Clone";
+        });
+        return result;
+    }
+
+    /**
      * @ignore
      * Method used to save shape to Javascript object
      * Returns JSON object or JSON array, depending on should it save children too

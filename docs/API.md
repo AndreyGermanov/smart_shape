@@ -762,6 +762,7 @@ to this object.
     * [.toSvg()](#SmartShape+toSvg) ⇒ <code>string</code>
     * [.toPng(type, width, height)](#SmartShape+toPng) ⇒ <code>Promise</code>
     * [.toJSON(includeChildren)](#SmartShape+toJSON) ⇒ <code>string</code>
+    * [.clone()](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, jsonString, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShape_new"></a>
@@ -1222,6 +1223,13 @@ Returns string with JSON object or JSON array, depending on should it save child
 | --- | --- | --- |
 | includeChildren | <code>boolean</code> | If true, then it appends JSONs of all children to `children` property of resulting JSON. |
 
+<a name="SmartShape+clone"></a>
+
+### smartShape.clone() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method creates complete copy of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Created shape object or null in case of errors  
 <a name="SmartShape+fromJSON"></a>
 
 ### smartShape.fromJSON(root, jsonString, includeChildren) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
