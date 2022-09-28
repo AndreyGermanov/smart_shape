@@ -472,8 +472,8 @@ function SmartShape() {
         if (pos.height>=10 && height<10) {
             height = 10;
         }
-        let newWidth = pos.left + width > bounds.right ? bounds.right - pos.left : width;
-        let newHeight = pos.top + height > bounds.bottom ? bounds.bottom - pos.top : height;
+        let newWidth = pos.left + width > bounds.right && bounds.right !== -1 ? bounds.right - pos.left : width;
+        let newHeight = pos.top + height > bounds.bottom && bounds.bottom !== -1 ? bounds.bottom - pos.top : height;
         let scaleX = newWidth/pos.width;
         let scaleY = newHeight/pos.height;
         this.points.forEach(point => {
