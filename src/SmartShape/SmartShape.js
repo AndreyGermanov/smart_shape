@@ -691,10 +691,10 @@ function SmartShape() {
      */
     this.getBounds = () => {
         return {
-            left: this.options.bounds.left !== -1 ? this.options.bounds.left : this.root.clientLeft,
-            top: this.options.bounds.top !== -1 ? this.options.bounds.top :  this.root.clientTop,
-            right: this.options.bounds.right !== -1 ? this.options.bounds.right : this.root.clientLeft + this.root.clientWidth,
-            bottom: this.options.bounds.bottom !== -1 ? this.options.bounds.bottom : this.root.clientTop + this.root.clientHeight
+            left: this.options.bounds.left !== -1 ? this.options.bounds.left : this.root.style.display === 'none' ? -1 : this.root.clientLeft,
+            top: this.options.bounds.top !== -1 ? this.options.bounds.top : this.root.style.display === 'none' ? -1 : this.root.clientTop,
+            right: this.options.bounds.right !== -1 ? this.options.bounds.right : this.root.style.display === 'none' ? -1 : this.root.clientLeft + this.root.clientWidth,
+            bottom: this.options.bounds.bottom !== -1 ? this.options.bounds.bottom : this.root.style.display === 'none' ? -1 : this.root.clientTop + this.root.clientHeight
         }
     };
 

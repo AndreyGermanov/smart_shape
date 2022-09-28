@@ -5,7 +5,7 @@ import {SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
 import SmartShape from "../SmartShape/SmartShape.js";
-import {createEvent} from "../events/functions.js";
+import {createEvent, getMouseCursorPos} from "../events/functions.js";
 
 /**
  * Object that keeps collection of shapes and keep track of
@@ -362,8 +362,11 @@ function SmartShapeManager() {
         }
         if (this.activeShape.options.canAddPoints && !this.activeShape.draggedPoint) {
             if (this.activeShape.options.maxPoints === -1 || this.activeShape.points.length < this.activeShape.options.maxPoints) {
-                this.activeShape.addPoint(event.clientX-this.activeShape.root.offsetLeft + window.scrollX,
-                    event.clientY-this.activeShape.root.offsetTop + window.scrollY,{forceDisplay:true});
+                if (this.activeShape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+                    this.activeShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+                }
+                const [x,y] = getMouseCursorPos(createEvent(event,{target:this.activeShape}));
+                this.activeShape.addPoint(x,y,{forceDisplay:false});
             }
         }
     }

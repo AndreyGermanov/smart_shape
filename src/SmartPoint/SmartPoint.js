@@ -347,16 +347,16 @@ function SmartPoint() {
         if (newX<oldX && this.options.moveDirections.indexOf(PointMoveDirections.LEFT) === -1) {
             newX = oldX;
         }
-        if (newX>this.options.bounds.right) {
+        if (newX>this.options.bounds.right && this.options.bounds.right !== -1) {
             newX = this.options.bounds.right;
         }
-        if (newY>this.options.bounds.bottom) {
+        if (newY>this.options.bounds.bottom && this.options.bounds.bottom !== -1) {
             newY = this.options.bounds.bottom;
         }
-        if (newX<this.options.bounds.left) {
+        if (newX<this.options.bounds.left && this.options.bounds.left !== -1) {
             newX = this.options.bounds.left;
         }
-        if (newY<this.options.bounds.top) {
+        if (newY<this.options.bounds.top && this.options.bounds.top !== -1) {
             newY = this.options.bounds.top;
         }
         return [newX,newY];

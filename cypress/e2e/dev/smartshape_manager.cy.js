@@ -156,6 +156,7 @@ describe('SmartShape Manager tests', () => {
 
   it('activateShape', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
       app.style.height = "500px";
       const shape1 = new SmartShape();
@@ -174,27 +175,27 @@ describe('SmartShape Manager tests', () => {
           cy.get("#shape2").trigger("mousedown", {buttons:1}).then(() => {
             cy.wait(200).then(() => {
               assert.equal(SmartShapeManager.activeShape,shape2,"Should activate correct shape");
-              assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
-              assert.equal(shape1.svg.style.zIndex,1002, "Should return back previous zIndex to previous shape");
-              assert.equal(shape3.svg.style.zIndex,1008,
+              assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1007, "Should move active shape to the top");
+              assert.equal(shape1.svg.style.zIndex,1006, "Should return back previous zIndex to previous shape");
+              assert.equal(shape3.svg.style.zIndex,1009,
                   "Should increase zIndex of active shape's children proportionally to selected shape"
               );
               SmartShapeManager.shapeOnCursor = shape1;
               cy.get("#shape1").trigger("mousedown", {buttons:1}).then(() => {
                 cy.wait(200).then(() => {
                   assert.equal(SmartShapeManager.activeShape,shape1,"Should activate correct shape");
-                  assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
-                  assert.equal(shape2.svg.style.zIndex,1003, "Should return back previous zIndex to previous shape");
-                  assert.equal(shape3.svg.style.zIndex,1005,
+                  assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1010, "Should move active shape to the top");
+                  assert.equal(shape2.svg.style.zIndex,1007, "Should return back previous zIndex to previous shape");
+                  assert.equal(shape3.svg.style.zIndex,1009,
                       "Should increase zIndex of active shape's children proportionally to selected shape"
                   );
                   SmartShapeManager.shapeOnCursor = shape3
                   cy.get("#shape3").trigger("mousedown", {buttons:1}).then(() => {
                     cy.wait(200).then(() => {
                       assert.equal(SmartShapeManager.activeShape,shape2,"Should activate parent shape if click on child shape");
-                      assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1006, "Should move active shape to the top");
-                      assert.equal(shape1.svg.style.zIndex,1002, "Should return back previous zIndex to previous shape");
-                      assert.equal(shape3.svg.style.zIndex,1008,
+                      assert.equal(SmartShapeManager.activeShape.svg.style.zIndex,1011, "Should move active shape to the top");
+                      assert.equal(shape1.svg.style.zIndex,1010, "Should return back previous zIndex to previous shape");
+                      assert.equal(shape3.svg.style.zIndex,1013,
                           "Should increase zIndex of active shape's children proportionally to selected shape"
                       );
                     })

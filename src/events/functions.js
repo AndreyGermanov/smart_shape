@@ -4,6 +4,8 @@
  * @param origEvent {Event} Original DOM event to get as a base
  * @param params {object} Params to add to event
  */
+import {getOffset} from "../utils/index.js";
+
 export const createEvent = (origEvent,params={}) => {
     const result = {};
     for (let key in origEvent) {
@@ -24,5 +26,7 @@ export const createEvent = (origEvent,params={}) => {
  * @returns {array} Coordinates as an array [x,y]
  */
 export const getMouseCursorPos = (event) => {
-    return [event.pageX,event.pageY];
+    const elem = event.target.root || event.target;
+    const offset = getOffset(elem,true);
+    return [event.pageX-offset.left,event.pageY-offset.top];
 }
