@@ -208,4 +208,22 @@ describe('SmartShape Manager tests', () => {
       });
     });
   })
+
+  it('getShapes', () => {
+    SmartShapeManager.clear();
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "500px";
+      const shape1 = new SmartShape().init(app,{id:"shape1",name:"Shape 1",canScale:true,minWidth:50,minHeight:50,maxWidth:300,maxHeight:400},
+          [[10,210],[10,10],[210,10],[210,210]]);
+      const shape2 = new SmartShape().init(app,{id:"shape2",name:"Shape 2"});
+      const shape3 = new SmartShape().init(app,{id:"shape2",name:"Shape 2"});
+      const shape4 = new SmartShape().init(app,{id:"shape2",name:"Shape 2"});
+      shape2.switchDisplayMode(SmartShapeDisplayMode.SCALE);
+      shape3.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+      const shapes = SmartShapeManager.getShapes();
+      assert.equal(shapes.length,4,"Should return all shapes excluding resize and rotate boxes");
+
+    });
+  })
 })
