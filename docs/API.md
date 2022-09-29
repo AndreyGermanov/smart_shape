@@ -1844,6 +1844,8 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 | point_drag_start | <code>MouseEvent</code> | Emitted when user starts dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
 | point_drag_move | <code>MouseEvent</code> | Emitted when user dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
 | point_drag_end | <code>MouseEvent</code> | Emitted when user finishes dragging one of shape's point. Event Includes `point` field. It is a [SmartPoint](#SmartPoint) object. |
+| point_added | <code>MouseEvent</code> | Emitted when new point added to the shape |
+| point_removed | <code>MouseEvent</code> | Emitted when point removed from the shape |
 | destroy | <code>ShapeEvents.SHAPE\_DESTROY</code> | Emitted right before shape is destroyed Event object contains created shape [SmartShape](#SmartShape) object in a `target` field |
 
 <a name="SmartShapeManagerEvents"></a>
