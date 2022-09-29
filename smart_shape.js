@@ -982,7 +982,7 @@ function _() {
       console.error("This shape already initialized");
       return;
     }
-    return this.root = t, this.root.style.position = "relative", this.setOptions(s), this.groupHelper = new tt(this).init(), i && i.length && this.setupPoints(i, Object.assign({}, this.options.pointOptions)), this.eventListener.run(), this.applyDisplayMode(), i && i.length && n.emit(h.SHAPE_CREATE, this, {}), this;
+    return this.root = t, this.root.style.position = "relative", this.setOptions(s), this.groupHelper = new tt(this).init(), i && i.length && this.setupPoints(i, Object.assign({}, this.options.pointOptions)), this.eventListener.run(), this.applyDisplayMode(), (i && i.length || this.options.forceCreateEvent) && n.emit(h.SHAPE_CREATE, this, {}), this;
   }, this.setOptions = (t) => {
     !t || typeof t != "object" || (t.pointOptions = S(this.options.pointOptions, t.pointOptions), t.style = S(this.options.style, t.style), t.bounds = S(this.options.bounds, t.bounds), b(t.visible) && t.visible !== this.options.visible && (this.points.forEach((s) => s.options.visible = t.visible), this.resizeBox && this.resizeBox.setOptions({ shapeOptions: { visible: t.visible } }), this.rotateBox && this.rotateBox.setOptions({ shapeOptions: { visible: t.visible } })), this.options = S(this.options, t), this.points.forEach((s) => {
       s.setOptions(S({}, this.options.pointOptions)), s.options.bounds = this.getBounds(), s.options.zIndex <= this.options.zIndex && (s.options.zIndex = this.options.zIndex + 1), s.redraw();
@@ -1065,7 +1065,7 @@ function _() {
       t.setOptions({ zIndex: this.options.zIndex + 1 }), t.element.style.zIndex = t.options.zIndex, this.options.displayMode === A.DEFAULT && !t.options.forceDisplay && (t.element.style.display = "none");
     });
   }, this.switchDisplayMode = (t = null) => {
-    t || (t = this.getNextDisplayMode()), (t === A.SCALE && !this.options.canScale || t === A.ROTATE && !this.options.canRotate || t === A.SELECTED && !this.points.filter((s) => s.options.canDrag).length) && (t = A.DEFAULT), this.options.displayMode = t, this.redraw();
+    t || (t = this.getNextDisplayMode()), (t === A.SCALE && !this.options.canScale || t === A.ROTATE && !this.options.canRotate || t === A.SELECTED && this.points.length && !this.points.filter((s) => s.options.canDrag).length) && (t = A.DEFAULT), this.options.displayMode = t, this.redraw();
   }, this.getNextDisplayMode = () => {
     let t;
     return this.options.displayMode === A.DEFAULT ? t = A.SELECTED : this.options.displayMode === A.SELECTED ? t = A.SCALE : this.options.displayMode === A.SCALE ? t = A.ROTATE : t = A.DEFAULT, t === A.SELECTED && !this.points.filter((s) => s.options.canDrag).length && (t = A.SCALE), t === A.SCALE && !this.options.canScale && (t = A.ROTATE), t === A.ROTATE && !this.options.canRotate && (t = A.DEFAULT), t;

@@ -239,7 +239,7 @@ function SmartShape() {
         }
         this.eventListener.run();
         this.applyDisplayMode();
-        if (points && points.length) {
+        if (points && points.length || this.options.forceCreateEvent) {
             EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});
         }
         return this;
@@ -626,7 +626,7 @@ function SmartShape() {
         }
         if ((mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) ||
             (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) ||
-            (mode === SmartShapeDisplayMode.SELECTED && !this.points.filter(point=>point.options.canDrag).length)) {
+            (mode === SmartShapeDisplayMode.SELECTED && (this.points.length && !this.points.filter(point=>point.options.canDrag).length))) {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         this.options.displayMode = mode;

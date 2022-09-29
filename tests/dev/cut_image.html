@@ -34,7 +34,8 @@
         // and allow to add and delete points to it.
         import {SmartShape} from "../../src/index.js";
         const shape = new SmartShape();
-        shape.init(container,{canAddPoints:true,pointOptions:{canDelete:true}});
+        shape.init(container,{canAddPoints:true,forceCreateEvent:true,pointOptions:{canDelete:true}});
+
 
         // Create an empty image to upload image file to
         const img = new Image();

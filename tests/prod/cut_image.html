@@ -33,7 +33,7 @@
         // Initialize an empty SmartShape, connect it to the container
         // and allow to add and delete points to it.
         const shape = new SmartShape();
-        shape.init(container,{canAddPoints:true,pointOptions:{canDelete:true}});
+        shape.init(container,{canAddPoints:true,forceCreateEvent:true,pointOptions:{canDelete:true}});
 
         // Create an empty image to upload image file to
         const img = new Image();
