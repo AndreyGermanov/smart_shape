@@ -938,7 +938,7 @@ function SmartShape() {
      * @returns {SmartShape|null} Created shape object or null in case of errors
      */
     this.clone = () => {
-        const json = this.getJSON();
+        const json = Object.assign({},this.getJSON());
         json.options.id += "_clone";
         json.options.name += " Clone";
         const result = new SmartShape().fromJSON(this.root,JSON.stringify(json));
@@ -962,8 +962,9 @@ function SmartShape() {
      */
     this.getJSON = (includeChildren = true) => {
         const result = {
-            options: this.options
+            options: Object.assign({},this.options)
         }
+        result.options.displayMode = SmartShapeDisplayMode.DEFAULT;
         result.points = this.points.map(point => point.getJSON());
         if (includeChildren) {
             let children = this.getChildren();

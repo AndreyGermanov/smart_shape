@@ -406,7 +406,7 @@ function SmartPoint() {
         return {
             x: this.x,
             y: this.y,
-            options: this.options,
+            options: Object.assign({},this.options),
         }
     }
 
