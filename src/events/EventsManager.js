@@ -17,15 +17,37 @@ function EventsManager() {
     this.subscriptions = {};
 
     /**
-     * Add subscription to event of specified type
-     * @param eventName {string} Event name to subscribe to
+     * Add subscription to event of specified type or to array of events of specified types
+     * @param events {string|array} Name of event as a string or names of events as an array of strings.
      * @param handler {function} Handling function, which will be called each time when event of this type emitted.
      * Each time, when handling function triggered, it receives a single argument - `event` {object} which contains
      * the following fields: `type` - type of event (`eventType`), `target` - pointer to object, which emitted
      * this event, and also any custom params, that emitter sent with this event by using `emit` method.
      * @returns {function} Pointer to handling function, that will be added
      */
-    this.subscribe = (eventName,handler) => {
+    this.subscribe = (events,handler) => {
+        if (typeof(events) === "string") {
+            return this.subscribeToEvent(events,handler)
+        } else if (typeof(events) === "object") {
+            for (let event of events) {
+                this.subscribeToEvent(event,handler)
+            }
+            return handler;
+        }
+        return null;
+    }
+
+    /**
+     * @ignore
+     * Add subscription to event of specified type
+     * @param eventName {string|array} Name of event as a string or array of names of events to subscribe to
+     * @param handler {function} Handling function, which will be called each time when event of this type emitted.
+     * Each time, when handling function triggered, it receives a single argument - `event` {object} which contains
+     * the following fields: `type` - type of event (`eventType`), `target` - pointer to object, which emitted
+     * this event, and also any custom params, that emitter sent with this event by using `emit` method.
+     * @returns {function} Pointer to handling function, that will be added
+     */
+    this.subscribeToEvent = (eventName,handler) => {
         if (typeof(this.subscriptions[eventName]) === "undefined" || !this.subscriptions[eventName]) {
             this.subscriptions[eventName] = [];
         }
@@ -63,13 +85,37 @@ function EventsManager() {
     }
 
     /**
-     * Removes specified handler from event with specified name.
-     * @param eventName {string} Name of event
+     * Removes specified handler from event with specified name or from array of events with specified names.
+     * @param events {string|array} Name of event as a string or names of events as an array of strings.
      * @param handler {function} Pointer to a function to remove. (This pointer returned from `subscribe` method and
      * can be used here to unsubscribe
      * @returns {boolean} True if really removed the handler or false if you could not remove because it does not exist
      */
-    this.unsubscribe = (eventName, handler) => {
+    this.unsubscribe = (events, handler) => {
+        let result = false;
+        if (typeof(events) === "string") {
+            if (this.unsubscribeFromEvent(events,handler)) {
+                result = true;
+            }
+        } else if (typeof(events) === "object") {
+            for (let event of events) {
+                if (this.unsubscribeFromEvent(event,handler)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @ignore
+     * Removes specified handler from event with specified name.
+     * @param eventName {string} Name of event as a string
+     * @param handler {function} Pointer to a function to remove. (This pointer returned from `subscribe` method and
+     * can be used here to unsubscribe
+     * @returns {boolean} True if really removed the handler or false if you could not remove because it does not exist
+     */
+    this.unsubscribeFromEvent = (eventName,handler) => {
         if (typeof(this.subscriptions[eventName]) === "undefined" || !this.subscriptions[eventName]) {
             return false
         }
