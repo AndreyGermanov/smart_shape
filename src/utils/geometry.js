@@ -126,7 +126,7 @@ export const isPointInsidePolygon = (polygon,point) => {
  * @returns {array} Array in the form [width,height] after apply aspect ratio
  */
 export const applyAspectRatio = (width,height,origWidth,origHeight) => {
-    if (!width && !height) {
+    if (!width && !height || !origWidth || !origHeight) {
         return [origWidth, origHeight];
     }
     if (width && height) {

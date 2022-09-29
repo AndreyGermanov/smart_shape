@@ -40,8 +40,8 @@ const n = new H(), G = (t) => t * (Math.PI / 180), j = (t) => t * (180 / Math.PI
     let E = (d[1] - a[1]) * (c[0] - d[0]) - (d[0] - a[0]) * (c[1] - d[1]);
     return E === 0 ? 0 : E > 0 ? 1 : 2;
   }, o = (a, d, c, E) => {
-    let T = e(a, d, c), x = e(a, d, E), w = e(c, E, a), M = e(c, E, d);
-    return T !== x && w !== M || T === 0 && i(a, c, d) || x === 0 && i(a, E, d) || w === 0 && i(c, a, E) ? !0 : !!(M === 0 && i(c, d, E));
+    let T = e(a, d, c), x = e(a, d, E), M = e(c, E, a), w = e(c, E, d);
+    return T !== x && M !== w || T === 0 && i(a, c, d) || x === 0 && i(a, E, d) || M === 0 && i(c, a, E) ? !0 : !!(w === 0 && i(c, d, E));
   };
   if (t.length < 3)
     return !1;
@@ -60,7 +60,7 @@ const n = new H(), G = (t) => t * (Math.PI / 180), j = (t) => t * (180 / Math.PI
     l = a;
   } while (l !== 0);
   return u % 2 === 1;
-}, U = (t, s, i, e) => !t && !s ? [i, e] : t && s ? [t, s] : (t || (t = s * (i / e)), s || (s = t * (e / i)), [t, s]), L = (t, s = !0) => {
+}, U = (t, s, i, e) => !t && !s || !i || !e ? [i, e] : t && s ? [t, s] : (t || (t = s * (i / e)), s || (s = t * (e / i)), [t, s]), L = (t, s = !0) => {
   let i = 0, e = 0;
   if (!s)
     return { top: t.offsetTop - t.scrollTop, left: t.offsetLeft - t.scrollLeft };
@@ -178,7 +178,7 @@ function K() {
   }, this.toJSON = () => JSON.stringify(this.getJSON()), this.getJSON = () => ({
     x: this.x,
     y: this.y,
-    options: this.options
+    options: Object.assign({}, this.options)
   }), this.fromJSON = (t) => {
     const s = C(t);
     if (!s)
@@ -1139,7 +1139,7 @@ function _() {
     const s = this.getPosition(t);
     return [s.left + s.width / 2, s.top + s.height / 2];
   }, this.toSvg = () => O.toSvg(this), this.toPng = (t = D.DATAURL, s = null, i = null) => O.toPng(this, t, s, i), this.toJSON = (t = !0) => JSON.stringify(this.getJSON(t)), this.clone = () => {
-    const t = this.getJSON();
+    const t = Object.assign({}, this.getJSON());
     t.options.id += "_clone", t.options.name += " Clone";
     const s = new _().fromJSON(this.root, JSON.stringify(t));
     return s ? (s.getChildren(!0).forEach((i) => {
@@ -1147,9 +1147,9 @@ function _() {
     }), s) : null;
   }, this.getJSON = (t = !0) => {
     const s = {
-      options: this.options
+      options: Object.assign({}, this.options)
     };
-    if (s.points = this.points.map((i) => i.getJSON()), t) {
+    if (s.options.displayMode = A.DEFAULT, s.points = this.points.map((i) => i.getJSON()), t) {
       let i = this.getChildren();
       i.length && (s.children = i.map((e) => e.getJSON(t)));
     }
