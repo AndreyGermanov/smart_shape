@@ -358,6 +358,9 @@ function SmartShapeDrawHelper() {
         const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         const pos = shape.getPosition(true);
         svg.appendChild(this.getSvgDefs(shape));
+        if (!shape.svg) {
+            this.draw(shape);
+        }
         this.addSvgPolygons(shape,svg);
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
         const viewBox = "0 0 " + pos.width + " " + pos.height;

@@ -253,11 +253,10 @@ function SmartShapeManager() {
      * @returns {number} zIndex of the topmost shape
      */
     this.getMaxZIndex = (container=null) => {
-        let shapes = this.shapes;
+        let shapes = this.getShapes();
         if (container) {
             shapes = this.getShapesByContainer(container);
         }
-        shapes = this.getShapes();
         if (!shapes.length) {
             return 0;
         }
@@ -562,7 +561,7 @@ function SmartShapeManager() {
                 shape.options.id.search("_rotatabox") === -1 &&
                 !shape.getParent()
         ))
-        return JSON.stringify(shapes.map(shape => shape.getJSON()))
+        return JSON.stringify(shapes.map(shape => shape.getJSON()),null,4)
     }
 
     /**

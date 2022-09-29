@@ -344,6 +344,7 @@ function SmartShapeEventListener(shape) {
         if (!this.shape.isShapePoint(event.target)) {
             return
         }
+        EventsManager.emit(ShapeEvents.POINT_ADDED,this.shape,{point:event.target});
         this.checkCanDeletePoints();
     }
 
@@ -382,6 +383,7 @@ function SmartShapeEventListener(shape) {
         this.shape.points.splice(this.shape.points.indexOf(event.target), 1);
         this.shape.root.removeChild(event.target.element);
         this.shape.redraw()
+        EventsManager.emit(ShapeEvents.POINT_DESTROYED,this.shape,{point:event.target});
     }
 
     /**
@@ -495,6 +497,8 @@ function SmartShapeEventListener(shape) {
  * It is a [SmartPoint](#SmartPoint) object.
  * @param point_drag_end {MouseEvent} Emitted when user finishes dragging one of shape's point. Event Includes `point` field.
  * It is a [SmartPoint](#SmartPoint) object.
+ * @param point_added {MouseEvent} Emitted when new point added to the shape
+ * @param point_removed {MouseEvent} Emitted when point removed from the shape
  * @param destroy {ShapeEvents.SHAPE_DESTROY} Emitted right before shape is destroyed
  * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
  * @enum {string}
@@ -513,6 +517,8 @@ export const ShapeEvents = {
     SHAPE_MOUSE_CLICK: "click",
     SHAPE_MOUSE_DOUBLE_CLICK: "dblclick",
     SHAPE_DESTROY: "destroy",
+    POINT_ADDED: "point_added",
+    POINT_DESTROYED: "point_destroyed",
     POINT_DRAG_START: "point_drag_start",
     POINT_DRAG_MOVE: "point_drag_move",
     POINT_DRAG_END: "point_drag_end",

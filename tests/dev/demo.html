@@ -13,15 +13,7 @@
       import {SmartShape} from "../../src/index.js";
       const div = document.getElementById("surface");
       const shape = new SmartShape();
-      shape.init(div,{fill:"#00ff00",canAddPoints:true,canDeletePoints:true,pointOptions:{canDelete:true}},[ [0,100],[100,0],[200,100],[100,200] ]);
-      shape.addEventListener("mouseover",(event)=>{
-        event.target.setOptions({fill:"#ff0000"});
-        event.target.redraw();
-      })
-      shape.addEventListener("mouseout",(event) => {
-        event.target.setOptions({fill:"#0ff000"});
-        event.target.redraw();
-      })
+      shape.init(div,{fill:"#00ff00",canScale:true,canAddPoints:true,canDeletePoints:true,pointOptions:{canDelete:true}},[ [0,100],[100,0],[200,100],[100,200] ]);
     </script>
   </body>
 </html>

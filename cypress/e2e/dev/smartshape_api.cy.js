@@ -25,7 +25,7 @@ describe('SmartShape API tests', () => {
       const point3 = shape.findPoint(100,200)
       assert.isNotNull(point3)
       cy.get("#app").trigger("dblclick",{button:1,buttons:1,clientX:150,clientY:150}).then(() => {
-        const newPoint = shape.findPoint(150-app.offsetLeft,150-app.offsetTop);
+        const newPoint = shape.findPoint(492,100);
         assert.isNotNull(newPoint);
       })
     })
@@ -656,22 +656,24 @@ describe('SmartShape API tests', () => {
   });
 
   it('clone', () => {
-    SmartShapeManager.clear();
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
       app.style.height = "500px";
       const shape1 = new SmartShape().init(app,{id:"shape1",name:"Shape 1",canScale:true,minWidth:50,minHeight:50,maxWidth:300,maxHeight:400},
           [[10,210],[10,10],[210,10],[210,210]]);
-      const shape2 = new SmartShape().init(app,{id:"shape2",name:"Shape 2"});
+      const shape2 = new SmartShape().init(app,{id:"shape2",name:"Shape 2"},[[10,210],[10,10],[210,10],[210,210]]);
       shape1.addChild(shape2);
       const shape3 = shape1.clone();
-      assert.equal(SmartShapeManager.shapes.length,4,"Should add 2 more shapes to Shapes manager");
-      assert.deepEqual(shape3.getPointsArray(),shape1.getPointsArray(),"Should correctly copy points");
-      assert.deepEqual(shape3.getChildren()[0].getPointsArray(),shape2.getPointsArray(),"Should correctly copy points");
-      assert.equal(shape3.options.id,"shape1_clone","Should set id of clone by adding '_clone' suffix");
-      assert.equal(shape3.options.name,"Shape 1 Clone","Should set id of clone by adding ' Clone' suffix");
-      assert.equal(shape3.getChildren()[0].options.id,"shape2_clone","Should set id of clone's child by adding '_clone' suffix");
-      assert.equal(shape3.getChildren()[0].options.name,"Shape 2 Clone","Should set id of clone's child by adding ' Clone' suffix");
+      cy.wait(500).then(() => {
+        assert.equal(SmartShapeManager.shapes.length,4,"Should add 2 more shapes to Shapes manager");
+        assert.deepEqual(shape3.getPointsArray(),shape1.getPointsArray(),"Should correctly copy points");
+        assert.deepEqual(shape3.getChildren()[0].getPointsArray(),shape2.getPointsArray(),"Should correctly copy points");
+        assert.equal(shape3.options.id,"shape1_clone","Should set id of clone by adding '_clone' suffix");
+        assert.equal(shape3.options.name,"Shape 1 Clone","Should set id of clone by adding ' Clone' suffix");
+        assert.equal(shape3.getChildren()[0].options.id,"shape2_clone","Should set id of clone's child by adding '_clone' suffix");
+        assert.equal(shape3.getChildren()[0].options.name,"Shape 2 Clone","Should set id of clone's child by adding ' Clone' suffix");
+      })
     });
   })
 })

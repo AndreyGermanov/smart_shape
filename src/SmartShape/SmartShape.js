@@ -235,7 +235,9 @@ function SmartShape() {
         }
         this.eventListener.run();
         this.applyDisplayMode();
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
+        if (points && points.length) {
+            EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});
+        }
         return this;
     }
 
@@ -936,13 +938,13 @@ function SmartShape() {
      * @returns {SmartShape|null} Created shape object or null in case of errors
      */
     this.clone = () => {
-        const json = this.toJSON();
-        const result = new SmartShape().fromJSON(this.root,json);
+        const json = this.getJSON();
+        json.options.id += "_clone";
+        json.options.name += " Clone";
+        const result = new SmartShape().fromJSON(this.root,JSON.stringify(json));
         if (!result) {
             return null
         }
-        result.options.id += "_clone";
-        result.options.name += " Clone";
         result.getChildren(true).forEach(child => {
             child.options.id += "_clone";
             child.options.name += " Clone";
@@ -998,6 +1000,7 @@ function SmartShape() {
                 this.addChild(new SmartShape().fromJSON(root,JSON.stringify(child)));
             })
         }
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});
         return this;
     }
 }

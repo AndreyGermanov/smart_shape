@@ -223,7 +223,6 @@ describe('SmartShape Manager tests', () => {
       shape3.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
       const shapes = SmartShapeManager.getShapes();
       assert.equal(shapes.length,4,"Should return all shapes excluding resize and rotate boxes");
-
     });
   })
 })
