@@ -1429,6 +1429,7 @@ of all group if forGroup parameter is set
     * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
     * [.getMaxZIndex(container)](#SmartShapeManager+getMaxZIndex) ⇒ <code>number</code>
+    * [.getShapes()](#SmartShapeManager+getShapes) ⇒ <code>array</code>
     * [.activateShape(shape)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
     * [.getShapeOnCursor(x, y)](#SmartShapeManager+getShapeOnCursor) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
@@ -1541,6 +1542,13 @@ Method returns zIndex of the topmost shape either in specified container or glob
 | --- | --- | --- |
 | container | <code>HTMLElement</code> \| <code>null</code> | Container to search in or null if search through all shapes |
 
+<a name="SmartShapeManager+getShapes"></a>
+
+### smartShapeManager.getShapes() ⇒ <code>array</code>
+Method returns an array of all registered shapes (excluding rotate and resize boxes around them)
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>array</code> - Array of [SmartShape)(#SmartShape) objects  
 <a name="SmartShapeManager+activateShape"></a>
 
 ### smartShapeManager.activateShape(shape)

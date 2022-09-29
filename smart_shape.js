@@ -738,10 +738,10 @@ function q() {
       if (s.isShapePoint(t))
         return s;
     return null;
-  }, this.getShape = (t) => this.getShapeByGuid(t.guid), this.getShapeByGuid = (t) => this.shapes.find((s) => s.guid === t), this.getShapesByContainer = (t) => this.shapes.filter((s) => s.root === t), this.getMaxZIndex = (t = null) => {
+  }, this.getShape = (t) => this.getShapeByGuid(t.guid), this.getShapeByGuid = (t) => this.shapes.find((s) => s.guid === t), this.getShapesByContainer = (t) => this.getShapes().filter((s) => s.root === t), this.getMaxZIndex = (t = null) => {
     let s = this.shapes;
-    return t && (s = this.getShapesByContainer(t)), s = s.filter((i) => i.options.id.search("_resizebox") === -1 && i.options.id.search("_rotatebox") === -1), s.length ? s.map((i) => i.options.zIndex || 0).reduce((i, e) => e > i ? e : i) : 0;
-  }, this.activateShape = (t) => {
+    return t && (s = this.getShapesByContainer(t)), s = this.getShapes(), s.length ? s.map((i) => i.options.zIndex || 0).reduce((i, e) => e > i ? e : i) : 0;
+  }, this.getShapes = () => this.shapes.filter((t) => t.options.id.search("_resizebox") === -1 && t.options.id.search("_rotatebox") === -1), this.activateShape = (t) => {
     if (this.activeShape === t) {
       this.activeShape.switchDisplayMode();
       return;
@@ -1012,7 +1012,7 @@ function _() {
       return null;
     const e = this.getPosition(!0);
     [t, s] = this.applyScaleRestriction(...U(t, s, e.width, e.height)), e.width >= 10 && t < 10 && (t = 10), e.height >= 10 && s < 10 && (s = 10);
-    let o = e.left + t > i.right ? i.right - e.left : t, h = e.top + s > i.bottom ? i.bottom - e.top : s, u = o / e.width, l = h / e.height;
+    let o = e.left + t > i.right && i.right !== -1 ? i.right - e.left : t, h = e.top + s > i.bottom && i.bottom !== -1 ? i.bottom - e.top : s, u = o / e.width, l = h / e.height;
     this.points.forEach(
       (a) => {
         a.x = (a.x - e.left) * u + e.left, a.y = (a.y - e.top) * l + e.top;

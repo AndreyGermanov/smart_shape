@@ -245,7 +245,7 @@ function SmartShapeManager() {
      * @param container {HTMLElement} Link to container
      * @returns {array} Array of [SmartShape](#SmartShape) objects
      */
-    this.getShapesByContainer = (container) => this.shapes.filter(shape => shape.root === container);
+    this.getShapesByContainer = (container) => this.getShapes().filter(shape => shape.root === container);
 
     /**
      * Method returns zIndex of the topmost shape either in specified container or globally
@@ -257,12 +257,20 @@ function SmartShapeManager() {
         if (container) {
             shapes = this.getShapesByContainer(container);
         }
-        shapes = shapes.filter(shape=>shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1);
+        shapes = this.getShapes();
         if (!shapes.length) {
             return 0;
         }
         return shapes.map(shape=>shape.options.zIndex || 0).reduce((max,zIndex) => zIndex>max ? zIndex : max );
     }
+
+    /**
+     * Method returns an array of all registered shapes (excluding rotate and resize boxes around them)
+     * @returns {array} Array of [SmartShape)(#SmartShape) objects
+     */
+    this.getShapes = () => (
+        this.shapes.filter(shape=>shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1)
+    )
 
     /**
      * Method used to make specified shape active and move it on top according to zIndex
