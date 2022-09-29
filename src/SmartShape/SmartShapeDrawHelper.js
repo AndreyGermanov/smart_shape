@@ -342,6 +342,18 @@ function SmartShapeDrawHelper() {
         }
         if (notNull(shape.options.style) && typeof(shape.options.style) === "object") {
             for (let cssName in shape.options.style) {
+                if (cssName === "fill") {
+                    if ((shape.options.fillImage && typeof(shape.options.fillImage) === "object") ||
+                        (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object") ||
+                    shape.options.fill !== "none") {
+                        continue;
+                    }
+                }
+                if (cssName === "stroke") {
+                    if (shape.options.stroke) {
+                        continue
+                    }
+                }
                 polygon.style[cssName] = shape.options.style[cssName]
             }
         }

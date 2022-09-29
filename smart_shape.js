@@ -657,7 +657,7 @@ function X() {
   }, this.setupPolygonStyles = (t, s) => {
     if (t.options.classes && s.setAttribute("class", t.options.classes), b(t.options.style) && typeof t.options.style == "object")
       for (let i in t.options.style)
-        s.style[i] = t.options.style[i];
+        i === "fill" && (t.options.fillImage && typeof t.options.fillImage == "object" || t.options.fillGradient && typeof t.options.fillGradient == "object" || t.options.fill !== "none") || i === "stroke" && t.options.stroke || (s.style[i] = t.options.style[i]);
   }, this.toSvg = (t) => {
     const s = document.createElement("div"), i = document.createElementNS("http://www.w3.org/2000/svg", "svg"), e = t.getPosition(!0);
     i.appendChild(this.getSvgDefs(t)), t.svg || this.draw(t), this.addSvgPolygons(t, i), i.setAttribute("xmlns", "http://www.w3.org/2000/svg");
@@ -942,11 +942,11 @@ function _() {
     id: "",
     name: "Unnamed shape",
     maxPoints: -1,
-    stroke: "",
-    strokeWidth: "",
+    stroke: "black",
+    strokeWidth: "2",
     strokeLinecap: "",
     strokeDasharray: "",
-    fill: "",
+    fill: "none",
     fillGradient: null,
     fillImage: null,
     fillOpacity: "1",
