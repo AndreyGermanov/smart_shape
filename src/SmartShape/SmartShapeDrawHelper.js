@@ -345,7 +345,7 @@ function SmartShapeDrawHelper() {
                 if (cssName === "fill") {
                     if ((shape.options.fillImage && typeof(shape.options.fillImage) === "object") ||
                         (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object") ||
-                    shape.options.fill !== "none") {
+                        (shape.options.fill !== "none" && shape.options.fill)) {
                         continue;
                     }
                 }

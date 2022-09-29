@@ -114,7 +114,7 @@ function SmartShape() {
         strokeWidth: "2",
         strokeLinecap: "",
         strokeDasharray: "",
-        fill: "none",
+        fill: "",
         fillGradient: null,
         fillImage: null,
         fillOpacity: "1",
