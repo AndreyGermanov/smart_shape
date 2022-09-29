@@ -151,6 +151,7 @@ function RotateBox() {
         this.options.shapeOptions.canRotate = false;
         this.options.shapeOptions.canScale = false;
         this.shape = new SmartShape().init(root,Object.assign({},this.options.shapeOptions),[]);
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this.shape, {});
         this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds();
         this.addPoints();
         this.eventListener = new RotateBoxEventListener(this).run();

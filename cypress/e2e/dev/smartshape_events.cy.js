@@ -510,4 +510,35 @@ describe('SmartShape and SmartPoint events', () => {
       })
     })
   })
+
+  it('SmartShape point_added', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      let triggered = false;
+      const shape = new SmartShape().init(app,{},[[0,100],[100,0],[200,100]]);
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      EventsManager.subscribe(ShapeEvents.POINT_ADDED,(event) => {
+        triggered = true;
+      })
+      shape.addPoint(150,150)
+      assert.isTrue(triggered, "Should trigger point_added event");
+      shape.destroy();
+    })
+  })
+
+  it('SmartShape point_destroyed', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      let triggered = false;
+      const shape = new SmartShape().init(app,{},[[0,100],[100,0],[200,100]]);
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      const point = shape.addPoint(150,150)
+      shape.addEventListener(ShapeEvents.POINT_DESTROYED,(event) => {
+        triggered = true;
+      })
+      point.destroy();
+      assert.isTrue(triggered, "Should trigger point_added event");
+      shape.destroy();
+    })
+  })
 })
