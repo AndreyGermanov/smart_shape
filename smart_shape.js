@@ -1,5 +1,14 @@
 function H() {
-  this.subscriptions = {}, this.subscribe = (t, s) => ((typeof this.subscriptions[t] > "u" || !this.subscriptions[t]) && (this.subscriptions[t] = []), typeof this.subscriptions[t].find((i) => i === s) < "u" ? null : (this.subscriptions[t].push(s), s)), this.emit = (t, s, i = null) => {
+  this.subscriptions = {}, this.subscribe = (t, s) => {
+    if (typeof t == "string")
+      return this.subscribeToEvent(t, s);
+    if (typeof t == "object") {
+      for (let i of t)
+        this.subscribeToEvent(i, s);
+      return s;
+    }
+    return null;
+  }, this.subscribeToEvent = (t, s) => ((typeof this.subscriptions[t] > "u" || !this.subscriptions[t]) && (this.subscriptions[t] = []), typeof this.subscriptions[t].find((i) => i === s) < "u" ? null : (this.subscriptions[t].push(s), s)), this.emit = (t, s, i = null) => {
     if ((!i || typeof i != "object") && (i = {}), i.type = t, i.target = s, typeof this.subscriptions[t] < "u" && this.subscriptions[t] && this.subscriptions[t].length) {
       for (let e of this.subscriptions[t])
         e(i);
@@ -7,6 +16,14 @@ function H() {
     }
     return !1;
   }, this.unsubscribe = (t, s) => {
+    let i = !1;
+    if (typeof t == "string")
+      this.unsubscribeFromEvent(t, s) && (i = !0);
+    else if (typeof t == "object")
+      for (let e of t)
+        this.unsubscribeFromEvent(e, s) && (i = !0);
+    return i;
+  }, this.unsubscribeFromEvent = (t, s) => {
     if (typeof this.subscriptions[t] > "u" || !this.subscriptions[t])
       return !1;
     const i = this.subscriptions[t].indexOf(s);
@@ -23,8 +40,8 @@ const n = new H(), G = (t) => t * (Math.PI / 180), j = (t) => t * (180 / Math.PI
     let E = (d[1] - a[1]) * (c[0] - d[0]) - (d[0] - a[0]) * (c[1] - d[1]);
     return E === 0 ? 0 : E > 0 ? 1 : 2;
   }, o = (a, d, c, E) => {
-    let D = e(a, d, c), x = e(a, d, E), w = e(c, E, a), M = e(c, E, d);
-    return D !== x && w !== M || D === 0 && i(a, c, d) || x === 0 && i(a, E, d) || w === 0 && i(c, a, E) ? !0 : !!(M === 0 && i(c, d, E));
+    let T = e(a, d, c), x = e(a, d, E), w = e(c, E, a), M = e(c, E, d);
+    return T !== x && w !== M || T === 0 && i(a, c, d) || x === 0 && i(a, E, d) || w === 0 && i(c, a, E) ? !0 : !!(M === 0 && i(c, d, E));
   };
   if (t.length < 3)
     return !1;
@@ -678,7 +695,7 @@ function X() {
         o.setAttribute("points", r), s.appendChild(o);
       }
     });
-  }, this.toPng = (t, s = T.DATAURL, i = null, e = null) => new Promise((o) => {
+  }, this.toPng = (t, s = D.DATAURL, i = null, e = null) => new Promise((o) => {
     const r = t.getPosition(!0);
     [i, e] = U(i, e, r.width, r.height), t.scaleTo(i, e);
     const u = this.toSvg(t);
@@ -688,7 +705,7 @@ function X() {
       const E = document.createElement("canvas");
       l.width = i, l.height = e, E.width = l.width, E.height = l.height, E.getContext("2d").drawImage(l, 0, 0), d.revokeObjectURL(c);
       const x = E.toDataURL("image/png");
-      if (s === T.BLOB) {
+      if (s === D.BLOB) {
         o(F(x));
         return;
       }
@@ -696,7 +713,7 @@ function X() {
     }), l.src = c;
   });
 }
-const T = {
+const D = {
   DATAURL: "dataurl",
   BLOB: "blob"
 }, O = new X();
@@ -1121,7 +1138,7 @@ function _() {
   }, this.getCenter = (t = !1) => {
     const s = this.getPosition(t);
     return [s.left + s.width / 2, s.top + s.height / 2];
-  }, this.toSvg = () => O.toSvg(this), this.toPng = (t = T.DATAURL, s = null, i = null) => O.toPng(this, t, s, i), this.toJSON = (t = !0) => JSON.stringify(this.getJSON(t)), this.clone = () => {
+  }, this.toSvg = () => O.toSvg(this), this.toPng = (t = D.DATAURL, s = null, i = null) => O.toPng(this, t, s, i), this.toJSON = (t = !0) => JSON.stringify(this.getJSON(t)), this.clone = () => {
     const t = this.getJSON();
     t.options.id += "_clone", t.options.name += " Clone";
     const s = new _().fromJSON(this.root, JSON.stringify(t));

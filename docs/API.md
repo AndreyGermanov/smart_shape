@@ -1647,9 +1647,9 @@ Method returns shape by specified ID
 * [EventsManager](#EventsManager)
     * [new EventsManager()](#new_EventsManager_new)
     * [.subscriptions](#EventsManager+subscriptions) : <code>object</code>
-    * [.subscribe(eventName, handler)](#EventsManager+subscribe) ⇒ <code>function</code>
+    * [.subscribe(events, handler)](#EventsManager+subscribe) ⇒ <code>function</code>
     * [.emit(eventName, target, params)](#EventsManager+emit) ⇒ <code>boolean</code>
-    * [.unsubscribe(eventName, handler)](#EventsManager+unsubscribe) ⇒ <code>boolean</code>
+    * [.unsubscribe(events, handler)](#EventsManager+unsubscribe) ⇒ <code>boolean</code>
     * [.clear()](#EventsManager+clear)
 
 <a name="new_EventsManager_new"></a>
@@ -1670,15 +1670,15 @@ this.subscriptions[event_name] = [handler_func,handler_func ...]
 **Kind**: instance property of [<code>EventsManager</code>](#EventsManager)  
 <a name="EventsManager+subscribe"></a>
 
-### eventsManager.subscribe(eventName, handler) ⇒ <code>function</code>
-Add subscription to event of specified type
+### eventsManager.subscribe(events, handler) ⇒ <code>function</code>
+Add subscription to event of specified type or to array of events of specified types
 
 **Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
 **Returns**: <code>function</code> - Pointer to handling function, that will be added  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Event name to subscribe to |
+| events | <code>string</code> \| <code>array</code> | Name of event as a string or names of events as an array of strings. |
 | handler | <code>function</code> | Handling function, which will be called each time when event of this type emitted. Each time, when handling function triggered, it receives a single argument - `event` {object} which contains the following fields: `type` - type of event (`eventType`), `target` - pointer to object, which emitted this event, and also any custom params, that emitter sent with this event by using `emit` method. |
 
 <a name="EventsManager+emit"></a>
@@ -1700,15 +1700,15 @@ functions.
 
 <a name="EventsManager+unsubscribe"></a>
 
-### eventsManager.unsubscribe(eventName, handler) ⇒ <code>boolean</code>
-Removes specified handler from event with specified name.
+### eventsManager.unsubscribe(events, handler) ⇒ <code>boolean</code>
+Removes specified handler from event with specified name or from array of events with specified names.
 
 **Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
 **Returns**: <code>boolean</code> - True if really removed the handler or false if you could not remove because it does not exist  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>string</code> | Name of event |
+| events | <code>string</code> \| <code>array</code> | Name of event as a string or names of events as an array of strings. |
 | handler | <code>function</code> | Pointer to a function to remove. (This pointer returned from `subscribe` method and can be used here to unsubscribe |
 
 <a name="EventsManager+clear"></a>
