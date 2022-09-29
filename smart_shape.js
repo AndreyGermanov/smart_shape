@@ -40,8 +40,8 @@ const n = new H(), G = (t) => t * (Math.PI / 180), j = (t) => t * (180 / Math.PI
     let E = (d[1] - a[1]) * (c[0] - d[0]) - (d[0] - a[0]) * (c[1] - d[1]);
     return E === 0 ? 0 : E > 0 ? 1 : 2;
   }, o = (a, d, c, E) => {
-    let T = e(a, d, c), x = e(a, d, E), M = e(c, E, a), w = e(c, E, d);
-    return T !== x && M !== w || T === 0 && i(a, c, d) || x === 0 && i(a, E, d) || M === 0 && i(c, a, E) ? !0 : !!(w === 0 && i(c, d, E));
+    let T = e(a, d, c), x = e(a, d, E), w = e(c, E, a), M = e(c, E, d);
+    return T !== x && w !== M || T === 0 && i(a, c, d) || x === 0 && i(a, E, d) || w === 0 && i(c, a, E) ? !0 : !!(M === 0 && i(c, d, E));
   };
   if (t.length < 3)
     return !1;
@@ -942,11 +942,11 @@ function _() {
     id: "",
     name: "Unnamed shape",
     maxPoints: -1,
-    stroke: "rgb(0,0,0)",
-    strokeWidth: "2",
+    stroke: "",
+    strokeWidth: "",
     strokeLinecap: "",
     strokeDasharray: "",
-    fill: "none",
+    fill: "",
     fillGradient: null,
     fillImage: null,
     fillOpacity: "1",
@@ -958,7 +958,11 @@ function _() {
     offsetX: 0,
     offsetY: 0,
     classes: "",
-    style: {},
+    style: {
+      "stroke-width": 2,
+      stroke: "black",
+      fill: "none"
+    },
     pointOptions: {},
     zIndex: 1e3,
     bounds: { left: -1, top: -1, right: -1, bottom: -1 },
@@ -1066,8 +1070,8 @@ function _() {
     let t;
     return this.options.displayMode === A.DEFAULT ? t = A.SELECTED : this.options.displayMode === A.SELECTED ? t = A.SCALE : this.options.displayMode === A.SCALE ? t = A.ROTATE : t = A.DEFAULT, t === A.SELECTED && !this.points.filter((s) => s.options.canDrag).length && (t = A.SCALE), t === A.SCALE && !this.options.canScale && (t = A.ROTATE), t === A.ROTATE && !this.options.canRotate && (t = A.DEFAULT), t;
   }, this.calcPosition = () => {
-    !this.points.length || (this.left = this.points.map((t) => t.x).reduce((t, s) => s < t ? s : t), this.top = this.points.map((t) => t.y).reduce((t, s) => s < t ? s : t), this.right = this.points.map((t) => t.x).reduce((t, s) => s > t ? s : t), this.bottom = this.points.map((t) => t.y).reduce((t, s) => s > t ? s : t), this.width = this.right - this.left || 1, this.height = this.bottom - this.top || 1);
-  }, this.getPosition = () => ({ top: this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height: this.height }), this.getBounds = () => ({
+    !this.points.length || (this.left = this.points.map((t) => t.x).reduce((t, s) => s < t ? s : t), this.top = this.points.map((t) => t.y).reduce((t, s) => s < t ? s : t), this.right = this.points.map((t) => t.x).reduce((t, s) => s > t ? s : t), this.bottom = this.points.map((t) => t.y).reduce((t, s) => s > t ? s : t), this.width = parseInt(this.right - this.left) || 1, this.height = parseInt(this.bottom - this.top) || 1);
+  }, this.getPosition = () => ({ top: this.top, left: this.left, bottom: this.bottom, right: this.right, width: parseInt(this.width), height: parseInt(this.height) }), this.getBounds = () => ({
     left: this.options.bounds.left !== -1 ? this.options.bounds.left : this.root.style.display === "none" ? -1 : this.root.clientLeft,
     top: this.options.bounds.top !== -1 ? this.options.bounds.top : this.root.style.display === "none" ? -1 : this.root.clientTop,
     right: this.options.bounds.right !== -1 ? this.options.bounds.right : this.root.style.display === "none" ? -1 : this.root.clientLeft + this.root.clientWidth,

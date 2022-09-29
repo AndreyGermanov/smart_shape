@@ -110,11 +110,11 @@ function SmartShape() {
         id: "",
         name: "Unnamed shape",
         maxPoints: -1,
-        stroke: "rgb(0,0,0)",
-        strokeWidth: "2",
+        stroke: "",
+        strokeWidth: "",
         strokeLinecap: "",
         strokeDasharray: "",
-        fill: "none",
+        fill: "",
         fillGradient: null,
         fillImage: null,
         fillOpacity: "1",
@@ -126,7 +126,11 @@ function SmartShape() {
         offsetX: 0,
         offsetY: 0,
         classes: "",
-        style: {},
+        style: {
+            "stroke-width":2,
+            "stroke":"black",
+            fill:"none"
+        },
         pointOptions:{},
         zIndex: 1000,
         bounds: {left:-1,top:-1,right:-1,bottom:-1},
@@ -672,8 +676,8 @@ function SmartShape() {
         this.top = this.points.map(point => point.y).reduce((miny,y) => y < miny ? y : miny);
         this.right = this.points.map(point => point.x).reduce((maxx,x) => x > maxx ? x : maxx);
         this.bottom = this.points.map(point => point.y).reduce((maxy,y) => y > maxy ? y : maxy);
-        this.width = this.right-this.left || 1;
-        this.height = this.bottom-this.top || 1;
+        this.width = parseInt(this.right-this.left) || 1;
+        this.height = parseInt(this.bottom-this.top) || 1;
     }
 
     /**
@@ -682,7 +686,7 @@ function SmartShape() {
      * `top`,`left`,`right`,`bottom`,`width`,`height`
      */
     this.getPosition = () => (
-        {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height:this.height}
+        {top:this.top, left: this.left, bottom: this.bottom, right: this.right, width: parseInt(this.width), height:parseInt(this.height)}
     )
 
     /**
