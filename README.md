@@ -13,9 +13,9 @@ Smart shape is a polygon (array of connected points) which can be attached to an
 &nbsp;&nbsp;&nbsp;&nbsp;[On a Web Page](#Install_Web)<br/>
 [Use](#Use)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Use_SmartShape)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import/Export](#Import_Export)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Collections](#Collections)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape Studio](#Studio)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import/Export](#Import_Export)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Collections](#Collections)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape Studio](#Studio)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#Use_ResizeBox)<br/>
 [Examples](#Examples)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Examples_SmartShape)<br/>
