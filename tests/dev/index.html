@@ -53,7 +53,7 @@
         }
         const body = document.querySelector("body");
         body.style.height = (window.innerHeight-50)+"px";
-        const s = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true,offsetX:15,offsetY:15},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
+        const s = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true,offsetX:15,offsetY:15,style:{"stroke-width":0}},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
         const m = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:170,filters:filters,canScale:true,canRotate:true,offsetY:15},[[0,0],[50,60],[100,0],[100,150],[75,150],[75,75],[50,100],[25,75],[25,150],[0,150]])
         const a1 = new SmartShape().init(body,{fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:325,filters:filters,canScale:true,canRotate:true,offsetY:15},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
         const a1_sub = new SmartShape().init(body,{fill:"white",pointOptions:smartPointOptions,offsetX:325,offsetY:15,zIndex:1010,canScale:true,canRotate:true},[[45,60],[50,40],[55,60]])

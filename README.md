@@ -13,6 +13,9 @@ Smart shape is a polygon (array of connected points) which can be attached to an
 &nbsp;&nbsp;&nbsp;&nbsp;[On a Web Page](#Install_Web)<br/>
 [Use](#Use)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Use_SmartShape)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import/Export](#Import_Export)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Collections](#Collections)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape Studio](#Studio)
 &nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#Use_ResizeBox)<br/>
 [Examples](#Examples)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Examples_SmartShape)<br/>
@@ -122,6 +125,116 @@ Full API that available for customization is in [API docs](https://github.com/An
 
 One of these customized shapes that already created is `ResizeBox`, which described below. This component is a special SmartShape with custom properties, with predefined set of points and with customized reactions on events. This shape can be used as a widget to resize something on your application screen, or select rectangular area on it.
 
+<a name="Import_Export"></a>
+
+### Import/Export
+
+After create and configure the shape using points and options, provided in `init()` method and using API, you can export it as a JSON to use this shape in other projects. The `.toJSON()` method added to SmartShape API since v. 1.0.7.
+
+```javascript
+const shape = new SmartShape();
+shape.init(div,{fill:"#00ff00"},[ [0,100],[100,0],[200,100],[100,200] ]);
+
+const jsonString = shape.toJSON();
+```
+
+After shape saved to `jsonString`, you can save it to a file and then, reuse this shape later in other projects. For example, let's assume that `jsonString` then saved to `shape.json` file. To load this data to other shape in other project, you can do the following:
+
+```javascript
+import jsonData from "./shape.json";
+
+const shape = new SmartShape();
+shape.fromJSON(div,jsonData);
+```
+
+As you see here, first we need to load jsonData from somewhere (either from file, or you can just copy/paste JSON data from file as a value of jsonData variable). Then, we construct the shape object and then, instead of `init`, we call `fromJSON` method. The first argument is an HTML container to put the shape in and second argument is `jsonData`, which contains points and options, previously saved by `toJSON` method.
+
+<a name="Collections"></a>
+
+### Collections
+
+SmartShape library contains internal `SmartShapeManager` object, that used under the hood to control all created and destroyed shapes. Every time when you create a shape, it automatically appears in the `shapes` field of this object. You can import this object and use it API to access all shapes, created in the project.
+
+```javascript
+
+import {SmartShapeManager} from "smart_shape";
+
+// Receiving a list of all shapes
+const shapes = SmartShapeManager.getShapes();
+
+// Obtaining a shape by ID.
+const shape = SmartShapeManager.findShapeById("shape1")
+```
+
+All API description of this object you can find in [API Docs](#SmartShapeManager).
+
+One feature that is important to explain here is ability to export collections of shapes to a JSON and import them later.
+
+SmartShapeManager has `toJSON()` method to export all shapes to a JSON string and `fromJSON()` method to import all shapes from JSON.
+
+**Export**
+
+```javascript
+import {SmartShapeManager} from "smart_shape";
+
+// Create and configure shapes ...
+
+// Save all shapes as a string serialized JSON array
+const jsonString = SmartShapeManager.toJSON()
+```
+
+**Import**
+
+Then, you can save this `jsonString` to some file and load to other projects. For example, let's assume that this `jsonString` saved to `collection.json` file. To add this collection of shapes to other project, you can do this:
+
+```javascript
+import {SmartShapeManager} from "smart_shape";
+
+// Import shapes collection data
+import jsonData from "./collection.json";
+
+// Add all shapes from collection to specified `div` HTML container
+SmartShapeManager.fromJSON(div,jsonData);
+
+// Get all imported shapes as an array
+const shapes = SmartShapeManager.getShapes()
+
+// or get specified shape by ID
+const shape = SmartShapeManager.getShapeById("shape1")
+```
+
+<a name="Studio"/>
+
+### SmartShape Studio
+
+To make your work with collections of shapes more comfortable, I have created the **SmarShape Studio** tool, which is available on https://shapes.germanov.dev .
+
+<p align="center">
+
+![Studio](https://shapes.germanov.dev/preview.png)
+
+</p>
+
+Using this tool you can create collections of shapes and save them as a JSON files. Then you can load these files to your project the same way, as you did use `SmartShapeManager`, explained above.
+
+When design shapes using the `Studio`, do not forget to set unique `ID` to each of them on an `Options` panel to be able to get each of these shapes by ID later after load them to your project. So, if you created a collection of shapes in the `Studio` and saved them to `collections.json` file, you can load and use them in your project this way:
+
+```javascript
+import {SmartShapeManager} from "smart_shape";
+
+// Import shapes collection data
+import jsonData from "./collection.json";
+
+// Add all shapes from collection to specified `div` HTML container
+SmartShapeManager.fromJSON(div,jsonData);
+
+// Get all imported shapes as an array
+const shapes = SmartShapeManager.getShapes()
+
+// or get specified shape by ID
+const shape = SmartShapeManager.getShapeById("shape1")
+```
+
 <a name="Use_ResizeBox"></a>
 
 ## ResizeBox
@@ -180,10 +293,11 @@ Examples below show how you can use SmartShape and it's derivatives in basic mod
 
 
 | Description                                              | Source                                                                                    | Live                                                                    |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------- |-------------------------------------------------------------------------|
+|----------------------------------------------------------|-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
 | Basic example                                            | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/demo.html)      | [link](https://code.germanov.dev/smart_shape/tests/prod/demo.html)      |
 | Extended example: multiple shapes with different options | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/index.html)     | [link](https://code.germanov.dev/smart_shape/tests/prod/index.html)     |
 | Cut image using SmartShape                               | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/cut_image.html) | [link](https://code.germanov.dev/smart_shape/tests/prod/cut_image.html) |
+| Interactive clock                                        | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/clock.html)     | [link](https://code.germanov.dev/smart_shape/tests/prod/clock.html)     |
 
 **Cut image using SmartShape** demo:
 

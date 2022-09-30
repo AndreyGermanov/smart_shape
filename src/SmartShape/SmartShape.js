@@ -989,12 +989,15 @@ function SmartShape() {
     /**
      * Method used to load shape data from specified JSON string, that previously serialized by `toJSON` method
      * @param root {HTMLElement} HTML container to insert loaded shape
-     * @param jsonString {string} JSON-Serialized shape data
+     * @param json {string|object} JSON-Serialized shape data as an object or as a string
      * @param includeChildren {boolean} Should load children of this shape if existed. True by default.
      * @returns {SmartShape|null} Loaded SmartShape object or null in case of JSON reading errors
      */
-    this.fromJSON = (root,jsonString,includeChildren = true) => {
-        const jsonObj = readJSON(jsonString);
+    this.fromJSON = (root,json,includeChildren = true) => {
+        let jsonObj = json;
+        if (typeof(jsonObj) === "string") {
+            jsonObj = readJSON(json);
+        }
         if (!jsonObj) {
             return null;
         }
@@ -1009,7 +1012,7 @@ function SmartShape() {
         if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {
             this.getChildren(true).forEach(child=>child.destroy());
             jsonObj.children.forEach(child => {
-                this.addChild(new SmartShape().fromJSON(root,JSON.stringify(child)));
+                this.addChild(new SmartShape().fromJSON(root,child));
             })
         }
         EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});

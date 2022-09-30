@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Shape Interactive Clock</title>
+  </head>
+  <body>
+    <div id="app" style="width:100%;height:1000px">
+    </div>
+    <script src="../../smart_shape.umd.cjs"></script>
+    <script type="module">
+      const div = document.getElementById("app");
+
+      const create_n0 = () => {
+        const n0 = new SmartShape();
+        const n0_cords = [[0,0],[100,0],[100,150],[0,150]]
+        n0.init(div,{},n0_cords);
+        const n0_sub_cords = [[25,25],[25,125],[75,125],[75,25]];
+        const n0_sub = new SmartShape();
+        n0_sub.init(div,{fill:"white"},n0_sub_cords);
+        n0.addChild(n0_sub);
+        n0_sub.setOptions({zIndex:n0.options.zIndex+1})
+        return n0;
+      }
+      const create_n1 = () => {
+        const n1_cords = [[0,50],[75,0],[100,0],[100,150],[75,150],[75,25],[0,75]]
+        const n1 = new SmartShape();
+        n1.init(div,{},n1_cords);
+        return n1;
+      }
+
+      const create_n2 = () => {
+        const n2_cords = [[0,25],[75,25],[75,75],[0,75],[0,150],[100,150],[100,125],[25,125],[25,100],[100,100],[100,0],[0,0]]
+        const n2 = new SmartShape();
+        n2.init(div,{},n2_cords);
+        return n2;
+      }
+
+      const create_colon = () => {
+        const colon_cords = [[0,50],[25,50],[25,75],[0,75]];
+        const colon = new SmartShape();
+        colon.init(div,{},colon_cords);
+        const colon_sub_cords = [[0,150],[25,150],[25,125],[0,125]];
+        const colon_sub = new SmartShape();
+        colon_sub.init(div,{},colon_sub_cords);
+        colon.addChild(colon_sub);
+        return colon;
+      }
+
+      const create_n3 = () => {
+        const n3 = new SmartShape();
+        const n3_cords = [[0,25],[75,25],[75,65],[0,65],[0,90],[75,90],[75,125],[0,125],[0,150],[100,150],[100,0],[0,0]];
+        n3.init(div,{},n3_cords);
+        return n3;
+      }
+
+      const create_n4 = () => {
+        const n4 = new SmartShape();
+        const n4_cords = [[0,0],[25,0],[25,65],[75,65],[75,0],[100,0],[100,150],[75,150],[75,90],[0,90]];
+        n4.init(div,{},n4_cords);
+        return n4;
+      }
+
+      const create_n5 = () => {
+        const n5 = new SmartShape();
+        const n5_cords = [[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]]
+        n5.init(div,{pointOptions:{width:0,height:0}},n5_cords);
+        return n5;
+      }
+
+      const create_n6 = () => {
+        const n6 = new SmartShape();
+        const n6_cords = [[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150]]
+        n6.init(div,{},n6_cords);
+        const n6_sub_cords = [[25,75],[25,125],[75,125],[75,75]];
+        const n6_sub = new SmartShape();
+        n6_sub.init(div,{fill:'white'},n6_sub_cords);
+        n6.addChild(n6_sub);
+        n6_sub.setOptions({zIndex:n6.options.zIndex+1})
+        return n6;
+      }
+
+      const create_n7 = () => {
+        const n7 = new SmartShape();
+        const n7_cords = [[0,0],[100,0],[25,150],[0,150],[60,25],[0,25]]
+        n7.init(div,{},n7_cords);
+        return n7;
+      }
+
+      const create_n8 = () => {
+        const n8 = new SmartShape();
+        const n8_cords = [[0,15],[15,0],[85,0],[100,15],[100,60],[90,70],[90,80],[100,90],[100,135],[85,150],[15,150],[0,135],[0,90],[10,80],[10,70],[0,60]]
+        n8.init(div,{},n8_cords);
+        const n8_sub = new SmartShape();
+        const n8_sub_cords = [[25,25],[75,25],[75,50],[25,50]];
+        n8_sub.init(div,{fill:'white'},n8_sub_cords);
+        n8.addChild(n8_sub);
+        const n8_sub2 = new SmartShape();
+        const n8_sub2_cords = [[25,125],[75,125],[75,90],[25,90]];
+        n8_sub2.init(div,{fill:'white'},n8_sub2_cords);
+        n8.addChild(n8_sub2);
+        n8_sub.setOptions({zIndex:n8.options.zIndex+1})
+        n8_sub2.setOptions({zIndex:n8.options.zIndex+1})
+        return n8;
+      }
+
+      const create_n9 = () => {
+        const n9 = new SmartShape();
+        const n9_cords = [[0,0],[100,0],[100,150],[75,150],[0,150],[0,125],[75,125],[75,100],[0,100]];
+        n9.init(div,{},n9_cords);
+        const n9_sub_cords = [[25,25],[75,25],[75,75],[25,75]];
+        const n9_sub = new SmartShape();
+        n9_sub.init(div,{fill:'white'},n9_sub_cords);
+        n9.addChild(n9_sub);
+        n9_sub.setOptions({zIndex:n9.options.zIndex+1})
+        return n9;
+      }
+
+      const get_number = (num) => {
+        const func = "create_n"+num+"()";
+        return eval(func);
+      }
+
+      const scaleX = 50;
+      const scaleY = 75;
+      let timeLeftShapes = [];
+      function setClock() {
+        const clock = new SmartShape();
+        clock.init(div,{fill:"none",strokeWidth:0,pointOptions:{canDrag:false,visible:false},style:{"stroke-width":0},canScale:true,canRotate:true},[[0,0],[200,0],[200,200],[0,200]]);
+        for (let angle=0;angle<=360;angle+=6) {
+          let secondsTick = new SmartShape();
+          secondsTick.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,10],[98,10]]);
+          clock.addChild(secondsTick);
+          secondsTick.rotateBy(angle);
+          secondsTick.redraw();
+        }
+        for (let angle=0;angle<=360;angle+=30) {
+          let minutesTick = new SmartShape();
+          minutesTick.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,20],[98,20]]);
+          clock.addChild(minutesTick);
+          minutesTick.rotateBy(angle);
+          minutesTick.redraw();
+        }
+        const secondHand = new SmartShape();
+        secondHand.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,100],[100,10],[102,100]]);
+        clock.addChild(secondHand);
+        const minuteHand = new SmartShape();
+        minuteHand.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[97,100],[100,30],[103,100]]);
+        clock.addChild(minuteHand);
+        const hourHand = new SmartShape();
+        hourHand.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[95,100],[100,50],[105,100]])
+        clock.addChild(hourHand);
+        clock.scaleTo(400,400);
+        clock.moveTo(document.body.clientWidth/2-400/2,25);
+        clock.redraw();
+        let prevHourAngle = 0;
+        let prevMinuteAngle = 0;
+        let prevSecondAngle = 0;
+        setInterval(() => {
+          if (SmartShapeManager.draggedShape) {
+            return
+          }
+          const date = new Date();
+          const hours = date.getHours() > 12 ? date.getHours()-12 : date.getHours();
+          const minutes = date.getMinutes();
+          const seconds = date.getSeconds();
+          const hourAngle = (360/12)*(hours+minutes/60);
+          hourHand.rotateBy(hourAngle-prevHourAngle);
+          prevHourAngle = hourAngle;
+          hourHand.redraw();
+          const minuteAngle = (360/60)*(minutes+seconds/60);
+          minuteHand.rotateBy(minuteAngle-prevMinuteAngle);
+          prevMinuteAngle = minuteAngle;
+          minuteHand.redraw();
+          const secondAngle = (360/60)*seconds;
+          secondHand.rotateBy(secondAngle-prevSecondAngle);
+          prevSecondAngle = secondAngle;
+          secondHand.redraw();
+          setTimeLeft();
+        },1000);
+      }
+
+      function setTimeLeft() {
+        const gradient = {
+          type: "linear",
+          gradientTransform: "rotate(90)",
+          steps: [
+            {
+              offset: "20%",
+              stopColor: "#ffff00",
+            },
+            {
+              offset: "60%",
+              stopColor: "#ff0000",
+            },
+            {
+              offset: "100%",
+              stopColor: "#ffaa00",
+            },
+          ]
+        }
+        let startX = document.body.clientWidth/2-390/2;
+        let startY = 550;
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+        const now = new Date();
+        const timeDiff = (endOfDay.getTime()-now.getTime())/1000;
+        let diffHours = parseInt(timeDiff/3600);
+        let diffMinutes = parseInt((timeDiff-diffHours*3600)/60);
+        let diffSeconds = parseInt((timeDiff-diffHours*3600-diffMinutes*60));
+        for (let shape of timeLeftShapes) {
+          shape.destroy();
+        }
+        timeLeftShapes = [];
+        let shape;
+        if (diffHours<10) {
+          shape = get_number(0);
+          shape.setOptions({fillGradient:gradient});
+          timeLeftShapes.push(shape);
+          shape.scaleTo(scaleX,scaleY);
+          shape.moveTo(startX,startY);
+          shape.redraw();
+          startX+=60;
+        } else {
+          shape = get_number((diffHours - diffHours % 10)/10);
+          shape.setOptions({fillGradient:gradient});
+          timeLeftShapes.push(shape);
+          shape.scaleTo(scaleX,scaleY);
+          shape.moveTo(startX,startY);
+          shape.redraw();
+          startX+=60
+        }
+        shape = get_number(diffHours % 10);
+        shape.setOptions({fillGradient:gradient});
+        timeLeftShapes.push(shape);
+        shape.scaleTo(scaleX,scaleY);
+        shape.moveTo(startX,startY);
+        shape.redraw();
+        startX+=60
+        shape = create_colon();
+        shape.setOptions({fillGradient:gradient});
+        shape.getChildren()[0].setOptions({fillGradient:gradient});
+        timeLeftShapes.push(shape);
+        shape.scaleTo(15,scaleY);
+        shape.moveTo(startX,startY);
+        shape.redraw();
+        startX+=25;
+        if (diffMinutes<10) {
+          shape = get_number(0);
+          shape.setOptions({fillGradient:gradient});
+          timeLeftShapes.push(shape);
+          shape.scaleTo(scaleX,scaleY);
+          shape.moveTo(startX,startY);
+          shape.redraw();
+          startX+=60;
+        } else {
+          shape = get_number((diffMinutes - diffMinutes % 10) / 10);
+          shape.setOptions({fillGradient:gradient});
+          timeLeftShapes.push(shape);
+          shape.scaleTo(scaleX,scaleY);
+          shape.moveTo(startX,startY);
+          shape.redraw();
+          startX+=60
+        }
+        shape = get_number(diffMinutes % 10);
+        shape.setOptions({fillGradient:gradient});
+        timeLeftShapes.push(shape);
+        shape.scaleTo(scaleX,scaleY);
+        shape.moveTo(startX,startY);
+        shape.redraw();
+        startX+=60
+        shape = create_colon();
+        shape.setOptions({fillGradient:gradient});
+        shape.getChildren()[0].setOptions({fillGradient:gradient});
+        timeLeftShapes.push(shape);
+        shape.scaleTo(15,scaleY);
+        shape.moveTo(startX,startY);
+        shape.redraw();
+        startX+=25;
+
+        if (diffSeconds<10) {
+          shape = get_number(0);
+          shape.setOptions({fillGradient:gradient});
+          timeLeftShapes.push(shape);
+          shape.scaleTo(scaleX,scaleY);
+          shape.moveTo(startX,startY);
+          shape.redraw();
+          startX+=60;
+        } else {
+          shape = get_number((diffSeconds - diffSeconds % 10) / 10);
+          shape.setOptions({fillGradient:gradient});
+          timeLeftShapes.push(shape);
+          shape.scaleTo(scaleX,scaleY);
+          shape.moveTo(startX,startY);
+          shape.redraw();
+          startX+=60
+        }
+        shape = get_number(diffSeconds % 10);
+        shape.setOptions({fillGradient:gradient});
+        timeLeftShapes.push(shape);
+        shape.scaleTo(scaleX,scaleY);
+        shape.moveTo(startX,startY);
+        shape.redraw();
+      }
+
+      function setTimeLeftLabel() {
+        const options = {
+          canScale:true,
+          canRotate:true,
+          pointOptions:{
+            width:5,height:5
+          },
+          fillGradient:{
+            type: "linear",
+            gradientTransform: "rotate(90)",
+            steps: [
+              {
+                offset: "20%",
+                stopColor: "#00ff00",
+              },
+              {
+                offset: "60%",
+                stopColor: "#006600",
+              },
+              {
+                offset: "100%",
+                stopColor: "#00ff00",
+              },
+            ]
+          }
+        }
+        const i_cords = [[0,0],[25,0],[25,150],[0,150]]
+        const i = new SmartShape();
+        i.init(div,{id:"i"},i_cords);
+        const l_cords = [[0,0],[0,150],[100,150],[100,125],[25,125],[25,0]]
+        const l = new SmartShape();
+        l.init(div,{id:"l"},l_cords);
+
+        const e = new SmartShape();
+        const e_cords = [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 120], [100, 120], [100, 150], [0, 150]];
+        e.init(div,{id:"e1"},e_cords);
+
+        const e2 = new SmartShape();
+        e2.init(div,{id:"e2"},e_cords);
+
+        const m = new SmartShape();
+        const m_cords = [[0,0],[50,60],[100,0],[100,150],[75,150],[75,75],[50,100],[25,75],[25,150],[0,150]]
+        m.init(div,{id:"m"},m_cords);
+
+        const f = new SmartShape();
+        const f_cords = [[0, 0], [100, 0], [100, 25], [25, 25], [25, 60], [100, 60], [100, 85], [25, 85], [25, 150], [0, 150]];
+        f.init(div, {id:"f"}, f_cords);
+
+        const t_cords = [[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]];
+        const t = new SmartShape();
+        t.init(div,{id:"t"},t_cords);
+
+        const t2 = new SmartShape();
+        t2.init(div,{id:"t2"},t_cords);
+
+        let startX = document.body.clientWidth/2 - 490/2;
+        let startY = 450;
+        t.scaleTo(scaleX, scaleY);
+        t.moveTo(startX, startY);
+        t.setOptions(options);
+        t.redraw();
+        i.scaleTo(15, scaleY);
+        i.moveTo(startX + 60, startY);
+        i.setOptions(options);
+        i.redraw();
+        m.scaleTo(scaleX, scaleY);
+        m.moveTo(startX + 90, startY);
+        m.setOptions(options);
+        m.redraw();
+        e.scaleTo(scaleX, scaleY);
+        e.moveTo(startX + 150, startY);
+        e.setOptions(options);
+        e.redraw();
+        l.scaleTo(scaleX, scaleY);
+        l.moveTo(startX + 260, startY);
+        l.setOptions(options);
+        l.redraw();
+        e2.scaleTo(scaleX, scaleY);
+        e2.moveTo(startX + 320, startY);
+        e2.setOptions(options);
+        e2.redraw();
+        f.scaleTo(scaleX, scaleY);
+        f.moveTo(startX + 380, startY);
+        f.setOptions(options);
+        f.redraw();
+        t2.scaleTo(scaleX, scaleY);
+        t2.moveTo(startX + 440, startY);
+        t2.setOptions(options);
+        t2.redraw();
+      }
+      setClock();
+      setTimeLeftLabel();
+
+
+    </script>
+  </body>
+</html>

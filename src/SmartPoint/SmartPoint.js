@@ -413,11 +413,14 @@ function SmartPoint() {
     /**
      * Method used to construct point object from JSON string representation,
      * received by using `toJSON()` method.
-     * @param jsonString {string} String with JSON-serialized point object
+     * @param json {string} JSON-serialized point object as an object or as a string
      * @returns {SmartPoint} constructed point or null in case of error
      */
-    this.fromJSON = (jsonString) => {
-        const jsonObj = readJSON(jsonString);
+    this.fromJSON = (json) => {
+        let jsonObj = json;
+        if (typeof(jsonObj) === "string") {
+            jsonObj = readJSON(json);
+        }
         if (!jsonObj) {
             return null;
         }

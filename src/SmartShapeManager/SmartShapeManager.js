@@ -568,12 +568,15 @@ function SmartShapeManager() {
     /**
      * Method loads shapes from JSON string, previously serialized by `toJSON` method
      * @param root {HTMLElement} Container element to bind shapes to
-     * @param jsonString {string} JSON string with array of shape definitions
+     * @param json {string|object} JSON data with shapes as an object or as a string with array of shape definitions
      * @returns {array|null} array of loaded [SmartShape](#SmartShape) objects or null in case
      * of JSON reading error
      */
-    this.fromJSON = (root,jsonString) => {
-        const jsonObj = readJSON(jsonString);
+    this.fromJSON = (root,json) => {
+        let jsonObj = json;
+        if (typeof(jsonObj) === "string") {
+            jsonObj = readJSON(json);
+        }
         if (!jsonObj) {
             return null;
         }
@@ -582,7 +585,7 @@ function SmartShapeManager() {
             if (obj.options.id && this.findShapeById(obj.options.id)) {
                 continue
             }
-            result.push(new SmartShape().fromJSON(root,JSON.stringify(obj)));
+            result.push(new SmartShape().fromJSON(root,obj));
         }
         return result;
     }
