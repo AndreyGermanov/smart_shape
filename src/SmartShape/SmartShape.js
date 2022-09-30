@@ -110,8 +110,8 @@ function SmartShape() {
         id: "",
         name: "Unnamed shape",
         maxPoints: -1,
-        stroke: "black",
-        strokeWidth: "2",
+        stroke: "",
+        strokeWidth: "",
         strokeLinecap: "",
         strokeDasharray: "",
         fill: "",
@@ -333,7 +333,6 @@ function SmartShape() {
      */
     this.putPoint = (x,y,pointOptions=null) => {
         if (this.findPoint(x,y)) {
-            console.error(`Point with x=${x} and y=${y} already exists`);
             return null;
         }
         if (!pointOptions || !Object.keys(pointOptions).length) {
@@ -596,11 +595,11 @@ function SmartShape() {
         if (this.options.displayMode === SmartShapeDisplayMode.SCALE && this.options.canScale) {
             this.rotateBox && this.rotateBox.hide();
             !this.resizeBox && this.setupResizeBox();
-            this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
+            this.resizeBox && this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
         } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
             this.resizeBox && this.resizeBox.hide();
             !this.rotateBox && this.setupRotateBox();
-            this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
+            this.rotateBox && this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
         } else {
             this.resizeBox && this.resizeBox.hide();
             this.rotateBox && this.rotateBox.hide();
@@ -802,6 +801,9 @@ function SmartShape() {
      * Used to setup [ResizeBox](#ResizeBox) around shape if shape scaling is enabled
      */
     this.setupResizeBox = () => {
+        if (!this.points.length) {
+            return null;
+        }
         const bounds = this.getResizeBoxBounds();
         this.resizeBox = new ResizeBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
             zIndex: this.options.zIndex+1,
@@ -815,6 +817,7 @@ function SmartShape() {
         this.calcPosition();
         this.eventListener.addResizeEventListener();
         this.resizeBox.redraw();
+        return this.resizeBox;
     }
 
     /**
@@ -822,6 +825,9 @@ function SmartShape() {
      * Used to setup [Rotate](#RotateBox) around shape if shape rotation is enabled
      */
     this.setupRotateBox = () => {
+        if (!this.points.length) {
+            return null;
+        }
         const bounds = this.getResizeBoxBounds();
         this.rotateBox = new RotateBox().init(this.root,bounds.left,bounds.top,bounds.width,bounds.height,{
             zIndex: this.options.zIndex+1,
@@ -835,6 +841,7 @@ function SmartShape() {
         this.calcPosition();
         this.eventListener.addRotateEventListener();
         this.rotateBox.redraw();
+        return this.rotateBox;
     }
 
 

@@ -760,18 +760,18 @@ function q() {
   }, this.getShape = (t) => this.getShapeByGuid(t.guid), this.getShapeByGuid = (t) => this.shapes.find((s) => s.guid === t), this.getShapesByContainer = (t) => this.getShapes().filter((s) => s.root === t), this.getMaxZIndex = (t = null) => {
     let s = this.getShapes();
     return t && (s = this.getShapesByContainer(t)), s.length ? s.map((i) => i.options.zIndex || 0).reduce((i, e) => e > i ? e : i) : 0;
-  }, this.getShapes = () => this.shapes.filter((t) => t.options.id.search("_resizebox") === -1 && t.options.id.search("_rotatebox") === -1), this.activateShape = (t) => {
+  }, this.getShapes = () => this.shapes.filter((t) => t.options.id.search("_resizebox") === -1 && t.options.id.search("_rotatebox") === -1), this.activateShape = (t, s = null) => {
     if (this.activeShape === t) {
-      this.activeShape.switchDisplayMode();
+      this.activeShape.switchDisplayMode(s);
       return;
     }
     if (typeof t.id < "u" && (t.id.search("_resizebox") !== -1 || t.id.search("_rotatebox") !== -1))
       return;
     this.activeShape && this.deactivateShape(this.activeShape);
-    const i = this.getMaxZIndex(t.root) + 1 - t.options.zIndex;
-    t.options.prevZIndex = t.options.zIndex, t.options.zIndex += i, O.updateOptions(t), t.getChildren(!0).forEach((e) => {
-      e.options.prevZIndex = e.options.zIndex, e.options.zIndex += i, O.updateOptions(e);
-    }), this.activeShape = t, this.activeShape.switchDisplayMode();
+    const e = this.getMaxZIndex(t.root) + 1 - t.options.zIndex;
+    t.options.prevZIndex = t.options.zIndex, t.options.zIndex += e, O.updateOptions(t), t.getChildren(!0).forEach((o) => {
+      o.options.prevZIndex = o.options.zIndex, o.options.zIndex += e, O.updateOptions(o);
+    }), this.activeShape = t, this.activeShape.switchDisplayMode(s);
   }, this.deactivateShape = (t) => {
     typeof t.options.prevZIndex < "u" && O.updateOptions(t), t.options.displayMode !== A.DEFAULT && t.switchDisplayMode(A.DEFAULT), t.getChildren(!0).forEach((s) => {
       typeof s.options.prevZIndex < "u" && (O.updateOptions(s), s.options.displayMode !== A.DEFAULT && s.switchDisplayMode(A.DEFAULT));
@@ -942,8 +942,8 @@ function _() {
     id: "",
     name: "Unnamed shape",
     maxPoints: -1,
-    stroke: "black",
-    strokeWidth: "2",
+    stroke: "",
+    strokeWidth: "",
     strokeLinecap: "",
     strokeDasharray: "",
     fill: "",
@@ -998,7 +998,7 @@ function _() {
     ), this.redraw());
   }, this.putPoint = (t, s, i = null) => {
     if (this.findPoint(t, s))
-      return console.error(`Point with x=${t} and y=${s} already exists`), null;
+      return null;
     !i || !Object.keys(i).length ? i = Object.assign({}, this.options.pointOptions) || {} : i = S(Object.assign({}, this.options.pointOptions), i), i.bounds = this.getBounds(), i.zIndex = this.options.zIndex + 1;
     const e = new K();
     return this.points.push(e), e.init(t, s, i), this.root.appendChild(e.element), e;
@@ -1061,7 +1061,7 @@ function _() {
   }, this.redraw = () => {
     this.applyDisplayMode(), O.draw(this);
   }, this.applyDisplayMode = () => {
-    this.options.displayMode === A.SCALE && this.options.canScale ? (this.rotateBox && this.rotateBox.hide(), !this.resizeBox && this.setupResizeBox(), this.resizeBox.setOptions({ shapeOptions: { visible: this.options.visible } })) : this.options.displayMode === A.ROTATE && this.options.canRotate ? (this.resizeBox && this.resizeBox.hide(), !this.rotateBox && this.setupRotateBox(), this.rotateBox.setOptions({ shapeOptions: { visible: this.options.visible } })) : (this.resizeBox && this.resizeBox.hide(), this.rotateBox && this.rotateBox.hide()), this.points.forEach((t) => {
+    this.options.displayMode === A.SCALE && this.options.canScale ? (this.rotateBox && this.rotateBox.hide(), !this.resizeBox && this.setupResizeBox(), this.resizeBox && this.resizeBox.setOptions({ shapeOptions: { visible: this.options.visible } })) : this.options.displayMode === A.ROTATE && this.options.canRotate ? (this.resizeBox && this.resizeBox.hide(), !this.rotateBox && this.setupRotateBox(), this.rotateBox && this.rotateBox.setOptions({ shapeOptions: { visible: this.options.visible } })) : (this.resizeBox && this.resizeBox.hide(), this.rotateBox && this.rotateBox.hide()), this.points.forEach((t) => {
       t.setOptions({ zIndex: this.options.zIndex + 1 }), t.element.style.zIndex = t.options.zIndex, this.options.displayMode === A.DEFAULT && !t.options.forceDisplay && (t.element.style.display = "none");
     });
   }, this.switchDisplayMode = (t = null) => {
@@ -1097,8 +1097,10 @@ function _() {
       }
     this.getChildren(!0).forEach((t) => t.destroy());
   }, this.setupResizeBox = () => {
+    if (!this.points.length)
+      return null;
     const t = this.getResizeBoxBounds();
-    this.resizeBox = new V().init(this.root, t.left, t.top, t.width, t.height, {
+    return this.resizeBox = new V().init(this.root, t.left, t.top, t.width, t.height, {
       zIndex: this.options.zIndex + 1,
       id: this.options.id + "_resizebox",
       shapeOptions: {
@@ -1106,10 +1108,12 @@ function _() {
         visible: this.options.visible,
         managed: !1
       }
-    }), this.calcPosition(), this.eventListener.addResizeEventListener(), this.resizeBox.redraw();
+    }), this.calcPosition(), this.eventListener.addResizeEventListener(), this.resizeBox.redraw(), this.resizeBox;
   }, this.setupRotateBox = () => {
+    if (!this.points.length)
+      return null;
     const t = this.getResizeBoxBounds();
-    this.rotateBox = new k().init(this.root, t.left, t.top, t.width, t.height, {
+    return this.rotateBox = new k().init(this.root, t.left, t.top, t.width, t.height, {
       zIndex: this.options.zIndex + 1,
       id: this.options.id + "_rotatebox",
       shapeOptions: {
@@ -1117,7 +1121,7 @@ function _() {
         visible: this.options.visible,
         managed: !1
       }
-    }), this.calcPosition(), this.eventListener.addRotateEventListener(), this.rotateBox.redraw();
+    }), this.calcPosition(), this.eventListener.addRotateEventListener(), this.rotateBox.redraw(), this.rotateBox;
   }, this.getResizeBoxBounds = () => {
     this.calcPosition();
     let t = this.getPosition(!0);
@@ -1234,5 +1238,6 @@ export {
   k as RotateBox,
   h as ShapeEvents,
   _ as SmartShape,
+  A as SmartShapeDisplayMode,
   m as SmartShapeManager
 };

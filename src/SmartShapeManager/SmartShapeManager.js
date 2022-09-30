@@ -274,10 +274,11 @@ function SmartShapeManager() {
     /**
      * Method used to make specified shape active and move it on top according to zIndex
      * @param shape {SmartShape} Shape to activate
+     * @param displayMode {SmartShapeDisplayMode} In which mode to activate the shape (by default select next mode)
      */
-    this.activateShape = (shape) => {
+    this.activateShape = (shape,displayMode=null) => {
         if (this.activeShape === shape) {
-            this.activeShape.switchDisplayMode();
+            this.activeShape.switchDisplayMode(displayMode);
             return;
         }
         if (typeof(shape.id) !== "undefined" &&
@@ -298,7 +299,7 @@ function SmartShapeManager() {
             SmartShapeDrawHelper.updateOptions(child);
         });
         this.activeShape = shape;
-        this.activeShape.switchDisplayMode();
+        this.activeShape.switchDisplayMode(displayMode);
     }
 
     /**

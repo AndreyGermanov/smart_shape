@@ -1430,7 +1430,7 @@ of all group if forGroup parameter is set
     * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
     * [.getMaxZIndex(container)](#SmartShapeManager+getMaxZIndex) ⇒ <code>number</code>
     * [.getShapes()](#SmartShapeManager+getShapes) ⇒ <code>array</code>
-    * [.activateShape(shape)](#SmartShapeManager+activateShape)
+    * [.activateShape(shape, displayMode)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
     * [.getShapeOnCursor(x, y)](#SmartShapeManager+getShapeOnCursor) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.toJSON(shapes)](#SmartShapeManager+toJSON) ⇒ <code>string</code>
@@ -1551,7 +1551,7 @@ Method returns an array of all registered shapes (excluding rotate and resize bo
 **Returns**: <code>array</code> - Array of [SmartShape)(#SmartShape) objects  
 <a name="SmartShapeManager+activateShape"></a>
 
-### smartShapeManager.activateShape(shape)
+### smartShapeManager.activateShape(shape, displayMode)
 Method used to make specified shape active and move it on top according to zIndex
 
 **Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
@@ -1559,6 +1559,7 @@ Method used to make specified shape active and move it on top according to zInde
 | Param | Type | Description |
 | --- | --- | --- |
 | shape | [<code>SmartShape</code>](#SmartShape) | Shape to activate |
+| displayMode | [<code>SmartShapeDisplayMode</code>](#SmartShapeDisplayMode) | In which mode to activate the shape (by default select next mode) |
 
 <a name="SmartShapeManager+addContainerEvent"></a>
 
