@@ -1,10 +1,9 @@
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {notNull, readJSON} from "../utils/index.js";
-import {SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
+import SmartShape,{SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
-import SmartShape from "../SmartShape/SmartShape.js";
 import {createEvent, getMouseCursorPos} from "../events/functions.js";
 
 /**
@@ -386,7 +385,7 @@ function SmartShapeManager() {
      * @param event {MouseEvent} Mouse down event
      */
     this.mousedown = (event) => {
-        if (this.shapeOnCursor) {
+        if (this.shapeOnCursor && event.buttons !== 2) {
             const parent = this.shapeOnCursor.getRootParent();
             if (parent) {
                 this.shapeOnCursor = parent;

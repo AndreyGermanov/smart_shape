@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Shape Demo Page</title>
+  </head>
+  <body>
+    <div id="app">
+        <div id="surface" style="left:150px;width:500px;height:400px;border: 1px solid"></div>
+    </div>
+    <script type="module">
+
+      const div = document.getElementById("surface");
+      import {SmartShapeManager} from "../../src/index.js";
+
+      // Import saved collection as a JSON object
+      import collectionJson from "./collection.json";
+
+      // Read shapes from file and put to container
+      SmartShapeManager.fromJSON(div,collectionJson);
+
+      // Get all imported shapes as an array
+      const shapes = SmartShapeManager.getShapes();
+
+      // Get shape by ID
+      const shape1 = SmartShapeManager.findShapeById("shape_0");
+
+      shape1.addEventListener("click", (event) => {
+        // Do something when user clicks on this shape
+      })
+
+      // Get another shape by ID
+      const shape2 = SmartShapeManager.findShapeById("shape_1");
+
+      // Move shape to other place of the screen
+      shape2.moveTo(200,100)
+      shape2.show();
+    </script>
+  </body>
+</html>
