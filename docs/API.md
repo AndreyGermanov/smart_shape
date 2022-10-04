@@ -25,6 +25,14 @@
 <dd></dd>
 </dl>
 
+## Members
+
+<dl>
+<dt><a href="#point">point</a> : <code><a href="#SmartPoint">SmartPoint</a></code></dt>
+<dd><p>The point object to manage menu for</p>
+</dd>
+</dl>
+
 <a name="ResizeBox"></a>
 
 ## ResizeBox
@@ -553,7 +561,7 @@ this class automatically during init process
     * [.show()](#SmartPoint+show)
     * [.hide()](#SmartPoint+hide)
     * [.toJSON()](#SmartPoint+toJSON) ⇒ <code>string</code>
-    * [.fromJSON(jsonString)](#SmartPoint+fromJSON) ⇒ [<code>SmartPoint</code>](#SmartPoint)
+    * [.fromJSON(json)](#SmartPoint+fromJSON) ⇒ [<code>SmartPoint</code>](#SmartPoint)
     * [.destroy()](#SmartPoint+destroy)
     * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
@@ -665,7 +673,7 @@ Method used to serialize point to JSON string
 **Returns**: <code>string</code> - JSON string with serialized point object  
 <a name="SmartPoint+fromJSON"></a>
 
-### smartPoint.fromJSON(jsonString) ⇒ [<code>SmartPoint</code>](#SmartPoint)
+### smartPoint.fromJSON(json) ⇒ [<code>SmartPoint</code>](#SmartPoint)
 Method used to construct point object from JSON string representation,
 received by using `toJSON()` method.
 
@@ -674,7 +682,7 @@ received by using `toJSON()` method.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| jsonString | <code>string</code> | String with JSON-serialized point object |
+| json | <code>string</code> | JSON-serialized point object as an object or as a string |
 
 <a name="SmartPoint+destroy"></a>
 
@@ -763,7 +771,7 @@ to this object.
     * [.toPng(type, width, height)](#SmartShape+toPng) ⇒ <code>Promise</code>
     * [.toJSON(includeChildren)](#SmartShape+toJSON) ⇒ <code>string</code>
     * [.clone()](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-    * [.fromJSON(root, jsonString, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -836,6 +844,7 @@ Options of shape as an object. Can have the following parameters.
 | minHeight | <code>number</code> | Minimum height of shape. By default `-1` - unlimited |
 | maxWidth | <code>number</code> | Maximum width of shape. By default `-1` - unlimited |
 | maxHeight | <code>number</code> | Maximum width of shape. By default `-1` - unlimited |
+| hasContextMenu | <code>boolean</code> | Should the shape have context menu. False by default |
 
 <a name="SmartShape+left"></a>
 
@@ -1232,7 +1241,7 @@ Method creates complete copy of current shape
 **Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Created shape object or null in case of errors  
 <a name="SmartShape+fromJSON"></a>
 
-### smartShape.fromJSON(root, jsonString, includeChildren) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+### smartShape.fromJSON(root, json, includeChildren) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 Method used to load shape data from specified JSON string, that previously serialized by `toJSON` method
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1241,7 +1250,7 @@ Method used to load shape data from specified JSON string, that previously seria
 | Param | Type | Description |
 | --- | --- | --- |
 | root | <code>HTMLElement</code> | HTML container to insert loaded shape |
-| jsonString | <code>string</code> | JSON-Serialized shape data |
+| json | <code>string</code> \| <code>object</code> | JSON-Serialized shape data as an object or as a string |
 | includeChildren | <code>boolean</code> | Should load children of this shape if existed. True by default. |
 
 <a name="SmartShapeDrawHelper"></a>
@@ -1434,7 +1443,7 @@ of all group if forGroup parameter is set
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
     * [.getShapeOnCursor(x, y)](#SmartShapeManager+getShapeOnCursor) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.toJSON(shapes)](#SmartShapeManager+toJSON) ⇒ <code>string</code>
-    * [.fromJSON(root, jsonString)](#SmartShapeManager+fromJSON) ⇒ <code>array</code> \| <code>null</code>
+    * [.fromJSON(root, json)](#SmartShapeManager+fromJSON) ⇒ <code>array</code> \| <code>null</code>
     * [.findShapesByOptionValue(name, value)](#SmartShapeManager+findShapesByOptionValue) ⇒ <code>array</code>
     * [.findShapeById(id)](#SmartShapeManager+findShapeById) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
@@ -1603,7 +1612,7 @@ shapes, that exists in SmartShapeManager.
 
 <a name="SmartShapeManager+fromJSON"></a>
 
-### smartShapeManager.fromJSON(root, jsonString) ⇒ <code>array</code> \| <code>null</code>
+### smartShapeManager.fromJSON(root, json) ⇒ <code>array</code> \| <code>null</code>
 Method loads shapes from JSON string, previously serialized by `toJSON` method
 
 **Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
@@ -1613,7 +1622,7 @@ of JSON reading error
 | Param | Type | Description |
 | --- | --- | --- |
 | root | <code>HTMLElement</code> | Container element to bind shapes to |
-| jsonString | <code>string</code> | JSON string with array of shape definitions |
+| json | <code>string</code> \| <code>object</code> | JSON data with shapes as an object or as a string with array of shape definitions |
 
 <a name="SmartShapeManager+findShapesByOptionValue"></a>
 
@@ -1718,6 +1727,12 @@ Removes specified handler from event with specified name or from array of events
 Method removes all subscriptions to events.
 
 **Kind**: instance method of [<code>EventsManager</code>](#EventsManager)  
+<a name="point"></a>
+
+## point : [<code>SmartPoint</code>](#SmartPoint)
+The point object to manage menu for
+
+**Kind**: global variable  
 <a name="ResizeBoxEvents"></a>
 
 ## ResizeBoxEvents : <code>enum</code>

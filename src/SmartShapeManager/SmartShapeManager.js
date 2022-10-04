@@ -334,7 +334,6 @@ function SmartShapeManager() {
         this.addContainerEvent(shape.root,"mousemove",this.mousemove)
         this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
         this.addContainerEvent(shape.root,"dblclick",this.doubleclick);
-        this.checkCanDeletePoints(shape);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)
     }
 
@@ -360,21 +359,6 @@ function SmartShapeManager() {
     this.doubleclick = (event) => {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.doubleclick(createEvent(event,{target:this.shapeOnCursor}))
-        }
-        try {
-            event.stopPropagation();
-        } catch (err) {}
-        if (!this.activeShape) {
-            return
-        }
-        if (this.activeShape.options.canAddPoints && !this.activeShape.draggedPoint) {
-            if (this.activeShape.options.maxPoints === -1 || this.activeShape.points.length < this.activeShape.options.maxPoints) {
-                if (this.activeShape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
-                    this.activeShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-                }
-                const [x,y] = getMouseCursorPos(createEvent(event,{target:this.activeShape}));
-                this.activeShape.addPoint(x,y,{forceDisplay:false});
-            }
         }
     }
 
@@ -533,17 +517,6 @@ function SmartShapeManager() {
             return null;
         }
         return matchedShapes.reduce((prevShape,shape) => shape.options.zIndex >= prevShape.options.zIndex ? shape : prevShape);
-    }
-
-    /**
-     * @ignore
-     * Method that disables context menu on container if allowed to delete points,
-     * it's required to press second mouse button to delete the point
-     */
-    this.checkCanDeletePoints = (shape) => {
-        if (!!shape.points.find(point => point.options.canDelete === true)) {
-            this.addContainerEvent(shape.root,"contextmenu",event=>event.preventDefault())
-        }
     }
 
     /**

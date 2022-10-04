@@ -24,10 +24,6 @@ describe('SmartShape API tests', () => {
       assert.equal(shape.points.length,4)
       const point3 = shape.findPoint(100,200)
       assert.isNotNull(point3)
-      cy.get("#app").trigger("dblclick",{button:1,buttons:1,clientX:150,clientY:150}).then(() => {
-        const newPoint = shape.findPoint(492,100);
-        assert.isNotNull(newPoint);
-      })
     })
   })
 
@@ -66,13 +62,6 @@ describe('SmartShape API tests', () => {
       const point = shape.addPoint(200, 200, {id: "point1",canDelete:true,forceDisplay:true});
       assert.isNotNull(point)
       assert.equal(shape.points.length, 3);
-      cy.get("#point1").trigger("mousedown", {button: 2, buttons: 2}).then(() => {
-        cy.get("#point1").trigger("mouseup", {button: 2, buttons: 2}).then(() => {
-          cy.get("#point1").should("not.exist").then(() => {
-            assert.equal(shape.points.length, 2);
-          })
-        })
-      })
     })
   })
 

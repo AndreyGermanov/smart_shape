@@ -2,6 +2,7 @@ import SmartShapeManager,{ContainerEvents} from "../SmartShapeManager/SmartShape
 import {CSStoJsStyleName, getOffset, getRotatedCoords, pauseEvent, readJSON, uuid} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {createEvent} from "../events/functions.js";
+import SmartPointContextMenu from "./SmartPointContextMenu.js";
 
 /**
  * Class that represents a single point on the screen.
@@ -111,6 +112,7 @@ function SmartPoint() {
     this.init = (x,y,options = null) => {
         this.x = parseInt(x);
         this.y = parseInt(y);
+        Object.assign(this,new SmartPointContextMenu(this));
         this.element = this.createPointUI();
         this.setOptions(Object.assign({},options));
         this.setEventListeners();
@@ -179,6 +181,10 @@ function SmartPoint() {
             element.style.display = '';
         }
         element.style.position = 'absolute';
+        if (typeof(this.updateContextMenu) === "function") {
+            this.updateContextMenu();
+        }
+
         return element
     }
 
@@ -371,9 +377,6 @@ function SmartPoint() {
         EventsManager.emit(PointEvents.POINT_MOUSE_UP, this, createEvent(event));
         if (event.button !==2) {
             EventsManager.emit(PointEvents.POINT_DRAG_END,this, createEvent(event));
-        }
-        if (event.button === 2 && this.options.canDelete) {
-            this.destroy();
         }
     }
 

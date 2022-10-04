@@ -8,6 +8,7 @@ import RotateBox from "../RotateBox/RotateBox.js";
 import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon, getOffset, readJSON} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {applyAspectRatio} from "../utils/geometry.js";
+import SmartShapeContextMenu from "./SmartShapeContextMenu.js";
 /**
  * SmartShape class. Used to construct shapes.
  * @constructor
@@ -104,6 +105,7 @@ function SmartShape() {
      * @param minHeight {number} Minimum height of shape. By default `-1` - unlimited
      * @param maxWidth {number} Maximum width of shape. By default `-1` - unlimited
      * @param maxHeight {number} Maximum width of shape. By default `-1` - unlimited
+     * @param hasContextMenu {boolean} Should the shape have context menu. False by default
      * @type {object}
      */
     this.options = {
@@ -140,7 +142,8 @@ function SmartShape() {
         minWidth: -1,
         minHeight : -1,
         maxWidth: -1,
-        maxHeight: -1
+        maxHeight: -1,
+        hasContextMenu:true
     };
 
     /**
@@ -232,6 +235,7 @@ function SmartShape() {
         }
         this.root = root;
         this.root.style.position = "relative";
+        Object.assign(this, new SmartShapeContextMenu(this));
         this.setOptions(options);
         this.groupHelper = new SmartShapeGroupHelper(this).init();
         if (points && points.length) {
@@ -271,6 +275,10 @@ function SmartShape() {
             }
             point.redraw();
         })
+        if (typeof(this.updateContextMenu) === "function") {
+            this.updateContextMenu();
+        }
+
     }
 
     /**
@@ -299,6 +307,9 @@ function SmartShape() {
     this.addPoint = (x,y,pointOptions=null) => {
         const point = this.putPoint(x, y,Object.assign({},pointOptions));
         this.redraw();
+        if (this.options.hasContextMenu && !this.contextMenu) {
+            this.updateContextMenu();
+        }
         return point;
     }
 
@@ -318,6 +329,9 @@ function SmartShape() {
             this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,Object.assign({},pointOptions))
         );
         this.redraw();
+        if (this.options.hasContextMenu && !this.contextMenu) {
+            this.updateContextMenu();
+        }
     }
 
     /**
@@ -794,6 +808,9 @@ function SmartShape() {
             } catch (err) {}
         }
         this.getChildren(true).forEach(child=>child.destroy());
+        if (this.contextMenu) {
+            this.contextMenu.destroy();
+        }
     }
 
     /**
@@ -811,7 +828,8 @@ function SmartShape() {
             shapeOptions:{
                 canDragShape: false,
                 visible: this.options.visible,
-                managed: false
+                managed: false,
+                hasContextMenu:false
             }
         })
         this.calcPosition();
@@ -835,7 +853,8 @@ function SmartShape() {
             shapeOptions:{
                 canDragShape: false,
                 visible: this.options.visible,
-                managed: false
+                managed: false,
+                hasContextMenu: false
             }
         })
         this.calcPosition();
@@ -1002,6 +1021,7 @@ function SmartShape() {
             return null;
         }
         this.root = root;
+
         this.setOptions(jsonObj.options);
         if (!this.svg) {
             this.init(root,this.options,null);

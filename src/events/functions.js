@@ -27,6 +27,10 @@ export const createEvent = (origEvent,params={}) => {
  */
 export const getMouseCursorPos = (event) => {
     const elem = event.target.root || event.target;
+    return getMousePos(elem, event.pageX, event.pageY);
+}
+
+export const getMousePos = (elem, x, y) => {
     const offset = getOffset(elem,true);
-    return [event.pageX-offset.left,event.pageY-offset.top];
+    return [x-offset.left,y-offset.top];
 }
