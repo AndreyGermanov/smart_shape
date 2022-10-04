@@ -136,6 +136,11 @@ function SmartShapeEventListener(shape) {
         this.resizeMouseOutEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
             this.svg_mouseout(event);
         });
+        this.resizeBoxContextMenuEventListener = this.shape.resizeBox.shape.svg.addEventListener("contextmenu", (event) => {
+            if (this.shape.contextMenu) {
+                this.shape.contextMenu.onEvent(event);
+            }
+        })
     }
 
     /**
@@ -202,7 +207,11 @@ function SmartShapeEventListener(shape) {
                     point.element.style.display = '';
                 }
             })
-
+        })
+        this.rotateBoxContextMenuEventListener = this.shape.rotateBox.shape.svg.addEventListener("contextmenu", (event) => {
+            if (this.shape.contextMenu) {
+                this.shape.contextMenu.onEvent(event);
+            }
         })
     }
 
@@ -345,19 +354,8 @@ function SmartShapeEventListener(shape) {
             return
         }
         EventsManager.emit(ShapeEvents.POINT_ADDED,this.shape,{point:event.target});
-        this.checkCanDeletePoints();
     }
 
-    /**
-     * @ignore
-     * Method that disables context menu on container if allowed to delete points,
-     * it's required to press second mouse button to delete the point
-     */
-    this.checkCanDeletePoints = () => {
-        if (!!this.shape.points.find(point => point.options.canDelete === true)) {
-            this.nocontextmenu = this.shape.root.addEventListener("contextmenu", event => event.preventDefault())
-        }
-    }
 
     /**
      * @ignore
@@ -438,6 +436,7 @@ function SmartShapeEventListener(shape) {
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.resizeDblClickEventListener);
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.resizeMouseOverEventListener);
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.resizeMouseOutEventListener);
+            this.shape.resizeBox.removeEventListener("contextmenu",this.resizeBoxContextMenuEventListener);
         }
         if (this.shape.rotateBox) {
             this.shape.rotateBox.removeEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBoxListener);
@@ -450,6 +449,7 @@ function SmartShapeEventListener(shape) {
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK,this.rotateDblClickEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.rotateMouseOverEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.rotateMouseOutEventListener);
+            this.shape.rotateBox.removeEventListener("contextmenu",this.rotateBoxContextMenuEventListener);
         }
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];

@@ -128,7 +128,7 @@ describe('SmartShape Manager tests', () => {
       shape4.switchDisplayMode(SmartShapeDisplayMode.SCALE);
       shape4.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
       assert.equal(SmartShapeManager.shapes.length,12,"Should add shapes and their boxes")
-      assert.equal(SmartShapeManager.containerEventListeners.length,8, "Should add global event listeners to containers");
+      assert.equal(SmartShapeManager.containerEventListeners.length,6, "Should add global event listeners to containers");
       shape1.destroy();
       shape2.destroy();
       shape3.destroy();
