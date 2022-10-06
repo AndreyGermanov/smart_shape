@@ -1,5 +1,5 @@
 import {SmartShapeDisplayMode} from "./SmartShape.js";
-import {dataURLtoBlob, notNull} from "../utils";
+import {blobToDataURL, dataURLtoBlob, notNull} from "../utils";
 import {applyAspectRatio} from "../utils/geometry.js";
 
 /**
@@ -15,7 +15,7 @@ function SmartShapeDrawHelper() {
      * Method that implements drawing for provided shape.
      * @param shape {SmartShape} Shape object to draw
      */
-    this.draw = (shape) => {
+    this.draw = async (shape) => {
         if (shape.points.length < 1) {
             return
         }
@@ -30,12 +30,12 @@ function SmartShapeDrawHelper() {
             shape.eventListener.setSvgEventListeners();
             shape.root.appendChild(shape.svg);
         }
-        this.updateOptions(shape);
+        await this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
     }
 
-    this.updateOptions = (shape) => {
+    this.updateOptions = async (shape) => {
         if (!shape.svg || typeof(shape.svg) === "undefined") {
             return
         }
@@ -50,7 +50,7 @@ function SmartShapeDrawHelper() {
         shape.svg.style.top = shape.top;
         shape.svg.setAttribute("width",shape.width);
         shape.svg.setAttribute("height",shape.height);
-        this.setupShapeFill(shape);
+        await this.setupShapeFill(shape);
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
         shape.points.forEach(point => {
@@ -136,10 +136,10 @@ function SmartShapeDrawHelper() {
      * Used to setup fill of shape depending on provided options: color fill, gradient fill or image fill
      * @param shape {SmartShape} Shape for which gradient should be created
      */
-    this.setupShapeFill = (shape) => {
+    this.setupShapeFill = async (shape) => {
         if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
-            const pattern = this.createImageFill(shape);
+            const pattern = await this.createImageFill(shape);
             if (pattern) {
                 defs.appendChild(pattern)
             }
@@ -209,7 +209,7 @@ function SmartShapeDrawHelper() {
      * @param shape {object} Shape for which image fill should be created
      * @returns {HTMLOrSVGElement} Constructed `pattern` SVG tag or null, in case of errors
      */
-    this.createImageFill = (shape) => {
+    this.createImageFill = async(shape) => {
         const imageFillOptions = shape.options.fillImage;
         if (!imageFillOptions.href || !imageFillOptions.width || !imageFillOptions.height) {
             console.error("Image HREF, width and height must be specified for Image Fill");
@@ -225,7 +225,10 @@ function SmartShapeDrawHelper() {
             pattern.setAttribute(index,imageFillOptions[index])
         }
         const image = document.createElementNS(shape.svg.namespaceURI, "image");
-        image.setAttribute("href",imageFillOptions.href);
+        if (imageFillOptions.href) {
+            const blob = await (await fetch(imageFillOptions.href)).blob()
+            image.setAttribute("href", await blobToDataURL(blob));
+        }
         image.setAttribute("width",imageFillOptions.width);
         image.setAttribute("height",imageFillOptions.height);
         pattern.appendChild(image);
@@ -365,13 +368,13 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      * @returns {string} String body of SVG document
      */
-    this.toSvg = (shape) => {
+    this.toSvg = async(shape) => {
         const div = document.createElement("div");
         const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         const pos = shape.getPosition(true);
         svg.appendChild(this.getSvgDefs(shape));
         if (!shape.svg) {
-            this.draw(shape);
+            await this.draw(shape);
         }
         this.addSvgPolygons(shape,svg);
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
@@ -452,16 +455,16 @@ function SmartShapeDrawHelper() {
      * `type` argument
      */
     this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null) => {
-        return new Promise(resolve => {
+        return new Promise(async(resolve) => {
             const pos = shape.getPosition(true);
             [width, height] = applyAspectRatio(width,height,pos.width,pos.height);
             shape.scaleTo(width,height);
-            const svgString = this.toSvg(shape);
+            const svgString = await this.toSvg(shape);
             shape.scaleTo(pos.width,pos.height);
             const img = new Image();
             const svg = new Blob([svgString],{type:"image/svg+xml"});
             const DOMURL = window.URL || window.webkitURL || window;
-            const url = DOMURL.createObjectURL(svg);
+            const url = await blobToDataURL(svg);
             img.addEventListener("load", () => {
                 const canvas = document.createElement("canvas");
                 img.width = width;

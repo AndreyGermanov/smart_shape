@@ -136,9 +136,6 @@ describe('RotateBox Tests', () => {
       const box = new RotateBox();
       box.init(app,0,0,100,100,{shapeOptions:{visible:false}},);
       assert.equal(box.shape.svg.style.display,'none',"Should create invisible shape");
-      for (let point of box.shape.points) {
-        assert.equal(point.element.style.display,'none',"Point must be invisible");
-      }
       box.show();
       assert.notEqual(box.shape.svg.style.display,'none',"Should show visible shape");
       for (let point of box.shape.points) {

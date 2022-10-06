@@ -106,7 +106,7 @@ function RotateBoxEventListener(rotateBox) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, createEvent(event,{clientX:event.clientX,clientY:event.clientY}));
             return
         }
-        const [clientX,clientY] = getMouseCursorPos(event);
+        const [clientX,clientY] = getMouseCursorPos(event,this.rotateBox.shape.root);
         const [centerX,centerY] = this.rotateBox.shape.getCenter();
         let angle = this.calcAngle(clientX,clientY,centerX,centerY);
         if (angle === null) {

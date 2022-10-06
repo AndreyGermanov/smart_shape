@@ -59,6 +59,14 @@ export const dataURLtoBlob = (dataURI) => {
     return new Blob([ab], {type: mimeString});
 }
 
+export const blobToDataURL = (blob) =>{
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = function(e) {resolve(e.target.result);}
+        reader.readAsDataURL(blob);
+    })
+}
+
 export const readJSON = (jsonString) => {
     try {
         return JSON.parse(jsonString);
