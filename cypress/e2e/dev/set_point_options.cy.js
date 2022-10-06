@@ -74,14 +74,16 @@ describe('Point options', () => {
             const shape = new SmartShape().init(app, {
                 pointOptions: pointOptions
             }, [[0, 100], [100, 0], [200, 100]])
+            shape.switchDisplayMode("selected")
             const point1 = shape.findPoint(100, 0)
             point1.element.id = "point1";
             point1.setOptions({
                 canDrag: false,
                 canDelete: false,
             })
-            cy.get("#point1").trigger("mousedown",{buttons:1}).then(() => {
-                cy.get("#app").trigger("mousemove",{buttons:1,clientX:120,clientY:20}).then(() => {
+            cy.get("#point1").trigger("mousedown",{buttons:1,force:true}).then(() => {
+                point1.element.style.display = '';
+                cy.get("#app").trigger("mousemove",{buttons:1,clientX:120,clientY:20,force:true}).then(() => {
                     assert.equal(point1.x, 100);
                     assert.equal(point1.y, 0)
                     cy.get("#point1").trigger("mouseup",{button:2}).then( () => {

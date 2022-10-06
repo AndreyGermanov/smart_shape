@@ -7,7 +7,7 @@ describe('Shadow SVG filter tests', () => {
     return [app,shape];
   }
   it('Should create all tags in SVG tag of shape to implement drop shadow', () => {
-    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(async() => {
       const [app,shape] = setup();
       shape.setOptions({filters:{
           feDropShadow: {
@@ -18,7 +18,7 @@ describe('Shadow SVG filter tests', () => {
             "flood-opacity":0.9
           }
         }});
-      shape.redraw();
+      await shape.redraw();
       const defs = shape.svg.querySelector("defs");
       assert.isNotNull(defs,"Should contain 'defs' tag inside svg container");
       const filters = defs.querySelectorAll("filter");

@@ -23,10 +23,13 @@ export const createEvent = (origEvent,params={}) => {
  * @ignore
  * Method returns coordinates of mouse cursor from Mouse event
  * @param event {MouseEvent}
+ * @param elem {HTMLElement}
  * @returns {array} Coordinates as an array [x,y]
  */
-export const getMouseCursorPos = (event) => {
-    const elem = event.target.root || event.target;
+export const getMouseCursorPos = (event,elem=null) => {
+    if (!elem) {
+        elem = event.target.root || event.target;
+    }
     return getMousePos(elem, event.pageX, event.pageY);
 }
 

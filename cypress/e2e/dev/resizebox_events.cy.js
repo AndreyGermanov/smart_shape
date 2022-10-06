@@ -229,14 +229,13 @@ describe('ResizeBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new ResizeBox().init(app,0,0,100,100,{id:"shape1"});
-      shape.shape.points[0].element.id = "point1";
       let triggered = false;
       shape.addEventListener("point_drag_start",(event) => {
         triggered = true;
         assert.equal(event.target,shape,"Should have correct event target");
         assert.equal(event.point,shape.shape.points[0],"Should have correct event target");
       })
-      cy.get("#point1").trigger("mousedown", {buttons: 1}).then(() => {
+      cy.get("#"+shape.shape.points[0].element.id).trigger("mousedown", {buttons: 1}).then(() => {
         cy.wait(200).then(() => {
           assert.isTrue(triggered, "Should trigger point_drag_start event");
           shape.destroy();
@@ -245,19 +244,19 @@ describe('ResizeBox events', () => {
     })
   })
 
+
   it('ResizeBox point_drag_move', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new ResizeBox().init(app,0,0,100,100,{id:"shape1"});
-      shape.shape.points[0].element.id = "point1";
       let triggered = false;
       shape.addEventListener("point_drag_move",(event) => {
         triggered = true;
         assert.equal(event.target,shape,"Should have correct event target");
         assert.equal(event.point,shape.shape.points[0],"Should have correct event target");
       })
-      cy.get("#point1").trigger("mousedown", {buttons: 1}).then(() => {
-        cy.get("#point1").trigger("mousemove", {buttons: 1}).then(() => {
+      cy.get("#"+shape.shape.points[0].element.id).trigger("mousedown", {buttons: 1}).then(() => {
+        cy.get("#"+shape.shape.points[0].element.id).trigger("mousemove", {buttons: 1}).then(() => {
           cy.wait(200).then(() => {
             assert.isTrue(triggered, "Should trigger point_drag_move event");
             shape.destroy();
