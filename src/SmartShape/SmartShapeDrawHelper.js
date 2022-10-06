@@ -15,7 +15,7 @@ function SmartShapeDrawHelper() {
      * Method that implements drawing for provided shape.
      * @param shape {SmartShape} Shape object to draw
      */
-    this.draw = async (shape) => {
+    this.draw = (shape) => {
         if (shape.points.length < 1) {
             return
         }
@@ -30,12 +30,12 @@ function SmartShapeDrawHelper() {
             shape.eventListener.setSvgEventListeners();
             shape.root.appendChild(shape.svg);
         }
-        await this.updateOptions(shape);
+        this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
     }
 
-    this.updateOptions = async (shape) => {
+    this.updateOptions = (shape) => {
         if (!shape.svg || typeof(shape.svg) === "undefined") {
             return
         }
@@ -50,7 +50,7 @@ function SmartShapeDrawHelper() {
         shape.svg.style.top = shape.top;
         shape.svg.setAttribute("width",shape.width);
         shape.svg.setAttribute("height",shape.height);
-        await this.setupShapeFill(shape);
+        this.setupShapeFill(shape);
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
         shape.points.forEach(point => {
@@ -136,10 +136,10 @@ function SmartShapeDrawHelper() {
      * Used to setup fill of shape depending on provided options: color fill, gradient fill or image fill
      * @param shape {SmartShape} Shape for which gradient should be created
      */
-    this.setupShapeFill = async (shape) => {
+    this.setupShapeFill = (shape) => {
         if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
-            const pattern = await this.createImageFill(shape);
+            const pattern = this.createImageFill(shape);
             if (pattern) {
                 defs.appendChild(pattern)
             }
@@ -209,7 +209,7 @@ function SmartShapeDrawHelper() {
      * @param shape {object} Shape for which image fill should be created
      * @returns {HTMLOrSVGElement} Constructed `pattern` SVG tag or null, in case of errors
      */
-    this.createImageFill = async(shape) => {
+    this.createImageFill = (shape) => {
         const imageFillOptions = shape.options.fillImage;
         if (!imageFillOptions.href || !imageFillOptions.width || !imageFillOptions.height) {
             console.error("Image HREF, width and height must be specified for Image Fill");
@@ -226,8 +226,7 @@ function SmartShapeDrawHelper() {
         }
         const image = document.createElementNS(shape.svg.namespaceURI, "image");
         if (imageFillOptions.href) {
-            const blob = await (await fetch(imageFillOptions.href)).blob()
-            image.setAttribute("href", await blobToDataURL(blob));
+            image.setAttribute("href", imageFillOptions.href);
         }
         image.setAttribute("width",imageFillOptions.width);
         image.setAttribute("height",imageFillOptions.height);
@@ -368,20 +367,25 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      * @returns {string} String body of SVG document
      */
-    this.toSvg = async(shape) => {
+    this.toSvg = (shape) => {
         const div = document.createElement("div");
+        const svg = this.getSvg(shape);
+        div.appendChild(svg);
+        return '<?xml version="1.0" encoding="UTF-8"?>'+div.innerHTML.replace(/&quot;/g,"'");
+    }
+
+    this.getSvg = (shape) => {
         const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
         const pos = shape.getPosition(true);
         svg.appendChild(this.getSvgDefs(shape));
         if (!shape.svg) {
-            await this.draw(shape);
+            this.draw(shape);
         }
         this.addSvgPolygons(shape,svg);
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
         const viewBox = "0 0 " + pos.width + " " + pos.height;
         svg.setAttribute("viewBox",viewBox);
-        div.appendChild(svg);
-        return '<?xml version="1.0" encoding="UTF-8"?>'+div.innerHTML.replace(/&quot;/g,"'");
+        return svg;
     }
 
     /**
@@ -459,7 +463,16 @@ function SmartShapeDrawHelper() {
             const pos = shape.getPosition(true);
             [width, height] = applyAspectRatio(width,height,pos.width,pos.height);
             shape.scaleTo(width,height);
-            const svgString = await this.toSvg(shape);
+            const svgObj = this.getSvg(shape);
+            for (let item of svgObj.querySelectorAll("image")) {
+                if (item.getAttribute("href") && item.getAttribute("href").length) {
+                    const href = await blobToDataURL(await (await fetch(item.getAttribute("href"))).blob());
+                    item.setAttribute("href",href);
+                }
+            }
+            const div = document.createElement("div");
+            div.appendChild(svgObj);
+            const svgString = div.innerHTML;
             shape.scaleTo(pos.width,pos.height);
             const img = new Image();
             const svg = new Blob([svgString],{type:"image/svg+xml"});

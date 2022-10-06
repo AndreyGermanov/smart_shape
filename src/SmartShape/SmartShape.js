@@ -434,12 +434,12 @@ function SmartShape() {
      * @param y {number} new Y coordinate
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      */
-    this.moveTo = async(x,y,redraw= true) => {
+    this.moveTo = (x,y,redraw= true) => {
         const bounds = this.getBounds();
         const pos = this.getPosition(true);
         let newX = x+pos.width > bounds.right ? bounds.right - pos.width : x;
         let newY = y+pos.height > bounds.bottom ? bounds.bottom - pos.height: y;
-        await this.moveBy(newX-pos.left,newY-pos.top, redraw);
+        this.moveBy(newX-pos.left,newY-pos.top, redraw);
         this.calcPosition();
     }
 
@@ -449,7 +449,7 @@ function SmartShape() {
      * @param stepY {number} number of pixes to move vertically
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      */
-    this.moveBy = async(stepX, stepY,redraw= true) => {
+    this.moveBy = (stepX, stepY,redraw= true) => {
         for (let index in this.points) {
             this.points[index].x += stepX;
             this.points[index].y += stepY;
@@ -460,7 +460,7 @@ function SmartShape() {
         this.calcPosition();
         const children = this.getChildren()
         if (redraw) {
-            await this.redraw();
+            this.redraw();
         }
         if (children.length) {
             children.forEach(child => {
@@ -595,9 +595,9 @@ function SmartShape() {
     /**
      * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
-    this.redraw = async() => {
+    this.redraw = () => {
         this.applyDisplayMode();
-        await SmartShapeDrawHelper.draw(this);
+        SmartShapeDrawHelper.draw(this);
     }
 
     /**
@@ -633,7 +633,7 @@ function SmartShape() {
      * [SmartShapeDisplayMode](#SmartShapeDisplayMode). If not specified, then automatically
      * switches to next mode in the following loop sequence: DEFAULT -> SCALE -> ROTATE -> DEFAULT
      */
-    this.switchDisplayMode = async(mode=null) => {
+    this.switchDisplayMode = (mode=null) => {
         if (!mode) {
             mode = this.getNextDisplayMode();
         }
@@ -643,7 +643,7 @@ function SmartShape() {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         this.options.displayMode = mode;
-        await this.redraw();
+        this.redraw();
     }
 
     /**
@@ -739,7 +739,7 @@ function SmartShape() {
         }
         let points = this.getPointsArray();
         if (applyOffset) {
-            points = points.map(point => [point[0] + getOffset(this.root).left, point[1] + getOffset(this.root).top])
+            points = points.map(point => ([point[0]+getOffset(this.root).left,point[1]+getOffset(this.root).top]));
         }
         return isPointInsidePolygon(points,[x,y]);
     }
@@ -770,17 +770,17 @@ function SmartShape() {
     /**
      * Method used to show shape if it has hidden
      */
-    this.show = async() => {
+    this.show = () => {
         this.setOptions({visible:true});
-        await this.redraw();
+        this.redraw();
     }
 
     /**
      * Method used to hide the shape
      */
-    this.hide = async() => {
+    this.hide = () => {
         this.setOptions({visible:false});
-        await this.redraw();
+        this.redraw();
     }
 
     /**
@@ -934,7 +934,7 @@ function SmartShape() {
      * Method exports shape and all its children to SVG document.
      * @returns {string} Body of SVG document as a string
      */
-    this.toSvg = async() => {
+    this.toSvg = () => {
         return SmartShapeDrawHelper.toSvg(this);
     }
 
