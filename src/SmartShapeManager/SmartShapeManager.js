@@ -360,6 +360,22 @@ function SmartShapeManager() {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.doubleclick(createEvent(event,{target:this.shapeOnCursor}))
         }
+        try {
+            event.stopPropagation();
+        } catch (err) {}
+        if (!this.activeShape) {
+            return
+        }
+        if (!this.activeShape.options.canAddPoints || this.activeShape.draggedPoint || this.activeShape.points.length>2) {
+            return
+        }
+        if (this.activeShape.options.maxPoints === -1 || this.activeShape.points.length < this.activeShape.options.maxPoints) {
+            if (this.activeShape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+                this.activeShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+            }
+            const [x,y] = getMouseCursorPos(createEvent(event,{target:this.activeShape}));
+            this.activeShape.addPoint(x,y,{forceDisplay:false});
+        }
     }
 
     /**
