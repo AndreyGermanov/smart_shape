@@ -541,7 +541,8 @@ export const PointEvents = {
     POINT_MOUSE_OVER: "mouseover",
     POINT_MOUSE_OUT: "mouseout",
     POINT_MOUSE_CLICK: "click",
-    POINT_MOUSE_DOUBLE_CLICK: "dblclick"
+    POINT_MOUSE_DOUBLE_CLICK: "dblclick",
+    POINT_DELETE_REQUEST: "point_delete_request"
 };
 
 /**

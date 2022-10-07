@@ -1,5 +1,7 @@
 import {Menus} from "../../context_menu/src/index.js";
 import {del} from "../../assets/graphics.js";
+import EventsManager from "../events/EventsManager.js";
+import {PointEvents} from "./SmartPoint.js";
 
 /**
  * Helper class that used to manage SmartPoint context menu
@@ -60,7 +62,7 @@ export default function SmartPointContextMenu(point) {
     this._setEventListeners = () => {
         this.contextMenu.on("click",(event) => {
             if (event.itemId === "i"+point.guid+"_delete") {
-                this.point.destroy();
+                EventsManager.emit(PointEvents.POINT_DELETE_REQUEST,this.point);
             }
         })
     }
