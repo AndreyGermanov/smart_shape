@@ -35,6 +35,13 @@ function SmartShapeDrawHelper() {
         shape.svg.appendChild(polygon);
     }
 
+    /**
+     * @ignore
+     * Method updates options of shape and it points
+     * (including child or other associated shapes)
+     * on drawing phase
+     * @param shape {SmartShape} Shape object
+     */
     this.updateOptions = (shape) => {
         if (!shape.svg || typeof(shape.svg) === "undefined") {
             return
@@ -53,6 +60,19 @@ function SmartShapeDrawHelper() {
         this.setupShapeFill(shape);
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
+        const parent = shape.getRootParent();
+        this.updatePoints(shape,parent);
+        this.redrawResizeBox(parent || shape);
+        this.redrawRotateBox(parent || shape);
+    }
+
+    /**
+     * @ignore
+     * Method updates points after redraw shape
+     * @param shape {SmartShape} Shape that need to update
+     * @param parent {SmartShape} Root parent of this shape or null
+     */
+    this.updatePoints = (shape,parent) => {
         shape.points.forEach(point => {
             if (point.options.zIndex < shape.options.zIndex+2) {
                 point.options.zIndex = shape.options.zIndex + 2;
@@ -62,12 +82,14 @@ function SmartShapeDrawHelper() {
             }
             point.redraw();
             if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
-                point.element.style.display = 'none';
+                if (!parent || (parent && parent.options.displayMode === SmartShapeDisplayMode.DEFAULT)) {
+                    point.element.style.display = 'none';
+                }
+                if (!shape.options.visible) {
+                    point.options.visible = false;
+                }
             }
         });
-        let parent = shape.getRootParent();
-        this.redrawResizeBox(parent || shape);
-        this.redrawRotateBox(parent || shape);
     }
 
     /**
@@ -342,24 +364,36 @@ function SmartShapeDrawHelper() {
         if (shape.options.classes) {
             polygon.setAttribute("class",shape.options.classes);
         }
-        if (notNull(shape.options.style) && typeof(shape.options.style) === "object") {
-            for (let cssName in shape.options.style) {
-                if (cssName === "fill") {
-                    if ((shape.options.fillImage && typeof(shape.options.fillImage) === "object") ||
-                        (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object") ||
-                        (shape.options.fill !== "none" && shape.options.fill)) {
-                        continue;
-                    }
+        if (!notNull(shape.options.style) || typeof(shape.options.style) !== "object") {
+            return;
+        }
+        for (let cssName in shape.options.style) {
+            if (cssName === "fill") {
+                if (this.checkFillAttributes(shape)) {
+                    continue;
                 }
-                if (cssName === "stroke") {
-                    if (shape.options.stroke) {
-                        continue
-                    }
-                }
-                polygon.style[cssName] = shape.options.style[cssName]
             }
+            if (cssName === "stroke" && shape.options.stroke) {
+                continue
+            }
+            polygon.style[cssName] = shape.options.style[cssName]
         }
     }
+
+    /**
+     * @ignore
+     * Method return true if any fill attributes for shape
+     * specified
+     * @param shape {SmartShape} Shape object
+     * @returns {boolean} True if specified and false otherwise
+     */
+    this.checkFillAttributes = (shape) => (
+        (shape.options.fillImage && typeof(shape.options.fillImage) === "object") ||
+        (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object") ||
+        (shape.options.fill !== "none" && shape.options.fill)
+    )
+
+
 
     /**
      * @ignore
