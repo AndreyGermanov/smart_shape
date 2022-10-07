@@ -54,6 +54,7 @@ function SmartShapeEventListener(shape) {
         EventsManager.subscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
         EventsManager.subscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
+        EventsManager.subscribe(PointEvents.POINT_DELETE_REQUEST, this.onPointDeleteRequest);
     }
 
     this.setSvgEventListeners = () => {
@@ -386,6 +387,18 @@ function SmartShapeEventListener(shape) {
 
     /**
      * @ignore
+     * Internal method that triggered when request to delete point of shape arroved
+     * @param event Custom event object. Contains SmartPoint object as an event.target
+     */
+    this.onPointDeleteRequest = (event) => {
+        if (!this.shape.isShapePoint(event.target)) {
+            return
+        }
+        this.shape.deletePoint(event.target.x,event.target.y);
+    }
+
+    /**
+     * @ignore
      * Uniform method that used to add event handler of specified type to this object.
      * @param eventName {string} Name of event
      * @param handler {function} Function that used as an event handler
@@ -427,6 +440,7 @@ function SmartShapeEventListener(shape) {
         EventsManager.unsubscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.unsubscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.unsubscribe(PointEvents.POINT_DESTROYED, this.onPointDestroyed);
+        EventsManager.unsubscribe(PointEvents.POINT_DELETE_REQUEST, this.onPointDeleteRequest);
         if (this.shape.resizeBox) {
             this.shape.resizeBox.removeEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBoxListener);
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_CLICK,this.resizeClickEventListener);

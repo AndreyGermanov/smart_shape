@@ -106,6 +106,7 @@ function SmartShape() {
      * @param maxWidth {number} Maximum width of shape. By default `-1` - unlimited
      * @param maxHeight {number} Maximum width of shape. By default `-1` - unlimited
      * @param hasContextMenu {boolean} Should the shape have context menu. False by default
+     * @param minPoints {number} Minimum number of points in the shape. Default: 3.
      * @type {object}
      */
     this.options = {
@@ -143,7 +144,8 @@ function SmartShape() {
         minHeight : -1,
         maxWidth: -1,
         maxHeight: -1,
-        hasContextMenu:true
+        hasContextMenu:true,
+        minPoints: 3
     };
 
     /**
@@ -380,6 +382,9 @@ function SmartShape() {
      * @param y {number} Y coordinate of point
      */
     this.deletePoint = (x,y) => {
+        if (this.points.length-1 < this.options.minPoints) {
+            return
+        }
         const point = this.findPoint(x,y);
         if (point) {
             point.destroy();
