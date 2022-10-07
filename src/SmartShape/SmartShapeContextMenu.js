@@ -100,6 +100,9 @@ export default function SmartShapeContextMenu(shape) {
      * @param event {MouseEvent} Event object
      */
     this.onAddPointClick = (event) => {
+        if (this.shape.options.maxPoints !== -1 && this.shape.points.length >= this.shape.options.maxPoints) {
+            return
+        }
         const [x,y] = getMousePos(this.shape.root,event.cursorX,event.cursorY);
         this.shape.addPoint(x,y);
         if (this.shape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
