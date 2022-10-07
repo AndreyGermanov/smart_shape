@@ -625,6 +625,13 @@ function SmartShape() {
                 point.element.style.display = 'none';
             }
         })
+        if (this.options.displayMode !== "DEFAULT") {
+            this.getChildren(true).forEach(child => {
+                child.points.forEach(point => {
+                    point.element.style.display = '';
+                })
+            })
+        }
     }
 
     /**
