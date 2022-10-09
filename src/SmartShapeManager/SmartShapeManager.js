@@ -151,8 +151,8 @@ function SmartShapeManager() {
         if (!this.getShapeByGuid(event.target.guid) || !event.target.options.managed) {
             return
         }
-        const parent = event.target.getRootParent();
-        if (parent) {
+        const parent = event.target.getRootParent(true);
+        if (parent && parent.options.groupChildShapes) {
             this.activateShape(parent);
             this.draggedShape = parent;
         } else {
@@ -186,8 +186,8 @@ function SmartShapeManager() {
         const shape = this.findShapeByPoint(event.target);
         if (shape) {
             this.draggedShape = shape;
-            const parent = shape.getRootParent();
-            if (parent) {
+            const parent = shape.getRootParent(true);
+            if (parent && parent.options.groupChildShapes) {
                 this.draggedShape = parent;
             }
             this.draggedShape.draggedPoint = event.target;
@@ -292,11 +292,13 @@ function SmartShapeManager() {
         shape.options.prevZIndex = shape.options.zIndex;
         shape.options.zIndex += diff;
         SmartShapeDrawHelper.updateOptions(shape);
-        shape.getChildren(true).forEach(child => {
-            child.options.prevZIndex = child.options.zIndex;
-            child.options.zIndex += diff;
-            SmartShapeDrawHelper.updateOptions(child);
-        });
+        if (shape.options.groupChildShapes) {
+            shape.getChildren(true).forEach(child => {
+                child.options.prevZIndex = child.options.zIndex;
+                child.options.zIndex += diff;
+                SmartShapeDrawHelper.updateOptions(child);
+            });
+        }
         this.activeShape = shape;
         this.activeShape.switchDisplayMode(displayMode);
     }
@@ -386,8 +388,8 @@ function SmartShapeManager() {
      */
     this.mousedown = (event) => {
         if (this.shapeOnCursor && event.buttons !== 2) {
-            const parent = this.shapeOnCursor.getRootParent();
-            if (parent) {
+            const parent = this.shapeOnCursor.getRootParent(true);
+            if (parent && parent.options.groupChildShapes) {
                 this.shapeOnCursor = parent;
             }
             this.draggedShape = this.shapeOnCursor;
