@@ -60,7 +60,7 @@ function SmartShapeDrawHelper() {
         this.setupShapeFill(shape);
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
-        const parent = shape.getRootParent();
+        const parent = shape.getRootParent(true);
         this.updatePoints(shape,parent);
         this.redrawResizeBox(parent || shape);
         this.redrawRotateBox(parent || shape);

@@ -99,43 +99,16 @@ function SmartShapeEventListener(shape) {
         if (!this.shape.resizeBox) {
             return;
         }
-        this.resizeBoxListener = this.shape.resizeBox.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, (event) => {
-            const parent = this.shape.getRootParent();
-            if (parent) {
-                EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,parent.resizeBox,{newPos:event.newPos,oldPos:event.oldPos});
-                return
-            }
-            const diffX = event.newPos.left - event.oldPos.left;
-            const diffY = event.newPos.top - event.oldPos.top;
-            this.shape.moveBy(diffX,diffY);
-            const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
-            this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
-            this.shape.redraw();
-            EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
-        });
-        this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
-            this.mousedown(event);
-        });
-        this.resizeMouseMoveEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, (event) => {
-            this.mousemove(event);
-        });
-        this.resizeClickEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
-            this.click(event);
-        });
-        this.resizeDblClickEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
-            this.svg_dblclick(event);
-        });
-        this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
-            this.svg_mousedown(event)
-        });
+        this.resizeBoxListener = this.shape.resizeBox.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, this.onResize);
+        this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, this.mousedown);
+        this.resizeMouseMoveEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, this.mousemove);
+        this.resizeClickEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, this.click);
+        this.resizeDblClickEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, this.svg_dblclick);
+        this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, this.svg_mousedown);
+        this.resizeMouseOverEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, this.svg_mouseover);
+        this.resizeMouseOutEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, this.svg_mouseout);
         this.resizeMouseUpEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.shape,createEvent(event))
-        });
-        this.resizeMouseOverEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
-            this.svg_mouseover(event);
-        });
-        this.resizeMouseOutEventListener = this.shape.resizeBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
-            this.svg_mouseout(event);
         });
         this.resizeBoxContextMenuEventListener = this.shape.resizeBox.shape.svg.addEventListener("contextmenu", (event) => {
             if (this.shape.contextMenu) {
@@ -158,48 +131,19 @@ function SmartShapeEventListener(shape) {
         if (!this.shape.rotateBox) {
             return;
         }
-        this.rotateBoxListener = this.shape.rotateBox.addEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE, (event) => {
-            const parent = this.shape.getRootParent();
-            if (parent) {
-                EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,parent.rotateBox,{angle:event.angle});
-                return
-            }
-            if (parent) {
-                parent.rotateBy(event.angle);
-                parent.redraw();
-                EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,parent,event);
-            } else {
-                this.shape.rotateBy(event.angle);
-                this.shape.redraw()
-                EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.shape,event);
-            }
-        });
-        this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, (event) => {
-            this.mousedown(event);
-        });
-        this.rotateMouseMoveEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, (event) => {
-            this.mousemove(event);
-        });
-        this.rotateClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, (event) => {
-            this.click(event);
-        })
-        this.rotateDblClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, (event) => {
-            this.svg_dblclick(event);
-        });
-        this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, (event) => {
-            this.svg_mousedown(event)
-        });
+        this.rotateBoxListener = this.shape.rotateBox.addEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE, this.onRotate);
+        this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOVE_START, this.mousedown);
+        this.rotateMouseMoveEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_MOVE, this.mousemove);
+        this.rotateClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_CLICK, this.click)
+        this.rotateDblClickEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, this.svg_dblclick);
+        this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_DOWN, this.svg_mousedown);
         this.rotateMouseUpEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_UP, (event) => {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_UP,this.shape,createEvent(event))
         });
-        this.rotateMouseOverEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, (event) => {
-            this.svg_mouseover(event);
-        });
-        this.rotateMouseOutEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, (event) => {
-            this.svg_mouseout(event);
-        });
+        this.rotateMouseOverEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OVER, this.svg_mouseover);
+        this.rotateMouseOutEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.SHAPE_MOUSE_OUT, this.svg_mouseout);
         this.rotatePointDragStartEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_START, (_event) => {
-            this.shape.initCenter = this.shape.getCenter(true);
+            this.shape.initCenter = this.shape.getCenter(this.shape.options.groupChildShapes);
         })
         this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_END, (_event) => {
             this.shape.initCenter = null;
@@ -214,6 +158,32 @@ function SmartShapeEventListener(shape) {
                 this.shape.contextMenu.onEvent(event);
             }
         })
+    }
+
+    this.onResize = (event) => {
+        const parent = this.shape.getRootParent(true);
+        if (parent) {
+            EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,parent.resizeBox,{newPos:event.newPos,oldPos:event.oldPos});
+            return
+        }
+        const diffX = event.newPos.left - event.oldPos.left;
+        const diffY = event.newPos.top - event.oldPos.top;
+        this.shape.moveBy(diffX,diffY);
+        const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
+        this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
+        this.shape.redraw();
+        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
+    }
+
+    this.onRotate = (event) => {
+        const parent = this.shape.getRootParent(true);
+        if (parent) {
+            EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,parent.rotateBox,{angle:event.angle});
+            return
+        }
+        this.shape.rotateBy(event.angle);
+        this.shape.redraw()
+        EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.shape,event);
     }
 
     /**

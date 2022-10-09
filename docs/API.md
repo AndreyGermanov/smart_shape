@@ -846,6 +846,7 @@ Options of shape as an object. Can have the following parameters.
 | maxHeight | <code>number</code> | Maximum width of shape. By default `-1` - unlimited |
 | hasContextMenu | <code>boolean</code> | Should the shape have context menu. False by default |
 | minPoints | <code>number</code> | Minimum number of points in the shape. Default: 3. |
+| groupChildShapes | <code>boolean</code> | Should child shapes be groupped and move/resize/rotate/destroy with it. True by default |
 
 <a name="SmartShape+left"></a>
 

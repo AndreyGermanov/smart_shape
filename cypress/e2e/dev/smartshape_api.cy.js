@@ -50,20 +50,21 @@ describe('SmartShape API tests', () => {
     })
   })
 
-  it("deletePoint", () => {
+it("deletePoint", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = setup()
-      shape.deletePoint(100, 0)
-      const point1 = shape.findPoint(100, 0);
-      assert.isNull(point1);
-      assert.equal(shape.points.length, 2);
-      shape.deletePoint(200, 200);
-      assert.equal(shape.points.length, 2);
-      const point = shape.addPoint(200, 200, {id: "point1",canDelete:true,forceDisplay:true});
-      assert.isNotNull(point)
-      assert.equal(shape.points.length, 3);
+        const [app, shape] = setup()
+        shape.setOptions({minPoints:3});
+        shape.deletePoint(100, 0)
+        const point1 = shape.findPoint(100, 0);
+        assert.isNotNull(point1,"Should not allow to delete point if number goes beyond default value");
+        assert.equal(shape.points.length, 3,"Should not allow to delete point if number goes beyond default value");
+        const point = shape.addPoint(200, 200, {id: "point1",canDelete:true,forceDisplay:true});
+        assert.isNotNull(point)
+        assert.equal(shape.points.length, 4);
+        shape.deletePoint(200, 200);
+        assert.equal(shape.points.length, 3,"Should delete the point");
     })
-  })
+})
 
   it("deleteAllPoints", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {

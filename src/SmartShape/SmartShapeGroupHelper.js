@@ -138,10 +138,13 @@ function SmartShapeGroupHelper(shape) {
      * Method returns top parent of current shape
      * @returns {SmartShape|null} Parent shape or null
      */
-    this.getRootParent = () => {
-        const parents = this.getParentsList();
+    this.getRootParent = (groupChildShapes= null) => {
+        let parents = this.getParentsList();
         if (!parents.length) {
             return null;
+        }
+        if (groupChildShapes !== null) {
+            parents = parents.filter(parent => parent.options.groupChildShapes === groupChildShapes)
         }
         return parents[parents.length-1];
     }
