@@ -1,4 +1,4 @@
-import {Menus} from "../../context_menu/src/index.js";
+import {Menus} from "simple_js_menu";
 import {getMousePos} from "../events/functions.js";
 import {add,del,save,svg,png,copy} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";

@@ -1,4 +1,4 @@
-import {Menus} from "../../context_menu/src/index.js";
+import {Menus} from "simple_js_menu";
 import {del} from "../../assets/graphics.js";
 import EventsManager from "../events/EventsManager.js";
 import {PointEvents} from "./SmartPoint.js";
