@@ -40,8 +40,8 @@ const h = new J(), Z = (t) => t * (Math.PI / 180), X = (t) => t * (180 / Math.PI
     let x = (l[1] - p[1]) * (g[0] - l[0]) - (l[0] - p[0]) * (g[1] - l[1]);
     return x === 0 ? 0 : x > 0 ? 1 : 2;
   }, o = (p, l, g, x) => {
-    let C = i(p, l, g), E = i(p, l, x), P = i(g, x, p), M = i(g, x, l);
-    return C !== E && P !== M || C === 0 && e(p, g, l) || E === 0 && e(p, x, l) || P === 0 && e(g, p, x) ? !0 : !!(M === 0 && e(g, l, x));
+    let C = i(p, l, g), m = i(p, l, x), P = i(g, x, p), M = i(g, x, l);
+    return C !== m && P !== M || C === 0 && e(p, g, l) || m === 0 && e(p, x, l) || P === 0 && e(g, p, x) ? !0 : !!(M === 0 && e(g, l, x));
   };
   if (t.length < 3)
     return !1;
@@ -76,7 +76,7 @@ const h = new J(), Z = (t) => t * (Math.PI / 180), X = (t) => t * (180 / Math.PI
   } catch {
   }
   return !1;
-}, m = (t) => typeof t < "u" && t !== null, B = (t, s) => t && typeof t == "object" && s && typeof s == "object" ? Object.assign(t, s) : t, q = (t) => {
+}, b = (t) => typeof t < "u" && t !== null, B = (t, s) => t && typeof t == "object" && s && typeof s == "object" ? Object.assign(t, s) : t, q = (t) => {
   const s = atob(t.split(",")[1]), e = t.split(",")[0].split(":")[1].split(";")[0], i = new ArrayBuffer(s.length), o = new Uint8Array(i);
   for (let n = 0; n < s.length; n++)
     o[n] = s.charCodeAt(n);
@@ -392,7 +392,7 @@ function vt() {
   }, this.mousedown = (t) => {
     h.emit(A.POINT_MOUSE_DOWN, this, d(t)), t.buttons === 1 && this.options.canDrag && (h.emit(A.POINT_DRAG_START, this, d(t)), H(t));
   }, this.mousemove = (t) => {
-    if (h.emit(A.POINT_MOUSE_MOVE, this, d(t)), t.buttons !== 1 || !this.options.canDrag || !b.draggedShape || b.draggedShape.draggedPoint !== this)
+    if (h.emit(A.POINT_MOUSE_MOVE, this, d(t)), t.buttons !== 1 || !this.options.canDrag || !E.draggedShape || E.draggedShape.draggedPoint !== this)
       return;
     const s = this.x, e = this.y, i = w(this.element.parentNode, !0);
     if (!this.checkFitBounds(this.x + t.movementX, this.y + t.movementY)) {
@@ -640,17 +640,17 @@ function _t(t) {
     h.subscribe(A.POINT_DESTROYED, this.onPointDestroyed), h.subscribe(A.POINT_ADDED, this.onPointAdded), h.subscribe(A.POINT_DRAG_MOVE, this.onPointDragMove), h.subscribe(A.POINT_DELETE_REQUEST, this.onPointDeleteRequest);
   }, this.setSvgEventListeners = () => {
     this.svg_mouseover = this.shape.svg.addEventListener("mouseover", (s) => {
-      b.mouseover(d(s, { target: this.shape }));
+      E.mouseover(d(s, { target: this.shape }));
     }), this.svg_mouseout = this.shape.svg.addEventListener("mouseout", (s) => {
-      b.mouseout(d(s, { target: this.shape }));
+      E.mouseout(d(s, { target: this.shape }));
     }), this.svg_mouseenter = this.shape.svg.addEventListener("mouseenter", (s) => {
-      b.mouseenter(d(s, { target: this.shape }));
+      E.mouseenter(d(s, { target: this.shape }));
     }), this.svg_mousedown = this.shape.svg.addEventListener("mousedown", (s) => {
-      b.mousedown(d(s, { target: this.shape }));
+      E.mousedown(d(s, { target: this.shape }));
     }), this.svg_click = this.shape.svg.addEventListener("click", (s) => {
-      b.click(d(s, { target: this.shape }));
+      E.click(d(s, { target: this.shape }));
     }), this.svg_dblclick = this.shape.svg.addEventListener("dblclick", (s) => {
-      b.doubleclick(d(s, { target: this.shape }));
+      E.doubleclick(d(s, { target: this.shape }));
     });
   }, this.removeSvgEventListeners = () => {
     this.shape.svg.removeEventListener("mouseover", this.svg_mouseover), this.shape.svg.removeEventListener("mouseout", this.svg_mouseout), this.shape.svg.removeEventListener("mouseenter", this.svg_mouseenter), this.shape.svg.removeEventListener("mousedown", this.svg_mousedown), this.shape.svg.removeEventListener("click", this.svg_click), this.shape.svg.removeEventListener("dblclick", this.svg_dblclick);
@@ -710,7 +710,7 @@ function _t(t) {
   }, this.mouseenter = (s) => {
     h.emit(r.SHAPE_MOUSE_ENTER, this.shape, d(s));
   }, this.mouseover = (s) => {
-    b.draggedShape !== this.shape && h.emit(r.SHAPE_MOUSE_OVER, this.shape, d(s));
+    E.draggedShape !== this.shape && h.emit(r.SHAPE_MOUSE_OVER, this.shape, d(s));
   }, this.mouseout = (s) => {
     h.emit(r.SHAPE_MOUSE_OUT, this.shape, d(s));
   }, this.click = (s) => {
@@ -834,7 +834,7 @@ function Ct() {
       return s;
     for (let o of e.steps) {
       const n = document.createElementNS(t.svg.namespaceURI, "stop");
-      m(o.stopColor) && n.setAttribute("offset", o.offset), m(o.stopColor) && n.setAttribute("stop-color", o.stopColor), m(o.stopOpacity) && n.setAttribute("stop-opacity", o.stopOpacity), s.appendChild(n);
+      b(o.stopColor) && n.setAttribute("offset", o.offset), b(o.stopColor) && n.setAttribute("stop-color", o.stopColor), b(o.stopOpacity) && n.setAttribute("stop-opacity", o.stopOpacity), s.appendChild(n);
     }
     return s;
   }, this.createImageFill = (t) => {
@@ -868,11 +868,11 @@ function Ct() {
       i.setAttribute(o, e[o].toString()), o === "dx" && t.svg.setAttribute("width", (t.width + parseInt(e.dx) * 2).toString()), o === "dy" && t.svg.setAttribute("height", (t.height + parseInt(e.dy) * 2).toString());
     return i;
   }, this.setupPolygonStroke = (t, s) => {
-    m(t.options.stroke) && s.setAttribute("stroke", t.options.stroke), m(t.options.strokeWidth) && s.setAttribute("stroke-width", t.options.strokeWidth), m(t.options.strokeLinecap) && s.setAttribute("stroke-linecap", t.options.strokeLinecap), m(t.options.strokeDasharray) && s.setAttribute("stroke-dasharray", t.options.strokeDasharray);
+    b(t.options.stroke) && s.setAttribute("stroke", t.options.stroke), b(t.options.strokeWidth) && s.setAttribute("stroke-width", t.options.strokeWidth), b(t.options.strokeLinecap) && s.setAttribute("stroke-linecap", t.options.strokeLinecap), b(t.options.strokeDasharray) && s.setAttribute("stroke-dasharray", t.options.strokeDasharray);
   }, this.setupPolygonFill = (t, s) => {
-    t.options.fillImage && typeof t.options.fillImage == "object" ? s.setAttribute("fill", 'url("#' + t.guid + '_pattern")') : t.options.fillGradient && typeof t.options.fillGradient == "object" && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1 ? s.setAttribute("fill", 'url("#' + t.guid + '_gradient")') : t.options.fill && s.setAttribute("fill", t.options.fill), m(t.options.fillOpacity) && s.setAttribute("fill-opacity", t.options.fillOpacity);
+    t.options.fillImage && typeof t.options.fillImage == "object" ? s.setAttribute("fill", 'url("#' + t.guid + '_pattern")') : t.options.fillGradient && typeof t.options.fillGradient == "object" && ["linear", "radial"].indexOf(t.options.fillGradient.type) !== -1 ? s.setAttribute("fill", 'url("#' + t.guid + '_gradient")') : t.options.fill && s.setAttribute("fill", t.options.fill), b(t.options.fillOpacity) && s.setAttribute("fill-opacity", t.options.fillOpacity);
   }, this.setupPolygonStyles = (t, s) => {
-    if (t.options.classes && s.setAttribute("class", t.options.classes), !(!m(t.options.style) || typeof t.options.style != "object"))
+    if (t.options.classes && s.setAttribute("class", t.options.classes), !(!b(t.options.style) || typeof t.options.style != "object"))
       for (let e in t.options.style)
         e === "fill" && this.checkFillAttributes(t) || e === "stroke" && t.options.stroke || (s.style[e] = t.options.style[e]);
   }, this.checkFillAttributes = (t) => t.options.fillImage && typeof t.options.fillImage == "object" || t.options.fillGradient && typeof t.options.fillGradient == "object" || t.options.fill !== "none" && t.options.fill, this.toSvg = (t) => {
@@ -919,10 +919,10 @@ function Ct() {
     const n = t.getPosition(!0);
     [e, i] = G(e, i, n.width, n.height), t.scaleTo(e, i);
     const a = this.getSvg(t);
-    for (let E of a.querySelectorAll("image"))
-      if (E.getAttribute("href") && E.getAttribute("href").length) {
-        const P = await V(await (await fetch(E.getAttribute("href"))).blob());
-        E.setAttribute("href", P);
+    for (let m of a.querySelectorAll("image"))
+      if (m.getAttribute("href") && m.getAttribute("href").length) {
+        const P = await V(await (await fetch(m.getAttribute("href"))).blob());
+        m.setAttribute("href", P);
       }
     const u = document.createElement("div");
     u.appendChild(a);
@@ -930,9 +930,9 @@ function Ct() {
     t.scaleTo(n.width, n.height);
     const l = new Image(), g = new Blob([p], { type: "image/svg+xml" }), x = window.URL || window.webkitURL || window, C = await V(g);
     l.addEventListener("load", () => {
-      const E = document.createElement("canvas");
-      l.width = e, l.height = i, E.width = l.width, E.height = l.height, E.getContext("2d").drawImage(l, 0, 0), x.revokeObjectURL(C);
-      const M = E.toDataURL("image/png");
+      const m = document.createElement("canvas");
+      l.width = e, l.height = i, m.width = l.width, m.height = l.height, m.getContext("2d").drawImage(l, 0, 0), x.revokeObjectURL(C);
+      const M = m.toDataURL("image/png");
       if (s === U.BLOB) {
         o(q(M));
         return;
@@ -958,10 +958,10 @@ function Pt() {
     });
   }, this.createShape = (t, s, e) => new y().init(t, s, e), this.onShapeCreated = (t) => {
     const s = t.target;
-    m(s.root) && !this.getShape(s) && (this.shapes.push(s), this.activeShape || (this.activeShape = s), this.getShapesByContainer(s.root).length === 1 && this.addContainerEvents(s));
+    b(s.root) && !this.getShape(s) && (this.shapes.push(s), this.activeShape || (this.activeShape = s), this.getShapesByContainer(s.root).length === 1 && this.addContainerEvents(s));
   }, this.onShapeDestroy = (t) => {
     const s = t.target, e = s.root;
-    !m(s.root) || !this.getShape(s) || (this.shapes.splice(this.shapes.indexOf(s), 1), this.getShapesByContainer(e).length === 0 && this.containerEventListeners.filter((i) => i.container === e).forEach((i) => {
+    !b(s.root) || !this.getShape(s) || (this.shapes.splice(this.shapes.indexOf(s), 1), this.getShapesByContainer(e).length === 0 && this.containerEventListeners.filter((i) => i.container === e).forEach((i) => {
       i.container.removeEventListener(i.name, i.listener), this.containerEventListeners.splice(this.containerEventListeners.indexOf(i), 1);
     }));
   }, this.onShapeMoveStart = (t) => {
@@ -1082,7 +1082,7 @@ const Mt = {
   MANAGER_REMOVE_CONTAINER_EVENT_LISTENERS: "manager_remove_container_event_listeners"
 }, N = {
   CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
-}, b = new Pt().init();
+}, E = new Pt().init();
 function Tt(t) {
   this.shape = t, this.children = [], this.parent = {}, this.init = () => {
     for (let s in this)
@@ -1101,7 +1101,7 @@ function Tt(t) {
       e.push(...i.getChildren());
     return e;
   }, this.shouldAddChild = (s) => !s || typeof s != "object" || typeof s.getChildren > "u" || this.children.indexOf(s) !== -1 ? !1 : s === this.shape ? void 0 : s.getChildren().indexOf(this.shape) !== -1 || s.getParent() ? !1 : this.getParentsList().indexOf(s) === -1, this.getParent = () => {
-    const s = b.shapes;
+    const s = E.shapes;
     for (let e of s)
       if (e.getChildren().indexOf(this.shape) !== -1)
         return e;
@@ -1262,13 +1262,13 @@ function y() {
       console.error("Root HTML node not specified. Could not create shape.");
       return;
     }
-    if (b.getShape(this)) {
+    if (E.getShape(this)) {
       console.error("This shape already initialized");
       return;
     }
     return this.root = t, this.root.style.position = "relative", Object.assign(this, new Rt(this)), this.setOptions(s), this.groupHelper = new Tt(this).init(), e && e.length && this.setupPoints(e, Object.assign({}, this.options.pointOptions)), this.eventListener.run(), this.applyDisplayMode(), (e && e.length || this.options.forceCreateEvent) && h.emit(r.SHAPE_CREATE, this, {}), this;
   }, this.setOptions = (t) => {
-    !t || typeof t != "object" || (t.pointOptions = B(this.options.pointOptions, t.pointOptions), t.style = B(this.options.style, t.style), t.bounds = B(this.options.bounds, t.bounds), m(t.visible) && t.visible !== this.options.visible && (this.points.forEach((s) => s.options.visible = t.visible), this.resizeBox && this.resizeBox.setOptions({ shapeOptions: { visible: t.visible } }), this.rotateBox && this.rotateBox.setOptions({ shapeOptions: { visible: t.visible } })), this.options = B(this.options, t), this.points.forEach((s) => {
+    !t || typeof t != "object" || (t.pointOptions = B(this.options.pointOptions, t.pointOptions), t.style = B(this.options.style, t.style), t.bounds = B(this.options.bounds, t.bounds), b(t.visible) && t.visible !== this.options.visible && (this.points.forEach((s) => s.options.visible = t.visible), this.resizeBox && this.resizeBox.setOptions({ shapeOptions: { visible: t.visible } }), this.rotateBox && this.rotateBox.setOptions({ shapeOptions: { visible: t.visible } })), this.options = B(this.options, t), this.points.forEach((s) => {
       s.setOptions(B({}, this.options.pointOptions)), s.options.bounds = this.getBounds(), s.options.zIndex <= this.options.zIndex && (s.options.zIndex = this.options.zIndex + 1), s.redraw();
     }), typeof this.updateContextMenu == "function" && this.updateContextMenu());
   }, this.setupPoints = (t, s) => {
@@ -1440,7 +1440,7 @@ function y() {
     return [s.left + s.width / 2, s.top + s.height / 2];
   }, this.toSvg = () => v.toSvg(this), this.toPng = (t = U.DATAURL, s = null, e = null) => v.toPng(this, t, s, e), this.toJSON = (t = !0) => JSON.stringify(this.getJSON(t)), this.clone = () => {
     const t = Object.assign({}, this.getJSON());
-    t.options.id += "_clone", t.options.name += " Clone";
+    t.options.id += "_clone", t.options.name += " Clone", t.parent_guid = this.guid;
     const s = new y().fromJSON(this.root, JSON.stringify(t));
     return s ? (s.getChildren(!0).forEach((e) => {
       e.options.id += "_clone", e.options.name += " Clone";
@@ -1456,11 +1456,15 @@ function y() {
     return s;
   }, this.fromJSON = (t, s, e = !0) => {
     let i = s;
-    return typeof i == "string" && (i = z(s)), i ? (this.root = t, this.setOptions(i.options), this.svg || this.init(t, this.options, null), i.points.forEach((o) => {
-      this.addPoint(o.x, o.y, o.options);
-    }), e && typeof i.children < "u" && i.children && (this.getChildren(!0).forEach((o) => o.destroy()), i.children.forEach((o) => {
-      this.addChild(new y().fromJSON(t, o));
-    })), h.emit(r.SHAPE_CREATE, this, {}), this) : null;
+    if (typeof i == "string" && (i = z(s)), !i)
+      return null;
+    this.root = t, this.setOptions(i.options), this.svg || this.init(t, this.options, null), i.points.forEach((n) => {
+      this.addPoint(n.x, n.y, n.options);
+    }), e && typeof i.children < "u" && i.children && (this.getChildren(!0).forEach((n) => n.destroy()), i.children.forEach((n) => {
+      this.addChild(new y().fromJSON(t, n));
+    }));
+    const o = E.getShapeByGuid(i.parent_guid);
+    return h.emit(r.SHAPE_CREATE, this, { parent: o }), this;
   };
 }
 const c = {
@@ -1521,7 +1525,7 @@ function Q() {
   };
 }
 try {
-  window.ResizeBox = Q, window.SmartShape = y, window.RotateBox = Y, window.SmartShapeManager = b;
+  window.ResizeBox = Q, window.SmartShape = y, window.RotateBox = Y, window.SmartShapeManager = E;
 } catch {
 }
 export {
@@ -1531,5 +1535,5 @@ export {
   r as ShapeEvents,
   y as SmartShape,
   c as SmartShapeDisplayMode,
-  b as SmartShapeManager
+  E as SmartShapeManager
 };

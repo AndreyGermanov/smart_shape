@@ -993,6 +993,7 @@ function SmartShape() {
         const json = Object.assign({},this.getJSON());
         json.options.id += "_clone";
         json.options.name += " Clone";
+        json.parent_guid = this.guid;
         const result = new SmartShape().fromJSON(this.root,JSON.stringify(json));
         if (!result) {
             return null
@@ -1057,7 +1058,8 @@ function SmartShape() {
                 this.addChild(new SmartShape().fromJSON(root,child));
             })
         }
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});
+        const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
         return this;
     }
 }
