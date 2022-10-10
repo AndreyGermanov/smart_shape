@@ -646,6 +646,14 @@ it("deletePoint", () => {
           [[10,210],[10,10],[210,10],[210,210]]);
       const shape2 = new SmartShape().init(app,{id:"shape2",name:"Shape 2"},[[10,210],[10,10],[210,10],[210,210]]);
       shape1.addChild(shape2);
+      let event_triggered = false;
+      EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,(event) => {
+        if (event.target.options.id === "shape1_clone") {
+          if (event.parent && event.parent.guid === shape1.guid) {
+            event_triggered = true;
+          }
+        }
+      })
       const shape3 = shape1.clone();
       cy.wait(500).then(() => {
         assert.equal(SmartShapeManager.shapes.length,4,"Should add 2 more shapes to Shapes manager");
@@ -655,6 +663,7 @@ it("deletePoint", () => {
         assert.equal(shape3.options.name,"Shape 1 Clone","Should set id of clone by adding ' Clone' suffix");
         assert.equal(shape3.getChildren()[0].options.id,"shape2_clone","Should set id of clone's child by adding '_clone' suffix");
         assert.equal(shape3.getChildren()[0].options.name,"Shape 2 Clone","Should set id of clone's child by adding ' Clone' suffix");
+        assert.isTrue(event_triggered, "Added shape1 as a parent of shape3 when emit SHAPE_CREATE event");
       })
     });
   })
