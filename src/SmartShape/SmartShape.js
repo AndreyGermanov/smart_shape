@@ -828,10 +828,16 @@ function SmartShape() {
             } catch (err) {}
         }
         if (this.options.groupChildShapes) {
-            this.getChildren(true).forEach(child => child.destroy());
+            this.getChildren(true).forEach(child => {
+                child.destroy()
+            });
         }
         if (this.contextMenu) {
-            this.contextMenu.destroy();
+            this.destroyContextMenu();
+        }
+        const parent = this.getParent();
+        if (parent) {
+            parent.removeChild(this);
         }
     }
 

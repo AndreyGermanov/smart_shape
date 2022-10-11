@@ -1,4 +1,5 @@
 import SmartShapeManager from "../SmartShapeManager/SmartShapeManager.js";
+import {EventsManager, ShapeEvents} from "../index.js";
 /**
  * Class used as an extension to [SmartShape](#SmartShape) class to add
  * shape groups functionality. The feature works the following way:
@@ -66,6 +67,7 @@ function SmartShapeGroupHelper(shape) {
             return
         }
         this.children.push(child);
+        EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD,this.shape,{child});
     }
 
     /**
@@ -74,6 +76,7 @@ function SmartShapeGroupHelper(shape) {
      */
     this.removeChild = (child) => {
         this.children.splice(this.children.indexOf(child),1);
+        EventsManager.emit(ShapeEvents.SHAPE_REMOVE_CHILD,this.shape,{child});
     }
 
     /**
