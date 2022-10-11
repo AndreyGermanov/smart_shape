@@ -1,6 +1,6 @@
-import {Menus} from "simple_js_menu";
+import {Menus} from "../../context_menu/src/index.js";
 import {getMousePos} from "../events/functions.js";
-import {add,del,save,svg,png,copy} from "../../assets/graphics.js";
+import {add,del,save,svg,png,copy,group,ungroup} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";
 import {PngExportTypes} from "./SmartShapeDrawHelper.js";
 
@@ -61,6 +61,7 @@ export default function SmartShapeContextMenu(shape) {
             if (shape.options.canAddPoints) {
                 this.contextMenu.addItem("i"+shape.guid+"_add_point", "Add Point", add);
             }
+            this.displayGroupItems();
             this.setEventListeners();
         }
     }
@@ -70,6 +71,17 @@ export default function SmartShapeContextMenu(shape) {
      * Method used to set up handler functions for context menu items
      */
     this.setEventListeners = () => {
+        this.setOnItemClickListener();
+        this.contextMenu.on("show", () => {
+            this.displayGroupItems();
+        })
+    }
+
+    /**
+     * @ignore
+     * Method used to react on user click events on menu items
+     */
+    this.setOnItemClickListener = () => {
         this.contextMenu.on("click",(event) => {
             switch (event.itemId) {
                 case "i"+shape.guid+"_destroy":
@@ -90,8 +102,41 @@ export default function SmartShapeContextMenu(shape) {
                 case "i"+shape.guid+"_export_png":
                     this.onExportPngClick(event);
                     break;
+                case "i"+shape.guid+"_group":
+                    shape.setOptions({groupChildShapes:true});
+                    shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                    break;
+                case "i"+shape.guid+"_ungroup":
+                    shape.setOptions({groupChildShapes:false});
+                    shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                    break;
             }
         })
+    }
+
+    /**
+     * @ignore
+     * Method used to display Group/Ungroup menu item
+     * depending on number of children of current shape
+     * and depending on status of `groupChildShapes` option
+     */
+    this.displayGroupItems = () => {
+        if (!this.shape.getChildren().length) {
+            this.contextMenu.removeItem("i"+this.shape.guid+"_group");
+            this.contextMenu.removeItem("i"+this.shape.guid+"_ungroup");
+            return
+        }
+        if (this.shape.options.groupChildShapes) {
+            if (!this.contextMenu.items.find(item => item.id === "i"+this.shape.guid+"_ungroup")) {
+                this.contextMenu.addItem("i" + this.shape.guid + "_ungroup", "Ungroup", ungroup);
+                this.contextMenu.removeItem("i"+this.shape.guid+"_group");
+            }
+        } else {
+            if (!this.contextMenu.items.find(item => item.id === "i"+this.shape.guid+"_group")) {
+                this.contextMenu.removeItem("i"+this.shape.guid+"_ungroup");
+                this.contextMenu.addItem("i" + this.shape.guid + "_group", "Group", group);
+            }
+        }
     }
 
     /**
@@ -180,5 +225,22 @@ export default function SmartShapeContextMenu(shape) {
      */
     this.getExportFileName = (extension) => {
         return (this.shape.options.id ? this.shape.options.id : "shape")+"."+extension;
+    }
+
+    /**
+     * @ignore
+     * Method used to remove all event listeners, added to this object
+     */
+    this.removeMenuEventListeners = () => {
+        this.contextMenu.removeEventListener("show", this.onShowListener);
+    }
+
+    /**
+     * @ignore
+     * Method used to destroy context menu and all dependent functions
+     */
+    this.destroyContextMenu = () => {
+        this.removeMenuEventListeners();
+        this.contextMenu.destroy();
     }
 }

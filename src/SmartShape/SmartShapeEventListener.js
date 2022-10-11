@@ -484,7 +484,10 @@ function SmartShapeEventListener(shape) {
  * @param point_added {MouseEvent} Emitted when new point added to the shape
  * @param point_removed {MouseEvent} Emitted when point removed from the shape
  * @param destroy {ShapeEvents.SHAPE_DESTROY} Emitted right before shape is destroyed
- * Event object contains created shape [SmartShape](#SmartShape) object in a `target` field
+ * @param add_child {ShapeEvents.SHAPE_ADD_CHILD} New child shape added to this shape. Event object contains a
+ * `child` field which is a SmartShape object of added child.
+ * @param remove_child {ShapeEvents.SHAPE_REMOVE_CHILD} Child shape removed from this shape. Event object contains a
+ * `child` field which is a SmartShape object of removed child.
  * @enum {string}
  */
 export const ShapeEvents = {
@@ -508,7 +511,8 @@ export const ShapeEvents = {
     POINT_DRAG_END: "point_drag_end",
     SHAPE_RESIZE: "resize",
     SHAPE_ROTATE: "rotate",
-
+    SHAPE_ADD_CHILD: "add_child",
+    SHAPE_REMOVE_CHILD: "remove_child",
     /**
      * Method returns an object of all ShapeEvents that
      * related to mouse.*
