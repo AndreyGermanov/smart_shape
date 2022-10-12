@@ -488,6 +488,7 @@ function SmartShapeEventListener(shape) {
  * `child` field which is a SmartShape object of added child.
  * @param remove_child {ShapeEvents.SHAPE_REMOVE_CHILD} Child shape removed from this shape. Event object contains a
  * `child` field which is a SmartShape object of removed child.
+ * @param shape_activated {ShapeEvents.SHAPE_ACTIVATED} Shape activated
  * @enum {string}
  */
 export const ShapeEvents = {
@@ -513,6 +514,7 @@ export const ShapeEvents = {
     SHAPE_ROTATE: "rotate",
     SHAPE_ADD_CHILD: "add_child",
     SHAPE_REMOVE_CHILD: "remove_child",
+    SHAPE_ACTIVATED: "shape_activated",
     /**
      * Method returns an object of all ShapeEvents that
      * related to mouse.*

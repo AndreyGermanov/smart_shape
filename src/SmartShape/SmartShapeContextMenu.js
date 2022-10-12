@@ -34,11 +34,7 @@ export default function SmartShapeContextMenu(shape) {
      * or destroyed depending on options of the shape
      */
     this.updateContextMenu = () => {
-        if (this.contextMenu) {
-            this.contextMenu.destroy();
-            this.contextMenu = null;
-        }
-        if (shape.options.hasContextMenu) {
+        if (this.shape.options.hasContextMenu && !this.contextMenu) {
             this.init();
         }
         this.shape.contextMenu = this.contextMenu;
@@ -82,33 +78,38 @@ export default function SmartShapeContextMenu(shape) {
      * Method used to react on user click events on menu items
      */
     this.setOnItemClickListener = () => {
+        let destShape,parent
         this.contextMenu.on("click",(event) => {
             switch (event.itemId) {
-                case "i"+shape.guid+"_destroy":
+                case "i"+this.shape.guid+"_destroy":
                     this.shape.destroy();
                     break
-                case "i"+shape.guid+"_add_point":
+                case "i"+this.shape.guid+"_add_point":
                     this.onAddPointClick(event);
                     break;
-                case "i"+shape.guid+"_clone":
+                case "i"+this.shape.guid+"_clone":
                     this.onCloneClick(event);
                     break;
-                case "i"+shape.guid+"_export_json":
+                case "i"+this.shape.guid+"_export_json":
                     this.onExportJsonClick(event);
                     break;
-                case "i"+shape.guid+"_export_svg":
+                case "i"+this.shape.guid+"_export_svg":
                     this.onExportSvgClick(event);
                     break;
-                case "i"+shape.guid+"_export_png":
+                case "i"+this.shape.guid+"_export_png":
                     this.onExportPngClick(event);
                     break;
-                case "i"+shape.guid+"_group":
-                    shape.setOptions({groupChildShapes:true});
-                    shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                case "i"+this.shape.guid+"_group":
+                    parent = this.shape.getRootParent();
+                    destShape =  parent || this.shape;
+                    destShape.setOptions({groupChildShapes:true});
+                    destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
                     break;
-                case "i"+shape.guid+"_ungroup":
-                    shape.setOptions({groupChildShapes:false});
-                    shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                case "i"+this.shape.guid+"_ungroup":
+                    parent = this.shape.getRootParent();
+                    destShape = parent || this.shape;
+                    destShape.setOptions({groupChildShapes:false});
+                    destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
                     break;
             }
         })
@@ -121,12 +122,14 @@ export default function SmartShapeContextMenu(shape) {
      * and depending on status of `groupChildShapes` option
      */
     this.displayGroupItems = () => {
-        if (!this.shape.getChildren().length) {
+        let destShape = this.shape.getRootParent() ? this.shape.getRootParent() : this.shape;
+
+        if (!destShape.getChildren().length) {
             this.contextMenu.removeItem("i"+this.shape.guid+"_group");
             this.contextMenu.removeItem("i"+this.shape.guid+"_ungroup");
             return
         }
-        if (this.shape.options.groupChildShapes) {
+        if (destShape.options.groupChildShapes) {
             if (!this.contextMenu.items.find(item => item.id === "i"+this.shape.guid+"_ungroup")) {
                 this.contextMenu.addItem("i" + this.shape.guid + "_ungroup", "Ungroup", ungroup);
                 this.contextMenu.removeItem("i"+this.shape.guid+"_group");
@@ -164,6 +167,7 @@ export default function SmartShapeContextMenu(shape) {
         const clone = this.shape.clone();
         const pos = clone.getPosition(true);
         clone.moveTo(pos.left+5,pos.top+5);
+        SmartShapeManager.activateShape(clone);
     }
 
     /**
@@ -172,7 +176,9 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportJsonClick = (_event) => {
-        const jsonString = this.shape.toJSON(true);
+        const parent = this.shape.getRootParent();
+        const destShape = parent || this.shape;
+        const jsonString = destShape.toJSON(destShape.options.groupChildShapes);
         const blob = new Blob([jsonString]);
         this.saveToFile(blob,this.getExportFileName("json"))
     }
@@ -183,7 +189,9 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportSvgClick = (_event) => {
-        const svgString = this.shape.toSvg();
+        const parent = this.shape.getRootParent();
+        const destShape = parent || this.shape;
+        const svgString = destShape.toSvg();
         const blob = new Blob([svgString]);
         this.saveToFile(blob,this.getExportFileName("svg"))
     }
@@ -194,7 +202,9 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportPngClick = async(_event) => {
-        const blob = await this.shape.toPng(PngExportTypes.BLOB);
+        const parent = this.shape.getRootParent();
+        const destShape = parent || this.shape;
+        const blob = await destShape.toPng(PngExportTypes.BLOB);
         this.saveToFile(blob,this.getExportFileName("png"));
     }
 
@@ -224,7 +234,9 @@ export default function SmartShapeContextMenu(shape) {
      * @returns {string} Generated file name
      */
     this.getExportFileName = (extension) => {
-        return (this.shape.options.id ? this.shape.options.id : "shape")+"."+extension;
+        const parent = this.shape.getRootParent();
+        const destShape = parent || this.shape;
+        return (destShape.options.id ? destShape.options.id : "shape")+"."+extension;
     }
 
     /**

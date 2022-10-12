@@ -33,4 +33,24 @@ describe('SmartShape Context Menus tests', () => {
     assert.isDefined(point.contextMenu,"Context menu should be defined");
     assert.isNull(point.contextMenu,"Context menu should be null");
   })
+  it("Should correctly add Group/Ungroup menu items", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape1 = SmartShapeManager.createShape(app,{},[[0,100],[100,0],[200,100]]);
+      shape1.contextMenu.show();
+      assert.isUndefined(shape1.contextMenu.items.find(item=>item.id === "i" + shape1.guid+"_ungroup"),
+          "Should not contain 'Group' item if no children");
+      shape1.contextMenu.hide();
+      const shape2 = SmartShapeManager.createShape(app, {}, [[20,40],[40,20],[60,40]]);
+      shape1.addChild(shape2);
+      shape1.contextMenu.show();
+      assert.isDefined(shape1.contextMenu.items.find(item=>item.id === "i" + shape1.guid+"_ungroup"),
+          "Should contain 'Group' item if shape has children");
+      shape1.contextMenu.hide();
+      shape2.destroy();
+      shape1.contextMenu.show();
+      assert.isUndefined(shape1.contextMenu.items.find(item=>item.id === "i" + shape1.guid+"_ungroup"),
+          "Should not contain 'Group' item if all children removed");
+    })
+  })
 })

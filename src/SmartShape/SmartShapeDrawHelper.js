@@ -16,9 +16,6 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object to draw
      */
     this.draw = (shape) => {
-        if (shape.points.length < 1) {
-            return
-        }
         if (shape.svg) {
             try {
                 shape.eventListener.removeSvgEventListeners();
@@ -29,6 +26,9 @@ function SmartShapeDrawHelper() {
             shape.svg.ondragstart = function () { return false; }
             shape.eventListener.setSvgEventListeners();
             shape.root.appendChild(shape.svg);
+        }
+        if (shape.points.length < 1) {
+            return
         }
         this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
@@ -410,7 +410,7 @@ function SmartShapeDrawHelper() {
 
     this.getSvg = (shape) => {
         const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-        const pos = shape.getPosition(true);
+        const pos = shape.getPosition(shape.options.groupChildShapes);
         svg.appendChild(this.getSvgDefs(shape));
         if (!shape.svg) {
             this.draw(shape);
@@ -438,12 +438,14 @@ function SmartShapeDrawHelper() {
                 defs.innerHTML = shape_defs.innerHTML;
             }
         }
-        shape.getChildren(true).forEach(child => {
-            const child_defs = child.svg.querySelector("defs");
-            if (child_defs) {
-                defs.innerHTML += child_defs.innerHTML;
-            }
-        })
+        if (shape.options.groupChildShapes) {
+            shape.getChildren(true).forEach(child => {
+                const child_defs = child.svg.querySelector("defs");
+                if (child_defs) {
+                    defs.innerHTML += child_defs.innerHTML;
+                }
+            })
+        }
         return defs;
     }
 
@@ -455,7 +457,7 @@ function SmartShapeDrawHelper() {
      * @param svg {SVGElement} svg element to add polygons to
      */
     this.addSvgPolygons = (shape,svg) => {
-        const pos = shape.getPosition(true);
+        const pos = shape.getPosition(shape.options.groupChildShapes);
         if (shape.svg) {
             let polygon = shape.svg.querySelector("polygon");
             if (polygon) {
@@ -467,17 +469,19 @@ function SmartShapeDrawHelper() {
                 svg.appendChild(polygon);
             }
         }
-        shape.getChildren(true).forEach(child => {
-            let child_polygon = child.svg.querySelector("polygon");
-            if (child_polygon) {
-                child_polygon = child_polygon.cloneNode();
-                const points = child.points.map(point =>
-                    ""+(point.x - pos.left)+","+(point.y - pos.top)
-                ).join(" ");
-                child_polygon.setAttribute("points",points);
-                svg.appendChild(child_polygon);
-            }
-        })
+        if (shape.options.groupChildShapes) {
+            shape.getChildren(true).forEach(child => {
+                let child_polygon = child.svg.querySelector("polygon");
+                if (child_polygon) {
+                    child_polygon = child_polygon.cloneNode();
+                    const points = child.points.map(point =>
+                        "" + (point.x - pos.left) + "," + (point.y - pos.top)
+                    ).join(" ");
+                    child_polygon.setAttribute("points", points);
+                    svg.appendChild(child_polygon);
+                }
+            })
+        }
     }
 
     /**
@@ -494,9 +498,10 @@ function SmartShapeDrawHelper() {
      */
     this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null) => {
         return new Promise(async(resolve) => {
-            const pos = shape.getPosition(true);
-            [width, height] = applyAspectRatio(width,height,pos.width,pos.height);
-            shape.scaleTo(width,height);
+            shape.calcPosition();
+            const pos = shape.getPosition(shape.options.groupChildShapes);
+            [width, height] = applyAspectRatio(width, height, pos.width, pos.height);
+            shape.scaleTo(width, height);
             const svgObj = this.getSvg(shape);
             for (let item of svgObj.querySelectorAll("image")) {
                 if (item.getAttribute("href") && item.getAttribute("href").length) {
@@ -507,7 +512,7 @@ function SmartShapeDrawHelper() {
             const div = document.createElement("div");
             div.appendChild(svgObj);
             const svgString = div.innerHTML;
-            shape.scaleTo(pos.width,pos.height);
+            shape.scaleTo(pos.width, pos.height);
             const img = new Image();
             const svg = new Blob([svgString],{type:"image/svg+xml"});
             const DOMURL = window.URL || window.webkitURL || window;

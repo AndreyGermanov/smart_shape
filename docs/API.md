@@ -770,7 +770,7 @@ to this object.
     * [.toSvg()](#SmartShape+toSvg) ⇒ <code>string</code>
     * [.toPng(type, width, height)](#SmartShape+toPng) ⇒ <code>Promise</code>
     * [.toJSON(includeChildren)](#SmartShape+toJSON) ⇒ <code>string</code>
-    * [.clone()](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.clone(options)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShape_new"></a>
@@ -1236,11 +1236,16 @@ Returns string with JSON object or JSON array, depending on should it save child
 
 <a name="SmartShape+clone"></a>
 
-### smartShape.clone() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+### smartShape.clone(options) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 Method creates complete copy of current shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Created shape object or null in case of errors  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | Array of shape options to override on cloned object. Any [SmartShape options](#SmartShape+options) can be in this object. |
+
 <a name="SmartShape+fromJSON"></a>
 
 ### smartShape.fromJSON(root, json, includeChildren) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
@@ -1295,6 +1300,7 @@ this class automatically during init process
     * [.init()](#SmartShapeGroupHelper+init) ⇒ [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
     * [.addChild(child)](#SmartShapeGroupHelper+addChild)
     * [.removeChild(child)](#SmartShapeGroupHelper+removeChild)
+    * [.removeAllChildren(all)](#SmartShapeGroupHelper+removeAllChildren)
     * [.getChildren(all)](#SmartShapeGroupHelper+getChildren) ⇒ <code>array</code>
     * [.getParent()](#SmartShapeGroupHelper+getParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.getRootParent()](#SmartShapeGroupHelper+getRootParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
@@ -1372,6 +1378,17 @@ Method used to remove specified shape from children list of current shape
 | Param | Type | Description |
 | --- | --- | --- |
 | child | [<code>SmartShape</code>](#SmartShape) | SmartShape object to add |
+
+<a name="SmartShapeGroupHelper+removeAllChildren"></a>
+
+### smartShapeGroupHelper.removeAllChildren(all)
+Method removes all children of current shape
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| all | <code>boolean</code> | If true, then it removes all children hierarchically |
 
 <a name="SmartShapeGroupHelper+getChildren"></a>
 
@@ -1867,6 +1884,7 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 | destroy | <code>ShapeEvents.SHAPE\_DESTROY</code> | Emitted right before shape is destroyed |
 | add_child | <code>ShapeEvents.SHAPE\_ADD\_CHILD</code> | New child shape added to this shape. Event object contains a `child` field which is a SmartShape object of added child. |
 | remove_child | <code>ShapeEvents.SHAPE\_REMOVE\_CHILD</code> | Child shape removed from this shape. Event object contains a `child` field which is a SmartShape object of removed child. |
+| shape_activated | <code>ShapeEvents.SHAPE\_ACTIVATED</code> | Shape activated |
 
 <a name="SmartShapeManagerEvents"></a>
 

@@ -80,6 +80,16 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * Method removes all children of current shape
+     * @param all {boolean} If true, then it removes all children hierarchically
+     */
+    this.removeAllChildren = (all) => {
+        while (this.getChildren(all).length) {
+            this.removeChild(this.getChildren(all)[0])
+        }
+    }
+
+    /**
      * Method returns array of children of current shape
      * @param all {boolean} If true, then it returns deep list, including all children of each children of this shape
      * @returns {array} Array of [SmartShape](#SmartShape) objects

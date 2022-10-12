@@ -245,8 +245,12 @@ function SmartShape() {
         this.groupHelper = new SmartShapeGroupHelper(this).init();
         if (points && points.length) {
             this.setupPoints(points, Object.assign({}, this.options.pointOptions));
+            this.redraw();
         }
         this.eventListener.run();
+        if (typeof(this.updateContextMenu) === "function") {
+            this.updateContextMenu();
+        }
         this.applyDisplayMode();
         if (points && points.length || this.options.forceCreateEvent) {
             EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});
@@ -283,7 +287,6 @@ function SmartShape() {
         if (typeof(this.updateContextMenu) === "function") {
             this.updateContextMenu();
         }
-
     }
 
     /**
@@ -333,7 +336,6 @@ function SmartShape() {
         points.forEach(point =>
             this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,Object.assign({},pointOptions))
         );
-        this.redraw();
         if (this.options.hasContextMenu && !this.contextMenu) {
             this.updateContextMenu();
         }
@@ -664,6 +666,9 @@ function SmartShape() {
         }
         this.options.displayMode = mode;
         this.redraw();
+        if (mode === SmartShapeDisplayMode.DEFAULT) {
+            this.getChildren(true).forEach(child => child.switchDisplayMode(mode));
+        }
     }
 
     /**
@@ -825,7 +830,9 @@ function SmartShape() {
         if (this.root && this.svg) {
             try {
                 this.root.removeChild(this.svg);
-            } catch (err) {}
+            } catch (err) {
+                console.error(err);
+            }
         }
         if (this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
@@ -993,13 +1000,16 @@ function SmartShape() {
 
     /**
      * Method creates complete copy of current shape
+     * @param options {object} Array of shape options to override on cloned object.
+     * Any [SmartShape options](#SmartShape+options) can be in this object.
      * @returns {SmartShape|null} Created shape object or null in case of errors
      */
-    this.clone = () => {
+    this.clone = (options={}) => {
         const json = Object.assign({},this.getJSON());
         json.options.id += "_clone";
         json.options.name += " Clone";
         json.parent_guid = this.guid;
+        json.options = Object.assign(json.options,options);
         const result = new SmartShape().fromJSON(this.root,JSON.stringify(json));
         if (!result) {
             return null

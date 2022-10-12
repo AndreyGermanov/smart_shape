@@ -300,6 +300,7 @@ function SmartShapeManager() {
             });
         }
         this.activeShape = shape;
+        EventsManager.emit(ShapeEvents.SHAPE_ACTIVATED,this.activeShape);
         this.activeShape.switchDisplayMode(displayMode);
     }
 
