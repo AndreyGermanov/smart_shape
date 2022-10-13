@@ -487,13 +487,16 @@ function SmartShape() {
      * @param height {number|null} new height. If not specifie, then will be calculated automatically based on width
      * to preserve aspect ratio
      */
-    this.scaleTo = (width=null,height= null) => {
+    this.scaleTo = (width=null,height= null,includeChildren=null) => {
         const bounds = this.getBounds();
         this.calcPosition();
         if (!width && !height) {
             return null;
         }
-        const pos = this.getPosition(this.options.groupChildShapes);
+        const pos = this.getPosition(includeChildren || this.options.groupChildShapes);
+        if (pos.width === width && pos.height === height) {
+            return
+        }
         [width,height] = this.applyScaleRestriction(...applyAspectRatio(width,height,pos.width,pos.height));
         if (pos.width>=10 && width<10) {
             width = 10;
@@ -509,7 +512,7 @@ function SmartShape() {
             point.x = (point.x-pos.left)*scaleX+pos.left;
             point.y = (point.y-pos.top)*scaleY+pos.top}
         );
-        if (this.options.groupChildShapes) {
+        if (this.options.groupChildShapes || includeChildren) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
                         point.x = (point.x - pos.left) * scaleX + pos.left;
@@ -967,10 +970,12 @@ function SmartShape() {
 
     /**
      * Method exports shape and all its children to SVG document.
+     * @param includeChildren {boolean} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used*
      * @returns {string} Body of SVG document as a string
      */
-    this.toSvg = () => {
-        return SmartShapeDrawHelper.toSvg(this);
+    this.toSvg = (includeChildren=null) => {
+        return SmartShapeDrawHelper.toSvg(this,includeChildren);
     }
 
     /**
@@ -980,11 +985,13 @@ function SmartShape() {
      * width of shape
      * @param {number|null} height Height of image. If not specified, then calculate based on width or current
      * height of shape
+     * @param includeChildren {boolean} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used*
      * @return {Promise} Promise that resolves either to DataURL string or to BLOB object, depending on value of
      * `type` argument
      */
-    this.toPng = (type= PngExportTypes.DATAURL,width=null,height=null) => {
-        return SmartShapeDrawHelper.toPng(this,type,width,height);
+    this.toPng = (type= PngExportTypes.DATAURL,width=null,height=null,includeChildren=null) => {
+        return SmartShapeDrawHelper.toPng(this,type,width,height,includeChildren);
     }
 
     /**
