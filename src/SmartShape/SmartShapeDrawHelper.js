@@ -523,7 +523,6 @@ function SmartShapeDrawHelper() {
             shape.calcPosition();
             const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
             [width, height] = applyAspectRatio(width, height, pos.width, pos.height);
-            shape.scaleTo(width, height,includeChildren);
             const svgObj = this.getSvg(shape,includeChildren);
             for (let item of svgObj.querySelectorAll("image")) {
                 if (item.getAttribute("href") && item.getAttribute("href").length) {
@@ -534,19 +533,19 @@ function SmartShapeDrawHelper() {
             const div = document.createElement("div");
             div.appendChild(svgObj);
             const svgString = div.innerHTML;
-            shape.scaleTo(pos.width, pos.height, includeChildren);
             const img = new Image();
             const svg = new Blob([svgString],{type:"image/svg+xml"});
             const DOMURL = window.URL || window.webkitURL || window;
             const url = await blobToDataURL(svg);
             img.addEventListener("load", () => {
                 const canvas = document.createElement("canvas");
-                img.width = width;
-                img.height = height;
+                img.width = pos.width;
+                img.height = pos.height;
                 canvas.width = img.width;
                 canvas.height = img.height;
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img,0,0)
+                ctx.scale(width,height);
                 DOMURL.revokeObjectURL(url);
                 const result = canvas.toDataURL("image/png");
                 if (type === PngExportTypes.BLOB) {
