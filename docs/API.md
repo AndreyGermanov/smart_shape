@@ -767,8 +767,8 @@ to this object.
     * [.hide()](#SmartShape+hide)
     * [.destroy()](#SmartShape+destroy)
     * [.getCenter(forGroup)](#SmartShape+getCenter) ⇒ <code>array</code>
-    * [.toSvg()](#SmartShape+toSvg) ⇒ <code>string</code>
-    * [.toPng(type, width, height)](#SmartShape+toPng) ⇒ <code>Promise</code>
+    * [.toSvg(includeChildren)](#SmartShape+toSvg) ⇒ <code>string</code>
+    * [.toPng(type, width, height, includeChildren)](#SmartShape+toPng) ⇒ <code>Promise</code>
     * [.toJSON(includeChildren)](#SmartShape+toJSON) ⇒ <code>string</code>
     * [.clone(options)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
@@ -1201,14 +1201,19 @@ Method returns coordinates of the center of the shape.
 
 <a name="SmartShape+toSvg"></a>
 
-### smartShape.toSvg() ⇒ <code>string</code>
+### smartShape.toSvg(includeChildren) ⇒ <code>string</code>
 Method exports shape and all its children to SVG document.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>string</code> - Body of SVG document as a string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| includeChildren | <code>boolean</code> | Should include children of this shape to output. 'null' by default. In this case value of shape.options.groupChildShapes will be used* |
+
 <a name="SmartShape+toPng"></a>
 
-### smartShape.toPng(type, width, height) ⇒ <code>Promise</code>
+### smartShape.toPng(type, width, height, includeChildren) ⇒ <code>Promise</code>
 Method exports shape and all its children as a PNG image
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1220,6 +1225,7 @@ Method exports shape and all its children as a PNG image
 | type | [<code>PngExportTypes</code>](#PngExportTypes) | Format of returned result - `dataurl` or `blob`. By default `dataurl` |
 | width | <code>number</code> \| <code>null</code> | Width of image. If not specified, then calculate based on height or current width of shape |
 | height | <code>number</code> \| <code>null</code> | Height of image. If not specified, then calculate based on width or current height of shape |
+| includeChildren | <code>boolean</code> | Should include children of this shape to output. 'null' by default. In this case value of shape.options.groupChildShapes will be used* |
 
 <a name="SmartShape+toJSON"></a>
 

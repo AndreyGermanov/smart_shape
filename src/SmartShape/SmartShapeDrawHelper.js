@@ -397,25 +397,35 @@ function SmartShapeDrawHelper() {
 
     /**
      * @ignore
-     * Method used to return shape as an SVG document.
+     * Method used to return shape as an SVG string.
      * @param shape {SmartShape} Shape object
+     * @param includeChildren {boolean|null} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used
      * @returns {string} String body of SVG document
      */
-    this.toSvg = (shape) => {
+    this.toSvg = (shape,includeChildren=null) => {
         const div = document.createElement("div");
-        const svg = this.getSvg(shape);
+        const svg = this.getSvg(shape,includeChildren);
         div.appendChild(svg);
         return '<?xml version="1.0" encoding="UTF-8"?>'+div.innerHTML.replace(/&quot;/g,"'");
     }
 
-    this.getSvg = (shape) => {
+    /**
+     * @ignore
+     * Method used to return shape as an SVG document.
+     * @param shape {SmartShape} Shape object
+     * @param includeChildren {boolean|null} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used
+     * @returns {string} String body of SVG document
+     */
+    this.getSvg = (shape,includeChildren) => {
         const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-        const pos = shape.getPosition(shape.options.groupChildShapes);
-        svg.appendChild(this.getSvgDefs(shape));
+        const pos = shape.getPosition(includeChildren === null ? shape.options.groupChildShapes : includeChildren);
+        svg.appendChild(this.getSvgDefs(shape,includeChildren));
         if (!shape.svg) {
             this.draw(shape);
         }
-        this.addSvgPolygons(shape,svg);
+        this.addSvgPolygons(shape,svg,includeChildren);
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
         const viewBox = "0 0 " + pos.width + " " + pos.height;
         svg.setAttribute("viewBox",viewBox);
@@ -428,9 +438,11 @@ function SmartShapeDrawHelper() {
      * It goes through all children of this shape and appends contents of all child `defs`
      * to root defs or current shape and returns resulting `defs` element
      * @param shape {SmartShape} Shape object
+     * @param includeChildren {boolean} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used
      * @returns {HTMLOrSVGElement} defs tag
      */
-    this.getSvgDefs = (shape) => {
+    this.getSvgDefs = (shape,includeChildren=null) => {
         const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
         if (shape.svg) {
             const shape_defs = shape.svg.querySelector("defs");
@@ -438,7 +450,7 @@ function SmartShapeDrawHelper() {
                 defs.innerHTML = shape_defs.innerHTML;
             }
         }
-        if (shape.options.groupChildShapes) {
+        if (includeChildren === true || (shape.options.groupChildShapes && includeChildren !== false)) {
             shape.getChildren(true).forEach(child => {
                 const child_defs = child.svg.querySelector("defs");
                 if (child_defs) {
@@ -455,9 +467,12 @@ function SmartShapeDrawHelper() {
      * it's children to resulting `svg` document
      * @param shape {SmartShape} shape object
      * @param svg {SVGElement} svg element to add polygons to
+     * @param includeChildren {boolean} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used*
      */
-    this.addSvgPolygons = (shape,svg) => {
+    this.addSvgPolygons = (shape,svg,includeChildren) => {
         const pos = shape.getPosition(shape.options.groupChildShapes);
+        const polygons = [];
         if (shape.svg) {
             let polygon = shape.svg.querySelector("polygon");
             if (polygon) {
@@ -466,10 +481,10 @@ function SmartShapeDrawHelper() {
                     "" + (point.x - pos.left) + "," + (point.y - pos.top)
                 ).join(" ");
                 polygon.setAttribute("points", points);
-                svg.appendChild(polygon);
+                polygons.push({polygon,zIndex:shape.options.zIndex})
             }
         }
-        if (shape.options.groupChildShapes) {
+        if (includeChildren === true || (shape.options.groupChildShapes && includeChildren !== false)) {
             shape.getChildren(true).forEach(child => {
                 let child_polygon = child.svg.querySelector("polygon");
                 if (child_polygon) {
@@ -478,9 +493,14 @@ function SmartShapeDrawHelper() {
                         "" + (point.x - pos.left) + "," + (point.y - pos.top)
                     ).join(" ");
                     child_polygon.setAttribute("points", points);
-                    svg.appendChild(child_polygon);
+                    polygons.push({polygon:child_polygon,zIndex:child.options.zIndex})
                 }
             })
+        }
+        if (!polygons.length) { return }
+        polygons.sort((item1,item2) => item1.zIndex-item2.zIndex);
+        for (let item of polygons) {
+            svg.appendChild(item.polygon)
         }
     }
 
@@ -493,16 +513,18 @@ function SmartShapeDrawHelper() {
      * width of shape
      * @param {number|null} height Height of image. If not specified, then calculate based on width or current
      * height of shape
+     * @param includeChildren {boolean} Should include children of this shape to output.
+     * 'null' by default. In this case value of shape.options.groupChildShapes will be used*
      * @return {Promise} Promise that resolves either to DataURL string or to BLOB object, depending on value of
      * `type` argument
      */
-    this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null) => {
+    this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null, includeChildren=null) => {
         return new Promise(async(resolve) => {
             shape.calcPosition();
-            const pos = shape.getPosition(shape.options.groupChildShapes);
+            const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
             [width, height] = applyAspectRatio(width, height, pos.width, pos.height);
-            shape.scaleTo(width, height);
-            const svgObj = this.getSvg(shape);
+            shape.scaleTo(width, height,includeChildren);
+            const svgObj = this.getSvg(shape,includeChildren);
             for (let item of svgObj.querySelectorAll("image")) {
                 if (item.getAttribute("href") && item.getAttribute("href").length) {
                     const href = await blobToDataURL(await (await fetch(item.getAttribute("href"))).blob());
@@ -512,7 +534,7 @@ function SmartShapeDrawHelper() {
             const div = document.createElement("div");
             div.appendChild(svgObj);
             const svgString = div.innerHTML;
-            shape.scaleTo(pos.width, pos.height);
+            shape.scaleTo(pos.width, pos.height, includeChildren);
             const img = new Image();
             const svg = new Blob([svgString],{type:"image/svg+xml"});
             const DOMURL = window.URL || window.webkitURL || window;
