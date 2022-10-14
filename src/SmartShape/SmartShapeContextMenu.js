@@ -189,7 +189,7 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportSvgClick = (_event) => {
-        const parent = this.shape.getRootParent();
+        const parent = this.shape.options.groupChildShapes ? null : this.shape.getRootParent();
         const destShape = parent || this.shape;
         const svgString = destShape.toSvg();
         const blob = new Blob([svgString]);
@@ -202,7 +202,7 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportPngClick = async(_event) => {
-        const parent = this.shape.getRootParent();
+        const parent = this.shape.options.groupChildShapes ? null : this.shape.getRootParent();
         const destShape = parent || this.shape;
         const blob = await destShape.toPng(PngExportTypes.BLOB);
         this.saveToFile(blob,this.getExportFileName("png"));
