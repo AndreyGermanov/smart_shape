@@ -373,8 +373,10 @@ function SmartShapeDrawHelper() {
                     continue;
                 }
             }
-            if (cssName === "stroke" && shape.options.stroke) {
-                continue
+            if (cssName.search("stroke") !== -1) {
+                if (this.checkStrokeAttributes(cssName,shape)) {
+                    continue
+                }
             }
             polygon.style[cssName] = shape.options.style[cssName]
         }
@@ -393,7 +395,20 @@ function SmartShapeDrawHelper() {
         (shape.options.fill !== "none" && shape.options.fill)
     )
 
-
+    /**
+     * @ignore
+     * Method return true if any stroke attributes for shape
+     * specified
+     * @param cssName {string} CSS style name to check
+     * @param shape {SmartShape} Shape object
+     * @returns {boolean} True if specified and false otherwise
+     */
+    this.checkStrokeAttributes = (cssName,shape) => (
+        (cssName === "stroke" && shape.options.stroke) ||
+        (cssName === "stroke-width" && shape.options.strokeWidth) ||
+        (cssName === "stroke-linecap" && shape.options.strokeLinecap) ||
+        (cssName === "stroke-dasharray" && shape.options.strokeDasharray)
+    );
 
     /**
      * @ignore
@@ -471,7 +486,7 @@ function SmartShapeDrawHelper() {
      * 'null' by default. In this case value of shape.options.groupChildShapes will be used*
      */
     this.addSvgPolygons = (shape,svg,includeChildren) => {
-        const pos = shape.getPosition(shape.options.groupChildShapes);
+        const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
         const polygons = [];
         if (shape.svg) {
             let polygon = shape.svg.querySelector("polygon");
