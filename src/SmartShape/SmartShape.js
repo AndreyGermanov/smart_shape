@@ -107,8 +107,9 @@ function SmartShape() {
      * @param maxHeight {number} Maximum width of shape. By default `-1` - unlimited
      * @param hasContextMenu {boolean} Should the shape have context menu. False by default
      * @param minPoints {number} Minimum number of points in the shape. Default: 3.
-     * @param groupChildShapes {boolean} Should child shapes be groupped and move/resize/rotate/destroy with it.
+     * @param groupChildShapes {boolean} Should child shapes be grouped and move/resize/rotate/destroy together.
      * True by default
+     * @param moveToTop {boolean} Should shape go to top based on "zIndex" when user clicks on it. True by default
      * @type {object}
      */
     this.options = {
@@ -148,7 +149,8 @@ function SmartShape() {
         maxHeight: -1,
         hasContextMenu:true,
         minPoints: 3,
-        groupChildShapes: true
+        groupChildShapes: true,
+        moveToTop: true
     };
 
     /**
