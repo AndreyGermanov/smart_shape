@@ -404,9 +404,9 @@ function SmartShapeDrawHelper() {
      * @returns {boolean} True if specified and false otherwise
      */
     this.checkStrokeAttributes = (cssName,shape) => (
-        (cssName === "stroke" && shape.options.stroke) ||
+        (cssName === "stroke" && shape.options.stroke && shape.options.stroke !== "#000000") ||
         (cssName === "stroke-width" && shape.options.strokeWidth) ||
-        (cssName === "stroke-linecap" && shape.options.strokeLinecap) ||
+        (cssName === "stroke-linecap" && shape.options.strokeLinecap && shape.options.strokeLinecap !== "square") ||
         (cssName === "stroke-dasharray" && shape.options.strokeDasharray)
     );
 
