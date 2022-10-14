@@ -287,17 +287,19 @@ function SmartShapeManager() {
         if (this.activeShape) {
             this.deactivateShape(this.activeShape);
         }
-        const maxZIndex = this.getMaxZIndex(shape.root) + 1;
-        const diff = maxZIndex - shape.options.zIndex;
-        shape.options.prevZIndex = shape.options.zIndex;
-        shape.options.zIndex += diff;
-        SmartShapeDrawHelper.updateOptions(shape);
-        if (shape.options.groupChildShapes) {
-            shape.getChildren(true).forEach(child => {
-                child.options.prevZIndex = child.options.zIndex;
-                child.options.zIndex += diff;
-                SmartShapeDrawHelper.updateOptions(child);
-            });
+        if (shape.options.moveToTop) {
+            const maxZIndex = this.getMaxZIndex(shape.root) + 1;
+            const diff = maxZIndex - shape.options.zIndex;
+            shape.options.prevZIndex = shape.options.zIndex;
+            shape.options.zIndex += diff;
+            SmartShapeDrawHelper.updateOptions(shape);
+            if (shape.options.groupChildShapes) {
+                shape.getChildren(true).forEach(child => {
+                    child.options.prevZIndex = child.options.zIndex;
+                    child.options.zIndex += diff;
+                    SmartShapeDrawHelper.updateOptions(child);
+                });
+            }
         }
         this.activeShape = shape;
         EventsManager.emit(ShapeEvents.SHAPE_ACTIVATED,this.activeShape);
