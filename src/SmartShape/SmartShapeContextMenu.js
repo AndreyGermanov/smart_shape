@@ -36,8 +36,18 @@ export default function SmartShapeContextMenu(shape) {
     this.updateContextMenu = () => {
         if (this.shape.options.hasContextMenu && !this.contextMenu) {
             this.init();
+        } else if (!this.shape.options.hasContextMenu) {
+            this.contextMenu = null;
         }
         this.shape.contextMenu = this.contextMenu;
+        if (this.contextMenu) {
+            const itemsToAdd = this.getMenuItems();
+            for (let itemToAdd of itemsToAdd) {
+                if (!this.contextMenu.items.find(item => item.id === itemToAdd.id)) {
+                    this.contextMenu.addItem(itemToAdd.id,itemToAdd.title,itemToAdd.image);
+                }
+            }
+        }
     }
 
     /**
@@ -47,19 +57,27 @@ export default function SmartShapeContextMenu(shape) {
      */
     this.init = () => {
         if (shape.svg) {
-            this.contextMenu = Menus.create([
-                {id: "i" + shape.guid + "_clone", title: "Clone", image: copy},
-                {id: "i" + shape.guid + "_export_json", title: "Export to JSON", image: save},
-                {id: "i" + shape.guid + "_export_svg", title: "Export to SVG", image: svg},
-                {id: "i" + shape.guid + "_export_png", title: "Export to PNG", image: png},
-                {id: "i" + shape.guid + "_destroy", title: "Destroy", image: del}
-            ], shape.svg);
+            this.contextMenu = Menus.create([], shape.svg);
             if (shape.options.canAddPoints) {
                 this.contextMenu.addItem("i"+shape.guid+"_add_point", "Add Point", add);
             }
             this.displayGroupItems();
             this.setEventListeners();
         }
+    }
+
+    this.getMenuItems = () => {
+        const items = [
+            {id: "i" + shape.guid + "_clone", title: "Clone", image: copy},
+            {id: "i" + shape.guid + "_export_json", title: "Export to JSON", image: save},
+            {id: "i" + shape.guid + "_export_svg", title: "Export to SVG", image: svg},
+            {id: "i" + shape.guid + "_export_png", title: "Export to PNG", image: png},
+            {id: "i" + shape.guid + "_destroy", title: "Destroy", image: del}
+        ];
+        if (shape.options.canAddPoints) {
+            items.push({id:"i"+shape.guid+"_add_point", title:"Add Point", image:add});
+        }
+        return items;
     }
 
     /**

@@ -335,9 +335,12 @@ function SmartShape() {
         if (!points || typeof(points) !== "object") {
             return
         }
-        points.forEach(point =>
-            this.putPoint(point[0]+this.options.offsetX,point[1]+this.options.offsetY,Object.assign({},pointOptions))
-        );
+        points.forEach(point => {
+            const p = this.putPoint(point[0] + this.options.offsetX,
+                point[1] + this.options.offsetY,
+                Object.assign({}, pointOptions))
+            p && p.redraw();
+        });
         if (this.options.hasContextMenu && !this.contextMenu) {
             this.updateContextMenu();
         }
@@ -835,9 +838,7 @@ function SmartShape() {
         if (this.root && this.svg) {
             try {
                 this.root.removeChild(this.svg);
-            } catch (err) {
-                console.error(err);
-            }
+            } catch (err) {}
         }
         if (this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
