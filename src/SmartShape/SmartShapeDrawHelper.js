@@ -53,8 +53,8 @@ function SmartShapeDrawHelper() {
         shape.svg.id = shape.options.id;
         shape.svg.style.position = 'absolute';
         shape.svg.style.cursor = 'default';
-        shape.svg.style.left = shape.left;
-        shape.svg.style.top = shape.top;
+        shape.svg.style.left = shape.left+"px";
+        shape.svg.style.top = shape.top+"px";
         shape.svg.setAttribute("width",shape.width);
         shape.svg.setAttribute("height",shape.height);
         this.setupShapeFill(shape);
