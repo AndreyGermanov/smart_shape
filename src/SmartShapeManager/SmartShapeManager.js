@@ -172,7 +172,6 @@ function SmartShapeManager() {
         }
         if (event.buttons !== 1) {
             this.draggedShape.draggedPoint = null;
-            this.draggedShape = null;
         }
     }
 
@@ -434,7 +433,9 @@ function SmartShapeManager() {
      */
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
-            this.draggedShape = null;
+            if (this.draggedShape) {
+                this.draggedShape = null;
+            }
         }
         if (this.draggedShape) {
             if (event.buttons !== 1) {

@@ -984,7 +984,7 @@ function Rt() {
     const s = t.target.getRootParent(!0);
     s && s.options.groupChildShapes ? (this.activateShape(s), this.draggedShape = s) : (this.activateShape(t.target), this.draggedShape = t.target);
   }, this.onShapeMouseEnter = (t) => {
-    !this.draggedShape || t.buttons !== 1 && (this.draggedShape.draggedPoint = null, this.draggedShape = null);
+    !this.draggedShape || t.buttons !== 1 && (this.draggedShape.draggedPoint = null);
   }, this.onPointDragStart = (t) => {
     const s = this.findShapeByPoint(t.target);
     if (s) {
@@ -1049,7 +1049,7 @@ function Rt() {
       t.clientY - s.root.offsetTop
     ), s.draggedPoint ? (h.emit(r.POINT_DRAG_END, this.draggedShape, { point: s.draggedPoint }), s.draggedPoint.mouseup(t), s.draggedPoint = null) : h.emit(r.SHAPE_MOUSE_UP, s, {}), this.draggedShape = null, h.emit(r.SHAPE_MOVE_END, s, { pos: s.getPosition(!0) });
   }, this.mousemove = (t) => {
-    if (t.buttons !== 1 && (this.draggedShape = null), this.draggedShape) {
+    if (t.buttons !== 1 && this.draggedShape && (this.draggedShape = null), this.draggedShape) {
       if (t.buttons !== 1) {
         this.draggedShape.draggedPoint = null, this.draggedShape = null;
         return;
