@@ -539,6 +539,8 @@ function SmartShapeDrawHelper() {
             const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
             [width, height] = applyAspectRatio(width, height, pos.width, pos.height);
             const svgObj = this.getSvg(shape,includeChildren);
+            svgObj.setAttribute("width", pos.width);
+            svgObj.setAttribute("height", pos.height);
             for (let item of svgObj.querySelectorAll("image")) {
                 if (item.getAttribute("href") && item.getAttribute("href").length) {
                     const href = await blobToDataURL(await (await fetch(item.getAttribute("href"))).blob());
