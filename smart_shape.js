@@ -1412,7 +1412,7 @@ function B() {
       s.setOptions({ zIndex: this.options.zIndex + 1 }), s.element.style.zIndex = s.options.zIndex, this.options.displayMode === u.DEFAULT && !s.options.forceDisplay && (s.element.style.display = "none");
     }), this.options.displayMode !== u.DEFAULT && this.options.groupChildShapes && this.getChildren(!0).forEach((s) => {
       s.points.forEach((t) => {
-        t.options.visible && !t.options.hidden && (t.element.style.display = "");
+        t.options.visible && !t.options.hidden && t.options.canDrag && (t.element.style.display = "");
       });
     });
   }, this.switchDisplayMode = (s = null) => {

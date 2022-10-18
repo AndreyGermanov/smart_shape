@@ -638,7 +638,7 @@ function SmartShape() {
         if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
-                    if (point.options.visible && !point.options.hidden) {
+                    if (point.options.visible && !point.options.hidden && point.options.canDrag) {
                         point.element.style.display = '';
                     }
                 })
