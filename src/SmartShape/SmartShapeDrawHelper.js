@@ -57,6 +57,7 @@ function SmartShapeDrawHelper() {
         shape.svg.style.top = shape.top+"px";
         shape.svg.setAttribute("width",shape.width);
         shape.svg.setAttribute("height",shape.height);
+        shape.svg.setAttribute("guid",shape.guid);
         this.setupShapeFill(shape);
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
