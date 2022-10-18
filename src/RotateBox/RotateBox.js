@@ -79,9 +79,6 @@ function RotateBox() {
             id: "",
             canAddPoints: false,
             canDeletePoints: false,
-            stroke: "#aaaaaa",
-            strokeWidth:1,
-            strokeDasharray: "10",
             pointOptions: {
                 style: {
                     borderWidth: "0px",
@@ -91,6 +88,12 @@ function RotateBox() {
                 width:13,
                 height:13,
                 forceDisplay:true
+            },
+            style: {
+                "stroke-width":"2px",
+                "stroke":"#aaaaaa",
+                "stroke-dasharray": "10",
+                fill:"none",
             }
         },
         zIndex: 1000

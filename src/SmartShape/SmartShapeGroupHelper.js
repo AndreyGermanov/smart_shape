@@ -66,6 +66,7 @@ function SmartShapeGroupHelper(shape) {
         if (!this.shouldAddChild(child)) {
             return
         }
+        child.switchDisplayMode(this.shape.options.displayMode);
         this.children.push(child);
         EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD,this.shape,{child});
     }
