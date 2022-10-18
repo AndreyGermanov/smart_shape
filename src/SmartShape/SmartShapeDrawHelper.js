@@ -106,7 +106,6 @@ function SmartShapeDrawHelper() {
         }
         const points = shape.points.map(point => ""+(point.x-shape.left)+","+(point.y-shape.top)).join(" ");
         polygon.setAttribute("points",points);
-        this.setupPolygonStroke(shape,polygon);
         this.setupPolygonFill(shape,polygon);
         this.setupPolygonStyles(shape,polygon);
         if (shape.svg.querySelector("defs") && shape.svg.querySelector("defs").querySelector("filter")) {
@@ -160,14 +159,16 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape for which gradient should be created
      */
     this.setupShapeFill = (shape) => {
-        if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
+        const fill = shape.options.style.fill || 'none';
+
+        if (fill === "#image" && shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const pattern = this.createImageFill(shape);
             if (pattern) {
                 defs.appendChild(pattern)
             }
             shape.svg.appendChild(defs);
-        } else if (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
+        } else if (fill === "#gradient" && shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
             const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const gradient = this.createGradient(shape);
@@ -316,42 +317,17 @@ function SmartShapeDrawHelper() {
 
     /**
      * @ignore
-     * Method used to setup stroke params of shape polygon
-     * @param shape {SmartShape} Shape object
-     * @param polygon {SVGPolygonElement} Polygon element to setup
-     */
-    this.setupPolygonStroke = (shape,polygon) => {
-        if (notNull(shape.options.stroke)) {
-            polygon.setAttribute("stroke", shape.options.stroke);
-        }
-        if (notNull(shape.options.strokeWidth)) {
-            polygon.setAttribute("stroke-width",shape.options.strokeWidth);
-        }
-        if (notNull(shape.options.strokeLinecap)) {
-            polygon.setAttribute("stroke-linecap",shape.options.strokeLinecap);
-        }
-        if (notNull(shape.options.strokeDasharray)) {
-            polygon.setAttribute("stroke-dasharray",shape.options.strokeDasharray);
-        }
-    }
-
-    /**
-     * @ignore
      * Method used to set up fill params of shape polygon
      * @param shape {SmartShape} Shape object
      * @param polygon {SVGPolygonElement} Polygon element to setup
      */
     this.setupPolygonFill = (shape, polygon) => {
-        if (shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
+        const fill = shape.options.style.fill || "none";
+        if (fill === "#image" && shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             polygon.setAttribute("fill",'url("#'+shape.guid+'_pattern'+'")');
-        }  else if (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
+        }  else if (fill === "#gradient" && shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
             polygon.setAttribute("fill",'url("#'+shape.guid+'_gradient'+'")');
-        } else if (shape.options.fill) {
-            polygon.setAttribute("fill", shape.options.fill);
-        }
-        if (notNull(shape.options.fillOpacity)) {
-            polygon.setAttribute("fill-opacity", shape.options.fillOpacity);
         }
     }
 
@@ -369,47 +345,9 @@ function SmartShapeDrawHelper() {
             return;
         }
         for (let cssName in shape.options.style) {
-            if (cssName === "fill") {
-                if (this.checkFillAttributes(shape)) {
-                    continue;
-                }
-            }
-            if (cssName.search("stroke") !== -1) {
-                if (this.checkStrokeAttributes(cssName,shape)) {
-                    continue
-                }
-            }
             polygon.style[cssName] = shape.options.style[cssName]
         }
     }
-
-    /**
-     * @ignore
-     * Method return true if any fill attributes for shape
-     * specified
-     * @param shape {SmartShape} Shape object
-     * @returns {boolean} True if specified and false otherwise
-     */
-    this.checkFillAttributes = (shape) => (
-        (shape.options.fillImage && typeof(shape.options.fillImage) === "object") ||
-        (shape.options.fillGradient && typeof(shape.options.fillGradient) === "object") ||
-        (shape.options.fill !== "none" && shape.options.fill)
-    )
-
-    /**
-     * @ignore
-     * Method return true if any stroke attributes for shape
-     * specified
-     * @param cssName {string} CSS style name to check
-     * @param shape {SmartShape} Shape object
-     * @returns {boolean} True if specified and false otherwise
-     */
-    this.checkStrokeAttributes = (cssName,shape) => (
-        (cssName === "stroke" && shape.options.stroke && shape.options.stroke !== "#000000") ||
-        (cssName === "stroke-width" && shape.options.strokeWidth) ||
-        (cssName === "stroke-linecap" && shape.options.strokeLinecap && shape.options.strokeLinecap !== "square") ||
-        (cssName === "stroke-dasharray" && shape.options.strokeDasharray)
-    );
 
     /**
      * @ignore

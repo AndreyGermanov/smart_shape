@@ -13,7 +13,11 @@
       import {SmartShape} from "../../src/index.js";
       const div = document.getElementById("surface");
       const shape = new SmartShape();
-      shape.init(div,{fillImage:{
+      shape.init(div,{
+        style:{
+          fill:"#image"
+        },
+        fillImage:{
         href:"../assets/demo.jpg",
           width:200,
           height:133,

@@ -50,23 +50,16 @@ function SmartShape() {
      * @param name {string} Name of shape. By default, `Unnamed shape`
      * @param maxPoints {number} Number of points, which possible to add to the shape interactively. By default `-1`,
      * which means Unlimited
-     * @param stroke {string} Color of shape lines. Accepts the same values as
-     * [SVG stroke](https://www.w3schools.com/graphics/svg_stroking.asp) property accepts. Default -  `rgb(0,0,0)`
-     * @param strokeWidth {string} Thickness of shape lines. Accepts the same values as
-     * [SVG stroke-width](https://www.w3schools.com/graphics/svg_stroking.asp) property. Default - `2`
-     * @param strokeLinecap {string} Type of endings of shape lines. Accepts the same values as
-     * [SVG stroke-linecap](https://www.w3schools.com/graphics/svg_stroking.asp) property.
-     * @param strokeDasharray {string} Used to create dashed shape lines. Accepts the same values as
-     * [SVG stroke-dasharray](https://www.w3schools.com/graphics/svg_stroking.asp) property.
-     * @param fill {string} Fill color of shape polygon. Accepts the same values as
-     * [SVG fill](https://www.geeksforgeeks.org/svg-fill-attribute/) property. Default: `none` .
-     * @param fillOpacity {string} Fill opacity level of shape polygon. Accepts the same values as
-     * [SVG fill-opacity](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity) property.Default `1`.
+     * @param style {object} CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and
+     * classes is an alternative way to specify options of SVG elements:
+     * https://jenkov.com/tutorials/svg/svg-and-css.html,
+     * https://css-tricks.com/svg-properties-and-css/
      * @param fillGradient {object} Defines gradient object, that should be used to fill the shape. This could be either
-     * linear gradient or radial gradient. Overrides `fill` property.
+     * linear gradient or radial gradient. To make it work, it's required to set 'fill:#gradient' inside style.
      * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/gradient.html).
      * @param fillImage {object} Defines image fill object to fill the shape with image. Should contain following fields:
      * `href` - URL to image, `width` - width of image, `height` - height of image
+     * To make image fill work, it's required to set 'fill:#image' inside style
      * See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html).
      * @param filters {object} Object, that defines a set of SVG filters, that will be applied to this shape.
      * Keys are names of filters, for example `feDropShadow` for drop-shadow filter. Values are objects with attributes
@@ -75,10 +68,6 @@ function SmartShape() {
      * The demo of applying feDropShadow filter see
      * [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/svgfilters.html)
      * @param classes {string} CSS class names, that will be applied to underlying polygon SVG element.
-     * @param style {object} CSS styles, that will be applied to underlying polygon SVG element. Using CSS styles and
-     * classes is an alternative way to specify options of SVG elements:
-     * https://jenkov.com/tutorials/svg/svg-and-css.html,
-     * https://css-tricks.com/svg-properties-and-css/
      * @param offsetX {number} Number of pixels to add to X coordinate of each point to move entire shape
      * to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`.
      * @param offsetY {number} Number of pixels to add to Y coordinate of each point to move entire shape
@@ -116,14 +105,8 @@ function SmartShape() {
         id: "",
         name: "Unnamed shape",
         maxPoints: -1,
-        stroke: "",
-        strokeWidth: "",
-        strokeLinecap: "",
-        strokeDasharray: "",
-        fill: "",
         fillGradient: null,
         fillImage: null,
-        fillOpacity: "1",
         filters:{},
         canDragShape: true,
         canAddPoints: false,
@@ -133,9 +116,13 @@ function SmartShape() {
         offsetY: 0,
         classes: "",
         style: {
-            "stroke-width":2,
+            fill:"none",
+            "fill-opacity":1,
             "stroke":"black",
-            fill:"none"
+            "stroke-width":2,
+            "stroke-opacity":1,
+            "stroke-dasharray":0,
+            "stroke-linecap":"square"
         },
         pointOptions:{},
         zIndex: 1000,
@@ -648,10 +635,12 @@ function SmartShape() {
                 point.element.style.display = 'none';
             }
         })
-        if (this.options.displayMode !== "DEFAULT" && this.options.groupChildShapes) {
+        if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
-                    point.element.style.display = '';
+                    if (point.options.visible && !point.options.hidden) {
+                        point.element.style.display = '';
+                    }
                 })
             })
         }

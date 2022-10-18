@@ -18,7 +18,7 @@
         n0.init(div,{},n0_cords);
         const n0_sub_cords = [[25,25],[25,125],[75,125],[75,25]];
         const n0_sub = new SmartShape();
-        n0_sub.init(div,{fill:"white"},n0_sub_cords);
+        n0_sub.init(div,{style:{fill:"white"}},n0_sub_cords);
         n0.addChild(n0_sub);
         n0_sub.setOptions({zIndex:n0.options.zIndex+1})
         return n0;
@@ -75,7 +75,7 @@
         n6.init(div,{},n6_cords);
         const n6_sub_cords = [[25,75],[25,125],[75,125],[75,75]];
         const n6_sub = new SmartShape();
-        n6_sub.init(div,{fill:'white'},n6_sub_cords);
+        n6_sub.init(div,{style:{fill:'white'}},n6_sub_cords);
         n6.addChild(n6_sub);
         n6_sub.setOptions({zIndex:n6.options.zIndex+1})
         return n6;
@@ -94,11 +94,11 @@
         n8.init(div,{},n8_cords);
         const n8_sub = new SmartShape();
         const n8_sub_cords = [[25,25],[75,25],[75,50],[25,50]];
-        n8_sub.init(div,{fill:'white'},n8_sub_cords);
+        n8_sub.init(div,{style:{fill:'white'}},n8_sub_cords);
         n8.addChild(n8_sub);
         const n8_sub2 = new SmartShape();
         const n8_sub2_cords = [[25,125],[75,125],[75,90],[25,90]];
-        n8_sub2.init(div,{fill:'white'},n8_sub2_cords);
+        n8_sub2.init(div,{style:{fill:'white'}},n8_sub2_cords);
         n8.addChild(n8_sub2);
         n8_sub.setOptions({zIndex:n8.options.zIndex+1})
         n8_sub2.setOptions({zIndex:n8.options.zIndex+1})
@@ -111,7 +111,7 @@
         n9.init(div,{},n9_cords);
         const n9_sub_cords = [[25,25],[75,25],[75,75],[25,75]];
         const n9_sub = new SmartShape();
-        n9_sub.init(div,{fill:'white'},n9_sub_cords);
+        n9_sub.init(div,{style:{fill:'white'}},n9_sub_cords);
         n9.addChild(n9_sub);
         n9_sub.setOptions({zIndex:n9.options.zIndex+1})
         return n9;
@@ -127,29 +127,29 @@
       let timeLeftShapes = [];
       function setClock() {
         const clock = new SmartShape();
-        clock.init(div,{fill:"none",strokeWidth:0,pointOptions:{canDrag:false,visible:false},style:{"stroke-width":0},canScale:true,canRotate:true},[[0,0],[200,0],[200,200],[0,200]]);
+        clock.init(div,{style:{fill:"none","stroke-width":0},pointOptions:{canDrag:false,visible:false},canScale:true,canRotate:true},[[0,0],[200,0],[200,200],[0,200]]);
         for (let angle=0;angle<=360;angle+=6) {
           let secondsTick = new SmartShape();
-          secondsTick.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,10],[98,10]]);
+          secondsTick.init(div,{style:{fill:"black",strokeWidth:0},pointOptions:{visible:false}},[[98,0],[102,0],[102,10],[98,10]]);
           clock.addChild(secondsTick);
           secondsTick.rotateBy(angle);
           secondsTick.redraw();
         }
         for (let angle=0;angle<=360;angle+=30) {
           let minutesTick = new SmartShape();
-          minutesTick.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,0],[102,0],[102,20],[98,20]]);
+          minutesTick.init(div,{style:{fill:"black",strokeWidth:0},pointOptions:{visible:false}},[[98,0],[102,0],[102,20],[98,20]]);
           clock.addChild(minutesTick);
           minutesTick.rotateBy(angle);
           minutesTick.redraw();
         }
         const secondHand = new SmartShape();
-        secondHand.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[98,100],[100,10],[102,100]]);
+        secondHand.init(div,{style:{fill:"black",strokeWidth:0},pointOptions:{visible:false}},[[98,100],[100,10],[102,100]]);
         clock.addChild(secondHand);
         const minuteHand = new SmartShape();
-        minuteHand.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[97,100],[100,30],[103,100]]);
+        minuteHand.init(div,{style:{fill:"black",strokeWidth:0},pointOptions:{visible:false}},[[97,100],[100,30],[103,100]]);
         clock.addChild(minuteHand);
         const hourHand = new SmartShape();
-        hourHand.init(div,{fill:"black",strokeWidth:0,pointOptions:{visible:false}},[[95,100],[100,50],[105,100]])
+        hourHand.init(div,{style:{fill:"black",strokeWidth:0},pointOptions:{visible:false}},[[95,100],[100,50],[105,100]])
         clock.addChild(hourHand);
         clock.scaleTo(400,400);
         clock.moveTo(document.body.clientWidth/2-400/2,25);
@@ -216,7 +216,7 @@
         let shape;
         if (diffHours<10) {
           shape = get_number(0);
-          shape.setOptions({fillGradient:gradient});
+          shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
           timeLeftShapes.push(shape);
           shape.scaleTo(scaleX,scaleY);
           shape.moveTo(startX,startY);
@@ -224,7 +224,7 @@
           startX+=60;
         } else {
           shape = get_number((diffHours - diffHours % 10)/10);
-          shape.setOptions({fillGradient:gradient});
+          shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
           timeLeftShapes.push(shape);
           shape.scaleTo(scaleX,scaleY);
           shape.moveTo(startX,startY);
@@ -232,14 +232,14 @@
           startX+=60
         }
         shape = get_number(diffHours % 10);
-        shape.setOptions({fillGradient:gradient});
+        shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
         timeLeftShapes.push(shape);
         shape.scaleTo(scaleX,scaleY);
         shape.moveTo(startX,startY);
         shape.redraw();
         startX+=60
         shape = create_colon();
-        shape.setOptions({fillGradient:gradient});
+        shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
         shape.getChildren()[0].setOptions({fillGradient:gradient});
         timeLeftShapes.push(shape);
         shape.scaleTo(15,scaleY);
@@ -248,7 +248,7 @@
         startX+=25;
         if (diffMinutes<10) {
           shape = get_number(0);
-          shape.setOptions({fillGradient:gradient});
+          shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
           timeLeftShapes.push(shape);
           shape.scaleTo(scaleX,scaleY);
           shape.moveTo(startX,startY);
@@ -256,7 +256,7 @@
           startX+=60;
         } else {
           shape = get_number((diffMinutes - diffMinutes % 10) / 10);
-          shape.setOptions({fillGradient:gradient});
+          shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
           timeLeftShapes.push(shape);
           shape.scaleTo(scaleX,scaleY);
           shape.moveTo(startX,startY);
@@ -264,15 +264,15 @@
           startX+=60
         }
         shape = get_number(diffMinutes % 10);
-        shape.setOptions({fillGradient:gradient});
+        shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
         timeLeftShapes.push(shape);
         shape.scaleTo(scaleX,scaleY);
         shape.moveTo(startX,startY);
         shape.redraw();
         startX+=60
         shape = create_colon();
-        shape.setOptions({fillGradient:gradient});
-        shape.getChildren()[0].setOptions({fillGradient:gradient});
+        shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
+        shape.getChildren()[0].setOptions({style:{fill:"#gradient"},fillGradient:gradient});
         timeLeftShapes.push(shape);
         shape.scaleTo(15,scaleY);
         shape.moveTo(startX,startY);
@@ -281,7 +281,7 @@
 
         if (diffSeconds<10) {
           shape = get_number(0);
-          shape.setOptions({fillGradient:gradient});
+          shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
           timeLeftShapes.push(shape);
           shape.scaleTo(scaleX,scaleY);
           shape.moveTo(startX,startY);
@@ -289,7 +289,7 @@
           startX+=60;
         } else {
           shape = get_number((diffSeconds - diffSeconds % 10) / 10);
-          shape.setOptions({fillGradient:gradient});
+          shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
           timeLeftShapes.push(shape);
           shape.scaleTo(scaleX,scaleY);
           shape.moveTo(startX,startY);
@@ -297,7 +297,7 @@
           startX+=60
         }
         shape = get_number(diffSeconds % 10);
-        shape.setOptions({fillGradient:gradient});
+        shape.setOptions({style:{fill:"#gradient"},fillGradient:gradient});
         timeLeftShapes.push(shape);
         shape.scaleTo(scaleX,scaleY);
         shape.moveTo(startX,startY);
@@ -305,6 +305,31 @@
       }
 
       function setTimeLeftLabel() {
+        /*
+        const y_cords = [[0,0],[40,60],[40,150],[60,150],[60,60],[100,0],[75,0],[50,35],[25,0]]
+        const y = new SmartShape();
+        y.init(div,{},y_cords);
+        const s_cords = [[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]];
+        const s = new SmartShape();
+        s.init(div,{},s_cords);
+
+        const d = new SmartShape();
+        const d_cords = [[0, 0], [75, 0], [100, 25], [100, 125], [75, 150], [0, 150]];
+        d.init(div,{},d_cords);
+        const d_sub_cords = [[18, 13], [67, 13], [82, 26], [82, 125], [67, 137], [18, 137]];
+        const d_sub = new SmartShape();
+        d_sub.init(div,{},d_sub_cords);
+        d.addChild(d_sub);
+
+        const a = new SmartShape();
+        const a_cords = [];
+        a.init(div,{},a_cords);
+        const a_sub = new SmartShape();
+        const a_sub_cords = [[0, 150], [50, 0], [100, 150], [75, 150], [55, 80], [45, 80], [25, 150]];
+        a_sub.init(div,{},a_sub_cords);
+        a.addChild(a_sub);
+        */
+
         const options = {
           canScale:true,
           canRotate:true,
@@ -328,6 +353,9 @@
                 stopColor: "#00ff00",
               },
             ]
+          },
+          style:{
+            fill: "#gradient"
           }
         }
         const i_cords = [[0,0],[25,0],[25,150],[0,150]]
@@ -396,8 +424,6 @@
       }
       setClock();
       setTimeLeftLabel();
-
-
     </script>
   </body>
 </html>

@@ -80,13 +80,10 @@ function ResizeBox() {
             id: "",
             canAddPoints: false,
             canDeletePoints: false,
-            stroke: "#aaaaaa",
-            strokeWidth:1,
-            strokeDasharray: "10",
             pointOptions: {
                 style: {
-                    borderWidth: "0px",
-                    borderRadius: "0px",
+                    "border-width": "0px",
+                    "border-radius": "0px",
                     backgroundColor: "rgba(0,0,0,0)",
                     cursor:"pointer",
                 },
@@ -94,6 +91,12 @@ function ResizeBox() {
                 width:13,
                 height:13,
             },
+            style: {
+                "stroke-width":"2px",
+                "stroke":"#aaaaaa",
+                "stroke-dasharray": "10",
+                fill:"none",
+            }
         },
         zIndex: 1000
     }
