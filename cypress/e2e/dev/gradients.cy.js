@@ -30,7 +30,9 @@ describe('Gradient fill tests', () => {
         ],
       }
       shape.setOptions({
-        fill: "rgba(0,255,0,1)",
+        style: {
+          fill: "#gradient"
+        },
         fillGradient: gradientOptions
       })
       shape.redraw();

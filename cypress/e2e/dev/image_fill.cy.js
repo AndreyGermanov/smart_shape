@@ -10,7 +10,9 @@ describe('Image fill tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = initShape();
       shape.setOptions({
-        fill: "rgba(0,255,0,1)",
+        style: {
+          fill: "#image",
+        },
         fillImage: {
           href: "assets/demo.jpg",
           width: 200,
