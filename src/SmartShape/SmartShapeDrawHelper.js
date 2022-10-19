@@ -160,20 +160,26 @@ function SmartShapeDrawHelper() {
      */
     this.setupShapeFill = (shape) => {
         const fill = shape.options.style.fill || 'none';
-
+        let defs = shape.svg.querySelector("defs");
         if (fill === "#image" && shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
-            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const pattern = this.createImageFill(shape);
             if (pattern) {
+                if (!defs) {
+                    defs = document.createElementNS(shape.svg.namespaceURI, "defs");
+                }
                 defs.appendChild(pattern)
+                shape.svg.appendChild(defs);
             }
-            shape.svg.appendChild(defs);
         } else if (fill === "#gradient" && shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
-            const defs = document.createElementNS(shape.svg.namespaceURI,"defs");
             const gradient = this.createGradient(shape);
-            defs.appendChild(gradient);
-            shape.svg.appendChild(defs);
+            if (gradient) {
+                if (!defs) {
+                    defs = document.createElementNS(shape.svg.namespaceURI, "defs");
+                }
+                defs.appendChild(gradient);
+                shape.svg.appendChild(defs);
+            }
         }
     }
 
