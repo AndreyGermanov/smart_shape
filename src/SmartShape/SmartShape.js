@@ -1111,14 +1111,15 @@ function SmartShape() {
                 this.putPoint(point.x, point.y, point.options)
             }
         })
+        const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
         if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {
             this.getChildren(true).forEach(child=>child.destroy());
             jsonObj.children.forEach(child => {
+                child.parent_guid = this.guid;
                 this.addChild(new SmartShape().fromJSON(root,child));
             })
         }
-        const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
         return this;
     }
 }

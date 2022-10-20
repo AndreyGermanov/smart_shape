@@ -127,6 +127,8 @@ function SmartPoint() {
     this.setOptions = (options) => {
         if (!this.element) {
             this.element = document.createElement("div");
+            this.setEventListeners();
+            Object.assign(this,new SmartPointContextMenu(this));
         }
         if (options && typeof(options) === "object") {
             if (options.style && typeof(options.style) === "object") {
@@ -161,6 +163,8 @@ function SmartPoint() {
     this.setPointStyles = (element=null) => {
         if (!this.element) {
             this.element = document.createElement("div");
+            this.setEventListeners();
+            Object.assign(this,new SmartPointContextMenu(this));
         }
         if (element == null) {
             element = this.element;
