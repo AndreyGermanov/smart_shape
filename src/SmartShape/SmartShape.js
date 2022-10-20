@@ -219,9 +219,10 @@ function SmartShape() {
      * @param options {object} Options object to construct this shape ([see above](#SmartShape+options))
      * @param points {array} 2D Array of points for shape polygon.
      * Each element is [x,y] coordinate array
+     * @param show {boolean} Should display the shape by default. Default: true
      * @returns {object} constructed SmartShape object
      */
-    this.init = (root,options=null,points=null) => {
+    this.init = (root,options=null,points=null,show=true) => {
         if (!root) {
             console.error("Root HTML node not specified. Could not create shape.")
             return
@@ -243,7 +244,9 @@ function SmartShape() {
         if (typeof(this.updateContextMenu) === "function") {
             this.updateContextMenu();
         }
-        this.applyDisplayMode();
+        if (show) {
+            this.applyDisplayMode();
+        }
         if (points && points.length || this.options.forceCreateEvent) {
             EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {});
         }
@@ -306,6 +309,8 @@ function SmartShape() {
      */
     this.addPoint = (x,y,pointOptions=null) => {
         const point = this.putPoint(x, y,Object.assign({},pointOptions));
+        point.init(x, y, pointOptions)
+        this.root.appendChild(point.element);
         this.redraw();
         if (this.options.hasContextMenu && !this.contextMenu) {
             this.updateContextMenu();
@@ -329,7 +334,11 @@ function SmartShape() {
             const p = this.putPoint(point[0] + this.options.offsetX,
                 point[1] + this.options.offsetY,
                 Object.assign({}, pointOptions))
-            p && p.redraw();
+            if (p) {
+                p.init(x, y, pointOptions)
+                this.root.appendChild(point.element);
+                p.redraw();
+            }
         });
         if (this.options.hasContextMenu && !this.contextMenu) {
             this.updateContextMenu();
@@ -359,9 +368,9 @@ function SmartShape() {
         pointOptions.bounds = this.getBounds();
         pointOptions.zIndex = this.options.zIndex+1;
         const point = new SmartPoint();
+        point.x = x;
+        point.y = y;
         this.points.push(point);
-        point.init(x, y, pointOptions)
-        this.root.appendChild(point.element);
         return point;
     }
 
@@ -1093,13 +1102,13 @@ function SmartShape() {
 
         this.setOptions(jsonObj.options);
         if (!this.svg) {
-            this.init(root,this.options,null);
+            this.init(root,this.options,null,false);
         }
         jsonObj.points.forEach(point => {
             if (point.length) {
-                this.addPoint(point[0],point[1])
+                this.putPoint(point[0],point[1])
             } else {
-                this.addPoint(point.x, point.y, point.options)
+                this.putPoint(point.x, point.y, point.options)
             }
         })
         if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Shape Countries Collection</title>
+    <script src="../../smart_shape.umd.cjs"></script>
   </head>
   <body>
     <div id="panel" style="margin-bottom:10px">
@@ -16,10 +17,9 @@
       </div>
     </div>
     <div id="app">
-      <div id="surface" style="width:100%;height:700px;border: 1px solid #dddddd"></div>
+        <div id="surface" style="width:100%;height:700px;border: 1px solid #dddddd"></div>
     </div>
     <script type="module">
-      import {SmartShapeManager} from "../../src/index.js";
       const loadingTextSpan = document.querySelector("#loadingText");
       const countrySelectPanel = document.querySelector("#countrySelectPanel");
       const countryDropdown = document.querySelector("#countryDropDown");
@@ -29,8 +29,8 @@
         result.text().then(jsonString => {
           // Load shapes from collection
           let shapes = SmartShapeManager.fromJSON(document.getElementById("surface"),jsonString,(ratio) => {
-            loadingTextSpan.innerHTML = "Loading " + Math.round(ratio*100)+"% ..."
-            console.log("Loading " + Math.round(ratio*100)+"% ...");
+              loadingTextSpan.innerHTML = "Loading " + Math.round(ratio*100)+"% ..."
+              console.log("Loading " + Math.round(ratio*100)+"% ...");
           })
           // Fill dropdown with shape IDs and shape names
           shapes.forEach(shape => {

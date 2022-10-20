@@ -742,7 +742,7 @@ to this object.
     * [.resizeBox](#SmartShape+resizeBox) : [<code>ResizeBox</code>](#ResizeBox)
     * [.rotateBox](#SmartShape+rotateBox) : [<code>RotateBox</code>](#RotateBox)
     * [.initCenter](#SmartShape+initCenter) : <code>array</code>
-    * [.init(root, options, points)](#SmartShape+init) ⇒ <code>object</code>
+    * [.init(root, options, points, show)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
     * [.addPoints(points, pointOptions)](#SmartShape+addPoints)
@@ -770,7 +770,7 @@ to this object.
     * [.getCenter(forGroup)](#SmartShape+getCenter) ⇒ <code>array</code>
     * [.toSvg(includeChildren)](#SmartShape+toSvg) ⇒ <code>string</code>
     * [.toPng(type, width, height, includeChildren)](#SmartShape+toPng) ⇒ <code>Promise</code>
-    * [.toJSON(includeChildren)](#SmartShape+toJSON) ⇒ <code>string</code>
+    * [.toJSON(includeChildren, compact)](#SmartShape+toJSON) ⇒ <code>string</code>
     * [.clone(options)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
@@ -843,6 +843,7 @@ Options of shape as an object. Can have the following parameters.
 | minPoints | <code>number</code> | Minimum number of points in the shape. Default: 3. |
 | groupChildShapes | <code>boolean</code> | Should child shapes be grouped and move/resize/rotate/destroy together. True by default |
 | moveToTop | <code>boolean</code> | Should shape go to top based on "zIndex" when user clicks on it. True by default |
+| compactExport | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties during export to JSON using .toJSON() methood |
 
 <a name="SmartShape+left"></a>
 
@@ -915,7 +916,7 @@ using Rotate Box
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
 
-### smartShape.init(root, options, points) ⇒ <code>object</code>
+### smartShape.init(root, options, points, show) ⇒ <code>object</code>
 Method used to construct SmartShape object with specified `points` and
 with specified `options`.
 Then it binds this object to specified `root` HTML node and displays it
@@ -928,6 +929,7 @@ Then it binds this object to specified `root` HTML node and displays it
 | root | <code>HTMLElement</code> | HTML DOM node af a container element |
 | options | <code>object</code> | Options object to construct this shape ([see above](#SmartShape+options)) |
 | points | <code>array</code> | 2D Array of points for shape polygon. Each element is [x,y] coordinate array |
+| show | <code>boolean</code> | Should display the shape by default. Default: true |
 
 <a name="SmartShape+setOptions"></a>
 
@@ -1237,7 +1239,7 @@ Method exports shape and all its children as a PNG image
 
 <a name="SmartShape+toJSON"></a>
 
-### smartShape.toJSON(includeChildren) ⇒ <code>string</code>
+### smartShape.toJSON(includeChildren, compact) ⇒ <code>string</code>
 Method used to save shape to JSON string.
 Returns string with JSON object or JSON array, depending on should it save children too
 
@@ -1247,6 +1249,7 @@ Returns string with JSON object or JSON array, depending on should it save child
 | Param | Type | Description |
 | --- | --- | --- |
 | includeChildren | <code>boolean</code> | If true, then it appends JSONs of all children to `children` property of resulting JSON. |
+| compact | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties |
 
 <a name="SmartShape+clone"></a>
 
@@ -1475,8 +1478,8 @@ of all group if forGroup parameter is set
     * [.activateShape(shape, displayMode)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
     * [.getShapeOnCursor(x, y)](#SmartShapeManager+getShapeOnCursor) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-    * [.toJSON(shapes)](#SmartShapeManager+toJSON) ⇒ <code>string</code>
-    * [.fromJSON(root, json)](#SmartShapeManager+fromJSON) ⇒ <code>array</code> \| <code>null</code>
+    * [.toJSON(shapes, compact)](#SmartShapeManager+toJSON) ⇒ <code>string</code>
+    * [.fromJSON(root, json, progressCallback)](#SmartShapeManager+fromJSON) ⇒ <code>array</code> \| <code>null</code>
     * [.findShapesByOptionValue(name, value)](#SmartShapeManager+findShapesByOptionValue) ⇒ <code>array</code>
     * [.findShapeById(id)](#SmartShapeManager+findShapeById) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.findShapeByName(name)](#SmartShapeManager+findShapeByName) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
@@ -1634,7 +1637,7 @@ mouse cursor right now.
 
 <a name="SmartShapeManager+toJSON"></a>
 
-### smartShapeManager.toJSON(shapes) ⇒ <code>string</code>
+### smartShapeManager.toJSON(shapes, compact) ⇒ <code>string</code>
 Method used to export shapes to JSON.
 
 **Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
@@ -1644,10 +1647,11 @@ shapes, that exists in SmartShapeManager.
 | Param | Type | Description |
 | --- | --- | --- |
 | shapes | <code>array</code> | Array of [SmartShape](#SmartShape) objects to export |
+| compact | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties |
 
 <a name="SmartShapeManager+fromJSON"></a>
 
-### smartShapeManager.fromJSON(root, json) ⇒ <code>array</code> \| <code>null</code>
+### smartShapeManager.fromJSON(root, json, progressCallback) ⇒ <code>array</code> \| <code>null</code>
 Method loads shapes from JSON string, previously serialized by `toJSON` method
 
 **Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
@@ -1658,6 +1662,7 @@ of JSON reading error
 | --- | --- | --- |
 | root | <code>HTMLElement</code> | Container element to bind shapes to |
 | json | <code>string</code> \| <code>object</code> | JSON data with shapes as an object or as a string with array of shape definitions |
+| progressCallback | <code>function</code> | Callback function that triggered after loading each shape in collection with ratio of processed items between 0 and 1 |
 
 <a name="SmartShapeManager+findShapesByOptionValue"></a>
 

@@ -30,6 +30,9 @@ function SmartShapeDrawHelper() {
         if (shape.points.length < 1) {
             return
         }
+        if (!shape.contextMenu) {
+            shape.updateContextMenu();
+        }
         this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
         shape.svg.appendChild(polygon);
@@ -75,6 +78,9 @@ function SmartShapeDrawHelper() {
      */
     this.updatePoints = (shape,parent) => {
         shape.points.forEach(point => {
+            if (point.element.parentNode !== shape.root) {
+                shape.root.appendChild(point.element);
+            }
             if (point.options.zIndex < shape.options.zIndex+2) {
                 point.options.zIndex = shape.options.zIndex + 2;
             }
