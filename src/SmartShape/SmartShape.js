@@ -500,6 +500,16 @@ function SmartShape() {
         let newHeight = pos.top + height > bounds.bottom && bounds.bottom !== -1 ? bounds.bottom - pos.top : height;
         let scaleX = newWidth/pos.width;
         let scaleY = newHeight/pos.height;
+        this.scaleBy(scaleX,scaleY,includeChildren);
+    }
+
+    /**
+     * Method used to scale the shape by specified ratio by X and Y
+     * @param scaleX {number} Horizontal scale ratio
+     * @param scaleY {number} Vertical scale ratio
+     */
+    this.scaleBy = (scaleX=null,scaleY= null,includeChildren=null) => {
+        const pos = this.getPosition(includeChildren || this.options.groupChildShapes);
         this.points.forEach(point => {
             point.x = (point.x-pos.left)*scaleX+pos.left;
             point.y = (point.y-pos.top)*scaleY+pos.top}
@@ -794,6 +804,10 @@ function SmartShape() {
      */
     this.show = () => {
         this.setOptions({visible:true});
+        this.getChildren(true).forEach(child => {
+            child.setOptions({visible: true})
+            child.redraw();
+        });
         this.redraw();
     }
 
@@ -802,6 +816,10 @@ function SmartShape() {
      */
     this.hide = () => {
         this.setOptions({visible:false});
+        this.getChildren(true).forEach(child => {
+            child.setOptions({visible: false})
+            child.redraw();
+        });
         this.redraw();
     }
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Shape Demo Page</title>
+  </head>
+  <body>
+    <div id="app">
+        <div id="surface" style="left:150px;width:1500px;height:1200px;border: 1px solid"></div>
+    </div>
+    <script type="module">
+      import {SmartShapeManager} from "../../src/index.js";
+      import countriesJson from "../assets/countries.json";
+      const div = document.getElementById("surface");
+      const shapes = SmartShapeManager.fromGeoJson(div,countriesJson,
+              {nameField:"NAME",idField:"ADM0_A3",width:1000,options:{pointOptions:{width:5,height:5}}});
+      const shape = SmartShapeManager.findShapesByOptionValue("name","China")[0];
+      shape.show();
+      console.log(shape.options.name);
+      console.log(shape.getChildren(true));
+      console.log(shape.points);
+    </script>
+  </body>
+</html>

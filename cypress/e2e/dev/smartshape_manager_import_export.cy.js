@@ -1,5 +1,6 @@
 import SmartShapeManager from "../../../src/SmartShapeManager/SmartShapeManager.js";
 import {readJSON} from "../../../src/utils/index.js";
+import geoJSON from "../../../tests/assets/countries.json";
 
 describe('SmartShapeManager import/export', () => {
   it('toJSON', () => {
@@ -67,4 +68,15 @@ describe('SmartShapeManager import/export', () => {
       assert.equal(SmartShapeManager.shapes.length,0,"Should clear all shapes from manager");
     });
   });
+  it('fromGeoJson', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shapes = SmartShapeManager.fromGeoJson(app,geoJSON,{nameField:"NAME",idField:"ADM0_A3",width:200});
+      assert.equal(shapes.length,177,"Should import all shapes from collection");
+      const shape = shapes[0];
+      assert.equal(shape.options.name,"Fiji","Shape should have correct name");
+      const pos = shape.getPosition(true);
+      assert.equal(parseInt(pos.width),200,"Should scale shape properly")
+    })
+  })
 })
