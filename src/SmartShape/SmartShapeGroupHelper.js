@@ -66,7 +66,13 @@ function SmartShapeGroupHelper(shape) {
         if (!this.shouldAddChild(child)) {
             return
         }
-        child.switchDisplayMode(this.shape.options.displayMode);
+        if (this.shape.options.displayMode !== child.options.displayMode) {
+            if (child.svg) {
+                child.switchDisplayMode(this.shape.options.displayMode);
+            } else {
+                child.options.displayMode = shape.options.displayMode;
+            }
+        }
         this.children.push(child);
         EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD,this.shape,{child});
     }

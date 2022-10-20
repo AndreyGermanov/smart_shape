@@ -125,6 +125,9 @@ function SmartPoint() {
      * @param options {object} Point options object, described [above](#SmartPoint+options).
      */
     this.setOptions = (options) => {
+        if (!this.element) {
+            this.element = document.createElement("div");
+        }
         if (options && typeof(options) === "object") {
             if (options.style && typeof(options.style) === "object") {
                 options.style = Object.assign(this.options.style, options.style)
@@ -156,6 +159,9 @@ function SmartPoint() {
      * @returns {HTMLDivElement} HTML element with applied styles
      */
     this.setPointStyles = (element=null) => {
+        if (!this.element) {
+            this.element = document.createElement("div");
+        }
         if (element == null) {
             element = this.element;
         }
