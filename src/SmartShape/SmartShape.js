@@ -335,8 +335,8 @@ function SmartShape() {
                 point[1] + this.options.offsetY,
                 Object.assign({}, pointOptions))
             if (p) {
-                p.init(x, y, pointOptions)
-                this.root.appendChild(point.element);
+                p.init(p.x, p.y, pointOptions)
+                this.root.appendChild(p.element);
                 p.redraw();
             }
         });
