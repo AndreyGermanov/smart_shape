@@ -754,6 +754,7 @@ to this object.
     * [.moveTo(x, y, redraw)](#SmartShape+moveTo)
     * [.moveBy(stepX, stepY, redraw)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
+    * [.scaleBy(scaleX, scaleY)](#SmartShape+scaleBy)
     * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
     * [.redraw()](#SmartShape+redraw)
     * [.switchDisplayMode(mode)](#SmartShape+switchDisplayMode)
@@ -1059,6 +1060,18 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 | --- | --- | --- |
 | width | <code>number</code> \| <code>null</code> | new width. If not specified, then will be calculated automatically based on height to preserve aspect ratio |
 | height | <code>number</code> \| <code>null</code> | new height. If not specifie, then will be calculated automatically based on width to preserve aspect ratio |
+
+<a name="SmartShape+scaleBy"></a>
+
+### smartShape.scaleBy(scaleX, scaleY)
+Method used to scale the shape by specified ratio by X and Y
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scaleX | <code>number</code> | Horizontal scale ratio |
+| scaleY | <code>number</code> | Vertical scale ratio |
 
 <a name="SmartShape+rotateBy"></a>
 
@@ -1466,6 +1479,8 @@ of all group if forGroup parameter is set
     * [.fromJSON(root, json)](#SmartShapeManager+fromJSON) ⇒ <code>array</code> \| <code>null</code>
     * [.findShapesByOptionValue(name, value)](#SmartShapeManager+findShapesByOptionValue) ⇒ <code>array</code>
     * [.findShapeById(id)](#SmartShapeManager+findShapeById) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.findShapeByName(name)](#SmartShapeManager+findShapeByName) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.fromGeoJson(container, geoJSON, options)](#SmartShapeManager+fromGeoJson) ⇒ <code>array</code>
 
 <a name="new_SmartShapeManager_new"></a>
 
@@ -1668,6 +1683,32 @@ Method returns shape by specified ID
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>string</code> | ID to check |
+
+<a name="SmartShapeManager+findShapeByName"></a>
+
+### smartShapeManager.findShapeByName(name) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method returns shape by specified name
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - SmartShape object or null if no shape with specified name found  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | Name to check |
+
+<a name="SmartShapeManager+fromGeoJson"></a>
+
+### smartShapeManager.fromGeoJson(container, geoJSON, options) ⇒ <code>array</code>
+Method used to import collection of shapes from JSON array in GeoJSON format: https://geojson.org/
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>array</code> - Array of SmartShape objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| container | <code>HTMLElement</code> | The HTML element to connect loaded shapes |
+| geoJSON | <code>object</code> | Javascript object in geoJSON format |
+| options | <code>object</code> | Options to tune the import process: `idField`: the field from "properties collection of GeoJSON object that used as a shape ID, `nameField`: the field from "properties" collection of GeoJSON object that used as a shape name, `width`: the width to which loaded shapes should be scaled (if not specified then calc automatically based on height), `height`: the height to which loaded shapes should be scaled (if not specified then calc automatically based on width), `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import |
 
 <a name="EventsManager"></a>
 

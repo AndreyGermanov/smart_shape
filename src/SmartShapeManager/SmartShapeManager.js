@@ -5,6 +5,7 @@ import SmartShape,{SmartShapeDisplayMode} from "../SmartShape/SmartShape.js";
 import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
 import {createEvent, getMouseCursorPos} from "../events/functions.js";
+import {fromGeoJSON} from "./GeoJSONImport.js";
 
 /**
  * Object that keeps collection of shapes and keep track of
@@ -533,12 +534,15 @@ function SmartShapeManager() {
      */
     this.getShapeOnCursor = (x,y) => {
         const matchedShapes = this.shapes.filter(shape => shape.belongsToShape(x,y)
+            && shape.options.visible
+            && !shape.options.hidden
             && shape.options.id.search("_resizebox") === -1
             && shape.options.id.search("_rotatebox") === -1);
         if (!matchedShapes.length) {
             return null;
         }
-        return matchedShapes.reduce((prevShape,shape) => shape.options.zIndex >= prevShape.options.zIndex ? shape : prevShape);
+        return matchedShapes
+            .reduce((prevShape,shape) => shape.options.zIndex >= prevShape.options.zIndex ? shape : prevShape);
     }
 
     /**
@@ -606,6 +610,19 @@ function SmartShapeManager() {
     }
 
     /**
+     * Method returns shape by specified name
+     * @param name {string} Name to check
+     * @returns {SmartShape|null} SmartShape object or null if no shape with specified name found
+     */
+    this.findShapeByName = (name) => {
+        const result = this.findShapesByOptionValue("name",name);
+        if (result && result.length) {
+            return result[0]
+        }
+        return null;
+    }
+
+    /**
      * @ignore
      * Method used to clean manager object. Removes all shapes from list and
      * attached containers event listeners
@@ -624,6 +641,21 @@ function SmartShapeManager() {
         }
     }
 
+    /**
+     * Method used to import collection of shapes from JSON array in GeoJSON format: https://geojson.org/
+     * @param container {HTMLElement} The HTML element to connect loaded shapes
+     * @param geoJSON {object} Javascript object in geoJSON format
+     * @param options {object} Options to tune the import process:
+     * `idField`: the field from "properties collection of GeoJSON object that used as a shape ID,
+     * `nameField`: the field from "properties" collection of GeoJSON object that used as a shape name,
+     * `width`: the width to which loaded shapes should be scaled (if not specified then calc automatically based on height),
+     * `height`: the height to which loaded shapes should be scaled (if not specified then calc automatically based on width),
+     * `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import
+     * @returns {array} Array of SmartShape objects
+     */
+    this.fromGeoJson = (container,geoJSON,options) => {
+        return fromGeoJSON(container,geoJSON, options);
+    }
 }
 
 /**
