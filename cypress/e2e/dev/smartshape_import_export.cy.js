@@ -61,6 +61,13 @@ describe('SmartShape import/export tests', () => {
     offsetY: 30,
     classes: "newShape",
     style: {
+      fill:"none",
+      "fill-opacity":1,
+      "stroke":"black",
+      "stroke-width":2,
+      "stroke-opacity":1,
+      "stroke-dasharray":0,
+      "stroke-linecap":"square",
       "border-color": "blue",
       "border-width": "10px"
     },
@@ -98,7 +105,8 @@ describe('SmartShape import/export tests', () => {
     minPoints:3,
     hasContextMenu: true,
     groupChildShapes:true,
-    moveToTop: true
+    moveToTop: true,
+    compactExport: false
   }
   it('toJSON basic', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
@@ -152,6 +160,20 @@ describe('SmartShape import/export tests', () => {
       shape4.destroy();
     })
   })
+  it('toJSON compact', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "800px";
+      const shape = new SmartShape().init(app,shape1Options,[[0,100],[100,0],[200,100]]);
+      const jsonString = shape.toJSON(true,true);
+      const jsonObj = readJSON(jsonString);
+      assert.isNotNull(jsonObj,"Should correctly parse JSON object from string");
+      assert.deepEqual(jsonObj.options,shape.options, "Should save shape options correctly");
+      assert.equal(jsonObj.points.length,shape.points.length,"Should save all points");
+      assert.equal(jsonObj.points[0].length,2,"Should save points as an array of coordinates only");
+      shape.destroy();
+    });
+  })
   it("fromJSON basic", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
@@ -162,7 +184,7 @@ describe('SmartShape import/export tests', () => {
         triggered = true;
         assert.equal(event.target, shape, "Should send correct object to event");
       })
-      const jsonString = `{"options":{"id":"shape1","name":"Shape 1","maxPoints":15,"stroke":"black","strokeWidth":"3","strokeLinecap":"10","strokeDasharray":"15 10","fill":"white","fillGradient":{"type":"linear","steps":[{"offset":"30%","stopColor":"#ffaa00","stopOpacity":"1"},{"offset":"63%","stopColor":"#ff0000","stopOpacity":"0.5"},{"offset":"100%","stopColor":"#ffaa00","stopOpacity":"1"}]},"fillImage":{"href":"../assets/demo.jpg","width":200,"height":133},"fillOpacity":0.5,"filters":{"feDropShadow":{"dx":0.2,"dy":0.4,"stdDeviation":0.5,"floodColor":"#555555","floodOpacity":0.9},"feGaussianBlur":{"in":"SourceGraphic","stdDeviation":3}},"canDragShape":true,"canAddPoints":true,"canScale":true,"canRotate":true,"offsetX":20,"offsetY":30,"classes":"newShape","style":{"stroke-width":2,"stroke":"black","fill":"none","border-color":"blue","border-width":"10px"},"pointOptions":{"width":20,"height":20,"id":"point1","classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","background-color":"yellow","border-radius":"5px","cursor":"pointer"},"canDrag":true,"canDelete":true,"zIndex":500,"bounds":{"left":5,"right":200,"top":10,"bottom":300},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true},"zIndex":200,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"visible":true,"displayMode":"default","managed":true,"minWidth":50,"minHeight":40,"maxWidth":200,"maxHeight":150,"hasContextMenu":true,"minPoints":3,"groupChildShapes":true,"moveToTop":true},"points":[{"x":20,"y":130,"options":{"id":"point1","width":20,"height":20,"classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","border-radius":"5px","cursor":"pointer","background-color":"yellow"},"canDrag":true,"canDelete":true,"zIndex":202,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true}},{"x":120,"y":30,"options":{"id":"point1","width":20,"height":20,"classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","border-radius":"5px","cursor":"pointer","background-color":"yellow"},"canDrag":true,"canDelete":true,"zIndex":202,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true}},{"x":220,"y":130,"options":{"id":"point1","width":20,"height":20,"classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","border-radius":"5px","cursor":"pointer","background-color":"yellow"},"canDrag":true,"canDelete":true,"zIndex":202,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true}}]}`;
+      const jsonString = `{"options":{"id":"shape1","name":"Shape 1","maxPoints":15,"stroke":"black","strokeWidth":"3","strokeLinecap":"10","strokeDasharray":"15 10","fill":"white","fillGradient":{"type":"linear","steps":[{"offset":"30%","stopColor":"#ffaa00","stopOpacity":"1"},{"offset":"63%","stopColor":"#ff0000","stopOpacity":"0.5"},{"offset":"100%","stopColor":"#ffaa00","stopOpacity":"1"}]},"fillImage":{"href":"../assets/demo.jpg","width":200,"height":133},"fillOpacity":0.5,"filters":{"feDropShadow":{"dx":0.2,"dy":0.4,"stdDeviation":0.5,"floodColor":"#555555","floodOpacity":0.9},"feGaussianBlur":{"in":"SourceGraphic","stdDeviation":3}},"canDragShape":true,"canAddPoints":true,"canScale":true,"canRotate":true,"offsetX":20,"offsetY":30,"classes":"newShape","style":{"stroke-width":2,"stroke":"black","fill":"none","border-color":"blue","border-width":"10px"},"pointOptions":{"width":20,"height":20,"id":"point1","classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","background-color":"yellow","border-radius":"5px","cursor":"pointer"},"canDrag":true,"canDelete":true,"zIndex":500,"bounds":{"left":5,"right":200,"top":10,"bottom":300},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true},"zIndex":200,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"visible":true,"displayMode":"default","managed":true,"minWidth":50,"minHeight":40,"maxWidth":200,"maxHeight":150,"hasContextMenu":true,"minPoints":3,"groupChildShapes":true,"moveToTop":true,"compactExport":false},"points":[{"x":20,"y":130,"options":{"id":"point1","width":20,"height":20,"classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","border-radius":"5px","cursor":"pointer","background-color":"yellow"},"canDrag":true,"canDelete":true,"zIndex":202,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true}},{"x":120,"y":30,"options":{"id":"point1","width":20,"height":20,"classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","border-radius":"5px","cursor":"pointer","background-color":"yellow"},"canDrag":true,"canDelete":true,"zIndex":202,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true}},{"x":220,"y":130,"options":{"id":"point1","width":20,"height":20,"classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","border-radius":"5px","cursor":"pointer","background-color":"yellow"},"canDrag":true,"canDelete":true,"zIndex":202,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true}}]}`;
       shape.fromJSON(app, jsonString);
       assert.equal(shape.root, app, "Should put loaded shape to correct container");
       assert.isTrue(triggered, 'Should trigger shape create event');
@@ -192,4 +214,24 @@ describe('SmartShape import/export tests', () => {
         //assert.equal(SmartShapeManager.shapes.length,0,"Should destroy the shape and all children");
     });
   });
+  it("fromJSON compact", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "800px";
+      const shape = new SmartShape();
+      let triggered = false;
+      shape.addEventListener(ShapeEvents.SHAPE_CREATE, (event) => {
+        triggered = true;
+        assert.equal(event.target, shape, "Should send correct object to event");
+      })
+      const jsonString = `{"options":{"id":"shape1","name":"Shape 1","maxPoints":15,"fillGradient":{"type":"linear","steps":[{"offset":"30%","stopColor":"#ffaa00","stopOpacity":"1"},{"offset":"63%","stopColor":"#ff0000","stopOpacity":"0.5"},{"offset":"100%","stopColor":"#ffaa00","stopOpacity":"1"}]},"fillImage":{"href":"../assets/demo.jpg","width":200,"height":133},"filters":{"feDropShadow":{"dx":0.2,"dy":0.4,"stdDeviation":0.5,"floodColor":"#555555","floodOpacity":0.9},"feGaussianBlur":{"in":"SourceGraphic","stdDeviation":3}},"canDragShape":true,"canAddPoints":true,"canScale":true,"canRotate":true,"offsetX":20,"offsetY":30,"classes":"newShape","style":{"fill":"none","fill-opacity":1,"stroke":"black","stroke-width":2,"stroke-opacity":1,"stroke-dasharray":0,"stroke-linecap":"square","border-color":"blue","border-width":"10px"},"pointOptions":{"width":20,"height":20,"id":"point1","classes":"newPoint","style":{"border-width":"2px","border-style":"solid","border-color":"green","background-color":"yellow","border-radius":"5px","cursor":"pointer"},"canDrag":true,"canDelete":true,"zIndex":500,"bounds":{"left":5,"right":200,"top":10,"bottom":300},"moveDirections":[1,2],"visible":true,"hidden":false,"forceDisplay":true},"zIndex":200,"bounds":{"left":20,"top":10,"right":300,"bottom":400},"visible":true,"displayMode":"default","managed":true,"minWidth":50,"minHeight":40,"maxWidth":200,"maxHeight":150,"hasContextMenu":true,"minPoints":3,"groupChildShapes":true,"moveToTop":true,"compactExport":false,"stroke":"black","strokeWidth":"3","strokeLinecap":"10","strokeDasharray":"15 10","fill":"white","fillOpacity":0.5},"points":[[20,130],[120,30],[220,130]]}`;
+      shape.fromJSON(app, jsonString);
+      assert.equal(shape.root, app, "Should put loaded shape to correct container");
+      assert.isTrue(triggered, 'Should trigger shape create event');
+      assert.deepEqual(shape.options, shape1Options, "Should load shape options correctly");
+      assert.equal(shape.points.length, 3, "Should load shape points correctly");
+      assert.equal(shape.points[0].x, 20, "Should load shape point object correctly");
+      shape.destroy();
+    });
+  })
 })
