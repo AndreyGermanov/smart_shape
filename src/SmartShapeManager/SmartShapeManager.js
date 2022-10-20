@@ -548,10 +548,12 @@ function SmartShapeManager() {
     /**
      * Method used to export shapes to JSON.
      * @param shapes {array} Array of [SmartShape](#SmartShape) objects to export
+     * @param compact {boolean} If this is true, then it will save only coordinates of
+     * points, but not their properties
      * @returns {string} JSON string with array of SmartShape objects. If not specified, then exports all
      * shapes, that exists in SmartShapeManager.
      */
-    this.toJSON = (shapes=null) => {
+    this.toJSON = (shapes=null,compact=false) => {
         if (!shapes) {
             shapes = this.shapes;
         }
@@ -560,17 +562,19 @@ function SmartShapeManager() {
                 shape.options.id.search("_rotatabox") === -1 &&
                 !shape.getParent()
         ))
-        return JSON.stringify(shapes.map(shape => shape.getJSON()),null,4)
+        return JSON.stringify(shapes.map(shape => shape.getJSON(true,compact)))
     }
 
     /**
      * Method loads shapes from JSON string, previously serialized by `toJSON` method
      * @param root {HTMLElement} Container element to bind shapes to
      * @param json {string|object} JSON data with shapes as an object or as a string with array of shape definitions
+     * @param progressCallback {function} Callback function that triggered after loading each shape in collection
+     * with ratio of processed items between 0 and 1
      * @returns {array|null} array of loaded [SmartShape](#SmartShape) objects or null in case
      * of JSON reading error
      */
-    this.fromJSON = (root,json) => {
+    this.fromJSON = (root,json,progressCallback=null) => {
         let jsonObj = json;
         if (typeof(jsonObj) === "string") {
             jsonObj = readJSON(json);
@@ -579,11 +583,15 @@ function SmartShapeManager() {
             return null;
         }
         const result = [];
-        for (let obj of jsonObj) {
+        for (let index in jsonObj) {
+            const obj = jsonObj[index];
             if (obj.options.id && this.findShapeById(obj.options.id)) {
                 continue
             }
             result.push(new SmartShape().fromJSON(root,obj));
+            if (progressCallback && typeof(progressCallback) === "function") {
+                progressCallback(index/jsonObj.length);
+            }
         }
         return result;
     }

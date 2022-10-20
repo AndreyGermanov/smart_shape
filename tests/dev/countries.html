@@ -6,20 +6,48 @@
     <title>Smart Shape Demo Page</title>
   </head>
   <body>
+    <div id="panel">
+      <div id="loadingText"></div>
+      <div id="countrySelectPanel" style="display:none">
+        <select id="countryDropDown">
+          <option>---SELECT COUNTRY---</option>
+        </select>
+      </div>
+    </div>
     <div id="app">
-        <div id="surface" style="left:150px;width:1500px;height:1200px;border: 1px solid"></div>
+        <div id="surface" style="left:150px;width:2500px;height:5600px;border: 1px solid"></div>
     </div>
     <script type="module">
       import {SmartShapeManager} from "../../src/index.js";
-      import countriesJson from "../assets/countries.json";
-      const div = document.getElementById("surface");
-      const shapes = SmartShapeManager.fromGeoJson(div,countriesJson,
-              {nameField:"NAME",idField:"ADM0_A3",width:1000,options:{pointOptions:{width:5,height:5}}});
-      const shape = SmartShapeManager.findShapesByOptionValue("name","China")[0];
-      shape.show();
-      console.log(shape.options.name);
-      console.log(shape.getChildren(true));
-      console.log(shape.points);
+      const loadingTextSpan = document.querySelector("#loadingText");
+      const countrySelectPanel = document.querySelector("#countrySelectPanel");
+      const countryDropdown = document.querySelector("#countryDropDown");
+      let shape = null;
+      fetch("/tests/assets/countries.json").then(result => {
+        result.text().then(jsonString => {
+          let shapes = SmartShapeManager.fromJSON(document.getElementById("surface"),jsonString,(ratio) => {
+              loadingTextSpan.innerHTML = "Loading " + Math.round(ratio*100)+"% ..."
+              console.log("Loading " + Math.round(ratio*100)+"% ...");
+          })
+          countryDropdown.addEventListener("change", (event) => {
+            if (shape) {
+              shape.hide();
+            }
+            shape = SmartShapeManager.findShapeById(event.target.value);
+            if (shape) {
+              shape.show();
+            }
+          });
+          shapes.forEach(shape => {
+            const option = document.createElement("option");
+            option.value = shape.options.id;
+            option.innerHTML = shape.options.name;
+            countryDropdown.appendChild(option);
+          })
+          loadingTextSpan.style.display = 'none';
+          countrySelectPanel.style.display = '';
+        })
+      })
     </script>
   </body>
 </html>

@@ -99,6 +99,8 @@ function SmartShape() {
      * @param groupChildShapes {boolean} Should child shapes be grouped and move/resize/rotate/destroy together.
      * True by default
      * @param moveToTop {boolean} Should shape go to top based on "zIndex" when user clicks on it. True by default
+     * @param compactExport {boolean} If this is true, then it will save only coordinates of
+     * points, but not their properties during export to JSON using .toJSON() methood
      * @type {object}
      */
     this.options = {
@@ -137,7 +139,8 @@ function SmartShape() {
         hasContextMenu:true,
         minPoints: 3,
         groupChildShapes: true,
-        moveToTop: true
+        moveToTop: true,
+        compactExport: false
     };
 
     /**
@@ -1009,10 +1012,12 @@ function SmartShape() {
      * Returns string with JSON object or JSON array, depending on should it save children too
      * @param includeChildren {boolean} If true, then it appends JSONs
      * of all children to `children` property of resulting JSON.
+     * @param compact {boolean} If this is true, then it will save only coordinates of
+     * points, but not their properties
      * @returns {string} Serialized JSON as string.
      */
-    this.toJSON = (includeChildren=true) => {
-        return JSON.stringify(this.getJSON(includeChildren))
+    this.toJSON = (includeChildren=true,compact=false) => {
+        return JSON.stringify(this.getJSON(includeChildren,compact))
     }
 
     /**
@@ -1044,18 +1049,26 @@ function SmartShape() {
      * Returns JSON object or JSON array, depending on should it save children too
      * @param includeChildren {boolean} If true, then it appends JSONs
      * of all children to `children` property of resulting JSON
+     * @param compact {boolean} If this is true, then it will save only coordinates of
+     * points, but not their properties
      * @returns {object} Javascript object with shape and it's children, if `includeChildren` is true.
      */
-    this.getJSON = (includeChildren = true) => {
+    this.getJSON = (includeChildren = true, compact = false) => {
         const result = {
             options: Object.assign({},this.options)
         }
         result.options.displayMode = SmartShapeDisplayMode.DEFAULT;
-        result.points = this.points.map(point => point.getJSON());
+        if (compact || this.options.compactExport) {
+            result.points = this.points.map(point => [point.x,point.y]);
+        } else {
+            result.points = this.points.map(point => point.getJSON());
+        }
         if (includeChildren) {
             let children = this.getChildren();
             if (children.length) {
-                result.children = children.map(child => child.getJSON(includeChildren));
+                result.children = children.map(
+                    child => child.getJSON(includeChildren,compact || this.options.compactExport)
+                );
             }
         }
         return result;
@@ -1083,7 +1096,11 @@ function SmartShape() {
             this.init(root,this.options,null);
         }
         jsonObj.points.forEach(point => {
-            this.addPoint(point.x,point.y,point.options)
+            if (point.length) {
+                this.addPoint(point[0],point[1])
+            } else {
+                this.addPoint(point.x, point.y, point.options)
+            }
         })
         if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {
             this.getChildren(true).forEach(child=>child.destroy());
