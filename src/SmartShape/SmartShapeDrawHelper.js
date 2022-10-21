@@ -410,6 +410,9 @@ function SmartShapeDrawHelper() {
      */
     this.getSvgDefs = (shape,includeChildren=null) => {
         const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
+        if (!shape.svg) {
+            shape.redraw();
+        }
         if (shape.svg) {
             const shape_defs = shape.svg.querySelector("defs");
             if (shape_defs) {
@@ -418,9 +421,14 @@ function SmartShapeDrawHelper() {
         }
         if (includeChildren === true || (shape.options.groupChildShapes && includeChildren !== false)) {
             shape.getChildren(true).forEach(child => {
-                const child_defs = child.svg.querySelector("defs");
-                if (child_defs) {
-                    defs.innerHTML += child_defs.innerHTML;
+                if (!child.svg) {
+                    child.redraw()
+                }
+                if (child.svg) {
+                    const child_defs = child.svg.querySelector("defs");
+                    if (child_defs) {
+                        defs.innerHTML += child_defs.innerHTML;
+                    }
                 }
             })
         }
@@ -439,6 +447,9 @@ function SmartShapeDrawHelper() {
     this.addSvgPolygons = (shape,svg,includeChildren) => {
         const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
         const polygons = [];
+        if (!shape.svg) {
+            shape.redraw();
+        }
         if (shape.svg) {
             let polygon = shape.svg.querySelector("polygon");
             if (polygon) {
@@ -452,6 +463,12 @@ function SmartShapeDrawHelper() {
         }
         if (includeChildren === true || (shape.options.groupChildShapes && includeChildren !== false)) {
             shape.getChildren(true).forEach(child => {
+                if (!child.svg) {
+                    child.redraw();
+                }
+                if (!child.svg) {
+                    return;
+                }
                 let child_polygon = child.svg.querySelector("polygon");
                 if (child_polygon) {
                     child_polygon = child_polygon.cloneNode();

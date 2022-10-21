@@ -312,6 +312,7 @@ function SmartShape() {
         const point = this.putPoint(x, y,Object.assign({},pointOptions));
         point.init(x, y, pointOptions)
         this.root.appendChild(point.element);
+        point.updateContextMenu();
         this.redraw();
         if (this.options.hasContextMenu && !this.contextMenu) {
             this.updateContextMenu();
@@ -371,6 +372,7 @@ function SmartShape() {
         const point = new SmartPoint();
         point.x = x;
         point.y = y;
+        point.setOptions(pointOptions);
         this.points.push(point);
         return point;
     }
@@ -1143,7 +1145,6 @@ function SmartShape() {
         })
         const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
         SmartShapeManager.addShape(this);
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
         if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {
             this.getChildren(true).forEach(child=>child.destroy());
             jsonObj.children.forEach(child => {
@@ -1151,6 +1152,7 @@ function SmartShape() {
                 this.addChild(new SmartShape().fromJSON(root,child));
             })
         }
+        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
         return this;
     }
 }
