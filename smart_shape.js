@@ -1112,7 +1112,7 @@ function Nt() {
       }
       this.draggedShape.eventListener.mousemove(t);
     } else
-      console.log("MOVE 1"), this.processShapesUnderCursor(t);
+      this.processShapesUnderCursor(t);
   }, this.mouseover = (t) => {
     this.shapeOnCursor && this.shapeOnCursor.eventListener.mouseover(d(t, { target: this.shapeOnCursor }));
   }, this.mouseenter = (t) => {
@@ -1123,7 +1123,7 @@ function Nt() {
     this.shapeOnCursor && this.shapeOnCursor.eventListener.click(d(t, { target: this.shapeOnCursor }));
   }, this.processShapesUnderCursor = (t) => {
     const [s, e] = [t.clientX, t.clientY], i = this.getShapeOnCursor(s, e);
-    this.shapeOnCursor && this.shapeOnCursor !== i && this.shapeOnCursor.svg && (this.shapeOnCursor.svg.style.cursor = "default", this.shapeOnCursor.eventListener.mouseout(d(t, { target: this.shapeOnCursor }))), console.log(i), i && i !== this.shapeOnCursor && i.eventListener.mouseover(d(t, { target: i })), this.shapeOnCursor = i, this.shapeOnCursor && (h.emit(r.SHAPE_MOUSE_MOVE, this.shapeOnCursor, d(t)), this.shapeOnCursor.svg.style.cursor = "crosshair");
+    this.shapeOnCursor && this.shapeOnCursor !== i && this.shapeOnCursor.svg && (this.shapeOnCursor.svg.style.cursor = "default", this.shapeOnCursor.eventListener.mouseout(d(t, { target: this.shapeOnCursor }))), i && i !== this.shapeOnCursor && i.eventListener.mouseover(d(t, { target: i })), this.shapeOnCursor = i, this.shapeOnCursor && (h.emit(r.SHAPE_MOUSE_MOVE, this.shapeOnCursor, d(t)), this.shapeOnCursor.svg.style.cursor = "crosshair");
   }, this.getShapeOnCursor = (t, s) => {
     const e = this.shapes.filter((i) => i.belongsToShape(t, s) && i.options.visible && !i.options.hidden && i.options.id.search("_resizebox") === -1 && i.options.id.search("_rotatebox") === -1);
     return e.length ? e.reduce((i, o) => o.options.zIndex >= i.options.zIndex ? o : i) : null;

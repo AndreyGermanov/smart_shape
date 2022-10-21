@@ -457,7 +457,6 @@ function SmartShapeManager() {
             }
             this.draggedShape.eventListener.mousemove(event);
         } else {
-            console.log("MOVE 1");
             this.processShapesUnderCursor(event);
         }
     }
@@ -526,7 +525,6 @@ function SmartShapeManager() {
             this.shapeOnCursor.svg.style.cursor = "default";
             this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}))
         }
-        console.log(shapeOnCursor);
         if (shapeOnCursor && shapeOnCursor !== this.shapeOnCursor) {
             shapeOnCursor.eventListener.mouseover(createEvent(event,{target:shapeOnCursor}))
         }
