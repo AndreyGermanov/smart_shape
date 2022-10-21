@@ -1142,6 +1142,7 @@ function SmartShape() {
             }
         })
         const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
+        SmartShapeManager.shapes.push(this);
         EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
         if (includeChildren && typeof(jsonObj.children) !== "undefined" && jsonObj.children) {
             this.getChildren(true).forEach(child=>child.destroy());

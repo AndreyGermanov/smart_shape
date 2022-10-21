@@ -107,7 +107,7 @@ function SmartShapeManager() {
      */
     this.onShapeCreated = (event) => {
         const shape = event.target;
-        if (notNull(shape.root) && !this.getShape(shape)) {
+        if (notNull(shape.root) && !this.getShape(shape) && !this.getShape(shape)) {
             this.shapes.push(shape);
             if (!this.activeShape) {
                 this.activeShape = shape;
@@ -514,6 +514,7 @@ function SmartShapeManager() {
             this.shapeOnCursor.svg.style.cursor = "default";
             this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}))
         }
+        console.log(shapeOnCursor);
         if (shapeOnCursor && shapeOnCursor !== this.shapeOnCursor) {
             shapeOnCursor.eventListener.mouseover(createEvent(event,{target:shapeOnCursor}))
         }
@@ -591,6 +592,9 @@ function SmartShapeManager() {
             result.push(new SmartShape().fromJSON(root,obj));
             if (progressCallback && typeof(progressCallback) === "function") {
                 progressCallback(index/jsonObj.length);
+            }
+            if (index>5) {
+                 break;
             }
         }
         return result;

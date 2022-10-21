@@ -25,7 +25,7 @@
       const countryDropdown = document.querySelector("#countryDropDown");
       let shape = null;
       // Download SmartShape JSON collection
-      fetch("/tests/assets/countries.json").then(result => {
+      fetch("tests/assets/countries.json").then(result => {
         result.text().then(jsonString => {
           // Load shapes from collection
           let shapes = SmartShapeManager.fromJSON(document.getElementById("surface"),jsonString,(ratio) => {

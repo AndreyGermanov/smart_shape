@@ -205,6 +205,7 @@ function SmartShapeEventListener(shape) {
      * @param event {MouseEvent} Event object
      */
     this.mousemove = (event) => {
+        console.log("MOVE");
         if (!this.shape.draggedPoint) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE, this.shape, createEvent(event));
         }
