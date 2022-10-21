@@ -603,9 +603,6 @@ function SmartShapeManager() {
             if (progressCallback && typeof(progressCallback) === "function") {
                 progressCallback(index/jsonObj.length);
             }
-            if (index>5) {
-                 break;
-            }
         }
         return result;
     }
