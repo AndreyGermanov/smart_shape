@@ -295,6 +295,7 @@ function SmartShape() {
     this.setupPoints = (points,pointOptions) => {
         this.points = [];
         this.addPoints(points,Object.assign({},pointOptions));
+        this.calcPosition();
     }
 
     /**
@@ -605,6 +606,35 @@ function SmartShape() {
                 child.points.forEach(point => point.rotateBy(angle, centerX, centerY));
                 child.redraw();
             })
+        }
+    }
+
+    /**
+     * Method used to flip shape and its children vertically or horizontally
+     * @param byX {boolean} Flip horizontally
+     * @param byY {boolean} Flip vertically
+     * @param includeChildren {boolean} Flip includes children shapes
+     */
+    this.flip = (byX,byY,includeChildren) => {
+        if (!byX && !byY) {
+            return
+        }
+        includeChildren = includeChildren || this.options.groupChildShapes;
+        this.calcPosition()
+        let children = includeChildren ? this.getChildren(true) : null;
+        children && children.forEach(child => child.calcPosition());
+        const pos = this.getPosition(includeChildren);
+        if (byX) {
+            this.points.forEach(point => point.x = Math.abs(pos.right - point.x) + pos.left);
+            children && children.forEach(child => child.points
+                .forEach(point => point.x = Math.abs(pos.right - point.x) + pos.left)
+            );
+        }
+        if (byY) {
+            this.points.forEach(point => point.y = Math.abs(pos.bottom - point.y) + pos.top);
+            children && children.forEach(child => child.points
+                .forEach(point => point.y = Math.abs(pos.bottom - point.y) + pos.top)
+            );
         }
     }
 

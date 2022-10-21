@@ -667,4 +667,18 @@ describe('SmartShape API tests', () => {
       })
     });
   })
+
+  it('flip', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = SmartShapeManager.createShape(app,{},[[10,20],[40,0],[80,70],[30,80]]);
+      shape.flip(false,true);
+      assert.deepEqual(shape.getPointsArray(),[[10,60],[40,80],[80,10],[30,0]],"Should flip vertically correctly");
+      shape.flip(true,false);
+      assert.deepEqual(shape.getPointsArray(),[[80,60],[50,80],[10,10],[60,0]],"Should flip vertically correctly");
+      shape.flip(true,true);
+      assert.deepEqual(shape.getPointsArray(),[[10,20],[40,0],[80,70],[30,80]],"Should flip vertically correctly");
+    })
+  })
+
 })
