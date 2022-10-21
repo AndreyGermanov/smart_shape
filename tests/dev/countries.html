@@ -33,12 +33,12 @@
             console.log("Loading " + Math.round(ratio*100)+"% ...");
           })
           // Fill dropdown with shape IDs and shape names
-          shapes.forEach(shape => {
+          for (let shape of shapes) {
             const option = document.createElement("option");
             option.value = shape.options.id;
             option.innerHTML = shape.options.name;
             countryDropdown.appendChild(option);
-          })
+          }
           loadingTextSpan.style.display = 'none';
           countrySelectPanel.style.display = '';
           // When select country from dropdown
