@@ -108,13 +108,24 @@ function SmartShapeManager() {
     this.onShapeCreated = (event) => {
         const shape = event.target;
         if (notNull(shape.root) && !this.getShape(shape) && !this.getShape(shape)) {
+            this.addShape(shape);
             this.shapes.push(shape);
             if (!this.activeShape) {
                 this.activeShape = shape;
             }
-            if (this.getShapesByContainer(shape.root).length === 1) {
-                this.addContainerEvents(shape)
-            }
+        }
+    }
+
+    /**
+     * @ignore
+     * Internal method used to push shape to collection and connect
+     * event listeners to it container
+     * @param shape {SmartShape} Shape object to add
+     */
+    this.addShape = (shape) => {
+        this.shapes.push(shape);
+        if (this.getShapesByContainer(shape.root).length === 1) {
+            this.addContainerEvents(shape)
         }
     }
 
@@ -446,6 +457,7 @@ function SmartShapeManager() {
             }
             this.draggedShape.eventListener.mousemove(event);
         } else {
+            console.log("MOVE 1");
             this.processShapesUnderCursor(event);
         }
     }

@@ -756,6 +756,7 @@ to this object.
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.scaleBy(scaleX, scaleY)](#SmartShape+scaleBy)
     * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
+    * [.flip(byX, byY, includeChildren)](#SmartShape+flip)
     * [.redraw()](#SmartShape+redraw)
     * [.switchDisplayMode(mode)](#SmartShape+switchDisplayMode)
     * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
@@ -1088,6 +1089,19 @@ Method used to rotate this shape by specified angle around it's center.
 | centerX | <code>number</code> | X coordinate of center around which to rotate the shape. By default it's a center of the shape |
 | centerY | <code>number</code> | Y coordinate of center around which to rotate the shape. By default it's a center of the shape |
 | checkBounds | <code>boolean</code> | Should the function check that shape won't go beyond defined bounds or container bounds after rotation. By default false. |
+
+<a name="SmartShape+flip"></a>
+
+### smartShape.flip(byX, byY, includeChildren)
+Method used to flip shape and its children vertically or horizontally
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| byX | <code>boolean</code> | Flip horizontally |
+| byY | <code>boolean</code> | Flip vertically |
+| includeChildren | <code>boolean</code> | Flip includes children shapes |
 
 <a name="SmartShape+redraw"></a>
 
