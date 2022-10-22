@@ -772,7 +772,7 @@ to this object.
     * [.toSvg(includeChildren)](#SmartShape+toSvg) ⇒ <code>string</code>
     * [.toPng(type, width, height, includeChildren)](#SmartShape+toPng) ⇒ <code>Promise</code>
     * [.toJSON(includeChildren, compact)](#SmartShape+toJSON) ⇒ <code>string</code>
-    * [.clone(options)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.clone(options, includeChildren)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 
 <a name="new_SmartShape_new"></a>
@@ -1267,7 +1267,7 @@ Returns string with JSON object or JSON array, depending on should it save child
 
 <a name="SmartShape+clone"></a>
 
-### smartShape.clone(options) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+### smartShape.clone(options, includeChildren) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
 Method creates complete copy of current shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1275,7 +1275,8 @@ Method creates complete copy of current shape
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>object</code> | Array of shape options to override on cloned object. Any [SmartShape options](#SmartShape+options) can be in this object. |
+| options | <code>object</code> | Array of shape options to override on cloned object. |
+| includeChildren | <code>boolean</code> | If true, then clones all children of this shape as well Any [SmartShape options](#SmartShape+options) can be in this object. |
 
 <a name="SmartShape+fromJSON"></a>
 

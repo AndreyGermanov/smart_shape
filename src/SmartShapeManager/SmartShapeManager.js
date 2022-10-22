@@ -109,7 +109,6 @@ function SmartShapeManager() {
         const shape = event.target;
         if (notNull(shape.root) && !this.getShape(shape) && !this.getShape(shape)) {
             this.addShape(shape);
-            this.shapes.push(shape);
             if (!this.activeShape) {
                 this.activeShape = shape;
             }

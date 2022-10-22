@@ -1,6 +1,6 @@
 import SmartShapeManager from "../../../src/SmartShapeManager/SmartShapeManager.js";
 import {readJSON} from "../../../src/utils/index.js";
-import geoJSON from "../../../tests/assets/countries.json";
+import geoJSON from "../../../tests/assets/geocountries.json";
 
 describe('SmartShapeManager import/export', () => {
   it('toJSON', () => {

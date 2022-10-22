@@ -156,9 +156,11 @@ describe('RotateBox Tests', () => {
       box.setOptions({
         zIndex:1010,
         shapeOptions:{
-          stroke: "#aaaaaa",
-          strokeWidth:1,
-          strokeDasharray: "10",
+          style: {
+            stroke: "#aaaaaa",
+            "stroke-width":1,
+            "stroke-dasharray": 10,
+          },
           pointOptions:{
             style: {
               borderWidth: "1px",
@@ -170,9 +172,9 @@ describe('RotateBox Tests', () => {
         }
       })
       box.redraw();
-      cy.get("#box1 > polygon").should("have.attr","stroke-width","1").then(() => {
-        cy.get("#box1 > polygon").should("have.attr","stroke-dasharray","10").then(() => {
-          cy.get("#box1 > polygon").should("have.attr","stroke","#aaaaaa").then(() => {
+      cy.get("#box1 > polygon").should("have.css","stroke-width","1px").then(() => {
+        cy.get("#box1 > polygon").should("have.css","stroke-dasharray","10px").then(() => {
+          cy.get("#box1 > polygon").should("have.css","stroke","rgb(170, 170, 170)").then(() => {
             cy.get("#box1").should("have.css","z-index","1010").then(() => {
               cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-width","1px").then(() => {
                 cy.get("#"+box.shape.guid+"_left_top").should("have.css","border-color","rgb(204, 204, 204)").then(() => {
