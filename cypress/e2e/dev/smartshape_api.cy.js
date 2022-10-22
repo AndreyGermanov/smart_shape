@@ -265,13 +265,7 @@ describe('SmartShape API tests', () => {
         shape.setOptions({
           id: "shape2",
           name: "Cool shape",
-          fill: "rgb(0, 255, 0)",
-          fillOpacity: "0.5",
           maxPoints: 6,
-          stroke: "rgb(150, 150, 150)",
-          strokeWidth: 5,
-          strokeDasharray: "10,20,10",
-          strokeLinecap: "round",
           pointOptions: {
             style: {
               borderColor: "rgb(0, 255, 0)"
@@ -279,7 +273,13 @@ describe('SmartShape API tests', () => {
           },
           classes: "myShape",
           style: {
-            strokeOpacity: 0.0,
+            "stroke-opacity": 0.0,
+            fill: "rgb(0, 255, 0)",
+            "fill-opacity": "0.5",
+            stroke: "rgb(150, 150, 150)",
+            "stroke-width": 5,
+            "stroke-dasharray": "10,20,10",
+            "stroke-linecap": "round",
           },
           zIndex: 1010,
           bounds: {
@@ -294,11 +294,11 @@ describe('SmartShape API tests', () => {
         shape.redraw();
         cy.get("#shape1").should("not.exist").then(() => {
           cy.get("#shape2").should("exist").then(() => {
-            cy.get("#shape2 > polygon").should("have.attr", "fill", "rgb(0, 255, 0)").then(() => {
-              cy.get("#shape2 > polygon").should("have.attr", "stroke", "rgb(150, 150, 150)").then(() => {
-                cy.get("#shape2 > polygon").should("have.attr", "stroke-width", "5").then(() => {
-                  cy.get("#shape2 > polygon").should("have.attr", "stroke-dasharray", "10,20,10").then(() => {
-                    cy.get("#shape2 > polygon").should("have.attr", "stroke-linecap", "round").then(() => {
+            cy.get("#shape2 > polygon").should("have.css", "fill", "rgb(0, 255, 0)").then(() => {
+              cy.get("#shape2 > polygon").should("have.css", "stroke", "rgb(150, 150, 150)").then(() => {
+                cy.get("#shape2 > polygon").should("have.css", "stroke-width", "5px").then(() => {
+                  cy.get("#shape2 > polygon").should("have.css", "stroke-dasharray", "10px, 20px, 10px").then(() => {
+                    cy.get("#shape2 > polygon").should("have.css", "stroke-linecap", "round").then(() => {
                       cy.get("#shape2 > polygon").should("have.class", "myShape").then(() => {
                         cy.get("#shape2 > polygon").should("have.css", "stroke-opacity", "0").then(() => {
                           cy.get("#shape2").should("have.css","z-index","1010").then(() => {
@@ -522,7 +522,7 @@ describe('SmartShape API tests', () => {
   it("toSvg", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(async() => {
       const app = Cypress.$("#app").toArray()[0];
-      const shape1 = new SmartShape().init(app,{fillGradient:{
+      const shape1 = new SmartShape().init(app,{style:{fill:"#gradient"},fillGradient:{
           type:"linear",
           gradientTransform: "rotate(90)",
           steps: [
@@ -656,7 +656,7 @@ describe('SmartShape API tests', () => {
       })
       const shape3 = shape1.clone();
       cy.wait(500).then(() => {
-        assert.equal(SmartShapeManager.shapes.length,4,"Should add 2 more shapes to Shapes manager");
+        assert.equal(SmartShapeManager.getShapes().length,4,"Should add 2 more shapes to Shapes manager");
         assert.deepEqual(shape3.getPointsArray(),shape1.getPointsArray(),"Should correctly copy points");
         assert.deepEqual(shape3.getChildren()[0].getPointsArray(),shape2.getPointsArray(),"Should correctly copy points");
         assert.equal(shape3.options.id,"shape1_clone","Should set id of clone by adding '_clone' suffix");

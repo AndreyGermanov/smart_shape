@@ -36,7 +36,7 @@ export default function SmartPointContextMenu(point) {
             this.contextMenu = null;
         }
         if (this.point.options.canDelete) {
-            this.init();
+            this.initMenu();
         }
         this.point.contextMenu = this.contextMenu;
     }
@@ -46,7 +46,7 @@ export default function SmartPointContextMenu(point) {
      * Initializes context menu. Creates context menu and binds event
      * listeners to it
      */
-    this.init = () => {
+    this.initMenu = () => {
         if (this.point.element) {
             this.contextMenu = Menus.create([
                 {id: "i" + this.point.guid + "_delete", title: "Delete point", image: del},

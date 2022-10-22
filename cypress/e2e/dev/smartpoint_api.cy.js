@@ -10,7 +10,8 @@ describe('SmartPoint API tests', () => {
   it('create point and add it to shape', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = initShape()
-      const point1 = shape.putPoint(100,100,{id:"point1"});
+      const point1 = shape.addPoint(100,100,{id:"point1"});
+      point1.redraw();
       cy.get("#point1").should("exist").then(() => {
         const point2 = shape.findPoint(100,100)
         assert.isNotNull(point2);
@@ -18,11 +19,10 @@ describe('SmartPoint API tests', () => {
       });
     })
   })
-
   it("setOptions", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = initShape()
-      const point1 = shape.putPoint(100,100,{id:"point1"});
+      const point1 = shape.addPoint(100,100,{id:"point1"});
       point1.setOptions({
         id: "point2",
         width:100,
@@ -60,7 +60,7 @@ describe('SmartPoint API tests', () => {
   it("redraw", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = initShape()
-      const point1 = shape.putPoint(100,100,{id:"point1"});
+      const point1 = shape.addPoint(100,100,{id:"point1"});
       point1.element.id = "point2";
       cy.get("#point1").should("not.exist").then(() => {
         cy.get("#point2").should("exist").then(() => {
@@ -138,12 +138,12 @@ describe('SmartPoint API tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       EventsManager.clear();
       const [app,shape] = initShape()
-      const point1 = shape.putPoint(100,100,{id:"point1"});
+      const point1 = shape.addPoint(100,100,{id:"point1"});
       cy.get("#point1").should("exist").then(() => {
         point1.destroy();
         cy.get("#point1").should("not.exist").then(() => {
           assert.equal(shape.points.length,0)
-          const point2 = shape.putPoint(100,100, {id:"point1"});
+          const point2 = shape.addPoint(100,100, {id:"point1"});
           point2.addEventListener(PointEvents.POINT_ADDED,()=> {});
           point2.addEventListener(PointEvents.POINT_MOUSE_MOVE,()=> {});
           point2.addEventListener(PointEvents.POINT_DRAG_START,()=> {});
@@ -203,5 +203,4 @@ describe('SmartPoint API tests', () => {
       });
     });
   })
-
 })

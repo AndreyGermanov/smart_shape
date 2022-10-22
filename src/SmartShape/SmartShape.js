@@ -309,8 +309,11 @@ function SmartShape() {
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.addPoint = (x,y,pointOptions=null) => {
-        const point = this.putPoint(x, y,Object.assign({},pointOptions));
-        point.init(x, y, pointOptions)
+        let point = this.putPoint(x, y,Object.assign({},pointOptions));
+        if (!point) {
+            return null;
+        }
+        point = point.init(x, y, pointOptions);
         this.root.appendChild(point.element);
         point.updateContextMenu();
         this.redraw();
@@ -1064,16 +1067,17 @@ function SmartShape() {
     /**
      * Method creates complete copy of current shape
      * @param options {object} Array of shape options to override on cloned object.
+     * @param includeChildren {boolean} If true, then clones all children of this shape as well
      * Any [SmartShape options](#SmartShape+options) can be in this object.
      * @returns {SmartShape|null} Created shape object or null in case of errors
      */
-    this.clone = (options={}) => {
-        const json = Object.assign({},this.getJSON());
+    this.clone = (options={},includeChildren=true) => {
+        const json = Object.assign({},this.getJSON(includeChildren));
         json.options.id += "_clone";
         json.options.name += " Clone";
         json.parent_guid = this.guid;
         json.options = Object.assign(json.options,options);
-        const result = new SmartShape().fromJSON(this.root,JSON.stringify(json));
+        const result = new SmartShape().fromJSON(this.root,JSON.stringify(json),includeChildren);
         if (!result) {
             return null
         }

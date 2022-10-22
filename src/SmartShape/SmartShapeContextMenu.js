@@ -182,10 +182,22 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onCloneClick = (_event) => {
-        const clone = this.shape.clone();
+        let shape = this.shape;
+        const parent = shape.getRootParent();
+        if (parent && parent.options.groupChildShapes) {
+            shape = parent;
+        }
+        const clone = shape.clone({},shape.options.groupChildShapes);
         const pos = clone.getPosition(true);
         clone.moveTo(pos.left+5,pos.top+5);
         SmartShapeManager.activateShape(clone);
+        for (let child of clone.getChildren(true)) {
+            const cloneParent = child.getParent();
+            if (cloneParent) {
+                cloneParent.removeChild(child);
+            }
+            shape.addChild(child);
+        }
     }
 
     /**

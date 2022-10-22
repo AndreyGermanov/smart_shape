@@ -350,8 +350,10 @@ function SmartShapeEventListener(shape) {
             return
         }
         this.shape.points.splice(this.shape.points.indexOf(event.target), 1);
-        this.shape.root.removeChild(event.target.element);
-        this.shape.redraw()
+        try {
+            this.shape.root.removeChild(event.target.element);
+            this.shape.redraw()
+        } catch (err) {}
         EventsManager.emit(ShapeEvents.POINT_DESTROYED,this.shape,{point:event.target});
     }
 

@@ -171,6 +171,7 @@ function SmartPoint() {
         }
         if (this.options.id) {
             this.element.id = this.options.id;
+            element.id = this.options.id
         }
         element.className = this.options.classes;
 
@@ -194,7 +195,6 @@ function SmartPoint() {
         if (typeof(this.updateContextMenu) === "function") {
             this.updateContextMenu();
         }
-
         return element
     }
 
