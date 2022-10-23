@@ -1,4 +1,5 @@
 import {SmartShapeDisplayMode} from "./SmartShape.js";
+import {EventsManager, ShapeEvents} from "../index.js";
 import {blobToDataURL, dataURLtoBlob, notNull} from "../utils";
 import {applyAspectRatio} from "../utils/geometry.js";
 
@@ -24,6 +25,9 @@ function SmartShapeDrawHelper() {
         } else {
             shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             shape.svg.ondragstart = function () { return false; }
+            if (shape.options.visible) {
+                EventsManager.emit(ShapeEvents.SHAPE_SHOW,shape);
+            }
             shape.eventListener.setSvgEventListeners();
             shape.root.appendChild(shape.svg);
         }
@@ -50,6 +54,13 @@ function SmartShapeDrawHelper() {
             return
         }
         if (typeof(shape.options.visible) !== "undefined") {
+            if (shape.svg.style.display !== shape.options.visible) {
+                if (shape.options.visible) {
+                    EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
+                } else {
+                    EventsManager.emit(ShapeEvents.SHAPE_HIDE, shape);
+                }
+            }
             shape.svg.style.display = shape.options.visible ? '' : 'none';
         }
         shape.calcPosition();
@@ -89,11 +100,8 @@ function SmartShapeDrawHelper() {
             }
             point.redraw();
             if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
-                if (!parent || (parent && parent.options.displayMode === SmartShapeDisplayMode.DEFAULT)) {
+                if (!parent || parent.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
                     point.element.style.display = 'none';
-                }
-                if (!shape.options.visible) {
-                    point.options.visible = false;
                 }
             }
         });

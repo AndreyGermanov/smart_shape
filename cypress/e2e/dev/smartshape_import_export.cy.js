@@ -203,12 +203,12 @@ describe('SmartShape import/export tests', () => {
         assert.isNotNull(shape,"Should load shape");
         assert.equal(shape.getChildren().length,0,"Should not load children if it should not be done");
         shape.destroy();
-        assert.equal(SmartShapeManager.shapes.length,0,"Should not have any shapes after destroy");
+        assert.equal(SmartShapeManager.length(),0,"Should not have any shapes after destroy");
         shape = new SmartShape().fromJSON(app,jsonString,true);
         assert.isNotNull(shape,"Should load shape");
         assert.equal(shape.getChildren().length,1,"Should contain 1 direct child");
         assert.equal(shape.getChildren(true).length,3,"Should contain 3 total children");
-        assert.equal(SmartShapeManager.shapes.length,4,
+        assert.equal(SmartShapeManager.length(),4,
             "Should contain correct total number of shapes in manager");
         //shape.destroy();
         //assert.equal(SmartShapeManager.shapes.length,0,"Should destroy the shape and all children");

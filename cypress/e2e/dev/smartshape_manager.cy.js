@@ -6,7 +6,7 @@ import {SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
 describe('SmartShape Manager tests', () => {
   beforeEach(() => {
     SmartShapeManager.clear();
-    SmartShapeManager.shapes = [];
+    SmartShapeManager.shapes = {};
   })
   it('should add created shape to manager', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
@@ -14,9 +14,9 @@ describe('SmartShape Manager tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new SmartShape();
       shape.init(app,{id:"shape1"},[[0,100],[100,0],[200,100]]);
-      assert.equal(SmartShapeManager.shapes.length,1,"Should add created shape to the array");
+      assert.equal(SmartShapeManager.length(),1,"Should add created shape to the array");
       shape.init(app,{id:"shape1"},[[0,100],[100,0],[200,100]]);
-      assert.equal(SmartShapeManager.shapes.length,1,"Should not add the same shape twice");
+      assert.equal(SmartShapeManager.length(),1,"Should not add the same shape twice");
     })
   })
 
@@ -46,20 +46,20 @@ describe('SmartShape Manager tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
-      assert.equal(SmartShapeManager.shapes.length, 0, "Should return empty array");
+      assert.equal(SmartShapeManager.length(), 0, "Should return empty array");
       const shape = new SmartShape();
       shape.init(app, {id: "shape1", canScale: true, canRotate: true}, [[0, 100], [100, 0], [200, 100]]);
-      assert.equal(SmartShapeManager.shapes.length, 1, "Should return list with shapes");
+      assert.equal(SmartShapeManager.length(), 1, "Should return list with shapes");
       SmartShapeManager.shapeOnCursor = shape;
       cy.get("#shape1").trigger("mousedown",{buttons:1,force:true}).then(() => {
         cy.wait(200).then(() => {
           cy.get("#shape1").trigger("mousedown",{buttons:1,force:true}).then(() => {
             cy.wait(200).then(() => {
-              assert.equal(SmartShapeManager.shapes.length, 2, "Should add resize box to shapes list");
+              assert.equal(SmartShapeManager.length(), 2, "Should add resize box to shapes list");
               assert.isFalse(shape.resizeBox.shape.options.managed, "Resize box should be unmanaged")
               cy.get("#shape1").trigger("mousedown", {buttons:1,force:true}).then(() => {
                 cy.wait(200).then(() => {
-                  assert.equal(SmartShapeManager.shapes.length, 3, "Should add rotate box to shapes list");
+                  assert.equal(SmartShapeManager.length(), 3, "Should add rotate box to shapes list");
                   assert.isFalse(shape.rotateBox.shape.options.managed, "Rotate box should be unmanaged")
                 })
               });
@@ -127,13 +127,13 @@ describe('SmartShape Manager tests', () => {
       shape4.init(div, {id: "shape4", canScale:true, canRotate:true,pointOptions:{canDelete:true}},[[300,100],[400,0],[500,100]]);
       shape4.switchDisplayMode(SmartShapeDisplayMode.SCALE);
       shape4.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
-      assert.equal(SmartShapeManager.shapes.length,12,"Should add shapes and their boxes")
+      assert.equal(SmartShapeManager.length(),12,"Should add shapes and their boxes")
       assert.equal(SmartShapeManager.containerEventListeners.length,6, "Should add global event listeners to containers");
       shape1.destroy();
       shape2.destroy();
       shape3.destroy();
       shape4.destroy();
-      assert.equal(SmartShapeManager.shapes.length,0,"Should remove all shapes and their boxes");
+      assert.equal(SmartShapeManager.length(),0,"Should remove all shapes and their boxes");
       assert.equal(SmartShapeManager.containerEventListeners.length,0, "Should remove all event listeners");
     });
   });

@@ -39,7 +39,7 @@ describe('SmartShape properties tests', () => {
       shape1.addChild(shape3);
       shape2.addChild(shape4);
       shape1.destroy();
-      assert.equal(SmartShapeManager.shapes.length, 3,
+      assert.equal(SmartShapeManager.length(), 3,
           "Only parent should be destroyed if 'groupChildShapes' disabled");
     });
   })

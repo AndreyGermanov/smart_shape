@@ -34,7 +34,7 @@ describe('SmartShapeManager import/export', () => {
           "Should export options of children of first shape correctly"
       );
       SmartShapeManager.clear();
-      assert.equal(SmartShapeManager.shapes.length,0,"Should not contain any shapes after clear the manager")
+      assert.equal(SmartShapeManager.length(),0,"Should not contain any shapes after clear the manager")
     })
   })
   it('fromJSON', () => {
@@ -45,7 +45,7 @@ describe('SmartShapeManager import/export', () => {
       let shapes = SmartShapeManager.fromJSON(app,jsonString);
       assert.isNotNull(shapes,'Should return shapes');
       assert.equal(shapes.length,2,"Should be only root shapes in the result");
-      assert.equal(SmartShapeManager.shapes.length,4,"Should be all shapes including children in the manager");
+      assert.equal(SmartShapeManager.length(),4,"Should be all shapes including children in the manager");
       let shape1 = SmartShapeManager.findShapeById("shape1");
       assert.isNotNull(shape1, "Should load shape1");
       assert.equal(shape1.getChildren().length,1,"Should load children of shape1");
@@ -53,19 +53,19 @@ describe('SmartShapeManager import/export', () => {
       assert.isNotNull(shape1, "Should load shape3");
       assert.equal(shape3.getChildren().length,1,"Should load children of shape3");
       SmartShapeManager.clear();
-      assert.equal(SmartShapeManager.shapes.length,0,"Should clear all shapes from manager");
+      assert.equal(SmartShapeManager.length(),0,"Should clear all shapes from manager");
       jsonString = `[{"options":{"id":"shape1","name":"Shape 1","maxPoints":-1,"stroke":"rgb(0,0,0)","strokeWidth":"2","strokeLinecap":"","strokeDasharray":"","fill":"none","fillGradient":null,"fillImage":null,"fillOpacity":"1","filters":{},"canDragShape":true,"canAddPoints":false,"canScale":false,"canRotate":false,"offsetX":0,"offsetY":0,"classes":"","style":{},"pointOptions":{},"zIndex":1000,"bounds":{"left":-1,"top":-1,"right":-1,"bottom":-1},"visible":true,"displayMode":"default","managed":true,"minWidth":-1,"minHeight":-1,"maxWidth":-1,"maxHeight":-1},"points":[{"x":0,"y":100,"options":{"id":"","width":10,"height":10,"classes":"","style":{"border-width":"1px","border-style":"solid","border-color":"black","border-radius":"25px","cursor":"pointer","background-color":"red"},"canDrag":true,"canDelete":false,"zIndex":1001,"bounds":{"left":0,"top":0,"right":969,"bottom":800},"moveDirections":[1,0,2,3],"visible":true,"hidden":false,"forceDisplay":false}},{"x":100,"y":0,"options":{"id":"","width":10,"height":10,"classes":"","style":{"border-width":"1px","border-style":"solid","border-color":"black","border-radius":"25px","cursor":"pointer","background-color":"red"},"canDrag":true,"canDelete":false,"zIndex":1001,"bounds":{"left":0,"top":0,"right":969,"bottom":800},"moveDirections":[1,0,2,3],"visible":true,"hidden":false,"forceDisplay":false}},{"x":200,"y":100,"options":{"id":"","width":10,"height":10,"classes":"","style":{"border-width":"1px","border-style":"solid","border-color":"black","border-radius":"25px","cursor":"pointer","background-color":"red"},"canDrag":true,"canDelete":false,"zIndex":1001,"bounds":{"left":0,"top":0,"right":969,"bottom":800},"moveDirections":[1,0,2,3],"visible":true,"hidden":false,"forceDisplay":false}}],"children":[{"options":{"id":"shape2","name":"Shape 2","maxPoints":-1,"stroke":"rgb(0,0,0)","strokeWidth":"2","strokeLinecap":"","strokeDasharray":"","fill":"none","fillGradient":null,"fillImage":null,"fillOpacity":"1","filters":{},"canDragShape":true,"canAddPoints":false,"canScale":false,"canRotate":false,"offsetX":0,"offsetY":0,"classes":"","style":{},"pointOptions":{},"zIndex":1000,"bounds":{"left":-1,"top":-1,"right":-1,"bottom":-1},"visible":true,"displayMode":"default","managed":true,"minWidth":-1,"minHeight":-1,"maxWidth":-1,"maxHeight":-1},"points":[{"x":10,"y":10,"options":{"id":"","width":10,"height":10,"classes":"","style":{"border-width":"1px","border-style":"solid","border-color":"black","border-radius":"25px","cursor":"pointer","background-color":"red"},"canDrag":true,"canDelete":false,"zIndex":1001,"bounds":{"left":0,"top":0,"right":969,"bottom":800},"moveDirections":[1,0,2,3],"visible":true,"hidden":false,"forceDisplay":false}},{"x":20,"y":20,"options":{"id":"","width":10,"height":10,"classes":"","style":{"border-width":"1px","border-style":"solid","border-color":"black","border-radius":"25px","cursor":"pointer","background-color":"red"},"canDrag":true,"canDelete":false,"zIndex":1001,"bounds":{"left":0,"top":0,"right":969,"bottom":800},"moveDirections":[1,0,2,3],"visible":true,"hidden":false,"forceDisplay":false}},{"x":30,"y":10,"options":{"id":"","width":10,"height":10,"classes":"","style":{"border-width":"1px","border-style":"solid","border-color":"black","border-radius":"25px","cursor":"pointer","background-color":"red"},"canDrag":true,"canDelete":false,"zIndex":1001,"bounds":{"left":0,"top":0,"right":969,"bottom":800},"moveDirections":[1,0,2,3],"visible":true,"hidden":false,"forceDisplay":false}}]}]}]`;
       shapes = SmartShapeManager.fromJSON(app,jsonString);
       assert.isNotNull(shapes,'Should return shapes');
       assert.equal(shapes.length,1,"Should be only root shapes in the result");
-      assert.equal(SmartShapeManager.shapes.length,2,"Should be all shapes including children in the manager");
+      assert.equal(SmartShapeManager.length(),2,"Should be all shapes including children in the manager");
       shape1 = SmartShapeManager.findShapeById("shape1");
       assert.isNotNull(shape1, "Should load shape1");
       assert.equal(shape1.getChildren().length,1,"Should load children of shape1");
       const shape2 = SmartShapeManager.findShapeById("shape2");
       assert.isNotNull(shape2, "Should load shape2");
       SmartShapeManager.clear();
-      assert.equal(SmartShapeManager.shapes.length,0,"Should clear all shapes from manager");
+      assert.equal(SmartShapeManager.length(),0,"Should clear all shapes from manager");
     });
   });
   it('fromGeoJson', () => {
