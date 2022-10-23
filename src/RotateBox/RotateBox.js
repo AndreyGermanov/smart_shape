@@ -159,7 +159,6 @@ function RotateBox() {
         this.addPoints();
         this.eventListener = new RotateBoxEventListener(this).run();
         this.redraw()
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
     }
 

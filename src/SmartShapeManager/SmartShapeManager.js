@@ -18,10 +18,17 @@ import {fromGeoJSON} from "./GeoJSONImport.js";
 function SmartShapeManager() {
 
     /**
-     * Array of [SmartShape's](#SmartShape) objects
-     * @type {array}
+     * Collection of [SmartShape's](#SmartShape) objects.
+     * Each object indexed by GUID
+     * @type {object}
      */
-    this.shapes = [];
+    this.shapes = {};
+
+    /** Collection of [SmartShape's](#smartShape) objects
+     * that are visible now. Each object indexed by GUID
+     * @type {object}
+     */
+    this.visibleShapes = {};
 
     /**
      * Which shape is currently selected
@@ -66,6 +73,8 @@ function SmartShapeManager() {
     this.setEventListeners = () => {
         EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,this.onShapeCreated);
         EventsManager.subscribe(ShapeEvents.SHAPE_DESTROY,this.onShapeDestroy);
+        EventsManager.subscribe(ShapeEvents.SHAPE_SHOW, this.onShapeShow);
+        EventsManager.subscribe(ShapeEvents.SHAPE_HIDE, this.onShapeHide);
         EventsManager.subscribe(ShapeEvents.SHAPE_MOVE_START, this.onShapeMoveStart);
         EventsManager.subscribe(ShapeEvents.SHAPE_MOUSE_ENTER, this.onShapeMouseEnter);
         EventsManager.subscribe(PointEvents.POINT_DRAG_START, this.onPointDragStart);
@@ -79,11 +88,12 @@ function SmartShapeManager() {
      * @param _event Window resize event - [UIEvent](https://developer.mozilla.org/en-US/docs/Web/API/UIEvent).
      */
     this.onWindowResize = (_event) => {
-        this.shapes.forEach(shape => {
+        for (let index in this.shapes) {
+            const shape = this.shapes[index];
             EventsManager.emit(ContainerEvents.CONTAINER_BOUNDS_CHANGED,shape,
                 {bounds:shape.getBounds(),points:shape.points}
             )
-        })
+        }
     }
 
     /**
@@ -107,7 +117,7 @@ function SmartShapeManager() {
      */
     this.onShapeCreated = (event) => {
         const shape = event.target;
-        if (notNull(shape.root) && !this.getShape(shape) && !this.getShape(shape)) {
+        if (notNull(shape.root) && !this.getShape(shape) && typeof(shape.belongsToShape) === "function") {
             this.addShape(shape);
             if (!this.activeShape) {
                 this.activeShape = shape;
@@ -122,7 +132,10 @@ function SmartShapeManager() {
      * @param shape {SmartShape} Shape object to add
      */
     this.addShape = (shape) => {
-        this.shapes.push(shape);
+        this.shapes[shape.guid] = shape;
+        if (shape.options.visible && this.isNormalShape(shape)) {
+            this.visibleShapes[shape.guid] = shape;
+        }
         if (this.getShapesByContainer(shape.root).length === 1) {
             this.addContainerEvents(shape)
         }
@@ -137,11 +150,11 @@ function SmartShapeManager() {
      */
     this.onShapeDestroy = (event) => {
         const shape = event.target;
+        delete this.shapes[shape.guid];
         const root = shape.root;
-        if (!notNull(shape.root) || !this.getShape(shape)) {
+        if (!notNull(shape.root)) {
             return
         }
-        this.shapes.splice(this.shapes.indexOf(shape),1);
         if (this.getShapesByContainer(root).length === 0) {
             this.containerEventListeners
                 .filter(item => item.container === root)
@@ -150,6 +163,26 @@ function SmartShapeManager() {
                     this.containerEventListeners.splice(this.containerEventListeners.indexOf(item),1);
                 })
         }
+    }
+
+    /**
+     * @ignore
+     * Shape show event handler
+     * @param event {ShapeEvents.SHAPE_SHOW} Event object with shape in event.target
+     */
+    this.onShapeShow = (event) => {
+        if (this.isNormalShape(event.target)) {
+            this.visibleShapes[event.target.guid] = event.target;
+        }
+    }
+
+    /**
+     * @ignore
+     * Shape show event handler
+     * @param event {ShapeEvents.SHAPE_HIDE} Event object with shape in event.target
+     */
+    this.onShapeHide = (event) => {
+        delete this.visibleShapes[event.target.guid]
     }
 
     /**
@@ -219,21 +252,6 @@ function SmartShapeManager() {
     }
 
     /**
-     * Method returns a shape to which specified point object belongs
-     * or null
-     * @param point {SmartPoint}
-     * @returns {null|SmartShape}
-     */
-    this.findShapeByPoint = (point) => {
-        for (let shape of this.shapes) {
-            if (shape.isShapePoint(point)) {
-                return shape
-            }
-        }
-        return null;
-    }
-
-    /**
      * @ignore
      * Checks and returns the shape if it exists in the array of shapes
      * or null.
@@ -243,18 +261,49 @@ function SmartShapeManager() {
     this.getShape = (shape) => this.getShapeByGuid(shape.guid);
 
     /**
+     * Method returns a shape to which specified point object belongs
+     * or null
+     * @param point {SmartPoint}
+     * @returns {null|SmartShape}
+     */
+    this.findShapeByPoint = (point) => {
+        for (let index in this.shapes) {
+            const shape = this.shapes[index];
+            if (shape.isShapePoint(point)) {
+                return shape
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns shape by GUID
      * @param guid {string} GUID of shape
      * @returns {null|SmartShape} The shape object
      */
-    this.getShapeByGuid = (guid) => this.shapes.find(shape => shape.guid === guid);
+    this.getShapeByGuid = (guid) => {
+        if (notNull(this.shapes[guid])) {
+            return this.shapes[guid]
+        } else {
+            return null
+        }
+    }
 
     /**
      * Returns an array of shapes that connected to specified DOM container
      * @param container {HTMLElement} Link to container
      * @returns {array} Array of [SmartShape](#SmartShape) objects
      */
-    this.getShapesByContainer = (container) => this.getShapes().filter(shape => shape.root === container);
+    this.getShapesByContainer = (container) => {
+        const result = [];
+        for (let index in this.shapes) {
+            const shape = this.shapes[index];
+            if (this.isNormalShape(shape) && shape.root === container) {
+                result.push(shape);
+            }
+        }
+        return result;
+    }
 
     /**
      * Method returns zIndex of the topmost shape either in specified container or globally
@@ -262,9 +311,11 @@ function SmartShapeManager() {
      * @returns {number} zIndex of the topmost shape
      */
     this.getMaxZIndex = (container=null) => {
-        let shapes = this.getShapes();
+        let shapes;
         if (container) {
             shapes = this.getShapesByContainer(container);
+        } else {
+            shapes = this.getShapes();
         }
         if (!shapes.length) {
             return 0;
@@ -276,9 +327,22 @@ function SmartShapeManager() {
      * Method returns an array of all registered shapes (excluding rotate and resize boxes around them)
      * @returns {array} Array of [SmartShape)(#SmartShape) objects
      */
-    this.getShapes = () => (
-        this.shapes.filter(shape=>shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1)
-    )
+    this.getShapes = () => {
+        const result = [];
+        for (let index in this.shapes) {
+            const shape = this.shapes[index];
+            if (this.isNormalShape(shape)) {
+                result.push(shape)
+            }
+        }
+        return result
+    }
+
+    this.isNormalShape = (shape) => {
+        return shape.options.id.search("_resizebox") === -1 &&
+            shape.options.id.search("_rotatebox") === -1 &&
+            typeof(shape.belongsToShape) === "function";
+    }
 
     /**
      * Method used to make specified shape active and move it on top according to zIndex
@@ -378,19 +442,18 @@ function SmartShapeManager() {
         try {
             event.stopPropagation();
         } catch (err) {}
-        if (!this.activeShape) {
+        if (!this.activeShape || !this.activeShape.options.canAddPoints ||
+            this.activeShape.draggedPoint ||
+            this.activeShape.points.length>2 ||
+            this.activeShape.points.length === this.activeShape.options.maxPoints
+        ) {
             return
         }
-        if (!this.activeShape.options.canAddPoints || this.activeShape.draggedPoint || this.activeShape.points.length>2) {
-            return
+        if (this.activeShape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+            this.activeShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
         }
-        if (this.activeShape.options.maxPoints === -1 || this.activeShape.points.length < this.activeShape.options.maxPoints) {
-            if (this.activeShape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
-                this.activeShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-            }
-            const [x,y] = getMouseCursorPos(createEvent(event,{target:this.activeShape}));
-            this.activeShape.addPoint(x,y,{forceDisplay:false});
-        }
+        const [x,y] = getMouseCursorPos(createEvent(event,{target:this.activeShape}));
+        this.activeShape.addPoint(x,y,{forceDisplay:false});
     }
 
     /**
@@ -420,11 +483,12 @@ function SmartShapeManager() {
             return
         }
         const dragshape = this.draggedShape;
-        if (event.buttons === 1 && dragshape.options.canAddPoints && !dragshape.draggedPoint) {
-            if (dragshape.options.maxPoints === -1 || dragshape.points.length < dragshape.options.maxPoints) {
-                dragshape.addPoint(event.clientX-dragshape.root.offsetLeft,
-                    event.clientY-dragshape.root.offsetTop)
-            }
+        if (event.buttons === 1 &&
+            dragshape.options.canAddPoints &&
+            !dragshape.draggedPoint &&
+            (dragshape.options.maxPoints === -1 || dragshape.points.length < dragshape.options.maxPoints)) {
+            dragshape.addPoint(event.clientX-dragshape.root.offsetLeft,
+                event.clientY-dragshape.root.offsetTop)
         }
         if (dragshape.draggedPoint) {
             EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.draggedShape,{point:dragshape.draggedPoint})
@@ -445,18 +509,16 @@ function SmartShapeManager() {
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
             if (this.draggedShape) {
-                this.draggedShape = null;
+                this.draggedShape.draggedPoint = null;
             }
+            this.draggedShape = null;
+        }
+        if (!this.draggedShape) {
+            this.processShapesUnderCursor(event);
+            return
         }
         if (this.draggedShape) {
-            if (event.buttons !== 1) {
-                this.draggedShape.draggedPoint = null;
-                this.draggedShape = null;
-                return
-            }
             this.draggedShape.eventListener.mousemove(event);
-        } else {
-            this.processShapesUnderCursor(event);
         }
     }
 
@@ -522,7 +584,7 @@ function SmartShapeManager() {
         const shapeOnCursor = this.getShapeOnCursor(clientX, clientY);
         if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor && this.shapeOnCursor.svg) {
             this.shapeOnCursor.svg.style.cursor = "default";
-            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}))
+            this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));
         }
         if (shapeOnCursor && shapeOnCursor !== this.shapeOnCursor) {
             shapeOnCursor.eventListener.mouseover(createEvent(event,{target:shapeOnCursor}))
@@ -543,11 +605,11 @@ function SmartShapeManager() {
      * @returns {SmartShape|null} Either SmartShape object or null
      */
     this.getShapeOnCursor = (x,y) => {
-        const matchedShapes = this.shapes.filter(shape => shape.belongsToShape(x,y)
-            && shape.options.visible
-            && !shape.options.hidden
-            && shape.options.id.search("_resizebox") === -1
-            && shape.options.id.search("_rotatebox") === -1);
+        const shapes = Object.values(this.visibleShapes);
+        if (!shapes.length) {
+            return null;
+        }
+        const matchedShapes = shapes.filter(shape => shape.belongsToShape(x,y));
         if (!matchedShapes.length) {
             return null;
         }
@@ -565,13 +627,9 @@ function SmartShapeManager() {
      */
     this.toJSON = (shapes=null,compact=false) => {
         if (!shapes) {
-            shapes = this.shapes;
+            shapes = this.getShapes();
         }
-        shapes = shapes.filter(shape => (
-                shape.options.id.search("_resizebox") === -1 &&
-                shape.options.id.search("_rotatabox") === -1 &&
-                !shape.getParent()
-        ))
+        shapes = shapes.filter(shape => (!shape.getParent()));
         return JSON.stringify(shapes.map(shape => shape.getJSON(true,compact)))
     }
 
@@ -612,7 +670,9 @@ function SmartShapeManager() {
      * @param value {any} Value of option to check
      * @returns {array} Array of [SmartShape](#SmartShape) objects that match condition
      */
-    this.findShapesByOptionValue = (name,value) => this.shapes.filter(shape => shape.options[name] === value);
+    this.findShapesByOptionValue = (name,value) => (
+        this.getShapes().filter(shape => shape.options[name] === value)
+    )
 
     /**
      * Method returns shape by specified ID
@@ -654,8 +714,8 @@ function SmartShapeManager() {
             }
         })
         this.containerEventListeners = [];
-        while (this.shapes.length) {
-            this.shapes[0].destroy();
+        while (Object.values(this.shapes).length) {
+            Object.values(this.shapes)[0].destroy();
         }
     }
 
@@ -673,6 +733,14 @@ function SmartShapeManager() {
      */
     this.fromGeoJson = (container,geoJSON,options) => {
         return fromGeoJSON(container,geoJSON, options);
+    }
+
+    /**
+     * Method returns total count of shapes, managed by this manager
+     * @returns {number}
+     */
+    this.length = () => {
+        return Object.values(this.shapes).length;
     }
 }
 

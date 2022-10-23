@@ -185,7 +185,6 @@ function ResizeBox() {
         this.addPoints();
         this.eventListener = new ResizeBoxEventListener(this).run();
         this.redraw()
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE,this,{});
         return this;
     }
 

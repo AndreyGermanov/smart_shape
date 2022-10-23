@@ -1479,7 +1479,8 @@ of all group if forGroup parameter is set
 
 * [SmartShapeManager](#SmartShapeManager)
     * [new SmartShapeManager()](#new_SmartShapeManager_new)
-    * [.shapes](#SmartShapeManager+shapes) : <code>array</code>
+    * [.shapes](#SmartShapeManager+shapes) : <code>object</code>
+    * [.visibleShapes](#SmartShapeManager+visibleShapes) : <code>object</code>
     * [.activeShape](#SmartShapeManager+activeShape) : [<code>SmartShape</code>](#SmartShape)
     * [.draggedShape](#SmartShapeManager+draggedShape) : [<code>SmartShape</code>](#SmartShape)
     * [.shapeOnCursor](#SmartShapeManager+shapeOnCursor) : [<code>SmartShape</code>](#SmartShape)
@@ -1499,6 +1500,7 @@ of all group if forGroup parameter is set
     * [.findShapeById(id)](#SmartShapeManager+findShapeById) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.findShapeByName(name)](#SmartShapeManager+findShapeByName) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromGeoJson(container, geoJSON, options)](#SmartShapeManager+fromGeoJson) ⇒ <code>array</code>
+    * [.length()](#SmartShapeManager+length) ⇒ <code>number</code>
 
 <a name="new_SmartShapeManager_new"></a>
 
@@ -1511,8 +1513,16 @@ handle other global events related to shapes and their containers
 
 <a name="SmartShapeManager+shapes"></a>
 
-### smartShapeManager.shapes : <code>array</code>
-Array of [SmartShape's](#SmartShape) objects
+### smartShapeManager.shapes : <code>object</code>
+Collection of [SmartShape's](#SmartShape) objects.
+Each object indexed by GUID
+
+**Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+<a name="SmartShapeManager+visibleShapes"></a>
+
+### smartShapeManager.visibleShapes : <code>object</code>
+Collection of [SmartShape's](#smartShape) objects
+that are visible now. Each object indexed by GUID
 
 **Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
 <a name="SmartShapeManager+activeShape"></a>
@@ -1730,6 +1740,12 @@ Method used to import collection of shapes from JSON array in GeoJSON format: ht
 | geoJSON | <code>object</code> | Javascript object in geoJSON format |
 | options | <code>object</code> | Options to tune the import process: `idField`: the field from "properties collection of GeoJSON object that used as a shape ID, `nameField`: the field from "properties" collection of GeoJSON object that used as a shape name, `width`: the width to which loaded shapes should be scaled (if not specified then calc automatically based on height), `height`: the height to which loaded shapes should be scaled (if not specified then calc automatically based on width), `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import |
 
+<a name="SmartShapeManager+length"></a>
+
+### smartShapeManager.length() ⇒ <code>number</code>
+Method returns total count of shapes, managed by this manager
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
 <a name="EventsManager"></a>
 
 ## EventsManager

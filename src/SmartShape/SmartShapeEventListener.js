@@ -507,6 +507,8 @@ export const ShapeEvents = {
     SHAPE_MOUSE_CLICK: "click",
     SHAPE_MOUSE_DOUBLE_CLICK: "dblclick",
     SHAPE_DESTROY: "destroy",
+    SHAPE_SHOW: "show",
+    SHAPE_HIDE: "hide",
     POINT_ADDED: "point_added",
     POINT_DESTROYED: "point_destroyed",
     POINT_DRAG_START: "point_drag_start",

@@ -145,7 +145,7 @@ function SmartShapeGroupHelper(shape) {
      * @returns {SmartShape|null}
      */
     this.getParent = () => {
-        const shapes = SmartShapeManager.shapes;
+        const shapes = SmartShapeManager.getShapes();
         for (let item of shapes) {
             if (item.getChildren().indexOf(this.shape) !== -1) {
                 return item
