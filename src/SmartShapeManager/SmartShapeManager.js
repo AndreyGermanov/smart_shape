@@ -594,7 +594,6 @@ function SmartShapeManager() {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeOnCursor,createEvent(event));
             this.shapeOnCursor.svg.style.cursor = "crosshair";
         }
-
     };
 
     /**
@@ -642,12 +641,12 @@ function SmartShapeManager() {
      * @returns {array|null} array of loaded [SmartShape](#SmartShape) objects or null in case
      * of JSON reading error
      */
-    this.fromJSON = (root,json,progressCallback=null) => {
+    this.fromJSON = (root,json,progressCallback=null,emitCreateEvent=true) => {
         let jsonObj = json;
         if (typeof(jsonObj) === "string") {
             jsonObj = readJSON(json);
         }
-        if (!jsonObj) {
+        if (!jsonObj || !jsonObj.length) {
             return null;
         }
         const result = [];
@@ -656,7 +655,7 @@ function SmartShapeManager() {
             if (obj.options.id && this.findShapeById(obj.options.id)) {
                 continue
             }
-            result.push(new SmartShape().fromJSON(root,obj));
+            result.push(new SmartShape().fromJSON(root,obj,true,emitCreateEvent));
             if (progressCallback && typeof(progressCallback) === "function") {
                 progressCallback(index/jsonObj.length);
             }

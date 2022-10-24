@@ -366,10 +366,10 @@ function Mt() {
     zIndex: 1e3,
     bounds: {},
     moveDirections: [
-      f.LEFT,
-      f.TOP,
-      f.RIGHT,
-      f.BOTTOM
+      E.LEFT,
+      E.TOP,
+      E.RIGHT,
+      E.BOTTOM
     ],
     visible: !0,
     hidden: !1,
@@ -398,7 +398,7 @@ function Mt() {
   }, this.mousedown = (t) => {
     h.emit(A.POINT_MOUSE_DOWN, this, d(t)), t.buttons === 1 && this.options.canDrag && (h.emit(A.POINT_DRAG_START, this, d(t)), Y(t));
   }, this.mousemove = (t) => {
-    if (h.emit(A.POINT_MOUSE_MOVE, this, d(t)), t.buttons !== 1 || !this.options.canDrag || !E.draggedShape || E.draggedShape.draggedPoint !== this)
+    if (h.emit(A.POINT_MOUSE_MOVE, this, d(t)), t.buttons !== 1 || !this.options.canDrag || !f.draggedShape || f.draggedShape.draggedPoint !== this)
       return;
     const e = this.x, s = this.y, i = T(this.element.parentNode, !0);
     if (!this.checkFitBounds(this.x + t.movementX, this.y + t.movementY)) {
@@ -415,7 +415,7 @@ function Mt() {
     h.emit(A.POINT_MOUSE_CLICK, this, d(t));
   }, this.doubleclick = (t) => {
     h.emit(A.POINT_MOUSE_DOUBLE_CLICK, this, d(t));
-  }, this.checkFitBounds = (t, e) => !(this.options.bounds.left !== -1 && t < this.options.bounds.left || this.options.bounds.right !== -1 && t > this.options.bounds.right || this.options.bounds.top !== -1 && e < this.options.bounds.top || this.options.bounds.bottom !== -1 && e > this.options.bounds.bottom), this.applyMoveRestrictions = (t, e, s, i) => (e > i && this.options.moveDirections.indexOf(f.BOTTOM) === -1 && (e = i), e < i && this.options.moveDirections.indexOf(f.TOP) === -1 && (e = i), t > s && this.options.moveDirections.indexOf(f.RIGHT) === -1 && (t = s), t < s && this.options.moveDirections.indexOf(f.LEFT) === -1 && (t = s), t > this.options.bounds.right && this.options.bounds.right !== -1 && (t = this.options.bounds.right), e > this.options.bounds.bottom && this.options.bounds.bottom !== -1 && (e = this.options.bounds.bottom), t < this.options.bounds.left && this.options.bounds.left !== -1 && (t = this.options.bounds.left), e < this.options.bounds.top && this.options.bounds.top !== -1 && (e = this.options.bounds.top), [t, e]), this.mouseup = (t) => {
+  }, this.checkFitBounds = (t, e) => !(this.options.bounds.left !== -1 && t < this.options.bounds.left || this.options.bounds.right !== -1 && t > this.options.bounds.right || this.options.bounds.top !== -1 && e < this.options.bounds.top || this.options.bounds.bottom !== -1 && e > this.options.bounds.bottom), this.applyMoveRestrictions = (t, e, s, i) => (e > i && this.options.moveDirections.indexOf(E.BOTTOM) === -1 && (e = i), e < i && this.options.moveDirections.indexOf(E.TOP) === -1 && (e = i), t > s && this.options.moveDirections.indexOf(E.RIGHT) === -1 && (t = s), t < s && this.options.moveDirections.indexOf(E.LEFT) === -1 && (t = s), t > this.options.bounds.right && this.options.bounds.right !== -1 && (t = this.options.bounds.right), e > this.options.bounds.bottom && this.options.bounds.bottom !== -1 && (e = this.options.bounds.bottom), t < this.options.bounds.left && this.options.bounds.left !== -1 && (t = this.options.bounds.left), e < this.options.bounds.top && this.options.bounds.top !== -1 && (e = this.options.bounds.top), [t, e]), this.mouseup = (t) => {
     h.emit(A.POINT_MOUSE_UP, this, d(t)), t.button !== 2 && h.emit(A.POINT_DRAG_END, this, d(t));
   }, this.onBoundsChange = (t) => {
     t.points.find((e) => e === this) && (this.options.bounds = t.bounds);
@@ -458,7 +458,7 @@ const A = {
   POINT_MOUSE_CLICK: "click",
   POINT_MOUSE_DOUBLE_CLICK: "dblclick",
   POINT_DELETE_REQUEST: "point_delete_request"
-}, f = {
+}, E = {
   TOP: 0,
   LEFT: 1,
   RIGHT: 2,
@@ -646,17 +646,17 @@ function It(t) {
     h.subscribe(A.POINT_DESTROYED, this.onPointDestroyed), h.subscribe(A.POINT_ADDED, this.onPointAdded), h.subscribe(A.POINT_DRAG_MOVE, this.onPointDragMove), h.subscribe(A.POINT_DELETE_REQUEST, this.onPointDeleteRequest);
   }, this.setSvgEventListeners = () => {
     this.svg_mouseover = this.shape.svg.addEventListener("mouseover", (e) => {
-      E.mouseover(d(e, { target: this.shape }));
+      f.mouseover(d(e, { target: this.shape }));
     }), this.svg_mouseout = this.shape.svg.addEventListener("mouseout", (e) => {
-      E.mouseout(d(e, { target: this.shape }));
+      f.mouseout(d(e, { target: this.shape }));
     }), this.svg_mouseenter = this.shape.svg.addEventListener("mouseenter", (e) => {
-      E.mouseenter(d(e, { target: this.shape }));
+      f.mouseenter(d(e, { target: this.shape }));
     }), this.svg_mousedown = this.shape.svg.addEventListener("mousedown", (e) => {
-      E.mousedown(d(e, { target: this.shape }));
+      f.mousedown(d(e, { target: this.shape }));
     }), this.svg_click = this.shape.svg.addEventListener("click", (e) => {
-      E.click(d(e, { target: this.shape }));
+      f.click(d(e, { target: this.shape }));
     }), this.svg_dblclick = this.shape.svg.addEventListener("dblclick", (e) => {
-      E.doubleclick(d(e, { target: this.shape }));
+      f.doubleclick(d(e, { target: this.shape }));
     });
   }, this.removeSvgEventListeners = () => {
     this.shape.svg.removeEventListener("mouseover", this.svg_mouseover), this.shape.svg.removeEventListener("mouseout", this.svg_mouseout), this.shape.svg.removeEventListener("mouseenter", this.svg_mouseenter), this.shape.svg.removeEventListener("mousedown", this.svg_mousedown), this.shape.svg.removeEventListener("click", this.svg_click), this.shape.svg.removeEventListener("dblclick", this.svg_dblclick);
@@ -697,7 +697,11 @@ function It(t) {
     this.shape.rotateBy(e.angle), this.shape.redraw(), h.emit(w.ROTATE_BOX_ROTATE, this.shape, e);
   }, this.mousedown = (e) => {
     Y(e), h.emit(a.SHAPE_MOUSE_DOWN, this.shape, d(e)), setTimeout(() => {
-      h.emit(a.SHAPE_MOVE_START, this.shape, d(e, { pos: this.shape.getPosition(!0) }));
+      h.emit(
+        a.SHAPE_MOVE_START,
+        this.shape,
+        d(e, { pos: this.shape.getPosition(this.shape.options.groupChildShapes) })
+      );
     }, 100);
   }, this.mousemove = (e) => {
     if (this.shape.draggedPoint || h.emit(a.SHAPE_MOUSE_MOVE, this.shape, d(e)), this.shape.draggedPoint) {
@@ -709,14 +713,14 @@ function It(t) {
     const [s, i] = this.calcMovementOffset(e);
     if (s === null || i === null)
       return;
-    const o = this.shape.getPosition(!0);
+    const o = this.shape.getPosition(this.shape.options.groupChildShapes);
     this.shape.moveBy(s, i), this.shape.redraw();
-    const n = this.shape.getPosition(!0);
+    const n = this.shape.getPosition(this.shape.options.groupChildShapes);
     h.emit(a.SHAPE_MOVE, this.shape, d(e, { oldPos: o, newPos: n }));
   }, this.mouseenter = (e) => {
     h.emit(a.SHAPE_MOUSE_ENTER, this.shape, d(e));
   }, this.mouseover = (e) => {
-    E.draggedShape !== this.shape && h.emit(a.SHAPE_MOUSE_OVER, this.shape, d(e));
+    f.draggedShape !== this.shape && h.emit(a.SHAPE_MOUSE_OVER, this.shape, d(e));
   }, this.mouseout = (e) => {
     h.emit(a.SHAPE_MOUSE_OUT, this.shape, d(e));
   }, this.click = (e) => {
@@ -725,10 +729,10 @@ function It(t) {
     h.emit(a.SHAPE_MOUSE_DOUBLE_CLICK, this.shape, d(e));
   }, this.calcMovementOffset = (e) => {
     this.shape.calcPosition();
-    const s = this.shape.getPosition(!0);
+    const s = this.shape.getPosition(this.shape.options.groupChildShapes);
     let i = e.movementX, o = e.movementY, n = e.clientX + window.scrollX, r = e.clientY + window.scrollY;
     const p = s.left + i, l = s.top + o, g = T(this.shape.root, !0), c = this.shape.getBounds();
-    return p < c.left || p + s.width > c.right ? [null, null] : l < c.top || l + s.height > c.bottom ? [null, null] : (n < p + g.left && (i = n - (p + g.left)), r < l + g.top && (o = r - (l + g.top)), n > p + s.width + g.left && (i = n - (s.width + g.left + s.left)), r > l + s.height + g.right && (o = r - (s.height + g.top + s.top)), [i, o]);
+    return (p < c.left || p + s.width > c.right) && (i = 0), (l < c.top || l + s.height > c.bottom) && (o = 0), n < p + g.left && (i = n - (p + g.left)), r < l + g.top && (o = r - (l + g.top)), n > p + s.width + g.left && (i = n - (s.width + g.left + s.left)), r > l + s.height + g.right && (o = r - (s.height + g.top + s.top)), [i, o];
   }, this.onPointAdded = (e) => {
     !this.shape.isShapePoint(e.target) || h.emit(a.POINT_ADDED, this.shape, { point: e.target });
   }, this.onPointDragMove = (e) => {
@@ -991,7 +995,7 @@ const N = {
   let r = null;
   for (let p in n) {
     const l = y({}, o);
-    p == 0 ? r = E.createShape(i, l, n[p]) : (l.id += "_" + p, l.name += " " + p, r.addChild(E.createShape(i, l, n[p])));
+    p == 0 ? r = f.createShape(i, l, n[p]) : (l.id += "_" + p, l.name += " " + p, r.addChild(f.createShape(i, l, n[p])));
   }
   return r;
 }, Lt = (t) => {
@@ -1163,16 +1167,16 @@ function Nt() {
       return null;
     const i = s.filter((o) => o.belongsToShape(t, e));
     return i.length ? i.reduce((o, n) => n.options.zIndex >= o.options.zIndex ? n : o) : null;
-  }, this.toJSON = (t = null, e = !1) => (t || (t = this.getShapes()), t = t.filter((s) => !s.getParent()), JSON.stringify(t.map((s) => s.getJSON(!0, e)))), this.fromJSON = (t, e, s = null) => {
-    let i = e;
-    if (typeof i == "string" && (i = H(e)), !i)
+  }, this.toJSON = (t = null, e = !1) => (t || (t = this.getShapes()), t = t.filter((s) => !s.getParent()), JSON.stringify(t.map((s) => s.getJSON(!0, e)))), this.fromJSON = (t, e, s = null, i = !0) => {
+    let o = e;
+    if (typeof o == "string" && (o = H(e)), !o || !o.length)
       return null;
-    const o = [];
-    for (let n in i) {
-      const r = i[n];
-      r.options.id && this.findShapeById(r.options.id) || (o.push(new B().fromJSON(t, r)), s && typeof s == "function" && s(n / i.length));
+    const n = [];
+    for (let r in o) {
+      const p = o[r];
+      p.options.id && this.findShapeById(p.options.id) || (n.push(new B().fromJSON(t, p, !0, i)), s && typeof s == "function" && s(r / o.length));
     }
-    return o;
+    return n;
   }, this.findShapesByOptionValue = (t, e) => this.getShapes().filter((s) => s.options[t] === e), this.findShapeById = (t) => {
     const e = this.findShapesByOptionValue("id", t);
     return e && e.length ? e[0] : null;
@@ -1195,7 +1199,7 @@ const zt = {
   MANAGER_REMOVE_CONTAINER_EVENT_LISTENERS: "manager_remove_container_event_listeners"
 }, V = {
   CONTAINER_BOUNDS_CHANGED: "CONTAINER_BOUNDS_CHANGED"
-}, E = new Nt().init();
+}, f = new Nt().init();
 function Vt(t) {
   this.shape = t, this.children = [], this.parent = {}, this.init = () => {
     for (let e in this)
@@ -1217,7 +1221,7 @@ function Vt(t) {
       s.push(...i.getChildren());
     return s;
   }, this.shouldAddChild = (e) => !e || typeof e != "object" || typeof e.getChildren > "u" || this.children.indexOf(e) !== -1 ? !1 : e === this.shape ? void 0 : e.getChildren().indexOf(this.shape) !== -1 || e.getParent() ? !1 : this.getParentsList().indexOf(e) === -1, this.getParent = () => {
-    const e = E.getShapes();
+    const e = f.getShapes();
     for (let s of e)
       if (s.getChildren().indexOf(this.shape) !== -1)
         return s;
@@ -1420,7 +1424,7 @@ function B() {
       console.error("Root HTML node not specified. Could not create shape.");
       return;
     }
-    if (E.getShape(this)) {
+    if (f.getShape(this)) {
       console.error("This shape already initialized");
       return;
     }
@@ -1467,7 +1471,7 @@ function B() {
     let t = [];
     return this.points && typeof this.points == "object" && this.points.length && (t = this.points.map((e) => [e.x, e.y])), t;
   }, this.moveTo = (t, e, s = !0) => {
-    const i = this.getBounds(), o = this.getPosition(!0);
+    const i = this.getBounds(), o = this.getPosition(this.options.groupChildShapes);
     let n = t + o.width > i.right ? i.right - o.width : t, r = e + o.height > i.bottom ? i.bottom - o.height : e;
     this.moveBy(n - o.left, r - o.top, s), this.calcPosition();
   }, this.moveBy = (t, e, s = !0) => {
@@ -1503,7 +1507,7 @@ function B() {
     }), this.getChildren(!0).forEach((o) => o.redraw())), this.calcPosition();
   }, this.applyScaleRestriction = (t, e) => (this.options.minWidth !== -1 && t < this.options.minWidth && (t = this.options.minWidth), this.options.minWidth !== -1 && e < this.options.minHeight && (e = this.options.minHeight), this.options.minWidth !== -1 && t > this.options.maxWidth && (t = this.options.maxWidth), this.options.minWidth !== -1 && e > this.options.maxHeight && (e = this.options.maxHeight), [t, e]), this.rotateBy = (t, e = null, s = null, i = !1) => {
     this.calcPosition();
-    const o = this.getPosition(!0);
+    const o = this.getPosition(this.options.groupChildShapes);
     let [n, r] = this.getCenter(this.options.groupChildShapes);
     const p = this.getRootParent(!0);
     p && p.options.groupChildShapes && ([n, r] = p.getCenter(p.options.groupChildShapes)), e || (e = n), s || (s = r), this.initCenter && ([e, s] = this.initCenter), !(i && (!this.isInBounds(...I(t, o.left, o.top, e, s)) || !this.isInBounds(...I(t, o.right, o.top, e, s)) || !this.isInBounds(...I(t, o.left, o.bottom, e, s)) || !this.isInBounds(...I(t, o.right, o.bottom, e, s)))) && (this.points.forEach((l) => l.rotateBy(t, e, s)), this.options.groupChildShapes && this.getChildren(!0).forEach((l) => {
@@ -1628,10 +1632,10 @@ function B() {
     return [e.left + e.width / 2, e.top + e.height / 2];
   }, this.toSvg = (t = null) => C.toSvg(this, t), this.toPng = (t = N.DATAURL, e = null, s = null, i = null) => C.toPng(this, t, e, s, i), this.toJSON = (t = !0, e = !1) => JSON.stringify(this.getJSON(t, e)), this.clone = (t = {}, e = !0) => {
     const s = Object.assign({}, this.getJSON(e));
-    s.options.id += "_clone", s.options.name += " Clone", s.parent_guid = this.guid, s.options = Object.assign(s.options, t);
-    const i = new B().fromJSON(this.root, JSON.stringify(s), e);
+    s.parent_guid = this.guid, s.options = Object.assign(s.options, t);
+    const i = new B().fromJSON(this.root, s, e);
     return i ? (i.getChildren(!0).forEach((o) => {
-      o.options.id += "_clone", o.options.name += " Clone";
+      o.options.id += "_" + f.length(), o.options.name += " " + f.length();
     }), i) : null;
   }, this.getJSON = (t = !0, e = !1) => {
     const s = {
@@ -1644,17 +1648,17 @@ function B() {
       ));
     }
     return s;
-  }, this.fromJSON = (t, e, s = !0) => {
-    let i = e;
-    if (typeof i == "string" && (i = H(e)), !i)
+  }, this.fromJSON = (t, e, s = !0, i = !0) => {
+    let o = typeof e == "string" ? H(e) : e;
+    if (!o)
       return null;
-    this.root = t, this.setOptions(i.options), this.svg || this.init(t, this.options, null, !1), i.points.forEach((n) => {
-      n.length ? this.putPoint(n[0], n[1]) : this.putPoint(n.x, n.y, n.options);
+    this.root = t, f.findShapeById(o.options.id) && (o.options.id += "_" + f.length(), o.options.name += " " + f.length()), this.setOptions(o.options), this.svg || this.init(t, this.options, null, !1), o.points.forEach((r) => {
+      r.length ? this.putPoint(r[0], r[1]) : this.putPoint(r.x, r.y, r.options);
     });
-    const o = E.getShapeByGuid(i.parent_guid);
-    return E.addShape(this), s && typeof i.children < "u" && i.children && (this.getChildren(!0).forEach((n) => n.destroy()), i.children.forEach((n) => {
-      n.parent_guid = this.guid, this.addChild(new B().fromJSON(t, n));
-    })), h.emit(a.SHAPE_CREATE, this, { parent: o }), this;
+    const n = f.getShapeByGuid(o.parent_guid);
+    return f.addShape(this), s && typeof o.children < "u" && o.children && (this.getChildren(!0).forEach((r) => r.destroy()), o.children.forEach((r) => {
+      r.parent_guid = this.guid, this.addChild(new B().fromJSON(t, r));
+    })), i && h.emit(a.SHAPE_CREATE, this, { parent: n }), this;
   };
 }
 const u = {
@@ -1696,7 +1700,7 @@ function K() {
   }, this.setPointsOptions = () => {
     this.setPointsMoveDirections(), this.setPointsMoveBounds();
   }, this.setPointsMoveDirections = () => {
-    this.center_top.setOptions({ moveDirections: [f.TOP, f.BOTTOM] }), this.center_bottom.setOptions({ moveDirections: [f.TOP, f.BOTTOM] }), this.left_center.setOptions({ moveDirections: [f.LEFT, f.RIGHT] }), this.right_center.setOptions({ moveDirections: [f.LEFT, f.RIGHT] });
+    this.center_top.setOptions({ moveDirections: [E.TOP, E.BOTTOM] }), this.center_bottom.setOptions({ moveDirections: [E.TOP, E.BOTTOM] }), this.left_center.setOptions({ moveDirections: [E.LEFT, E.RIGHT] }), this.right_center.setOptions({ moveDirections: [E.LEFT, E.RIGHT] });
   }, this.setPointsMoveBounds = () => {
     this.left_top.options.bounds.bottom = this.left_bottom.y - this.left_bottom.options.height - this.left_center.options.height, this.left_top.options.bounds.right = this.right_top.x - this.right_top.options.width - this.center_top.options.width, this.center_top.options.bounds.bottom = this.left_bottom.y - this.left_bottom.options.height - this.left_center.options.height, this.right_top.options.bounds.bottom = this.left_bottom.y - this.left_bottom.options.height - this.left_center.options.height, this.right_top.options.bounds.left = this.left_top.x + this.right_top.options.width + this.center_top.options.width, this.right_center.options.bounds.left = this.left_top.x + this.right_center.options.width + this.center_top.options.width, this.right_bottom.options.bounds.left = this.left_top.x + this.right_bottom.options.width + this.center_bottom.options.width, this.right_bottom.options.bounds.top = this.right_top.y + this.right_top.options.height + this.right_center.options.height, this.center_bottom.options.bounds.top = this.center_top.y + this.center_top.options.height + this.right_center.options.height, this.left_bottom.options.bounds.right = this.right_bottom.x - this.right_bottom.options.width - this.center_bottom.options.width, this.left_bottom.options.bounds.top = this.left_top.y + this.left_top.options.height + this.left_center.options.height, this.left_center.options.bounds.right = this.right_center.x - this.right_center.options.width - this.center_top.options.width;
   }, this.adjustCoordinates = () => {
@@ -1718,7 +1722,7 @@ function K() {
   };
 }
 try {
-  window.ResizeBox = K, window.SmartShape = B, window.RotateBox = X, window.SmartShapeManager = E;
+  window.ResizeBox = K, window.SmartShape = B, window.RotateBox = X, window.SmartShapeManager = f;
 } catch {
 }
 export {
@@ -1728,5 +1732,5 @@ export {
   a as ShapeEvents,
   B as SmartShape,
   u as SmartShapeDisplayMode,
-  E as SmartShapeManager
+  f as SmartShapeManager
 };

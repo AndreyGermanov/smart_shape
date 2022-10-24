@@ -216,6 +216,7 @@ describe('SmartShape import/export tests', () => {
   });
   it("fromJSON compact", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
       const app = Cypress.$("#app").toArray()[0];
       app.style.height = "800px";
       const shape = new SmartShape();

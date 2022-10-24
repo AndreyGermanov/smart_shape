@@ -195,7 +195,8 @@ function SmartShapeEventListener(shape) {
         pauseEvent(event);
         EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.shape,createEvent(event));
         setTimeout(() => {
-            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START, this.shape, createEvent(event,{pos:this.shape.getPosition(true)}));
+            EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,
+                this.shape, createEvent(event,{pos:this.shape.getPosition(this.shape.options.groupChildShapes)}));
         },100);
     }
 
@@ -220,10 +221,10 @@ function SmartShapeEventListener(shape) {
         if (stepX === null || stepY === null) {
             return
         }
-        const oldPos = this.shape.getPosition(true);
+        const oldPos = this.shape.getPosition(this.shape.options.groupChildShapes);
         this.shape.moveBy(stepX,stepY);
         this.shape.redraw();
-        const newPos = this.shape.getPosition(true);
+        const newPos = this.shape.getPosition(this.shape.options.groupChildShapes);
         EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,createEvent(event,{oldPos,newPos}));
     }
 
@@ -285,7 +286,7 @@ function SmartShapeEventListener(shape) {
      */
     this.calcMovementOffset = (event) => {
         this.shape.calcPosition();
-        const pos = this.shape.getPosition(true);
+        const pos = this.shape.getPosition(this.shape.options.groupChildShapes);
         let stepX = event.movementX;
         let stepY = event.movementY;
         let clientX = event.clientX+window.scrollX;
@@ -295,10 +296,10 @@ function SmartShapeEventListener(shape) {
         const offset = getOffset(this.shape.root, true);
         const bounds = this.shape.getBounds();
         if (newX < bounds.left || newX+pos.width > bounds.right) {
-            return [null, null]
+            stepX = 0;
         }
         if (newY < bounds.top || newY+pos.height > bounds.bottom) {
-            return [null, null]
+            stepY = 0;
         }
         if (clientX<newX+offset.left) {
             stepX = clientX - (newX+offset.left);
