@@ -237,7 +237,7 @@ function SmartShape() {
         this.setOptions(options);
         this.groupHelper = new SmartShapeGroupHelper(this).init();
         if (points && points.length) {
-            this.setupPoints(points, Object.assign({}, this.options.pointOptions));
+            this.setupPoints(points, mergeObjects({}, this.options.pointOptions));
             this.redraw();
         }
         this.eventListener.run();
@@ -262,13 +262,16 @@ function SmartShape() {
         if (!options || typeof(options) !== "object") {
             return
         }
-        options.pointOptions = mergeObjects(this.options.pointOptions,options.pointOptions);
-        options.style = mergeObjects(this.options.style,options.style);
-        options.bounds = mergeObjects(this.options.bounds,options.bounds);
         if (notNull(options.visible) && options.visible !== this.options.visible) {
             this.points.forEach(point => point.options.visible = options.visible);
             this.resizeBox && this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
             this.rotateBox && this.rotateBox.setOptions({shapeOptions:{visible:options.visible}});
+        }
+        if (notNull(options.fillGradient)) {
+            this.options.fillGradient = {};
+        }
+        if (notNull(options.fillImage)) {
+            this.options.fillImage = {};
         }
         this.options = mergeObjects(this.options,options);
         this.points.forEach(point=>{
@@ -294,7 +297,7 @@ function SmartShape() {
      */
     this.setupPoints = (points,pointOptions) => {
         this.points = [];
-        this.addPoints(points,Object.assign({},pointOptions));
+        this.addPoints(points,mergeObjects({},pointOptions));
         this.calcPosition();
     }
 
@@ -309,7 +312,7 @@ function SmartShape() {
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.addPoint = (x,y,pointOptions=null) => {
-        let point = this.putPoint(x, y,Object.assign({},pointOptions));
+        let point = this.putPoint(x, y,mergeObjects({},pointOptions || this.options.pointOptions));
         if (!point) {
             return null;
         }
@@ -338,7 +341,7 @@ function SmartShape() {
         points.forEach(point => {
             const p = this.putPoint(point[0] + this.options.offsetX,
                 point[1] + this.options.offsetY,
-                Object.assign({}, pointOptions))
+                mergeObjects({}, pointOptions || this.options.pointOptions))
             if (p) {
                 p.init(p.x, p.y, pointOptions)
                 this.root.appendChild(p.element);
@@ -361,14 +364,9 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
-    this.putPoint = (x,y,pointOptions=null) => {
+    this.putPoint = (x,y,pointOptions= {}) => {
         if (this.findPoint(x,y)) {
             return null;
-        }
-        if (!pointOptions || !Object.keys(pointOptions).length) {
-            pointOptions = Object.assign({},this.options.pointOptions) || {};
-        } else {
-            pointOptions = mergeObjects(Object.assign({},this.options.pointOptions),pointOptions);
         }
         pointOptions.bounds = this.getBounds();
         pointOptions.zIndex = this.options.zIndex+1;
@@ -1072,9 +1070,9 @@ function SmartShape() {
      * @returns {SmartShape|null} Created shape object or null in case of errors
      */
     this.clone = (options={},includeChildren=true) => {
-        const json = Object.assign({},this.getJSON(includeChildren));
+        const json = mergeObjects({},this.getJSON(includeChildren));
         json.parent_guid = this.guid;
-        json.options = Object.assign(json.options,options);
+        json.options = mergeObjects(json.options,options);
         const result = new SmartShape().fromJSON(this.root,json,includeChildren);
         if (!result) {
             return null
@@ -1098,7 +1096,7 @@ function SmartShape() {
      */
     this.getJSON = (includeChildren = true, compact = false) => {
         const result = {
-            options: Object.assign({},this.options)
+            options: mergeObjects({},this.options)
         }
         result.options.displayMode = SmartShapeDisplayMode.DEFAULT;
         if (compact || this.options.compactExport) {
@@ -1134,9 +1132,10 @@ function SmartShape() {
             jsonObj.options.id += "_"+SmartShapeManager.length();
             jsonObj.options.name += " "+SmartShapeManager.length();
         }
-        this.setOptions(jsonObj.options);
         if (!this.svg) {
-            this.init(root,this.options,null,false);
+            this.init(root,jsonObj.options,null,false);
+        } else {
+            this.setOptions(jsonObj.options);
         }
         jsonObj.points.forEach(point => {
             if (point.length) {

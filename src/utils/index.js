@@ -1,4 +1,5 @@
 import {getRotatedCoords, distance, degrees_to_radians, radians_to_degrees,isPointInsidePolygon,rectsOverlap} from "./geometry.js";
+import {deepmerge} from "./deepmerge.js";
 
 export const getOffset = ( elem,deep=true ) => {
     let x = 0;
@@ -37,11 +38,20 @@ export const notNull = (value) => {
     return typeof(value) !== "undefined" && value !== null;
 }
 
-export const mergeObjects = (obj1, obj2) => {
-    if (obj1 && typeof(obj1) === "object" && obj2 && typeof(obj2) === "object") {
-        return Object.assign(obj1,obj2);
+export const mergeObjects = (...objects) => {
+    if (!objects.length) {
+        return null;
     }
-    return obj1;
+    let result = objects[0];
+    if (objects.length === 1) {
+        return result;
+    }
+    for (let index=1;index<objects.length;index++) {
+        if (notNull(objects[index]) && typeof(objects[index]) === "object") {
+            result = deepmerge(result, objects[index]);
+        }
+    }
+    return result;
 }
 
 export const round = (number,precission) => {

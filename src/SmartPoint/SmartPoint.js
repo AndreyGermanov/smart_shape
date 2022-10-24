@@ -1,5 +1,14 @@
 import SmartShapeManager,{ContainerEvents} from "../SmartShapeManager/SmartShapeManager.js";
-import {CSStoJsStyleName, getOffset, getRotatedCoords, pauseEvent, readJSON, uuid} from "../utils";
+import {
+    CSStoJsStyleName,
+    getOffset,
+    getRotatedCoords,
+    mergeObjects,
+    notNull,
+    pauseEvent,
+    readJSON,
+    uuid
+} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {createEvent} from "../events/functions.js";
 import SmartPointContextMenu from "./SmartPointContextMenu.js";
@@ -114,7 +123,7 @@ function SmartPoint() {
         this.y = parseInt(y);
         Object.assign(this,new SmartPointContextMenu(this));
         this.element = this.createPointUI();
-        this.setOptions(Object.assign({},options));
+        this.setOptions(mergeObjects({},options));
         this.setEventListeners();
         EventsManager.emit(PointEvents.POINT_ADDED,this);
         return this;
@@ -131,10 +140,10 @@ function SmartPoint() {
             Object.assign(this,new SmartPointContextMenu(this));
         }
         if (options && typeof(options) === "object") {
-            if (options.style && typeof(options.style) === "object") {
-                options.style = Object.assign(this.options.style, options.style)
+            if (notNull(options.moveDirections) && typeof(options.moveDirections) === "object") {
+                this.options.moveDirections = [];
             }
-            Object.assign(this.options,options);
+            this.options = mergeObjects(this.options,options);
         }
         if (this.options.id) {
             this.element.id = this.options.id;
@@ -419,7 +428,7 @@ function SmartPoint() {
         return {
             x: this.x,
             y: this.y,
-            options: Object.assign({},this.options),
+            options: mergeObjects({},this.options),
         }
     }
 

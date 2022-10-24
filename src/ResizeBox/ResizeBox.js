@@ -4,7 +4,7 @@ import ResizeBoxEventListener from "./ResizeBoxEventListener.js";
 import EventsManager from "../events/EventsManager.js";
 import {ShapeEvents} from "../SmartShape/SmartShapeEventListener.js";
 import {resize_lb,resize_cb,resize_ct,resize_lc,resize_lt,resize_rb,resize_rc,resize_rt} from "../../assets/graphics.js";
-import {uuid} from "../utils";
+import {mergeObjects, uuid} from "../utils";
 /**
  * Class represents a special type of shape, that shows the rectangle with markers on
  * it corners, used to resize it. [See demo](https://code.germanov.dev/smart_shape/tests/prod/resize_box.html).
@@ -179,7 +179,7 @@ function ResizeBox() {
         this.options.shapeOptions.id = this.options.id;
         this.options.shapeOptions.canRotate = false;
         this.options.shapeOptions.canScale = false;
-        this.shape = new SmartShape().init(root,Object.assign({},this.options.shapeOptions),[]);
+        this.shape = new SmartShape().init(root,mergeObjects({},this.options.shapeOptions),[]);
         EventsManager.emit(ShapeEvents.SHAPE_CREATE, this.shape, {});
         this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds();
         this.addPoints();
@@ -196,19 +196,9 @@ function ResizeBox() {
         if (!options || typeof(options) !== "object") {
             return
         }
-        if (options.shapeOptions && typeof(options.shapeOptions) === "object") {
-            if (options.shapeOptions.pointOptions && typeof(options.shapeOptions.pointOptions) === "object") {
-                options.shapeOptions.pointOptions = Object.assign(this.options.shapeOptions.pointOptions,options.shapeOptions.pointOptions);
-            } else {
-                options.shapeOptions.pointOptions = Object.assign({},this.options.shapeOptions.pointOptions);
-            }
-            options.shapeOptions = Object.assign(this.options.shapeOptions,options.shapeOptions);
-        } else {
-            options.shapeOptions = Object.assign({},this.options.shapeOptions);
-        }
-        options.shapeOptions.zIndex = options.zIndex || this.options.zIndex;
-        options.shapeOptions.id = options.id ? options.id : this.options.id;
-        Object.assign(this.options,options);
+        this.options = mergeObjects(this.options,options);
+        this.options.shapeOptions.zIndex = this.options.zIndex || this.options.zIndex;
+        this.options.shapeOptions.id = this.options.id ? this.options.id : this.options.id;
         if (this.shape) {
             this.shape.setOptions(this.options.shapeOptions);
         }

@@ -53,7 +53,7 @@ describe('Gradient fill tests', () => {
               assert.equal(steps[2].getAttribute("stop-opacity"),"1");
               gradientOptions.type = "radial";
               gradientOptions.gradientTransform = "";
-              shape.setOptions(gradientOptions);
+              shape.setOptions({fillGradient:gradientOptions});
               shape.redraw();
               cy.get("#shape1 > defs > linearGradient").should("not.exist").then(() => {
                 cy.get("#shape1 > defs > radialGradient").should("exist").then(() => {
