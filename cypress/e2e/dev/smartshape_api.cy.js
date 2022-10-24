@@ -648,7 +648,7 @@ describe('SmartShape API tests', () => {
       shape1.addChild(shape2);
       let event_triggered = false;
       EventsManager.subscribe(ShapeEvents.SHAPE_CREATE,(event) => {
-        if (event.target.options.id === "shape1_clone") {
+        if (event.target.options.id === "shape1_2") {
           if (event.parent && event.parent.guid === shape1.guid) {
             event_triggered = true;
           }
@@ -659,10 +659,12 @@ describe('SmartShape API tests', () => {
         assert.equal(SmartShapeManager.getShapes().length,4,"Should add 2 more shapes to Shapes manager");
         assert.deepEqual(shape3.getPointsArray(),shape1.getPointsArray(),"Should correctly copy points");
         assert.deepEqual(shape3.getChildren()[0].getPointsArray(),shape2.getPointsArray(),"Should correctly copy points");
-        assert.equal(shape3.options.id,"shape1_clone","Should set id of clone by adding '_clone' suffix");
-        assert.equal(shape3.options.name,"Shape 1 Clone","Should set id of clone by adding ' Clone' suffix");
-        assert.equal(shape3.getChildren()[0].options.id,"shape2_clone","Should set id of clone's child by adding '_clone' suffix");
-        assert.equal(shape3.getChildren()[0].options.name,"Shape 2 Clone","Should set id of clone's child by adding ' Clone' suffix");
+        assert.equal(shape3.options.id,"shape1_2","Should set id of clone by adding '_clone' suffix");
+        assert.equal(shape3.options.name,"Shape 1 2","Should set id of clone by adding ' Clone' suffix");
+        assert.equal(shape3.getChildren()[0].options.id,
+            "shape2_3_4","Should set id of clone's child by adding '_clone' suffix");
+        assert.equal(shape3.getChildren()[0].options.name,
+            "Shape 2 3 4","Should set id of clone's child by adding ' Clone' suffix");
         assert.isTrue(event_triggered, "Added shape1 as a parent of shape3 when emit SHAPE_CREATE event");
       })
     });

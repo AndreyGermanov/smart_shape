@@ -1,7 +1,7 @@
 import {SmartShape,SmartShapeManager} from "../../../src/index.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 import {SmartShapeManagerEvents} from "../../../src/SmartShapeManager/SmartShapeManager.js";
-import {SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
+import {SmartShapeDisplayMode} from "../../../src/index.js";
 
 describe('SmartShape Manager tests', () => {
   beforeEach(() => {

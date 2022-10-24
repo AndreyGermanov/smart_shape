@@ -456,7 +456,7 @@ function SmartShape() {
      */
     this.moveTo = (x,y,redraw= true) => {
         const bounds = this.getBounds();
-        const pos = this.getPosition(true);
+        const pos = this.getPosition(this.options.groupChildShapes);
         let newX = x+pos.width > bounds.right ? bounds.right - pos.width : x;
         let newY = y+pos.height > bounds.bottom ? bounds.bottom - pos.height: y;
         this.moveBy(newX-pos.left,newY-pos.top, redraw);
@@ -584,7 +584,7 @@ function SmartShape() {
      */
     this.rotateBy = (angle,centerX=null,centerY=null,checkBounds=false) => {
         this.calcPosition();
-        const pos = this.getPosition(true);
+        const pos = this.getPosition(this.options.groupChildShapes);
         let [shapeCenterX,shapeCenterY] = this.getCenter(this.options.groupChildShapes)
         const parent = this.getRootParent(true);
         if (parent && parent.options.groupChildShapes) {
@@ -1073,17 +1073,15 @@ function SmartShape() {
      */
     this.clone = (options={},includeChildren=true) => {
         const json = Object.assign({},this.getJSON(includeChildren));
-        json.options.id += "_clone";
-        json.options.name += " Clone";
         json.parent_guid = this.guid;
         json.options = Object.assign(json.options,options);
-        const result = new SmartShape().fromJSON(this.root,JSON.stringify(json),includeChildren);
+        const result = new SmartShape().fromJSON(this.root,json,includeChildren);
         if (!result) {
             return null
         }
         result.getChildren(true).forEach(child => {
-            child.options.id += "_clone";
-            child.options.name += " Clone";
+            child.options.id += "_" + SmartShapeManager.length();
+            child.options.name += " " + SmartShapeManager.length();
         });
         return result;
     }
@@ -1126,25 +1124,25 @@ function SmartShape() {
      * @param includeChildren {boolean} Should load children of this shape if existed. True by default.
      * @returns {SmartShape|null} Loaded SmartShape object or null in case of JSON reading errors
      */
-    this.fromJSON = (root,json,includeChildren = true) => {
-        let jsonObj = json;
-        if (typeof(jsonObj) === "string") {
-            jsonObj = readJSON(json);
-        }
+    this.fromJSON = (root,json,includeChildren = true,emitCreateEvent = true) => {
+        let jsonObj = typeof(json) === "string" ? readJSON(json) : json;
         if (!jsonObj) {
             return null;
         }
         this.root = root;
-
+        if (SmartShapeManager.findShapeById(jsonObj.options.id)) {
+            jsonObj.options.id += "_"+SmartShapeManager.length();
+            jsonObj.options.name += " "+SmartShapeManager.length();
+        }
         this.setOptions(jsonObj.options);
         if (!this.svg) {
             this.init(root,this.options,null,false);
         }
         jsonObj.points.forEach(point => {
             if (point.length) {
-                this.putPoint(point[0],point[1])
+                this.putPoint(point[0],point[1]);
             } else {
-                this.putPoint(point.x, point.y, point.options)
+                this.putPoint(point.x, point.y, point.options);
             }
         })
         const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
@@ -1156,7 +1154,9 @@ function SmartShape() {
                 this.addChild(new SmartShape().fromJSON(root,child));
             })
         }
-        EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
+        if (emitCreateEvent) {
+            EventsManager.emit(ShapeEvents.SHAPE_CREATE, this, {parent});
+        }
         return this;
     }
 }
