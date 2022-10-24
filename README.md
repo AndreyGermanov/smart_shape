@@ -300,6 +300,8 @@ Examples below show how you can use SmartShape and it's derivatives in basic mod
 | Interactive clock                                        | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/clock.html)     | [link](https://code.germanov.dev/smart_shape/tests/prod/clock.html)     |
 | Country shapes collection                             | [link](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/prod/countries.html) | [link](https://code.germanov.dev/smart_shape/tests/prod/countries.html) |
 
+<br/>
+
 **Cut image using SmartShape** demo:
 
 ![cut](https://code.germanov.dev/smart_shape/assets/cut.gif)
