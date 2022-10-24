@@ -844,7 +844,7 @@ Options of shape as an object. Can have the following parameters.
 | minPoints | <code>number</code> | Minimum number of points in the shape. Default: 3. |
 | groupChildShapes | <code>boolean</code> | Should child shapes be grouped and move/resize/rotate/destroy together. True by default |
 | moveToTop | <code>boolean</code> | Should shape go to top based on "zIndex" when user clicks on it. True by default |
-| compactExport | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties during export to JSON using .toJSON() methood |
+| compactExport | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties during export to JSON using .toJSON() method |
 
 <a name="SmartShape+left"></a>
 

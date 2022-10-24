@@ -331,3 +331,9 @@ As an early stage software, be careful by using it in real world projects. Test 
 If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of GitHub repository of SmartShape project. Perhaps I will include it to development plan.
 
 The development plan is public and available here: https://github.com/users/AndreyGermanov/projects/1/views/1 .
+
+I have a lot more ideas to improve the SmartShape. Definitely I will perform better at rainy and snow evenings with a cup of coffee or tea ;)
+
+<div align="center">
+<a href="https://www.buymeacoffee.com/AndreyGermanov" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+</div>

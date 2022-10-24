@@ -100,7 +100,7 @@ function SmartShape() {
      * True by default
      * @param moveToTop {boolean} Should shape go to top based on "zIndex" when user clicks on it. True by default
      * @param compactExport {boolean} If this is true, then it will save only coordinates of
-     * points, but not their properties during export to JSON using .toJSON() methood
+     * points, but not their properties during export to JSON using .toJSON() method
      * @type {object}
      */
     this.options = {
