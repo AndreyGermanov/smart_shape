@@ -48,7 +48,7 @@ export const distance = (x1,y1,x2,y2) => {
 /**
  * @ignore
  * Function calculates distance from point (x0,y0) to line, defined by points (x1,y1) and (x2,y2)
- * https://brilliant.org/wiki/distance-between-point-and-line/
+ * https://code.germanov.dev/smart_shape/assets/distance.png
  * @param x0 X coordinate of point
  * @param y0 Y coordinate of point
  * @param x1 X coordinate of line start
@@ -57,13 +57,18 @@ export const distance = (x1,y1,x2,y2) => {
  * @param y2 Y coordinate of line end
  */
 export const distanceFromLine = (x0,y0,x1,y1,x2,y2) => {
-    const a = y2 - y1;
-    const b = x1 - x2;
-    const c = x2*y1 - x1*y2;
-    if (a === 0 && b === 0) {
-        return -1
+    let t = (x0-x1)*(x2-x1)+(y0-y1)*(y2-y1);
+    const d = Math.pow(x2-x1,2) +Math.pow(y2-y1,2)
+    if (d === 0) {
+        return -1;
     }
-    return Math.abs(a*x0 + b*y0 + c)/Math.sqrt(a*a+b*b)
+    t /= d;
+    if (t<0) {
+        t = 0;
+    } else if (t>1) {
+        t = 1;
+    }
+    return Math.sqrt(Math.pow(x1-x0 + t*(x2-x1),2) + Math.pow(y1-y0+t*(y2-y1),2))
 }
 
 /**
