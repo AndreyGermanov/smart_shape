@@ -811,16 +811,20 @@ function SmartShape() {
         }
         this.points.forEach(point => {
             point.setOptions({zIndex: this.options.zIndex + 1});
-            point.element.style.zIndex = point.options.zIndex;
-            if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
-                point.element.style.display = 'none';
+            if (point.element) {
+                point.element.style.zIndex = point.options.zIndex;
+                if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
+                    point.element.style.display = 'none';
+                }
             }
         })
         if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
                     if (point.options.visible && !point.options.hidden && point.options.canDrag) {
-                        point.element.style.display = '';
+                        if (point.element) {
+                            point.element.style.display = '';
+                        }
                     }
                 })
             })
@@ -1265,11 +1269,14 @@ function SmartShape() {
             this.setOptions(jsonObj.options);
         }
         jsonObj.points.forEach(point => {
+            let p
             if (point.length) {
-                this.putPoint(point[0],point[1]);
+                p = this.putPoint(point[0],point[1]);
+                p.setOptions(jsonObj.options.pointOptions || {})
             } else {
-                this.putPoint(point.x, point.y, point.options);
+                p = this.putPoint(point.x, point.y, point.options || jsonObj.options.pointOptions);
             }
+            p.updateContextMenu();
         })
         const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
         SmartShapeManager.addShape(this);
