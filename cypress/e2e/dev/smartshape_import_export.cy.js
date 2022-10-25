@@ -100,7 +100,8 @@ describe('SmartShape import/export tests', () => {
     hasContextMenu: true,
     groupChildShapes:true,
     moveToTop: true,
-    compactExport: false
+    compactExport: false,
+    forceCreateEvent: false
   }
   it('toJSON basic', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {

@@ -101,6 +101,9 @@ function SmartShape() {
      * @param moveToTop {boolean} Should shape go to top based on "zIndex" when user clicks on it. True by default
      * @param compactExport {boolean} If this is true, then it will save only coordinates of
      * points, but not their properties during export to JSON using .toJSON() method
+     * @param forceCreateEvent {boolean} Internal parameter used by JSON import.
+     * By default, if shape does not have point when create, it does not emit SHAPE_CREATE event on init() method.
+     * If this option set to true, then init() methods emits SHAPE_CREATE event event for empty shapes.
      * @type {object}
      */
     this.options = {
@@ -140,7 +143,8 @@ function SmartShape() {
         minPoints: 3,
         groupChildShapes: true,
         moveToTop: true,
-        compactExport: false
+        compactExport: false,
+        forceCreateEvent: false
     };
 
     /**
@@ -211,6 +215,14 @@ function SmartShape() {
      * @type {array} Coordinates as an array [x,y]
      */
     this.initCenter = null;
+
+    /**
+     * Context menu of shape that appear on right mouse click
+     * if `hasContextMenu` option is true
+     * @type {SmartShapeContextMenu}
+     */
+    this.shapeMenu = null;
+
     /**
      * Method used to construct SmartShape object with specified `points` and
      * with specified `options`.
@@ -222,7 +234,7 @@ function SmartShape() {
      * @param show {boolean} Should display the shape by default. Default: true
      * @returns {object} constructed SmartShape object
      */
-    this.init = (root,options=null,points=null,show=true) => {
+    this.init = (root,options= null,points= null,show= true) => {
         if (!root) {
             console.error("Root HTML node not specified. Could not create shape.")
             return
@@ -233,7 +245,7 @@ function SmartShape() {
         }
         this.root = root;
         this.root.style.position = "relative";
-        Object.assign(this, new SmartShapeContextMenu(this));
+        this.shapeMenu = new SmartShapeContextMenu(this)
         this.setOptions(options);
         this.groupHelper = new SmartShapeGroupHelper(this).init();
         if (points && points.length) {
@@ -241,8 +253,8 @@ function SmartShape() {
             this.redraw();
         }
         this.eventListener.run();
-        if (typeof(this.updateContextMenu) === "function") {
-            this.updateContextMenu();
+        if (this.shapeMenu && typeof(this.shapeMenu) === "object") {
+            this.shapeMenu.updateContextMenu();
         }
         if (show) {
             this.applyDisplayMode();
@@ -282,8 +294,8 @@ function SmartShape() {
             }
             point.redraw();
         })
-        if (typeof(this.updateContextMenu) === "function") {
-            this.updateContextMenu();
+        if (this.shapeMenu && typeof(this.shapeMenu) === "object") {
+            this.shapeMenu.updateContextMenu();
         }
     }
 
@@ -320,8 +332,8 @@ function SmartShape() {
         this.root.appendChild(point.element);
         point.updateContextMenu();
         this.redraw();
-        if (this.options.hasContextMenu && !this.contextMenu) {
-            this.updateContextMenu();
+        if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
+            this.shapeMenu.updateContextMenu();
         }
         return point;
     }
@@ -348,8 +360,8 @@ function SmartShape() {
                 p.redraw();
             }
         });
-        if (this.options.hasContextMenu && !this.contextMenu) {
-            this.updateContextMenu();
+        if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
+            this.shapeMenu.updateContextMenu();
         }
     }
 
@@ -874,9 +886,6 @@ function SmartShape() {
      * set the variable to 'null' after calling this method.
      */
     this.destroy = () => {
-        while (this.points.length>0) {
-            this.points[0].destroy();
-        }
         EventsManager.emit(ShapeEvents.SHAPE_DESTROY,this,{});
         if (this.eventListener) {
             this.eventListener.destroy();
@@ -890,6 +899,7 @@ function SmartShape() {
         if (this.root && this.svg) {
             try {
                 this.root.removeChild(this.svg);
+                this.points.forEach(point => this.root.removeChild(point.element))
             } catch (err) {}
         }
         if (this.options.groupChildShapes) {
@@ -897,13 +907,15 @@ function SmartShape() {
                 child.destroy()
             });
         }
-        if (this.contextMenu) {
-            this.destroyContextMenu();
+        if (this.shapeMenu.contextMenu) {
+            this.shapeMenu.destroyContextMenu();
         }
         const parent = this.getParent();
         if (parent) {
             parent.removeChild(this);
         }
+        this.points.forEach(point => point.destroy());
+        this.points = [];
     }
 
     /**
@@ -1133,6 +1145,7 @@ function SmartShape() {
             jsonObj.options.name += " "+SmartShapeManager.length();
         }
         if (!this.svg) {
+            jsonObj.options.forceCreateEvent = false;
             this.init(root,jsonObj.options,null,false);
         } else {
             this.setOptions(jsonObj.options);

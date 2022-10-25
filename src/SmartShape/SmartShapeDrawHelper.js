@@ -34,8 +34,8 @@ function SmartShapeDrawHelper() {
         if (shape.points.length < 1) {
             return
         }
-        if (!shape.contextMenu) {
-            shape.updateContextMenu();
+        if (!shape.shapeMenu.contextMenu) {
+            shape.shapeMenu.updateContextMenu();
         }
         this.updateOptions(shape);
         const polygon = this.drawPolygon(shape);
