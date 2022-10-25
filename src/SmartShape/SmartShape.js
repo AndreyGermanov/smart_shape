@@ -15,7 +15,7 @@ import {
     readJSON
 } from "../utils";
 import EventsManager from "../events/EventsManager.js";
-import {applyAspectRatio} from "../utils/geometry.js";
+import {applyAspectRatio, distance, distanceFromLine} from "../utils/geometry.js";
 import SmartShapeContextMenu from "./SmartShapeContextMenu.js";
 /**
  * SmartShape class. Used to construct shapes.
@@ -426,11 +426,63 @@ function SmartShape() {
         point.y = y;
         point.setOptions(pointOptions);
         if (beforePoint && beforeIndex !== -1) {
-            this.points.splice(beforeIndex,0,point)
+            this.points.splice(beforeIndex ,0,point)
         } else {
             this.points.push(point);
         }
         return point;
+    }
+
+    /**
+     * Method returns the closest point from specified array of points or all points of this shape
+     * to specified x,y coordinates.
+     * @param x {number} X coordinate
+     * @param y {number} Y coordinate
+     * @param points {array} Array of coordinates of points to. Each coordinate is [x,y] array. If not specified
+     * then all points of this shapes used.
+     * @returns {null|Object|*}
+     */
+    this.getClosestPoint = (x,y,points=null) => {
+        if (!points) {
+            points = this.getPointsArray();
+        }
+        if (!points || !points.length) {
+            return null;
+        }
+        points = points.filter(([x1,y1]) => !isNaN(parseInt(x1)) && !isNaN(parseInt(y1)));
+        if (points.length === 1) {
+            return this.points[0];
+        }
+        if (!points || !points.length) {
+            return null;
+        }
+        const cords = points
+            .map(([x1,y1]) => ({x:x1,y:y1,d:distance(x,y,x1,y1)}))
+            .reduce((s1,s2) => s1.d < s2.d ? s1 : s2);
+        return this.findPoint(cords.x,cords.y);
+    }
+
+    /**
+     * @ignore
+     * This method returns the line which is closest to specified (x,y) point.
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @returns {object} Object with fields `point1` - Start point of line,
+     * `point2` - end point of line, `d` - distance from this line to point (x,y)
+     */
+    this.getClosestLine = (x,y) => {
+        return this.points
+            .map((point1,index) => {
+                let point2 = null;
+                if (index < this.points.length-1) {
+                    point2 = this.points[index+1];
+                } else {
+                    point2 = this.points[0];
+                }
+                return [point1,point2,distanceFromLine(x,y,point1.x,point1.y,point2.x,point2.y)]
+            })
+            .filter(l => l[2]>=0)
+            .reduce((l1,l2) => l1[2] < l2[2] ? l1 : l2)
     }
 
     /**

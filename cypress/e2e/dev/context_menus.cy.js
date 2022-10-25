@@ -80,4 +80,24 @@ describe('SmartShape Context Menus tests', () => {
           "Should destroy only one shape if 'groupChildShapes' option disabled on parent");
     });
   })
+  it("Should correctly insert new point between two other points", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = SmartShapeManager.createShape(app, {canAddPoints: true},
+          [], true
+      );
+      shape.shapeMenu.onAddPointClick({cursorX: 308, cursorY: 308});
+      assert.deepEqual(shape.getPointsArray(), [[300,300]],
+          "Should correctly add point"
+      );
+      shape.deleteAllPoints();
+      shape.redraw();
+      shape.addPoints([[0, 100], [100, 0], [200, 100], [100, 200]]);
+      shape.redraw();
+      shape.shapeMenu.onAddPointClick({cursorX: 38, cursorY: 38});
+      assert.deepEqual(shape.getPointsArray(), [[0, 100], [30, 30], [100, 0], [200, 100], [100, 200]],
+          "Should correctly insert point between two closest points");
+    });
+  })
 })

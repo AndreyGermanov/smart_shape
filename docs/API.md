@@ -565,6 +565,7 @@ this class automatically during init process
     * [.destroy()](#SmartPoint+destroy)
     * [.addEventListener(eventName, handler)](#SmartPoint+addEventListener) ⇒ <code>function</code>
     * [.removeEventListener(eventName, listener)](#SmartPoint+removeEventListener)
+    * [.distance(point)](#SmartPoint+distance) ⇒ <code>number</code>
 
 <a name="new_SmartPoint_new"></a>
 
@@ -720,6 +721,18 @@ to this object.
 | eventName | <code>string</code> | Name of event to remove listener from |
 | listener | <code>function</code> | Pointer to event listener, that added previously. It was returned from [addEventListener](#ResizeBox+addEventListener) method. |
 
+<a name="SmartPoint+distance"></a>
+
+### smartPoint.distance(point) ⇒ <code>number</code>
+Method returns a distance from this point to other specified point
+
+**Kind**: instance method of [<code>SmartPoint</code>](#SmartPoint)  
+**Returns**: <code>number</code> - Distance from this point to specified point  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>SmartPoint</code>](#SmartPoint) | Distant point |
+
 <a name="SmartShape"></a>
 
 ## SmartShape
@@ -748,6 +761,7 @@ to this object.
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
     * [.insertPoint(x, y, beforePoint, pointOptions)](#SmartShape+insertPoint) ⇒ <code>object</code>
     * [.addPoints(points, pointOptions)](#SmartShape+addPoints)
+    * [.getClosestPoint(x, y, points)](#SmartShape+getClosestPoint) ⇒ <code>null</code> \| <code>Object</code> \| <code>\*</code>
     * [.getPointIndex(point)](#SmartShape+getPointIndex) ⇒ <code>number</code>
     * [.deleteAllPoints()](#SmartShape+deleteAllPoints)
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
@@ -995,6 +1009,20 @@ Adds specified points to shape.
 | --- | --- | --- |
 | points | <code>array</code> | 2D array of points to add. Each point is array of [x,y] coordinates |
 | pointOptions | <code>object</code> | Points options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
+
+<a name="SmartShape+getClosestPoint"></a>
+
+### smartShape.getClosestPoint(x, y, points) ⇒ <code>null</code> \| <code>Object</code> \| <code>\*</code>
+Method returns the closest point from specified array of points or all points of this shape
+to specified x,y coordinates.
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | X coordinate |
+| y | <code>number</code> | Y coordinate |
+| points | <code>array</code> | Array of coordinates of points to. Each coordinate is [x,y] array. If not specified then all points of this shapes used. |
 
 <a name="SmartShape+getPointIndex"></a>
 
