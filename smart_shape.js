@@ -1521,7 +1521,7 @@ function C() {
     let i = this.putPoint(t, e, m({}, s || this.options.pointOptions));
     return i ? (i = i.init(t, e, s), this.root.appendChild(i.element), i.updateContextMenu(), this.redraw(), this.options.hasContextMenu && !this.shapeMenu.contextMenu && this.shapeMenu.updateContextMenu(), i) : null;
   }, this.insertPoint = (t, e, s, i = null) => {
-    let o = this.putPoint(t, e, m({}, i || this.options.pointOptions), before);
+    let o = this.putPoint(t, e, m({}, i || this.options.pointOptions), s);
     return o ? (o = o.init(t, e, i), this.root.appendChild(o.element), o.updateContextMenu(), this.redraw(), this.options.hasContextMenu && !this.shapeMenu.contextMenu && this.shapeMenu.updateContextMenu(), o) : null;
   }, this.addPoints = (t, e = null) => {
     !t || typeof t != "object" || (t.forEach((s) => {

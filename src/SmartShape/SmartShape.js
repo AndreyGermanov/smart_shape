@@ -359,7 +359,7 @@ function SmartShape() {
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.insertPoint = (x,y,beforePoint,pointOptions=null) => {
-        let point = this.putPoint(x, y,mergeObjects({},pointOptions || this.options.pointOptions),before);
+        let point = this.putPoint(x, y,mergeObjects({},pointOptions || this.options.pointOptions),beforePoint);
         if (!point) {
             return null;
         }
