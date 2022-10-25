@@ -36,12 +36,12 @@ const h = new st(), it = (t) => t * (Math.PI / 180), ot = (t) => t * (180 / Math
   const n = it(t), r = (e - i) * Math.cos(n) - (s - o) * Math.sin(n) + i, p = (e - i) * Math.sin(n) + (s - o) * Math.cos(n) + o;
   return [r, p];
 }, I = (t, e, s, i) => Math.sqrt(Math.pow(s - t, 2) + Math.pow(i - e, 2)), nt = (t, e) => {
-  const s = (l, c, g) => c.x <= Math.max(l.x, g.x) && c.x >= Math.min(l.x, g.x) && c.y <= Math.max(l.y, g.y) && c.y >= Math.min(l.y, g.y), i = (l, c, g) => {
-    let x = (c[1] - l[1]) * (g[0] - c[0]) - (c[0] - l[0]) * (g[1] - c[1]);
+  const s = (l, g, c) => g.x <= Math.max(l.x, c.x) && g.x >= Math.min(l.x, c.x) && g.y <= Math.max(l.y, c.y) && g.y >= Math.min(l.y, c.y), i = (l, g, c) => {
+    let x = (g[1] - l[1]) * (c[0] - g[0]) - (g[0] - l[0]) * (c[1] - g[1]);
     return x === 0 ? 0 : x > 0 ? 1 : 2;
-  }, o = (l, c, g, x) => {
-    let N = i(l, c, g), P = i(l, c, x), S = i(g, x, l), O = i(g, x, c);
-    return N !== P && S !== O || N === 0 && s(l, g, c) || P === 0 && s(l, x, c) || S === 0 && s(g, l, x) ? !0 : !!(O === 0 && s(g, c, x));
+  }, o = (l, g, c, x) => {
+    let N = i(l, g, c), P = i(l, g, x), S = i(c, x, l), O = i(c, x, g);
+    return N !== P && S !== O || N === 0 && s(l, c, g) || P === 0 && s(l, x, g) || S === 0 && s(c, l, x) ? !0 : !!(O === 0 && s(c, g, x));
   };
   if (t.length < 3)
     return !1;
@@ -86,19 +86,19 @@ function At(t, e, s) {
     return L(i, s);
   });
 }
-function ct(t, e) {
+function gt(t, e) {
   if (!e.customMerge)
     return _;
   const s = e.customMerge(t);
   return typeof s == "function" ? s : _;
 }
-function gt(t) {
+function ct(t) {
   return Object.getOwnPropertySymbols ? Object.getOwnPropertySymbols(t).filter(function(e) {
     return t.propertyIsEnumerable(e);
   }) : [];
 }
 function W(t) {
-  return Object.keys(t).concat(gt(t));
+  return Object.keys(t).concat(ct(t));
 }
 function J(t, e) {
   try {
@@ -115,7 +115,7 @@ function Et(t, e, s) {
   return s.isMergeableObject(t) && W(t).forEach(function(o) {
     i[o] = L(t[o], s);
   }), W(e).forEach(function(o) {
-    ft(t, o) || (J(t, o) && s.isMergeableObject(e[o]) ? i[o] = ct(o, s)(t[o], e[o], s) : i[o] = L(e[o], s));
+    ft(t, o) || (J(t, o) && s.isMergeableObject(e[o]) ? i[o] = gt(o, s)(t[o], e[o], s) : i[o] = L(e[o], s));
   }), i;
 }
 const _ = (t, e, s) => {
@@ -810,8 +810,8 @@ function Yt(t) {
     this.shape.calcPosition();
     const s = this.shape.getPosition(this.shape.options.groupChildShapes);
     let i = e.movementX, o = e.movementY, n = e.clientX + window.scrollX, r = e.clientY + window.scrollY;
-    const p = s.left + i, l = s.top + o, c = D(this.shape.root, !0), g = this.shape.getBounds();
-    return (p < g.left || p + s.width > g.right) && (i = 0), (l < g.top || l + s.height > g.bottom) && (o = 0), n < p + c.left && (i = n - (p + c.left)), r < l + c.top && (o = r - (l + c.top)), n > p + s.width + c.left && (i = n - (s.width + c.left + s.left)), r > l + s.height + c.right && (o = r - (s.height + c.top + s.top)), [i, o];
+    const p = s.left + i, l = s.top + o, g = D(this.shape.root, !0), c = this.shape.getBounds();
+    return (p < c.left || p + s.width > c.right) && (i = 0), (l < c.top || l + s.height > c.bottom) && (o = 0), n < p + g.left && (i = n - (p + g.left)), r < l + g.top && (o = r - (l + g.top)), n > p + s.width + g.left && (i = n - (s.width + g.left + s.left)), r > l + s.height + g.right && (o = r - (s.height + g.top + s.top)), [i, o];
   }, this.onPointAdded = (e) => {
     !this.shape.isShapePoint(e.target) || h.emit(a.POINT_ADDED, this.shape, { point: e.target });
   }, this.onPointDragMove = (e) => {
@@ -1038,19 +1038,19 @@ function Qt() {
       }
     const l = document.createElement("div");
     l.appendChild(p);
-    const c = l.innerHTML, g = new Image(), x = new Blob([c], { type: "image/svg+xml" }), N = window.URL || window.webkitURL || window, P = await Y(x);
-    g.addEventListener("load", () => {
+    const g = l.innerHTML, c = new Image(), x = new Blob([g], { type: "image/svg+xml" }), N = window.URL || window.webkitURL || window, P = await Y(x);
+    c.addEventListener("load", () => {
       const S = document.createElement("canvas");
-      g.width = r.width, g.height = r.height, S.width = g.width, S.height = g.height;
+      c.width = r.width, c.height = r.height, S.width = c.width, S.height = c.height;
       const O = S.getContext("2d");
-      O.drawImage(g, 0, 0), O.scale(s, i), N.revokeObjectURL(P);
+      O.drawImage(c, 0, 0), O.scale(s, i), N.revokeObjectURL(P);
       const F = S.toDataURL("image/png");
       if (e === V.BLOB) {
         n(mt(F));
         return;
       }
       n(F);
-    }), g.src = P;
+    }), c.src = P;
   });
 }
 const V = {
@@ -1520,6 +1520,9 @@ function C() {
   }, this.addPoint = (t, e, s = null) => {
     let i = this.putPoint(t, e, m({}, s || this.options.pointOptions));
     return i ? (i = i.init(t, e, s), this.root.appendChild(i.element), i.updateContextMenu(), this.redraw(), this.options.hasContextMenu && !this.shapeMenu.contextMenu && this.shapeMenu.updateContextMenu(), i) : null;
+  }, this.insertPoint = (t, e, s, i = null) => {
+    let o = this.putPoint(t, e, m({}, i || this.options.pointOptions), before);
+    return o ? (o = o.init(t, e, i), this.root.appendChild(o.element), o.updateContextMenu(), this.redraw(), this.options.hasContextMenu && !this.shapeMenu.contextMenu && this.shapeMenu.updateContextMenu(), o) : null;
   }, this.addPoints = (t, e = null) => {
     !t || typeof t != "object" || (t.forEach((s) => {
       const i = this.putPoint(
@@ -1529,12 +1532,20 @@ function C() {
       );
       i && (i.init(i.x, i.y, e), this.root.appendChild(i.element), i.redraw());
     }), this.options.hasContextMenu && !this.shapeMenu.contextMenu && this.shapeMenu.updateContextMenu());
-  }, this.putPoint = (t, e, s = {}) => {
-    if (this.findPoint(t, e))
+  }, this.putPoint = (t, e, s = {}, i = null) => {
+    let o = this.getPointIndex(i);
+    if (this.findPoint(t, e) || i && o === -1)
       return null;
     s.bounds = this.getBounds(), s.zIndex = this.options.zIndex + 1;
-    const i = new jt();
-    return i.x = t, i.y = e, i.setOptions(s), this.points.push(i), i;
+    const n = new jt();
+    return n.x = t, n.y = e, n.setOptions(s), i && o !== -1 ? this.points.splice(o, 0, n) : this.points.push(n), n;
+  }, this.getPointIndex = (t) => {
+    if (t && t.length) {
+      if (t.length !== 2)
+        return -1;
+      t = this.findPoint(...t);
+    }
+    return !t || !this.isShapePoint(t) ? -1 : this.points.indexOf(t);
   }, this.deleteAllPoints = () => {
     for (; this.points.length; )
       this.points[0].destroy();
@@ -1593,7 +1604,7 @@ function C() {
     let [n, r] = this.getCenter(this.options.groupChildShapes);
     const p = this.getRootParent(!0);
     p && p.options.groupChildShapes && ([n, r] = p.getCenter(p.options.groupChildShapes)), e || (e = n), s || (s = r), this.initCenter && ([e, s] = this.initCenter), !(i && (!this.isInBounds(...w(t, o.left, o.top, e, s)) || !this.isInBounds(...w(t, o.right, o.top, e, s)) || !this.isInBounds(...w(t, o.left, o.bottom, e, s)) || !this.isInBounds(...w(t, o.right, o.bottom, e, s)))) && (this.points.forEach((l) => l.rotateBy(t, e, s)), this.options.groupChildShapes && this.getChildren(!0).forEach((l) => {
-      l.points.forEach((c) => c.rotateBy(t, e, s)), l.redraw();
+      l.points.forEach((g) => g.rotateBy(t, e, s)), l.redraw();
     }));
   }, this.flip = (t, e, s) => {
     if (!t && !e)

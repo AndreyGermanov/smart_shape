@@ -683,4 +683,35 @@ describe('SmartShape API tests', () => {
     })
   })
 
+  it("insertPoint", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = SmartShapeManager.createShape(app,{canAddPoints:true},[[0,100],[100,0],[200,100],[100,200]],true);
+      shape.insertPoint(150,50,[200,100]);
+      assert.deepEqual(shape.getPointsArray(),[[0,100],[100,0],[150,50],[200,100],[100,200]],
+          "Should correctly insert point if 'before' specified as [x,y] array"
+      )
+      let point = shape.findPoint(100,0);
+      shape.insertPoint(50,50,point);
+      assert.deepEqual(shape.getPointsArray(), [[0,100],[50,50],[100,0],[150,50],[200,100],[100,200]],
+          "Should correctly insert point if 'before' specified as SmartPoint object"
+      )
+      shape.insertPoint(80,80,[110,210]);
+      assert.deepEqual(shape.getPointsArray(), [[0,100],[50,50],[100,0],[150,50],[200,100],[100,200]],
+          "Should not insert point if 'before' does not exist"
+      );
+      shape.insertPoint(80,80,[0,100]);
+      assert.deepEqual(shape.getPointsArray(), [[80,80],[0,100],[50,50],[100,0],[150,50],[200,100],[100,200]],
+          "Should insert point if 'before' is a first item"
+      );
+      const shape2 = SmartShapeManager.createShape(app,{canAddPoints:true},[[0,100],[100,0],[200,100]],true);
+      point = shape2.findPoint(0,100);
+      shape.insertPoint(60,60,point);
+      assert.deepEqual(shape.getPointsArray(), [[80,80],[0,100],[50,50],[100,0],[150,50],[200,100],[100,200]],
+          "Should not insert point if before specified as a point object from other shape"
+      );
+    });
+  })
+
 })
