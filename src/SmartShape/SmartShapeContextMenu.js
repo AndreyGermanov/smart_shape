@@ -169,7 +169,20 @@ export default function SmartShapeContextMenu(shape) {
             return
         }
         const [x,y] = getMousePos(this.shape.root,event.cursorX,event.cursorY);
-        this.shape.addPoint(x,y);
+        if (this.shape.points.length < 2) {
+            this.shape.addPoint(x, y);
+        } else {
+            const [point1,point2] = this.shape.getClosestLine(x,y);
+            if (this.shape.getPointIndex(point2) === 0) {
+                this.shape.addPoint(x,y)
+            } else {
+                let point = point1;
+                if (this.shape.getPointIndex(point2) > this.shape.getPointIndex(point1)) {
+                    point = point2;
+                }
+                this.shape.insertPoint(x, y, point)
+            }
+        }
         if (this.shape.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
             this.shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
         }

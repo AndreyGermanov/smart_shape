@@ -713,5 +713,25 @@ describe('SmartShape API tests', () => {
       );
     });
   })
-
+  it("getClosestPoint", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = SmartShapeManager.createShape(app,{canAddPoints:true},[],true);
+      let point = shape.getClosestPoint(30,30);
+      assert.isNull(point,"Should not return closest point if no points");
+      shape.addPoints([[0,100],[100,0],[200,100],[100,200]]);
+      point = shape.getClosestPoint(30,30);
+      let p = [point.x,point.y]
+      assert.deepEqual([point.x,point.y],[100,0],"Should correctly return closest point");
+      const points = shape.getPointsArray();
+      points.splice(1,1);
+      point = shape.getClosestPoint(30,30,points);
+      assert.deepEqual([point.x,point.y], [0,100], "Should correctly return second closest point");
+      point = shape.getClosestPoint(30,30,[["boo","woo"],["goo","doo"]]);
+      assert.isNull(point,"Should not return point if coordinates are incorrect")
+      point = shape.getClosestPoint(30,30,[["boo","woo"]]);
+      assert.isNull(point,"Should not return point if single coordinate is incorrect")
+    });
+  })
 })

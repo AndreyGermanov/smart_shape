@@ -47,6 +47,27 @@ export const distance = (x1,y1,x2,y2) => {
 
 /**
  * @ignore
+ * Function calculates distance from point (x0,y0) to line, defined by points (x1,y1) and (x2,y2)
+ * https://brilliant.org/wiki/distance-between-point-and-line/
+ * @param x0 X coordinate of point
+ * @param y0 Y coordinate of point
+ * @param x1 X coordinate of line start
+ * @param y1 Y coordinate of line start
+ * @param x2 X coordinate of line end
+ * @param y2 Y coordinate of line end
+ */
+export const distanceFromLine = (x0,y0,x1,y1,x2,y2) => {
+    const a = y2 - y1;
+    const b = x1 - x2;
+    const c = x2*y1 - x1*y2;
+    if (a === 0 && b === 0) {
+        return -1
+    }
+    return Math.abs(a*x0 + b*y0 + c)/Math.sqrt(a*a+b*b)
+}
+
+/**
+ * @ignore
  * Function returns true is specified `point` lays inside or on the borders of specified `polygon`
  * @param polygon {array} Array of points of polygon [ [x,y] , [x,y] , [x,y] ... ]
  * @param point {array} Coordinates of point [x,y]

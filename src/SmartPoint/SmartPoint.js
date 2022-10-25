@@ -1,6 +1,6 @@
 import SmartShapeManager,{ContainerEvents} from "../SmartShapeManager/SmartShapeManager.js";
 import {
-    CSStoJsStyleName,
+    CSStoJsStyleName, distance,
     getOffset,
     getRotatedCoords,
     mergeObjects,
@@ -515,6 +515,15 @@ function SmartPoint() {
             this.subscriptions[eventName].splice(this.subscriptions[eventName].indexOf(listener), 1);
         }
         EventsManager.unsubscribe(eventName,listener)
+    }
+
+    /**
+     * Method returns a distance from this point to other specified point
+     * @param point {SmartPoint} Distant point
+     * @returns {number} Distance from this point to specified point
+     */
+    this.distance = (point) => {
+        return distance(this.x,this.y,point.x,point.y)
     }
 
     return this;
