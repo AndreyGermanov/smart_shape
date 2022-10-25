@@ -57,7 +57,7 @@ export default function SmartShapeContextMenu(shape) {
      */
     this.init = () => {
         if (shape.svg) {
-            this.contextMenu = Menus.create([], shape.svg);
+            this.contextMenu = Menus.create([], shape.svg,"contextmenu", {customHandler:()=> {return }});
             if (shape.options.canAddPoints) {
                 this.contextMenu.addItem("i"+shape.guid+"_add_point", "Add Point", add);
             }

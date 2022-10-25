@@ -416,6 +416,7 @@ function SmartShapeManager() {
         this.addContainerEvent(shape.root,"mousemove",this.mousemove)
         this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
         this.addContainerEvent(shape.root,"dblclick",this.doubleclick);
+        this.addContainerEvent(shape.root,"contextmenu", this.contextmenu);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)
     }
 
@@ -457,6 +458,21 @@ function SmartShapeManager() {
         }
         const [x,y] = getMouseCursorPos(createEvent(event,{target:this.activeShape}));
         this.activeShape.addPoint(x,y,{forceDisplay:false});
+    }
+
+    this.contextmenu = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.shapeOnCursor) {
+            const menu = this.shapeOnCursor.shapeMenu
+            if (!menu) {
+                return
+            }
+            menu.contextMenu.origEvent = event;
+            menu.contextMenu.cursorX = event.pageX;
+            menu.contextMenu.cursorY = event.pageY;
+            menu.contextMenu.show();
+        }
     }
 
     /**
