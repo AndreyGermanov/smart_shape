@@ -57,4 +57,27 @@ describe('SmartShape Context Menus tests', () => {
           "Should not contain 'Group' item if all children removed");
     })
   })
+  it("Should correctly destroy parent in group of shapes, depending on 'groupChildShapes' option", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      let shape1 = SmartShapeManager.createShape(app, {}, [[0, 100], [100, 0], [200, 100]]);
+      let shape2 = SmartShapeManager.createShape(app, {}, [[0, 50], [50, 0], [100, 50]]);
+      shape1.addChild(shape2);
+      let shape3 = SmartShapeManager.createShape(app, {}, [[50, 50], [100, 0], [150, 50]]);
+      shape1.addChild(shape3);
+      shape2.shapeMenu.onDestroyClick();
+      assert.equal(SmartShapeManager.length(), 0,
+          "Should destroy all shapes if 'groupChildShapes' option enabled on parent");
+      shape1 = SmartShapeManager.createShape(app, {}, [[0, 100], [100, 0], [200, 100]]);
+      shape2 = SmartShapeManager.createShape(app, {}, [[0, 50], [50, 0], [100, 50]]);
+      shape1.addChild(shape2);
+      shape3 = SmartShapeManager.createShape(app, {}, [[50, 50], [100, 0], [150, 50]]);
+      shape1.addChild(shape3);
+      shape1.setOptions({groupChildShapes: false})
+      shape1.shapeMenu.onDestroyClick();
+      assert.equal(SmartShapeManager.length(), 2,
+          "Should destroy only one shape if 'groupChildShapes' option disabled on parent");
+    });
+  })
 })

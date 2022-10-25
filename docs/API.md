@@ -742,6 +742,7 @@ to this object.
     * [.resizeBox](#SmartShape+resizeBox) : [<code>ResizeBox</code>](#ResizeBox)
     * [.rotateBox](#SmartShape+rotateBox) : [<code>RotateBox</code>](#RotateBox)
     * [.initCenter](#SmartShape+initCenter) : <code>array</code>
+    * [.shapeMenu](#SmartShape+shapeMenu) : <code>SmartShapeContextMenu</code>
     * [.init(root, options, points, show)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
@@ -845,6 +846,7 @@ Options of shape as an object. Can have the following parameters.
 | groupChildShapes | <code>boolean</code> | Should child shapes be grouped and move/resize/rotate/destroy together. True by default |
 | moveToTop | <code>boolean</code> | Should shape go to top based on "zIndex" when user clicks on it. True by default |
 | compactExport | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties during export to JSON using .toJSON() method |
+| forceCreateEvent | <code>boolean</code> | Internal parameter used by JSON import. By default, if shape does not have point when create, it does not emit SHAPE_CREATE event on init() method. If this option set to true, then init() methods emits SHAPE_CREATE event event for empty shapes. |
 
 <a name="SmartShape+left"></a>
 
@@ -913,6 +915,13 @@ Internal global unique identifier of shape. Generated automatically.
 ### smartShape.initCenter : <code>array</code>
 Initial center of shape, when user started rotating the shape
 using Rotate Box
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+shapeMenu"></a>
+
+### smartShape.shapeMenu : <code>SmartShapeContextMenu</code>
+Context menu of shape that appear on right mouse click
+if `hasContextMenu` option is true
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
@@ -1485,7 +1494,7 @@ of all group if forGroup parameter is set
     * [.draggedShape](#SmartShapeManager+draggedShape) : [<code>SmartShape</code>](#SmartShape)
     * [.shapeOnCursor](#SmartShapeManager+shapeOnCursor) : [<code>SmartShape</code>](#SmartShape)
     * [.containerEventListeners](#SmartShapeManager+containerEventListeners) : <code>array</code>
-    * [.createShape(root, options, points)](#SmartShapeManager+createShape) ⇒ <code>object</code>
+    * [.createShape(root, options, points, show)](#SmartShapeManager+createShape) ⇒ <code>object</code>
     * [.findShapeByPoint(point)](#SmartShapeManager+findShapeByPoint) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
@@ -1552,7 +1561,7 @@ List of event listeners, attached to containers of shapes in format
 **Kind**: instance property of [<code>SmartShapeManager</code>](#SmartShapeManager)  
 <a name="SmartShapeManager+createShape"></a>
 
-### smartShapeManager.createShape(root, options, points) ⇒ <code>object</code>
+### smartShapeManager.createShape(root, options, points, show) ⇒ <code>object</code>
 Method used to construct SmartShape object with specified `points` and
 with specified `options`.
 Then it binds this object to specified `root` HTML node and displays it
@@ -1565,6 +1574,7 @@ Then it binds this object to specified `root` HTML node and displays it
 | root | <code>HTMLElement</code> | HTML DOM node af a container element |
 | options | <code>object</code> | Options object to construct this shape (See [SmartShape options](#SmartShape+options)) |
 | points | <code>array</code> | 2D Array of points for shape polygon. Each element is [x,y] coordinate array |
+| show | <code>boolean</code> | Should display the shape by default. Default: true |
 
 <a name="SmartShapeManager+findShapeByPoint"></a>
 

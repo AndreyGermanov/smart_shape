@@ -104,9 +104,12 @@ function SmartShapeManager() {
      * @param options {object} Options object to construct this shape (See [SmartShape options](#SmartShape+options))
      * @param points {array} 2D Array of points for shape polygon.
      * Each element is [x,y] coordinate array
+     * @param show {boolean} Should display the shape by default. Default: true
      * @returns {object} constructed SmartShape object
      */
-    this.createShape = (root,options,points) => new SmartShape().init(root,options,points);
+    this.createShape = (root,options,points,show= true) => {
+        return new SmartShape().init(root, options, points, show)
+    }
 
 
     /**

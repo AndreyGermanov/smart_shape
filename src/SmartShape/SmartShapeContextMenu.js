@@ -100,7 +100,7 @@ export default function SmartShapeContextMenu(shape) {
         this.contextMenu.on("click",(event) => {
             switch (event.itemId) {
                 case "i"+this.shape.guid+"_destroy":
-                    this.shape.destroy();
+                    this.onDestroyClick(event);
                     break
                 case "i"+this.shape.guid+"_add_point":
                     this.onAddPointClick(event);
@@ -128,7 +128,6 @@ export default function SmartShapeContextMenu(shape) {
                     destShape = parent || this.shape;
                     destShape.setOptions({groupChildShapes:false});
                     destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
-                    break;
             }
         })
     }
@@ -236,6 +235,20 @@ export default function SmartShapeContextMenu(shape) {
         const destShape = parent || this.shape;
         const blob = await destShape.toPng(PngExportTypes.BLOB);
         this.saveToFile(blob,this.getExportFileName("png"));
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Destroy" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onDestroyClick = (_event) => {
+        const parent = this.shape.getParent();
+        if (parent && parent.options.groupChildShapes) {
+            parent.destroy();
+        } else {
+            this.shape.destroy();
+        }
     }
 
     /**
