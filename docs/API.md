@@ -746,7 +746,9 @@ to this object.
     * [.init(root, options, points, show)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
+    * [.insertPoint(x, y, beforePoint, pointOptions)](#SmartShape+insertPoint) ⇒ <code>object</code>
     * [.addPoints(points, pointOptions)](#SmartShape+addPoints)
+    * [.getPointIndex(point)](#SmartShape+getPointIndex) ⇒ <code>number</code>
     * [.deleteAllPoints()](#SmartShape+deleteAllPoints)
     * [.deletePoint(x, y)](#SmartShape+deletePoint)
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
@@ -967,6 +969,21 @@ Add point to shape.
 | y | <code>number</code> | Y coordinate relative to container top corner |
 | pointOptions | <code>object</code> | Array of point options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
 
+<a name="SmartShape+insertPoint"></a>
+
+### smartShape.insertPoint(x, y, beforePoint, pointOptions) ⇒ <code>object</code>
+Insert point to shape before specified point
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>object</code> - [SmartPoint](#SmartPoint) object of added point  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | X coordinate relative to container left corner |
+| y | <code>number</code> | Y coordinate relative to container top corner |
+| beforePoint | <code>array</code> \| [<code>SmartPoint</code>](#SmartPoint) | Coordinates of point as [x,y] array of as a SmartPoint object, before which point should be inserted |
+| pointOptions | <code>object</code> | Array of point options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
+
 <a name="SmartShape+addPoints"></a>
 
 ### smartShape.addPoints(points, pointOptions)
@@ -978,6 +995,18 @@ Adds specified points to shape.
 | --- | --- | --- |
 | points | <code>array</code> | 2D array of points to add. Each point is array of [x,y] coordinates |
 | pointOptions | <code>object</code> | Points options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
+
+<a name="SmartShape+getPointIndex"></a>
+
+### smartShape.getPointIndex(point) ⇒ <code>number</code>
+Method returns and index of specified point in points array
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>number</code> - Index of point or -1 if not found  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | <code>array</code> \| [<code>SmartPoint</code>](#SmartPoint) | Point to find index for. Can be specified either as coordinates array [x,y] or as a SmartPoint object |
 
 <a name="SmartShape+deleteAllPoints"></a>
 

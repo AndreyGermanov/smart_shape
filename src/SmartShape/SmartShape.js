@@ -5,7 +5,15 @@ import SmartShapeGroupHelper from "./SmartShapeGroupHelper.js";
 import SmartShapeEventListener, {ShapeEvents} from "./SmartShapeEventListener.js";
 import ResizeBox from "../ResizeBox/ResizeBox.js";
 import RotateBox from "../RotateBox/RotateBox.js";
-import {getRotatedCoords, mergeObjects, notNull, uuid, isPointInsidePolygon, getOffset, readJSON} from "../utils";
+import {
+    getRotatedCoords,
+    mergeObjects,
+    notNull,
+    uuid,
+    isPointInsidePolygon,
+    getOffset,
+    readJSON
+} from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {applyAspectRatio} from "../utils/geometry.js";
 import SmartShapeContextMenu from "./SmartShapeContextMenu.js";
@@ -339,6 +347,33 @@ function SmartShape() {
     }
 
     /**
+     * Insert point to shape before specified point
+     * @param x {number} X coordinate relative to container left corner
+     * @param y {number} Y coordinate relative to container top corner
+     * @param beforePoint {array|SmartPoint} Coordinates of point as [x,y] array of as a SmartPoint object,
+     * before which point should be inserted
+     * @param pointOptions {object} Array of point options. Described in
+     * [SmartPoint.options](#SmartPoint+options). Can be empty,
+     * in this case default `SmartShape.options.pointOptions` will be used,
+     * or default options of SmartPoint class itself.
+     * @returns {object} [SmartPoint](#SmartPoint) object of added point
+     */
+    this.insertPoint = (x,y,beforePoint,pointOptions=null) => {
+        let point = this.putPoint(x, y,mergeObjects({},pointOptions || this.options.pointOptions),beforePoint);
+        if (!point) {
+            return null;
+        }
+        point = point.init(x, y, pointOptions);
+        this.root.appendChild(point.element);
+        point.updateContextMenu();
+        this.redraw();
+        if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
+            this.shapeMenu.updateContextMenu();
+        }
+        return point;
+    }
+
+    /**
      * Adds specified points to shape.
      * @param points {array} 2D array of points to add. Each point is array of [x,y] coordinates
      * @param pointOptions {object} Points options. Described in
@@ -353,7 +388,8 @@ function SmartShape() {
         points.forEach(point => {
             const p = this.putPoint(point[0] + this.options.offsetX,
                 point[1] + this.options.offsetY,
-                mergeObjects({}, pointOptions || this.options.pointOptions))
+                mergeObjects({}, pointOptions || this.options.pointOptions)
+            )
             if (p) {
                 p.init(p.x, p.y, pointOptions)
                 this.root.appendChild(p.element);
@@ -374,10 +410,13 @@ function SmartShape() {
      * [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used,
      * or default options of SmartPoint class itself.
+     * @param beforePoint {array|SmartPoint} Coordinates of point as [x,y] array of as a SmartPoint object,
+     * before which point should be inserted
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
-    this.putPoint = (x,y,pointOptions= {}) => {
-        if (this.findPoint(x,y)) {
+    this.putPoint = (x,y,pointOptions= {}, beforePoint=null) => {
+        let beforeIndex = this.getPointIndex(beforePoint);
+        if (this.findPoint(x,y) || (beforePoint && beforeIndex === -1)) {
             return null;
         }
         pointOptions.bounds = this.getBounds();
@@ -386,8 +425,31 @@ function SmartShape() {
         point.x = x;
         point.y = y;
         point.setOptions(pointOptions);
-        this.points.push(point);
+        if (beforePoint && beforeIndex !== -1) {
+            this.points.splice(beforeIndex,0,point)
+        } else {
+            this.points.push(point);
+        }
         return point;
+    }
+
+    /**
+     * Method returns and index of specified point in points array
+     * @param point {array|SmartPoint} Point to find index for. Can be specified either as
+     * coordinates array [x,y] or as a SmartPoint object
+     * @returns {number} Index of point or -1 if not found
+     */
+    this.getPointIndex = (point) => {
+        if (point && point.length) {
+            if (point.length !== 2) {
+                return -1
+            }
+            point = this.findPoint(...point);
+        }
+        if (!point || !this.isShapePoint(point)) {
+            return -1;
+        }
+        return this.points.indexOf(point);
     }
 
     /**
