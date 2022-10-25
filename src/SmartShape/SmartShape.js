@@ -350,7 +350,7 @@ function SmartShape() {
      * Insert point to shape before specified point
      * @param x {number} X coordinate relative to container left corner
      * @param y {number} Y coordinate relative to container top corner
-     * @param beforePoint {array|SmartPoint} Coordinates of point as [x,y] array of as a SmartPoint object,
+     * @param beforePoint {array|SmartPoint} Coordinates of point as [x,y] array or as a SmartPoint object,
      * before which point should be inserted
      * @param pointOptions {object} Array of point options. Described in
      * [SmartPoint.options](#SmartPoint+options). Can be empty,
@@ -410,7 +410,7 @@ function SmartShape() {
      * [SmartPoint.options](#SmartPoint+options). Can be empty,
      * in this case default `SmartShape.options.pointOptions` will be used,
      * or default options of SmartPoint class itself.
-     * @param beforePoint {array|SmartPoint} Coordinates of point as [x,y] array of as a SmartPoint object,
+     * @param beforePoint {array|SmartPoint} Coordinates of point as [x,y] array or as a SmartPoint object,
      * before which point should be inserted
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */

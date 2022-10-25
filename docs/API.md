@@ -981,7 +981,7 @@ Insert point to shape before specified point
 | --- | --- | --- |
 | x | <code>number</code> | X coordinate relative to container left corner |
 | y | <code>number</code> | Y coordinate relative to container top corner |
-| beforePoint | <code>array</code> \| [<code>SmartPoint</code>](#SmartPoint) | Coordinates of point as [x,y] array of as a SmartPoint object, before which point should be inserted |
+| beforePoint | <code>array</code> \| [<code>SmartPoint</code>](#SmartPoint) | Coordinates of point as [x,y] array or as a SmartPoint object, before which point should be inserted |
 | pointOptions | <code>object</code> | Array of point options. Described in [SmartPoint.options](#SmartPoint+options). Can be empty, in this case default `SmartShape.options.pointOptions` will be used, or default options of SmartPoint class itself. |
 
 <a name="SmartShape+addPoints"></a>
