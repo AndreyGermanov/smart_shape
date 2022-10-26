@@ -841,8 +841,6 @@ Options of shape as an object. Can have the following parameters.
 | fillImage | <code>object</code> | Defines image fill object to fill the shape with image. Should contain following fields: `href` - URL to image, `width` - width of image, `height` - height of image To make image fill work, it's required to set 'fill:#image' inside style See demo [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/fillimage.html). |
 | filters | <code>object</code> | Object, that defines a set of SVG filters, that will be applied to this shape. Keys are names of filters, for example `feDropShadow` for drop-shadow filter. Values are objects with attributes for each filter. All attributes, that supported by each particular SVG filter are supported. See more about SVG filters [here](#https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter). The demo of applying feDropShadow filter see [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/svgfilters.html) |
 | classes | <code>string</code> | CSS class names, that will be applied to underlying polygon SVG element. |
-| offsetX | <code>number</code> | Number of pixels to add to X coordinate of each point to move entire shape to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`. |
-| offsetY | <code>number</code> | Number of pixels to add to Y coordinate of each point to move entire shape to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | canDragShape | <code>boolean</code> | Is it allowed to drag shape. Default `true`. |
 | canAddPoints | <code>boolean</code> | Is it allowed to add points to the shape interactively, by mouse double-click on the screen. Default `false`. |
 | canScale | <code>boolean</code> | Is it allowed to scale this shape. If true, then [ResizeBox](#ResizeBox) appears around shape and user can drag it to resize shape in different directions |
@@ -863,6 +861,10 @@ Options of shape as an object. Can have the following parameters.
 | moveToTop | <code>boolean</code> | Should shape go to top based on "zIndex" when user clicks on it. True by default |
 | compactExport | <code>boolean</code> | If this is true, then it will save only coordinates of points, but not their properties during export to JSON using .toJSON() method |
 | forceCreateEvent | <code>boolean</code> | Internal parameter used by JSON import. By default, if shape does not have point when create, it does not emit SHAPE_CREATE event on init() method. If this option set to true, then init() methods emits SHAPE_CREATE event event for empty shapes. |
+| initialPoints | <code>array</code> | 2D array of initial coordinates of points in format [ [x,y], [x,y] ...] If this shape loaded from external resource and then modified, this array is a way to return back to initial coordinates |
+| zoomLevel | <code>number</code> | Current zoom level of shape. By default it is 1, which means that shape is not zoomed. If less than 1, than shape decreased, if greater than 1, then shape increased. to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
+| offsetX | <code>number</code> | Offset on X axis that shape moved from initial position when initially loaded from external source. |
+| offsetY | <code>number</code> | Offset on Y axis that shape moved from initial position when initially loaded. |
 
 <a name="SmartShape+left"></a>
 
