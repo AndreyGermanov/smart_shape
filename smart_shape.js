@@ -36,8 +36,9 @@ const r = new st(), it = (t) => t * (Math.PI / 180), ot = (t) => t * (180 / Math
   const n = it(t), h = (e - i) * Math.cos(n) - (s - o) * Math.sin(n) + i, p = (e - i) * Math.sin(n) + (s - o) * Math.cos(n) + o;
   return [h, p];
 }, M = (t, e, s, i) => Math.sqrt(Math.pow(s - t, 2) + Math.pow(i - e, 2)), nt = (t, e, s, i, o, n) => {
-  const h = n - i, p = s - o, l = o * i - s * n;
-  return h === 0 && p === 0 ? -1 : Math.abs(h * t + p * e + l) / Math.sqrt(h * h + p * p);
+  let h = (t - s) * (o - s) + (e - i) * (n - i);
+  const p = Math.pow(o - s, 2) + Math.pow(n - i, 2);
+  return p === 0 ? -1 : (h /= p, h < 0 ? h = 0 : h > 1 && (h = 1), Math.sqrt(Math.pow(s - t + h * (o - s), 2) + Math.pow(i - e + h * (n - i), 2)));
 }, ht = (t, e) => {
   const s = (l, c, g) => c.x <= Math.max(l.x, g.x) && c.x >= Math.min(l.x, g.x) && c.y <= Math.max(l.y, g.y) && c.y >= Math.min(l.y, g.y), i = (l, c, g) => {
     let x = (c[1] - l[1]) * (g[0] - c[0]) - (c[0] - l[0]) * (g[1] - c[1]);
@@ -1091,7 +1092,7 @@ const V = {
   return !(!E(e) || typeof e != "object" || ["Polygon", "MultiPolygon"].indexOf(e.type) === -1 || !E(e.coordinates) || typeof e.coordinates != "object" || !e.coordinates.length);
 }, qt = (t, e, s) => {
   const i = {};
-  if (i.name = t.properties[s.nameField] || "Shape " + e, i.id = t.properties[s.idField] || "shape_" + e, E(s.options) && typeof s.options == "object")
+  if (i.name = t.properties[s.nameField] || "Shape " + e, i.id = t.properties[s.idField] || "shape_" + e, E(s.fields) && typeof s.fields == "object" && s.fields.filter((o) => E(t.properties[o])).forEach((o) => i[o] = t.properties[o]), E(s.options) && typeof s.options == "object")
     for (let o in s.options)
       i[o] = s.options[o];
   return i;
