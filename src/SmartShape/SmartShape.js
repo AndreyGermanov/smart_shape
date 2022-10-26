@@ -76,10 +76,6 @@ function SmartShape() {
      * The demo of applying feDropShadow filter see
      * [here](https://github.com/AndreyGermanov/smart_shape/blob/main/tests/dev/svgfilters.html)
      * @param classes {string} CSS class names, that will be applied to underlying polygon SVG element.
-     * @param offsetX {number} Number of pixels to add to X coordinate of each point to move entire shape
-     * to the right. Helps to move entire figure without need to change coordinates of each point. Default: `0`.
-     * @param offsetY {number} Number of pixels to add to Y coordinate of each point to move entire shape
-     * to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
      * @param canDragShape {boolean} Is it allowed to drag shape. Default `true`.
      * @param canAddPoints {boolean} Is it allowed to add points to the shape interactively,
      * by mouse double-click on the screen. Default `false`.
@@ -112,6 +108,14 @@ function SmartShape() {
      * @param forceCreateEvent {boolean} Internal parameter used by JSON import.
      * By default, if shape does not have point when create, it does not emit SHAPE_CREATE event on init() method.
      * If this option set to true, then init() methods emits SHAPE_CREATE event event for empty shapes.
+     * @param initialPoints {array} 2D array of initial coordinates of points in format [ [x,y], [x,y] ...]
+     * If this shape loaded from external resource and then modified, this array is a way to return back to initial
+     * coordinates
+     * @param zoomLevel {number} Current zoom level of shape. By default it is 1, which means that shape is not zoomed.
+     * If less than 1, than shape decreased, if greater than 1, then shape increased.
+     * to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
+     * @param offsetX {number} Offset on X axis that shape moved from initial position when initially loaded from external source.
+     * @param offsetY {number} Offset on Y axis that shape moved from initial position when initially loaded.
      * @type {object}
      */
     this.options = {
@@ -152,7 +156,9 @@ function SmartShape() {
         groupChildShapes: true,
         moveToTop: true,
         compactExport: false,
-        forceCreateEvent: false
+        forceCreateEvent: false,
+        zoomLevel:1,
+        initialPoints: []
     };
 
     /**
@@ -386,8 +392,7 @@ function SmartShape() {
             return
         }
         points.forEach(point => {
-            const p = this.putPoint(point[0] + this.options.offsetX,
-                point[1] + this.options.offsetY,
+            const p = this.putPoint(point[0], point[1],
                 mergeObjects({}, pointOptions || this.options.pointOptions)
             )
             if (p) {

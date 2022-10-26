@@ -44,10 +44,13 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
     }
     let options = loadOptions(obj,index,importOptions);
     options.visible = false;
-    const polygons = loadPolygons(obj)
+    const {polygons,origPolygons,offsetX,offsetY} = loadPolygons(obj)
+    options.offsetX = offsetX;
+    options.offsetY = offsetY;
     let shape = null;
     for (let idx in polygons) {
         const shapeOpts = mergeObjects({},options)
+        shapeOpts.initialPoints = [...origPolygons[idx]]
         if (idx==0) {
             shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx])
         } else {
@@ -100,27 +103,27 @@ const loadPolygons = (obj) => {
     if (obj.geometry.type === "Polygon") {
         polygons = [polygons];
     }
-    let minX = 999999, minY = 999999;
-    let maxDigits = 0;
+    let offsetX = 999999, offsetY = 999999;
+    const result = {polygons:[],origPolygons:[]};
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
+        const origPolygon = [];
         for (let point of polygon) {
-            maxDigits = getDecimalLength(point[0]) > maxDigits ? getDecimalLength(point[0]) : maxDigits;
-            maxDigits = getDecimalLength(point[1]) > maxDigits ? getDecimalLength(point[0]) : maxDigits;
-            minX = point[0] < minX ? point[0] : minX;
-            minY = point[1] < minY ? point[1] : minY;
+            offsetX = point[0] < offsetX ? point[0] : offsetX;
+            offsetY = point[1] < offsetY ? point[1] : offsetY;
+            origPolygon.push([point[0],point[1]])
         }
+        result.origPolygons.push(origPolygon);
     }
-    const result = [];
+    result.offsetX = offsetX;
+    result.offsetY = offsetY;
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
         for (let point of polygon) {
-            point[0] -= minX;
-            point[0] *= Math.pow(10,maxDigits);
-            point[1] -= minY;
-            point[1] *= Math.pow(10,maxDigits);
+            point[0] -= offsetX;
+            point[1] -= offsetY;
         }
-        result.push(polygon)
+        result.polygons.push(polygon)
     }
     return result;
 }
