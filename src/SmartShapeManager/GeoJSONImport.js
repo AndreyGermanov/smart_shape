@@ -11,7 +11,10 @@ import SmartShapeManager from "./SmartShapeManager.js";
  * `nameField`: the field from "properties" collection of GeoJSON object that used as a shape name,
  * `width`: the width to which loaded shapes should be scaled (if not specified then calc automatically based on height),
  * `height`: the height to which loaded shapes should be scaled (if not specified then calc automatically based on width),
+ * `scale`: scaling factor to which loaded shapes should be scaled (if not specified, width and height used,
+ * if nothing specified, then scales to 200px width if natural width is less than this)
  * `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import
+ * `fields`: which other fields to import from GeoJSON, in addition to `idField` and `nameField`
  * @returns {array} Array of SmartShape objects
  */
 export const fromGeoJSON = (container,geoJSON, options) => {
@@ -28,9 +31,6 @@ export const fromGeoJSON = (container,geoJSON, options) => {
     for (let index in geoJSON.features) {
         const obj = geoJSON.features[index];
         const shape = createShapeFromGeoJson(obj,index,options,container);
-        if (notNull(options.width) || notNull(options.height)) {
-            shape.scaleTo(options.width,options.height,true);
-        }
         if (shape) {
             result.push(shape);
         }
@@ -44,7 +44,7 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
     }
     let options = loadOptions(obj,index,importOptions);
     options.visible = false;
-    const {polygons,origPolygons,offsetX,offsetY} = loadPolygons(obj)
+    const {polygons,origPolygons,offsetX,offsetY,maxDigits} = loadPolygons(obj)
     options.offsetX = offsetX;
     options.offsetY = offsetY;
     let shape = null;
@@ -57,6 +57,17 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
             shapeOpts.id += "_"+idx;
             shapeOpts.name += " "+idx;
             shape.addChild(SmartShapeManager.createShape(container,shapeOpts,polygons[idx]))
+        }
+    }
+    if (notNull(importOptions.scale)) {
+        console.log(importOptions.scale/Math.pow(10,maxDigits));
+        shape.scaleBy(importOptions.scale/Math.pow(10,maxDigits),importOptions.scale/Math.pow(10,maxDigits),true);
+    } else if (notNull(importOptions.width) || notNull(importOptions.height)) {
+        shape.scaleTo(importOptions.width,importOptions.height)
+    } else {
+        const pos = shape.calcPositionFromPointsArray(shape.options.initialPoints);
+        if (pos.width < 100) {
+            shape.scaleTo(100)
         }
     }
     return shape;
@@ -104,11 +115,14 @@ const loadPolygons = (obj) => {
         polygons = [polygons];
     }
     let offsetX = 999999, offsetY = 999999;
+    let maxDigits = 0;
     const result = {polygons:[],origPolygons:[]};
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
         const origPolygon = [];
         for (let point of polygon) {
+            maxDigits = getDecimalLength(point[0]) > maxDigits ? getDecimalLength(point[0]) : maxDigits;
+            maxDigits = getDecimalLength(point[1]) > maxDigits ? getDecimalLength(point[0]) : maxDigits;
             offsetX = point[0] < offsetX ? point[0] : offsetX;
             offsetY = point[1] < offsetY ? point[1] : offsetY;
             origPolygon.push([point[0],point[1]])
@@ -117,11 +131,14 @@ const loadPolygons = (obj) => {
     }
     result.offsetX = offsetX;
     result.offsetY = offsetY;
+    result.maxDigits = maxDigits;
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
         for (let point of polygon) {
             point[0] -= offsetX;
+            point[0] *= Math.pow(10,maxDigits);
             point[1] -= offsetY;
+            point[1] *= Math.pow(10,maxDigits);
         }
         result.polygons.push(polygon)
     }

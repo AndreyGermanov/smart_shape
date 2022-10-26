@@ -897,12 +897,24 @@ function SmartShape() {
         if (!this.points.length) {
             return;
         }
-        this.left = this.points.map(point => point.x).reduce((minx,x) => x < minx ? x : minx);
-        this.top = this.points.map(point => point.y).reduce((miny,y) => y < miny ? y : miny);
-        this.right = this.points.map(point => point.x).reduce((maxx,x) => x > maxx ? x : maxx);
-        this.bottom = this.points.map(point => point.y).reduce((maxy,y) => y > maxy ? y : maxy);
-        this.width = parseInt(this.right-this.left) || 1;
-        this.height = parseInt(this.bottom-this.top) || 1;
+        Object.assign(this,this.calcPositionFromPointsArray(this.getPointsArray()))
+    }
+
+    /**
+     * @ignore
+     * Function calculates shape dimensions based on provided points array.
+     * @param points {array} 2D array of points in format [ [x,y], [x,y] [x,y] ...]
+     * @returns {object} Object with fields: `left`,`top`,`right`,`bottom`,`width`,`height`
+     */
+    this.calcPositionFromPointsArray = (points) => {
+        const result = {};
+        result.left = points.map(point => point[0]).reduce((minx,x) => x < minx ? x : minx);
+        result.top = points.map(point => point[1]).reduce((miny,y) => y < miny ? y : miny);
+        result.right = points.map(point => point[0]).reduce((maxx,x) => x > maxx ? x : maxx);
+        result.bottom = points.map(point => point[1]).reduce((maxy,y) => y > maxy ? y : maxy);
+        result.width = result.right-result.left || 1;
+        result.height = result.bottom-result.top || 1;
+        return result;
     }
 
     /**
