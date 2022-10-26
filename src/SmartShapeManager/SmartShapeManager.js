@@ -747,6 +747,7 @@ function SmartShapeManager() {
      * `width`: the width to which loaded shapes should be scaled (if not specified then calc automatically based on height),
      * `height`: the height to which loaded shapes should be scaled (if not specified then calc automatically based on width),
      * `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import
+     * `fields`: which other fields to import from GeoJSON, in addition to `idField` and `nameField`
      * @returns {array} Array of SmartShape objects
      */
     this.fromGeoJson = (container,geoJSON,options) => {

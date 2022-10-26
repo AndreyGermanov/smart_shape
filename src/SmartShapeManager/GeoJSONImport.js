@@ -76,6 +76,11 @@ const loadOptions = (obj,index,importOptions) => {
     const result = {};
     result.name = obj.properties[importOptions.nameField] || "Shape "+ index;
     result.id = obj.properties[importOptions.idField] || "shape_" + index;
+    if (notNull(importOptions.fields) && typeof(importOptions.fields) === "object") {
+        importOptions.fields
+            .filter(fieldName => notNull(obj.properties[fieldName]))
+            .forEach(fieldName => result[fieldName] = obj.properties[fieldName])
+    }
     if (notNull(importOptions.options) && typeof(importOptions.options) === "object") {
         for (let id in importOptions.options) {
             result[id] = importOptions.options[id];
