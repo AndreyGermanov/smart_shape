@@ -15,7 +15,13 @@ import SmartShapeManager from "./SmartShapeManager.js";
  * @returns {array} Array of SmartShape objects
  */
 export const fromGeoJSON = (container,geoJSON, options) => {
-    if (!geoJSON || !notNull(geoJSON.features) || !geoJSON.features.length) {
+    if (!notNull(geoJSON) || typeof(geoJSON) !== "object") {
+        return null;
+    }
+    if (!geoJSON.length) {
+        geoJSON = {features:[geoJSON]}
+    }
+    if (!geoJSON.features.length) {
         return null
     }
     const result = [];
@@ -29,7 +35,7 @@ export const fromGeoJSON = (container,geoJSON, options) => {
             result.push(shape);
         }
     }
-    return result;
+    return result.length === 1 ? result[0] : result;
 }
 
 const createShapeFromGeoJson = (obj, index, importOptions, container) => {
@@ -38,7 +44,7 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
     }
     let options = loadOptions(obj,index,importOptions);
     options.visible = false;
-    const polygons = loadPolygons(obj,index)
+    const polygons = loadPolygons(obj)
     let shape = null;
     for (let idx in polygons) {
         const shapeOpts = mergeObjects({},options)
