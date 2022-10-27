@@ -1087,15 +1087,15 @@ function Zt() {
 const V = {
   DATAURL: "dataurl",
   BLOB: "blob"
-}, B = new Zt(), Xt = (e, t, s) => {
+}, B = new Zt(), Xt = (e, t, s = {}, i = null) => {
   if (!f(t) || typeof t != "object" || (f(t.features) || (t = { features: [t] }), !t.features.length))
     return null;
-  const i = [];
-  for (let o in t.features) {
-    const n = t.features[o], h = Jt(n, o, s, e);
-    h && i.push(h);
+  const o = [];
+  for (let n in t.features) {
+    const h = t.features[n], l = Jt(h, n, s, e);
+    i && typeof i == "function" && i(n, t.features.length, l), l && o.push(l);
   }
-  return i.length === 1 ? i[0] : i;
+  return o.length === 1 ? o[0] : o;
 }, Jt = (e, t, s, i) => {
   if (!Kt(e))
     return;
@@ -1312,7 +1312,7 @@ function te() {
       }
     }), this.containerEventListeners = []; Object.values(this.shapes).length; )
       Object.values(this.shapes)[0].destroy();
-  }, this.fromGeoJson = (e, t, s) => Xt(e, t, s), this.length = () => Object.values(this.shapes).length;
+  }, this.fromGeoJson = (e, t, s = {}, i = null) => Xt(e, t, s, i), this.length = () => Object.values(this.shapes).length;
 }
 const ee = {
   MANAGER_ADD_CONTAINER_EVENT_LISTENERS: "manager_add_container_event_listeners",

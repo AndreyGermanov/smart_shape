@@ -750,10 +750,13 @@ function SmartShapeManager() {
      * `scale`: scaling factor to which loaded shapes should be scaled (if not specified, width and height used,
      * if nothing specified, then scales to 200px width if natural width is less than this)
      * `fields`: which other fields to import from GeoJSON, in addition to `idField` and `nameField`
+     * @param progressCallback {function} Function that executes after loading each shape from file. If specified, it will
+     * be executed with three arguments: `currentShapeIndex` - index of current processed shape, `totalShapesLength` - total
+     * number of shapes in the collection, shape - SmartShape object of currently processed shape.
      * @returns {array} Array of SmartShape objects
      */
-    this.fromGeoJson = (container,geoJSON,options) => {
-        return fromGeoJSON(container,geoJSON, options);
+    this.fromGeoJson = (container,geoJSON,options={},progessCallback=null) => {
+        return fromGeoJSON(container,geoJSON, options, progessCallback);
     }
 
     /**

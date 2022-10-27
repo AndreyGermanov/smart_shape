@@ -15,9 +15,12 @@ import SmartShapeManager from "./SmartShapeManager.js";
  * if nothing specified, then scales to 200px width if natural width is less than this)
  * `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import
  * `fields`: which other fields to import from GeoJSON, in addition to `idField` and `nameField`
+ * @param progressCallback {function} Function that executes after loading each shape from file. If specified, it will
+ * be executed with three arguments: `currentShapeIndex` - index of current processed shape, `totalShapesLength` - total
+ * number of shapes in the collection, shape - SmartShape object of currently processed shape.
  * @returns {array} Array of SmartShape objects
  */
-export const fromGeoJSON = (container,geoJSON, options) => {
+export const fromGeoJSON = (container,geoJSON, options={}, progressCallback=null) => {
     if (!notNull(geoJSON) || typeof(geoJSON) !== "object") {
         return null;
     }
@@ -31,6 +34,9 @@ export const fromGeoJSON = (container,geoJSON, options) => {
     for (let index in geoJSON.features) {
         const obj = geoJSON.features[index];
         const shape = createShapeFromGeoJson(obj,index,options,container);
+        if (progressCallback && typeof(progressCallback) === "function") {
+            progressCallback(index,geoJSON.features.length,shape);
+        }
         if (shape) {
             result.push(shape);
         }

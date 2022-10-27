@@ -1568,7 +1568,7 @@ of all group if forGroup parameter is set
     * [.findShapesByOptionValue(name, value)](#SmartShapeManager+findShapesByOptionValue) ⇒ <code>array</code>
     * [.findShapeById(id)](#SmartShapeManager+findShapeById) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.findShapeByName(name)](#SmartShapeManager+findShapeByName) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-    * [.fromGeoJson(container, geoJSON, options)](#SmartShapeManager+fromGeoJson) ⇒ <code>array</code>
+    * [.fromGeoJson(container, geoJSON, options, progressCallback)](#SmartShapeManager+fromGeoJson) ⇒ <code>array</code>
     * [.length()](#SmartShapeManager+length) ⇒ <code>number</code>
 
 <a name="new_SmartShapeManager_new"></a>
@@ -1798,7 +1798,7 @@ Method returns shape by specified name
 
 <a name="SmartShapeManager+fromGeoJson"></a>
 
-### smartShapeManager.fromGeoJson(container, geoJSON, options) ⇒ <code>array</code>
+### smartShapeManager.fromGeoJson(container, geoJSON, options, progressCallback) ⇒ <code>array</code>
 Method used to import collection of shapes from JSON array in GeoJSON format: https://geojson.org/
 
 **Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
@@ -1809,6 +1809,7 @@ Method used to import collection of shapes from JSON array in GeoJSON format: ht
 | container | <code>HTMLElement</code> | The HTML element to connect loaded shapes |
 | geoJSON | <code>object</code> | Javascript object in geoJSON format |
 | options | <code>object</code> | Options to tune the import process: `idField`: the field from "properties collection of GeoJSON object that used as a shape ID, `nameField`: the field from "properties" collection of GeoJSON object that used as a shape name, `width`: the width to which loaded shapes should be scaled (if not specified then calc automatically based on height), `height`: the height to which loaded shapes should be scaled (if not specified then calc automatically based on width), `options`: shape options [SmartShape.options](#SmartShape+options) to set to each shape after import `scale`: scaling factor to which loaded shapes should be scaled (if not specified, width and height used, if nothing specified, then scales to 200px width if natural width is less than this) `fields`: which other fields to import from GeoJSON, in addition to `idField` and `nameField` |
+| progressCallback | <code>function</code> | Function that executes after loading each shape from file. If specified, it will be executed with three arguments: `currentShapeIndex` - index of current processed shape, `totalShapesLength` - total number of shapes in the collection, shape - SmartShape object of currently processed shape. |
 
 <a name="SmartShapeManager+length"></a>
 
