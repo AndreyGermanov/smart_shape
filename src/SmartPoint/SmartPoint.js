@@ -45,6 +45,7 @@ function SmartPoint() {
      * @param visible {boolean} Point is visible or not. By default, `true`.
      * @param forceDisplay {boolean} If this option enabled, than this point displayed all the time, even if shape
      * is not in SCALE or ROTATE mode. By default, if the shape is in DEFAULT mode, then points not displayed on it.
+     * @param createDOMElement {boolean} Should HTML element for this point created by default. "false" by default
      * @type {{}}
      */
     this.options = {
@@ -72,7 +73,8 @@ function SmartPoint() {
         ],
         visible: true,
         hidden:false,
-        forceDisplay: false
+        forceDisplay: false,
+        createDOMElement:false
     };
 
     /**
@@ -121,8 +123,6 @@ function SmartPoint() {
     this.init = (x,y,options = null) => {
         this.x = parseInt(x);
         this.y = parseInt(y);
-        Object.assign(this,new SmartPointContextMenu(this));
-        this.element = this.createPointUI();
         this.setOptions(mergeObjects({},options));
         this.setEventListeners();
         EventsManager.emit(PointEvents.POINT_ADDED,this);
@@ -134,18 +134,29 @@ function SmartPoint() {
      * @param options {object} Point options object, described [above](#SmartPoint+options).
      */
     this.setOptions = (options) => {
-        if (!this.element) {
-            this.element = document.createElement("div");
-            this.setEventListeners();
-            Object.assign(this,new SmartPointContextMenu(this));
-        }
         if (options && typeof(options) === "object") {
             if (notNull(options.moveDirections) && typeof(options.moveDirections) === "object") {
                 this.options.moveDirections = [];
             }
             this.options = mergeObjects(this.options,options);
         }
-        if (this.options.id) {
+        Object.assign(this, new SmartPointContextMenu(this));
+        if (!this.element) {
+            if ((this.options.createDOMElement && this.options.canDrag) || this.options.forceDisplay) {
+                this.element = this.createPointUI();
+                this.setDOMEventListeners();
+                this.updateContextMenu();
+                EventsManager.emit(PointEvents.POINT_ADDED,this);
+            }
+        } else {
+            if ((!this.options.createDOMElement || !this.options.canDrag) && !this.options.forceDisplay) {
+                try {
+                    this.element.parentNode.removeChild(this.element);
+                    this.element = null;
+                } catch {}
+            }
+        }
+        if (this.options.id && this.element) {
             this.element.id = this.options.id;
         }
     }
@@ -172,7 +183,7 @@ function SmartPoint() {
     this.setPointStyles = (element=null) => {
         if (!this.element) {
             this.element = document.createElement("div");
-            this.setEventListeners();
+            this.setDOMEventListeners();
             Object.assign(this,new SmartPointContextMenu(this));
         }
         if (element == null) {
@@ -211,7 +222,9 @@ function SmartPoint() {
      * Method used to redraw the point. Usually used after change point position on the screen.
      */
     this.redraw = () => {
-        this.element = this.setPointStyles();
+        if ((this.options.canDrag && this.options.createDOMElement) || this.options.forceDisplay) {
+            this.element = this.setPointStyles();
+        }
     }
 
     /**
@@ -248,6 +261,13 @@ function SmartPoint() {
      * Internal method used to attach HTML event listeners to point.
      */
     this.setEventListeners = () => {
+        EventsManager.subscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
+    }
+
+    this.setDOMEventListeners = () => {
+        if (!this.element) {
+            return
+        }
         this.element.addEventListener("mouseup",this.mouseup);
         this.element.addEventListener("mousedown", this.mousedown);
         this.element.addEventListener("mouseover", this.mouseover);
@@ -255,7 +275,6 @@ function SmartPoint() {
         this.element.addEventListener("click", this.click);
         this.element.addEventListener("dblclick", this.doubleclick);
         this.element.addEventListener("mousemove", this.mousemove);
-        EventsManager.subscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
     }
 
     /**
@@ -466,13 +485,15 @@ function SmartPoint() {
      * removes this point from shape's points array.
      */
     this.destroy = () => {
-        this.element.removeEventListener("mouseup",this.mouseup);
-        this.element.removeEventListener("mousedown", this.mousedown);
-        this.element.removeEventListener("mouseover", this.mouseover);
-        this.element.removeEventListener("mouseout", this.mouseout);
-        this.element.removeEventListener("click", this.click);
-        this.element.removeEventListener("dblclick", this.doubleclick);
-        this.element.removeEventListener("mousemove", this.mousemove);
+        if (this.element) {
+            this.element.removeEventListener("mouseup", this.mouseup);
+            this.element.removeEventListener("mousedown", this.mousedown);
+            this.element.removeEventListener("mouseover", this.mouseover);
+            this.element.removeEventListener("mouseout", this.mouseout);
+            this.element.removeEventListener("click", this.click);
+            this.element.removeEventListener("dblclick", this.doubleclick);
+            this.element.removeEventListener("mousemove", this.mousemove);
+        }
         EventsManager.unsubscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
         EventsManager.emit(PointEvents.POINT_DESTROYED,this);
         for (let eventName in this.subscriptions) {

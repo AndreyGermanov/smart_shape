@@ -98,7 +98,7 @@ describe('SmartShape Manager tests', () => {
       shape4.init(div, {id: "shape4", canScale:true, canRotate:true},[[300,100],[400,0],[500,100]]);
       assert.equal(appCallsCount,1,"Should add events to 'app' container only once");
       assert.equal(divCallsCount, 1, "Should add events to 'div' container only once");
-      assert.equal(SmartShapeManager.containerEventListeners.length,6,"Should add container listeners to global array");
+      assert.equal(SmartShapeManager.containerEventListeners.length,8,"Should add container listeners to global array");
     });
   });
 
@@ -128,7 +128,7 @@ describe('SmartShape Manager tests', () => {
       shape4.switchDisplayMode(SmartShapeDisplayMode.SCALE);
       shape4.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
       assert.equal(SmartShapeManager.length(),12,"Should add shapes and their boxes")
-      assert.equal(SmartShapeManager.containerEventListeners.length,6, "Should add global event listeners to containers");
+      assert.equal(SmartShapeManager.containerEventListeners.length,8, "Should add global event listeners to containers");
       shape1.destroy();
       shape2.destroy();
       shape3.destroy();

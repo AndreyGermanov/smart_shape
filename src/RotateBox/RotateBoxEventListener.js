@@ -103,7 +103,9 @@ function RotateBoxEventListener(rotateBox) {
      */
     this.mousemove = (event) => {
         if (event.buttons !== 1) {
-            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape, createEvent(event,{clientX:event.clientX,clientY:event.clientY}));
+            EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.rotateBox.shape,
+                createEvent(event,{clientX:event.clientX,clientY:event.clientY})
+            );
             return
         }
         const [clientX,clientY] = getMouseCursorPos(event,this.rotateBox.shape.root);

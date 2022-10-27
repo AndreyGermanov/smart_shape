@@ -88,7 +88,7 @@ function SmartShapeDrawHelper() {
      * @param parent {SmartShape} Root parent of this shape or null
      */
     this.updatePoints = (shape,parent) => {
-        shape.points.forEach(point => {
+        shape.points.filter(point => point.element).forEach(point => {
             if (point.element.parentNode !== shape.root) {
                 shape.root.appendChild(point.element);
             }

@@ -597,6 +597,7 @@ Point HTML element options. Defines look and behavior of point. Has the followin
 | moveDirections | <code>array</code> | . Defines in which directions point can move. Can contain values from [PointMoveDirections](#PointMoveDirections) enumeration. By default, all directions allowed. Default value is: `[PointMoveDirections.LEFT,PointMoveDirections.TOP,PointMoveDirections.RIGHT, PointMoveDirections.BOTTOM]`. To restrict movement in any direction, need to remove some directions from this array. |
 | visible | <code>boolean</code> | Point is visible or not. By default, `true`. |
 | forceDisplay | <code>boolean</code> | If this option enabled, than this point displayed all the time, even if shape is not in SCALE or ROTATE mode. By default, if the shape is in DEFAULT mode, then points not displayed on it. |
+| createDOMElement | <code>boolean</code> | Should HTML element for this point created by default. "false" by default |
 
 <a name="SmartPoint+x"></a>
 

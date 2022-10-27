@@ -158,7 +158,7 @@ function SmartShape() {
         compactExport: false,
         forceCreateEvent: false,
         zoomLevel:1,
-        initialPoints: []
+        initialPoints: [],
     };
 
     /**
@@ -321,7 +321,7 @@ function SmartShape() {
      * Can be empty, in this case default `SmartShape.options.pointOptions` will be used,
      * or default options of SmartPoint class itself.
      */
-    this.setupPoints = (points,pointOptions) => {
+    this.setupPoints = (points,pointOptions={}) => {
         this.points = [];
         this.addPoints(points,mergeObjects({},pointOptions));
         this.calcPosition();
@@ -337,14 +337,21 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
-    this.addPoint = (x,y,pointOptions=null) => {
-        let point = this.putPoint(x, y,mergeObjects({},pointOptions || this.options.pointOptions));
+    this.addPoint = (x,y,pointOptions= {}) => {
+        let point = this.putPoint(x, y,mergeObjects({},this.options.pointOptions, pointOptions));
         if (!point) {
             return null;
         }
+        if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+            pointOptions.createDOMElement = true;
+        }
         point = point.init(x, y, pointOptions);
-        this.root.appendChild(point.element);
-        point.updateContextMenu();
+        if (point.element) {
+            try {
+                this.root.appendChild(point.element);
+            } catch (err) {}
+            point.updateContextMenu();
+        }
         this.redraw();
         if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
             this.shapeMenu.updateContextMenu();
@@ -364,13 +371,18 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
-    this.insertPoint = (x,y,beforePoint,pointOptions=null) => {
-        let point = this.putPoint(x, y,mergeObjects({},pointOptions || this.options.pointOptions),beforePoint);
+    this.insertPoint = (x,y,beforePoint,pointOptions= {}) => {
+        let point = this.putPoint(x, y,mergeObjects({}, this.options.pointOptions, pointOptions),beforePoint);
         if (!point) {
             return null;
         }
+        if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+            pointOptions.createDOMElement = true;
+        }
         point = point.init(x, y, pointOptions);
-        this.root.appendChild(point.element);
+        try {
+            this.root.appendChild(point.element);
+        } catch (err) {};
         point.updateContextMenu();
         this.redraw();
         if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
@@ -387,18 +399,25 @@ function SmartShape() {
      * in this case default `SmartShape.options.pointOptions` will be used,
      * or default options of SmartPoint class itself.
      * */
-    this.addPoints = (points,pointOptions=null) => {
+    this.addPoints = (points,pointOptions= {}) => {
         if (!points || typeof(points) !== "object") {
             return
         }
         points.forEach(point => {
+            if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+                pointOptions.createDOMElement = true;
+            }
             const p = this.putPoint(point[0], point[1],
-                mergeObjects({}, pointOptions || this.options.pointOptions)
+                mergeObjects({}, this.options.pointOptions,pointOptions)
             )
             if (p) {
                 p.init(p.x, p.y, pointOptions)
-                this.root.appendChild(p.element);
-                p.redraw();
+                if (p.element) {
+                    try {
+                        this.root.appendChild(p.element);
+                        p.redraw();
+                    } catch (err) {}
+                }
             }
         });
         if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
@@ -429,6 +448,9 @@ function SmartShape() {
         const point = new SmartPoint();
         point.x = x;
         point.y = y;
+        if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+            pointOptions.createDOMElement = true;
+        }
         point.setOptions(pointOptions);
         if (beforePoint && beforeIndex !== -1) {
             this.points.splice(beforeIndex ,0,point)
@@ -758,18 +780,28 @@ function SmartShape() {
         let children = includeChildren ? this.getChildren(true) : null;
         children && children.forEach(child => child.calcPosition());
         const pos = this.getPosition(includeChildren);
+        this.points.forEach(point=>this.flipPoint(point,byX,byY,pos));
+        children && children.forEach(child => child.points.forEach(point=>this.flipPoint(point,byX,byY,pos)));
+    }
+
+    /**
+     * @ignore
+     * Internal method to flip specified point over X or/and Y axis
+     * according to specified dimensions of shape
+     * @param point {SmartPoint} Point object (or any object with x and y fields)
+     * @param byX {boolean} Flip horizontally
+     * @param byY {boolean} Flip vertically
+     * @param pos {object} Shape dimensions, object with fields: `top`,`left`,`bottom`,`right`,`width`,`height`
+     * @returns {*}
+     */
+    this.flipPoint = (point, byX, byY, pos) => {
         if (byX) {
-            this.points.forEach(point => point.x = Math.abs(pos.right - point.x) + pos.left);
-            children && children.forEach(child => child.points
-                .forEach(point => point.x = Math.abs(pos.right - point.x) + pos.left)
-            );
+            point.x = Math.abs(pos.right - point.x) + pos.left
         }
         if (byY) {
-            this.points.forEach(point => point.y = Math.abs(pos.bottom - point.y) + pos.top);
-            children && children.forEach(child => child.points
-                .forEach(point => point.y = Math.abs(pos.bottom - point.y) + pos.top)
-            );
+            point.y = Math.abs(pos.bottom - point.y) + pos.top
         }
+        return point
     }
 
     /**
@@ -802,20 +834,29 @@ function SmartShape() {
      * Depending on this it shows either ResizeBox around it, or RotateBox, or nothing.
      */
     this.applyDisplayMode = () => {
-        if (this.options.displayMode === SmartShapeDisplayMode.SCALE && this.options.canScale) {
-            this.rotateBox && this.rotateBox.hide();
-            !this.resizeBox && this.setupResizeBox();
-            this.resizeBox && this.resizeBox.setOptions({shapeOptions:{visible:this.options.visible}})
-        } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
-            this.resizeBox && this.resizeBox.hide();
-            !this.rotateBox && this.setupRotateBox();
-            this.rotateBox && this.rotateBox.setOptions({shapeOptions:{visible:this.options.visible}})
-        } else {
-            this.resizeBox && this.resizeBox.hide();
-            this.rotateBox && this.rotateBox.hide();
+        const parent = this.getRootParent();
+        if (!parent || !parent.options.groupChildShapes) {
+            if (this.options.displayMode === SmartShapeDisplayMode.SCALE && this.options.canScale) {
+                this.rotateBox && this.rotateBox.hide();
+                !this.resizeBox && this.setupResizeBox();
+                this.resizeBox && this.resizeBox.setOptions({shapeOptions: {visible: this.options.visible}})
+            } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
+                this.resizeBox && this.resizeBox.hide();
+                !this.rotateBox && this.setupRotateBox();
+                this.rotateBox && this.rotateBox.setOptions({shapeOptions: {visible: this.options.visible}})
+            } else {
+                this.resizeBox && this.resizeBox.hide();
+                this.rotateBox && this.rotateBox.hide();
+            }
         }
         this.points.forEach(point => {
-            point.setOptions({zIndex: this.options.zIndex + 1});
+            const options = {zIndex: this.options.zIndex + 1}
+            if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+                options.createDOMElement = false;
+            } else {
+                options.createDOMElement = true;
+            }
+            point.setOptions(options);
             if (point.element) {
                 point.element.style.zIndex = point.options.zIndex;
                 if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
@@ -823,15 +864,21 @@ function SmartShape() {
                 }
             }
         })
-        if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {
+        if (this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
+                    if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
+                        point.setOptions({createDOMElement:false});
+                    } else {
+                        point.setOptions({createDOMElement:true});
+                    }
                     if (point.options.visible && !point.options.hidden && point.options.canDrag) {
                         if (point.element) {
                             point.element.style.display = '';
                         }
                     }
                 })
+                child.options.displayMode = this.options.displayMode;
             })
         }
     }
@@ -1034,7 +1081,7 @@ function SmartShape() {
         if (this.root && this.svg) {
             try {
                 this.root.removeChild(this.svg);
-                this.points.forEach(point => this.root.removeChild(point.element))
+                this.points.filter(point => point.element).forEach(point => this.root.removeChild(point.element))
             } catch (err) {}
         }
         if (this.options.groupChildShapes) {

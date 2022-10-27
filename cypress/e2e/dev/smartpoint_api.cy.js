@@ -1,4 +1,4 @@
-import SmartShape from "../../../src/SmartShape/SmartShape.js";
+import SmartShape,{SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
 import SmartPoint, {PointEvents} from "../../../src/SmartPoint/SmartPoint.js";
 import EventsManager from "../../../src/events/EventsManager.js";
 function initShape() {
@@ -77,7 +77,8 @@ describe('SmartPoint API tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new SmartShape();
-      shape.init(app,{canScale:false,visible:false,id:"shape1"},[[0,100],[100,0],[200,100]]);
+      shape.init(app,{canScale:false,visible:false,id:"shape1",pointOptions:{createDOMElement:true}},[[0,100],[100,0],[200,100]]);
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
       const point = shape.findPoint(100,0);
       assert.equal(point.element.style.display,'none',"Should create invisible point");
       point.show();
@@ -91,8 +92,8 @@ describe('SmartPoint API tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       EventsManager.clear();
       const app = Cypress.$("#app").toArray()[0];
-      const point1 = new SmartPoint().init(5,5, {id:"point1"});
-      const point2 = new SmartPoint().init(25,25, {id:"point2"});
+      const point1 = new SmartPoint().init(5,5, {id:"point1",createDOMElement:true});
+      const point2 = new SmartPoint().init(25,25, {id:"point2",createDOMElement:true});
       app.appendChild(point1.element);
       app.appendChild(point2.element);
       let listener1Triggered = false;
