@@ -64,20 +64,30 @@
         const a1_sub = new SmartShape().init(body,{style:{fill:"white"},pointOptions:smartPointOptions,zIndex:1010,canScale:true,canRotate:true},[[45,60],[50,40],[55,60]])
         a1_sub.moveBy(325,15)
         a1.addChild(a1_sub);
-        const r = new SmartShape().init(body,{style,fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:480,filters:filters,canScale:true,canRotate:true,offsetY:15},[[0,0],[75,0],[100,25],[100,50],[75,75],[100,150],[75,150],[50,75],[25,75],[25,150],[0,150]])
-        const r_sub = new SmartShape().init(body,{style:{fill:"white"},pointOptions:smartPointOptions,offsetX:480,offsetY:15,zIndex:1010,canScale:true,canRotate:true},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]])
+        const r = new SmartShape().init(body,{style,fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[100,150],[75,150],[50,75],[25,75],[25,150],[0,150]])
+        r.moveBy(480,15);
+        const r_sub = new SmartShape().init(body,{style:{fill:"white"},pointOptions:smartPointOptions,zIndex:1010,canScale:true,canRotate:true},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]]);
+        r_sub.moveBy(480,15);
         r.addChild(r_sub);
-        const t = new SmartShape().init(body,{style,fillGradient:gradientFill,pointOptions:smartPointOptions,offsetX:635,filters:filters,canScale:true,canRotate:true,offsetY:15},[[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]])
+        const t = new SmartShape().init(body,{style,fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]])
+        t.moveBy(635,15);
         style = {fill:"#image"}
-        const s1 = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,offsetY:215,offsetX:15,filters:filters,canScale:true,canRotate:true},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
-        const h = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,offsetX:170,offsetY:215,filters:filters,canScale:true,canRotate:true},[[0,0],[25,0],[25,60],[75,60],[75,0],[100,0],[100,150],[75,150],[75,80],[25,80],[25,150],[0,150]]);
-        const a2 = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,offsetX:325,offsetY:215,filters:filters,canScale:true,canRotate:true},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
-        const a2_sub = new SmartShape().init(body,{style:{fill:'white'},pointOptions:shapePointOptions,offsetX:325,zIndex:1010,offsetY:215,canScale:true,canRotate:true},[[45,60],[50,40],[55,60]])
+        const s1 = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
+        s1.moveBy(15,215);
+        const h = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[25,0],[25,60],[75,60],[75,0],[100,0],[100,150],[75,150],[75,80],[25,80],[25,150],[0,150]]);
+        h.moveBy(170,215);
+        const a2 = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,filters:filters,canScale:true,canRotate:true},[[0,150],[50,0],[100,150],[75,150],[55,80],[45,80],[25,150]])
+        a2.moveBy(325,215);
+        const a2_sub = new SmartShape().init(body,{style:{fill:'white'},pointOptions:shapePointOptions,zIndex:1010,canScale:true,canRotate:true},[[45,60],[50,40],[55,60]])
+        a2_sub.moveBy(325,215);
         a2.addChild(a2_sub);
-        const p = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,offsetX:480,offsetY:215,filters:filters,canScale:true,canRotate:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[50,75],[25,75],[25,150],[0,150]])
-        const p_sub = new SmartShape().init(body,{style:{fill:'white'},pointOptions:shapePointOptions,offsetX:480,offsetY:215,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]]);
+        const p = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[50,75],[25,75],[25,150],[0,150]])
+        p.moveBy(480,215);
+        const p_sub = new SmartShape().init(body,{style:{fill:'white'},pointOptions:shapePointOptions,zIndex:1010},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]]);
+        p_sub.moveBy(480,215);
         p.addChild(p_sub);
-        const e = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,offsetX:635,offsetY:215,filters:filters,canScale:true,canRotate:true,id:"esymb",preserveAspectRatio:true},[[0,0],[100,0],[100,25],[25,25],[25,60],[100,60],[100,85],[25,85],[25,120],[100,120],[100,150],[0,150]])
+        const e = new SmartShape().init(body,{style,fillImage:grassFill,pointOptions:shapePointOptions,filters:filters,canScale:true,canRotate:true,id:"esymb",preserveAspectRatio:true},[[0,0],[100,0],[100,25],[25,25],[25,60],[100,60],[100,85],[25,85],[25,120],[100,120],[100,150],[0,150]])
+        e.moveBy(635,215);
       })
   </script>
   </body>

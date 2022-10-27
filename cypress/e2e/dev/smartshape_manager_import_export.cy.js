@@ -1,6 +1,7 @@
 import SmartShapeManager from "../../../src/SmartShapeManager/SmartShapeManager.js";
 import {readJSON} from "../../../src/utils/index.js";
-import geoJSON from "../../../tests/assets/geocountries.json";
+import countries from "../../../tests/assets/geocountries.json";
+import country from "../../../tests/assets/AFG.json";
 
 describe('SmartShapeManager import/export', () => {
   it('toJSON', () => {
@@ -71,12 +72,18 @@ describe('SmartShapeManager import/export', () => {
   it('fromGeoJson', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
-      const shapes = SmartShapeManager.fromGeoJson(app,geoJSON,{nameField:"NAME",idField:"ADM0_A3",width:200});
+      const shapes = SmartShapeManager.fromGeoJson(app,countries,{nameField:"NAME",idField:"ADM0_A3",width:200});
       assert.equal(shapes.length,177,"Should import all shapes from collection");
       const shape = shapes[0];
       assert.equal(shape.options.name,"Fiji","Shape should have correct name");
       const pos = shape.getPosition(true);
       assert.equal(parseInt(pos.width),200,"Should scale shape properly")
+      const shape2 = SmartShapeManager.fromGeoJson(app,country,{
+        nameField:"name_en",idField:"sov_a3",width:200,
+        fields:["continent"],
+      });
+      assert.equal(shape2.options.id,"AFG","Should correctly load from single item GeoJSON file");
+      assert.equal(shape2.options.continent,"Asia","Should correctly load custom fields from GeoJSON file");
     })
   })
 })

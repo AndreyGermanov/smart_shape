@@ -136,11 +136,11 @@ describe('ResizeBox tests', () => {
                   cy.get("#"+box_id+"_right_bottom").trigger("mousedown", {buttons:1}).then(() => {
                     cy.get("#app").trigger("mousemove",{buttons:1,clientX:115,clientY:120}).then(() => {
                       assert.equal(box.left,0,"Should correctly recalculate left coordinate");
-                      assert.equal(box.right,100,"Should correctly recalculate right coordinate");
+                      assert.equal(box.right,100.5,"Should correctly recalculate right coordinate");
                       assert.equal(box.top,0,"Should correctly recalculate top coordinate");
-                      assert.equal(box.bottom,105,"Should correctly recalculate bottom coordinate");
-                      assert.equal(box.width,100,"Should correctly recalculate width");
-                      assert.equal(box.height,105,"Should correctly recalculate height");
+                      assert.equal(box.bottom,105.5,"Should correctly recalculate bottom coordinate");
+                      assert.equal(box.width,100.5,"Should correctly recalculate width");
+                      assert.equal(box.height,105.5,"Should correctly recalculate height");
                     })
                   })
                 })
@@ -168,8 +168,8 @@ describe('ResizeBox tests', () => {
         assert.equal(event.newPos.right, 105.5, "Should return correct new right coordinate");
         assert.equal(event.newPos.top, 10, "Should return correct new top coordinate");
         assert.equal(event.newPos.bottom, 105.5, "Should return correct new bottom coordinate");
-        assert.equal(event.newPos.width, 95, "Should return correct new width");
-        assert.equal(event.newPos.height, 95, "Should return correct new height");
+        assert.equal(event.newPos.width, 95.5, "Should return correct new width");
+        assert.equal(event.newPos.height, 95.5, "Should return correct new height");
       }
       const listener = box.addEventListener(ResizeBoxEvents.RESIZE_BOX_RESIZE, handler);
       cy.get("#" + box_id + "_right_bottom").trigger("mousedown", {buttons: 1}).then(() => {

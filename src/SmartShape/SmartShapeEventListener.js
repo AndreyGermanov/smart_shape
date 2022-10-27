@@ -209,6 +209,9 @@ function SmartShapeEventListener(shape) {
         if (!this.shape.draggedPoint) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE, this.shape, createEvent(event));
         }
+        if (event.buttons !== 1) {
+            return
+        }
         if (this.shape.draggedPoint) {
             EventsManager.emit(ShapeEvents.POINT_DRAG_MOVE,this.shape,{point:this.shape.draggedPoint});
             this.shape.draggedPoint.mousemove(event);
@@ -324,6 +327,11 @@ function SmartShapeEventListener(shape) {
     this.onPointAdded = (event) => {
         if (!this.shape.isShapePoint(event.target)) {
             return
+        }
+        if (event.target.element) {
+            try {
+                this.shape.root.appendChild(event.target.element)
+            } catch (err) {}
         }
         EventsManager.emit(ShapeEvents.POINT_ADDED,this.shape,{point:event.target});
     }

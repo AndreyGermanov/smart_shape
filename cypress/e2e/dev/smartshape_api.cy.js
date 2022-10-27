@@ -71,6 +71,7 @@ describe('SmartShape API tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new SmartShape();
       shape.init(app,{},[[0,100],[100,0],[200,100]]);
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
       const point1 = shape.findPoint(100,0)
       point1.element.id = "#point1";
       shape.deleteAllPoints();
@@ -206,7 +207,7 @@ describe('SmartShape API tests', () => {
       assert.equal(shape.options.displayMode, SmartShapeDisplayMode.DEFAULT,"Should be in DEFAULT mode by default");
       assert.isNull(shape.resizeBox,"Resize box by default is null");
       assert.isNull(shape.rotateBox,"Rotate box by default is null");
-      assert.equal(shape.points[0].element.style.display,'none',"Points should be hidden in DEFAULT display mode")
+      assert.isNull(shape.points[0].element,"Points should be hidden in DEFAULT display mode")
       await shape.switchDisplayMode();
       assert.equal(shape.options.displayMode, SmartShapeDisplayMode.SELECTED,"Should switch to SELECTED mode");
       assert.equal(shape.points[0].element.style.display,'',"Points should be displayed in DEFAULT display mode");

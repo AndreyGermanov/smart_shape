@@ -5,7 +5,7 @@ import {getOffset} from "../../../src/utils";
 describe('Point move directions tests (according to options.moveDirections setting', () => {
   const setup = () => {
     const app = Cypress.$("#app").toArray()[0];
-    const point = new SmartPoint().init(100,100,{id:"point1",bounds:{left:0,right:1000,top:0,bottom:1000,canDrag:true}});
+    const point = new SmartPoint().init(100,100,{id:"point1",bounds:{left:0,right:1000,top:0,bottom:1000},canDrag:true,createDOMElement:true});
     app.appendChild(point.element);
     SmartShapeManager.draggedShape = {draggedPoint:point};
     app.addEventListener("mousemove", (event) => {

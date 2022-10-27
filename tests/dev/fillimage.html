@@ -14,6 +14,7 @@
       const div = document.getElementById("surface");
       const shape = new SmartShape();
       shape.init(div,{
+        canAddPoints:true,pointOptions:{canDelete:true},
         style:{
           fill:"#image"
         },

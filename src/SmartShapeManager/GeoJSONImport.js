@@ -21,7 +21,7 @@ export const fromGeoJSON = (container,geoJSON, options) => {
     if (!notNull(geoJSON) || typeof(geoJSON) !== "object") {
         return null;
     }
-    if (!geoJSON.length) {
+    if (!notNull(geoJSON.features)) {
         geoJSON = {features:[geoJSON]}
     }
     if (!geoJSON.features.length) {
@@ -52,15 +52,14 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
         const shapeOpts = mergeObjects({},options)
         shapeOpts.initialPoints = [...origPolygons[idx]]
         if (idx==0) {
-            shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx])
+            shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx],false)
         } else {
             shapeOpts.id += "_"+idx;
             shapeOpts.name += " "+idx;
-            shape.addChild(SmartShapeManager.createShape(container,shapeOpts,polygons[idx]))
+            shape.addChild(SmartShapeManager.createShape(container,shapeOpts,polygons[idx]),false)
         }
     }
     if (notNull(importOptions.scale)) {
-        console.log(importOptions.scale/Math.pow(10,maxDigits));
         shape.scaleBy(importOptions.scale/Math.pow(10,maxDigits),importOptions.scale/Math.pow(10,maxDigits),true);
     } else if (notNull(importOptions.width) || notNull(importOptions.height)) {
         shape.scaleTo(importOptions.width,importOptions.height)
