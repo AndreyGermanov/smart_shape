@@ -141,7 +141,7 @@ function SmartShape() {
             "stroke-dasharray":0,
             "stroke-linecap":"square"
         },
-        pointOptions:{},
+        pointOptions:{canDrag:true},
         zIndex: 1000,
         bounds: {left:-1,top:-1,right:-1,bottom:-1},
         visible:true,
@@ -323,7 +323,9 @@ function SmartShape() {
      */
     this.setupPoints = (points,pointOptions={}) => {
         this.points = [];
+        this.isNewObject = true;
         this.addPoints(points,mergeObjects({},pointOptions));
+        this.isNewObject = false;
         this.calcPosition();
     }
 
@@ -440,7 +442,10 @@ function SmartShape() {
      */
     this.putPoint = (x,y,pointOptions= {}, beforePoint=null) => {
         let beforeIndex = this.getPointIndex(beforePoint);
-        if (this.findPoint(x,y) || (beforePoint && beforeIndex === -1)) {
+        if (beforePoint && beforeIndex === -1) {
+            return null;
+        }
+        if (!this.isNewObject && this.findPoint(x,y)) {
             return null;
         }
         pointOptions.bounds = this.getBounds();
@@ -805,6 +810,29 @@ function SmartShape() {
     }
 
     /**
+     * Method used to change shape z-index to topmost
+     */
+    this.moveToTop = () => {
+        SmartShapeDrawHelper.moveShapeToTop(this);
+    }
+
+    /**
+     * Method used to change shape z-index to bottommost
+     */
+    this.moveToBottom = () => {
+        SmartShapeDrawHelper.moveShapeToBottom(this);
+    }
+
+
+    /**
+     * Method used to change shape z-index to specified number
+     * @param zIndex {number} z-index value
+     */
+    this.changeZIndex = (zIndex) => {
+        SmartShapeDrawHelper.changeShapeZIndex(this,zIndex)
+    }
+
+    /**
      * @ignore
      * Method used to check is specified coordinate not goes beyond bounds
      * @param x {number} X coordinate
@@ -850,7 +878,7 @@ function SmartShape() {
             }
         }
         this.points.forEach(point => {
-            const options = {zIndex: this.options.zIndex + 1}
+            const options = {zIndex: this.options.zIndex + 2}
             if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
                 options.createDOMElement = false;
             } else {
@@ -895,13 +923,15 @@ function SmartShape() {
         }
         if ((mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) ||
             (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) ||
-            (mode === SmartShapeDisplayMode.SELECTED && (this.points.length && !this.points.filter(point=>point.options.canDrag).length))) {
+            (mode === SmartShapeDisplayMode.SELECTED && (this.points.length && !this.options.pointOptions.canDrag))) {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         this.options.displayMode = mode;
         this.redraw();
         if (mode === SmartShapeDisplayMode.DEFAULT) {
-            this.getChildren(true).forEach(child => child.switchDisplayMode(mode));
+            setTimeout(() => {
+                this.getChildren(true).forEach(child => child.switchDisplayMode(mode));
+            },10)
         }
     }
 
@@ -923,7 +953,7 @@ function SmartShape() {
         } else {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
-        if (mode === SmartShapeDisplayMode.SELECTED && !this.points.filter(point=>point.options.canDrag).length) {
+        if (mode === SmartShapeDisplayMode.SELECTED && !this.options.pointOptions.canDrag) {
             mode = SmartShapeDisplayMode.SCALE
         }
         if (mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) {
@@ -1005,14 +1035,24 @@ function SmartShape() {
      * @returns {boolean} True if (x,y) belongs to shape and false otherwise
      */
     this.belongsToShape = (x,y,applyOffset=true) => {
-        if (this.findPoint(x,y)) {
+        if (!this.isInShapePolygon(x,y)) {
+            return false;
+        }
+        const off = getOffset(this.root)
+        if (this.findPoint(x-off.left,y-off.top)) {
             return true;
+        } else {
         }
         let points = this.getPointsArray();
         if (applyOffset) {
-            points = points.map(point => ([point[0]+getOffset(this.root).left,point[1]+getOffset(this.root).top]));
+            points = points.map(point => ([point[0]+off.left,point[1]+off.top]));
         }
         return isPointInsidePolygon(points,[x,y]);
+    }
+
+    this.isInShapePolygon = (x,y) => {
+        const off = getOffset(this.root)
+        return x>=this.left+off.left && x<=this.right+off.left && y>=this.top+off.top && y <= this.bottom+off.top;
     }
 
     /**
@@ -1340,7 +1380,7 @@ function SmartShape() {
             } else {
                 p = this.putPoint(point.x, point.y, point.options || jsonObj.options.pointOptions);
             }
-            p.updateContextMenu();
+            p && p.updateContextMenu();
         })
         const parent = SmartShapeManager.getShapeByGuid(jsonObj.parent_guid);
         SmartShapeManager.addShape(this);

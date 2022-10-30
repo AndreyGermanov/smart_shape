@@ -1,5 +1,4 @@
-import {SmartShapeDisplayMode} from "./SmartShape.js";
-import {EventsManager, ShapeEvents} from "../index.js";
+import {EventsManager, ShapeEvents,SmartShapeManager,SmartShapeDisplayMode} from "../index.js";
 import {blobToDataURL, dataURLtoBlob, notNull} from "../utils";
 import {applyAspectRatio} from "../utils/geometry.js";
 
@@ -76,7 +75,9 @@ function SmartShapeDrawHelper() {
         this.setupSVGFilters(shape);
         shape.svg.style.zIndex = shape.options.zIndex;
         const parent = shape.getRootParent(true);
-        this.updatePoints(shape,parent);
+        if (shape.options.pointOptions.canDrag) {
+            this.updatePoints(shape, parent);
+        }
         this.redrawResizeBox(parent || shape);
         this.redrawRotateBox(parent || shape);
     }
@@ -92,9 +93,7 @@ function SmartShapeDrawHelper() {
             if (point.element.parentNode !== shape.root) {
                 shape.root.appendChild(point.element);
             }
-            if (point.options.zIndex < shape.options.zIndex+2) {
-                point.options.zIndex = shape.options.zIndex + 2;
-            }
+            point.options.zIndex = shape.options.zIndex + 2;
             if (!shape.options.visible) {
                 point.options.visible = false;
             }
@@ -549,6 +548,55 @@ function SmartShapeDrawHelper() {
             })
             img.src = url;
         })
+    }
+
+    /**
+     * @ignore
+     * Method used to change shape zIndex to topmost
+     * @param shape {SmartShape} shape object
+     */
+    this.moveShapeToTop = (shape) => {
+        const zIndex = SmartShapeManager.getMaxZIndex(shape.root);
+        if (shape.options.zIndex === zIndex && SmartShapeManager.findShapesByOptionValue("zIndex",zIndex).length === 1) {
+            return
+        }
+        this.changeShapeZIndex(shape,zIndex+1);
+    }
+
+    /**
+     * @ignore
+     * Method used to change shape zIndex to topmost
+     * @param shape {SmartShape} shape object
+     */
+    this.moveShapeToBottom = (shape) => {
+        const zIndex = SmartShapeManager.getMinZIndex(shape.root);
+        if (shape.options.zIndex === zIndex && SmartShapeManager.findShapesByOptionValue("zIndex",zIndex).length === 1) {
+            return
+        }
+        this.changeShapeZIndex(shape,zIndex-1);
+    }
+
+    /**
+     * @ignore
+     * Method used to change shape zIndex to specified
+     * @param shape {SmartShape} shape object
+     * @param zIndex {number} zIndex value
+     */
+    this.changeShapeZIndex = (shape,zIndex) => {
+        if (zIndex === shape.options.zIndex) {
+            return
+        }
+        const diff = zIndex - shape.options.zIndex;
+        shape.options.prevZIndex = shape.options.zIndex;
+        shape.options.zIndex += diff;
+        this.updateOptions(shape);
+        if (shape.options.groupChildShapes) {
+            shape.getChildren(true).forEach(child => {
+                child.options.prevZIndex = child.options.zIndex;
+                child.options.zIndex += diff;
+                this.updateOptions(child);
+            });
+        }
     }
 }
 

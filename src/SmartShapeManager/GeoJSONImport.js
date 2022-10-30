@@ -1,5 +1,6 @@
 import {mergeObjects, notNull} from "../utils/index.js";
 import SmartShapeManager from "./SmartShapeManager.js";
+import {latLonToXY} from "../utils/geometry.js";
 
 /**
  * @ignore
@@ -50,7 +51,7 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
     }
     let options = loadOptions(obj,index,importOptions);
     options.visible = false;
-    const {polygons,origPolygons,offsetX,offsetY,maxDigits} = loadPolygons(obj)
+    const {polygons,origPolygons,offsetX,offsetY} = loadPolygons(obj)
     options.offsetX = offsetX;
     options.offsetY = offsetY;
     let shape = null;
@@ -66,14 +67,9 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
         }
     }
     if (notNull(importOptions.scale)) {
-        shape.scaleBy(importOptions.scale/Math.pow(10,maxDigits),importOptions.scale/Math.pow(10,maxDigits),true);
+        shape.scaleBy(importOptions.scale,importOptions.scale,true);
     } else if (notNull(importOptions.width) || notNull(importOptions.height)) {
         shape.scaleTo(importOptions.width,importOptions.height)
-    } else {
-        const pos = shape.calcPositionFromPointsArray(shape.options.initialPoints);
-        if (pos.width < 100) {
-            shape.scaleTo(100)
-        }
     }
     return shape;
 }
@@ -119,32 +115,17 @@ const loadPolygons = (obj) => {
     if (obj.geometry.type === "Polygon") {
         polygons = [polygons];
     }
-    let offsetX = 999999, offsetY = 999999;
-    let maxDigits = 0;
-    const result = {polygons:[],origPolygons:[]};
-    for (let _polygon of polygons) {
-        const polygon = _polygon[0];
-        const origPolygon = [];
-        for (let point of polygon) {
-            maxDigits = getDecimalLength(point[0]) > maxDigits ? getDecimalLength(point[0]) : maxDigits;
-            maxDigits = getDecimalLength(point[1]) > maxDigits ? getDecimalLength(point[0]) : maxDigits;
-            offsetX = point[0] < offsetX ? point[0] : offsetX;
-            offsetY = point[1] < offsetY ? point[1] : offsetY;
-            origPolygon.push([point[0],point[1]])
-        }
-        result.origPolygons.push(origPolygon);
-    }
-    result.offsetX = offsetX;
-    result.offsetY = offsetY;
-    result.maxDigits = maxDigits;
+    const result = {polygons:[],origPolygons:polygons.map(polygon => mergeObjects({},polygon[0]))};
+    result.offsetX = 0;
+    result.offsetY = 0;
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
         for (let point of polygon) {
-            point[0] -= offsetX;
-            point[0] *= Math.pow(10,maxDigits);
-            point[1] -= offsetY;
-            point[1] *= Math.pow(10,maxDigits);
+            const [x,y] = latLonToXY(point[1],point[0]);
+            point[0] = x;
+            point[1] = y;
         }
+
         result.polygons.push(polygon)
     }
     return result;

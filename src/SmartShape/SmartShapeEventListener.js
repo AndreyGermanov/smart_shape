@@ -148,7 +148,7 @@ function SmartShapeEventListener(shape) {
         this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_END, (_event) => {
             this.shape.initCenter = null;
             this.shape.points.forEach(point=> {
-                if (!point.options.hidden) {
+                if (!point.options.hidden && point.element) {
                     point.element.style.display = '';
                 }
             })
