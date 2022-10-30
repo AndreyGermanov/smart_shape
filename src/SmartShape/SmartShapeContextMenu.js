@@ -1,6 +1,6 @@
 import {Menus} from "../../context_menu/src/index.js";
 import {getMousePos} from "../events/functions.js";
-import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom} from "../../assets/graphics.js";
+import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";
 import {PngExportTypes} from "./SmartShapeDrawHelper.js";
 
@@ -70,6 +70,8 @@ export default function SmartShapeContextMenu(shape) {
         const items = [
             {id: "i" + shape.guid + "_move_to_top", title: "Move to Top", image: move_to_top },
             {id: "i" + shape.guid + "_move_to_bottom", title: "Move to Bottom", image: move_to_bottom },
+            {id: "i" + shape.guid + "_flip_horizontal", title: "Flip Horizontal", image: horizontal },
+            {id: "i" + shape.guid + "_flip_vertical", title: "Flip Vertical", image: vertical },
             {id: "i" + shape.guid + "_clone", title: "Clone", image: copy},
             {id: "i" + shape.guid + "_export_json", title: "Export to JSON", image: save},
             {id: "i" + shape.guid + "_export_svg", title: "Export to SVG", image: svg},
@@ -132,10 +134,16 @@ export default function SmartShapeContextMenu(shape) {
                     destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
                     break;
                 case "i"+this.shape.guid+"_move_to_top":
-                    this.onMoveToTopClick()
+                    this.onMoveToTopClick(event)
                     break;
                 case "i"+this.shape.guid+"_move_to_bottom":
-                    this.onMoveToBottomClick()
+                    this.onMoveToBottomClick(event)
+                    break;
+                case "i"+this.shape.guid+"_flip_horizontal":
+                    this.onFlipHorizontalClick(event)
+                    break;
+                case "i"+this.shape.guid+"_flip_vertical":
+                    this.onFlipVerticalClick(event)
                     break;
             }
         })
@@ -273,6 +281,11 @@ export default function SmartShapeContextMenu(shape) {
         }
     }
 
+    /**
+     * @ignore
+     * Runs when click on "Move to top" menu option
+     * @param _event {MouseEvent} Event object
+     */
     this.onMoveToTopClick = (_event) => {
         const parent = this.shape.getParent();
         if (parent && parent.options.groupChildShapes) {
@@ -282,12 +295,49 @@ export default function SmartShapeContextMenu(shape) {
         }
     }
 
+    /**
+     * @ignore
+     * Runs when click on "Move to bottom" menu option
+     * @param _event {MouseEvent} Event object
+     */
     this.onMoveToBottomClick = (_event) => {
         const parent = this.shape.getParent();
         if (parent && parent.options.groupChildShapes) {
             parent.moveToBottom();
         } else {
             this.shape.moveToBottom();
+        }
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Flip Horizontal" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onFlipHorizontalClick = (_event) => {
+        const parent = this.shape.getParent();
+        if (parent && parent.options.groupChildShapes) {
+            parent.flip(true,false);
+            parent.redraw();
+        } else {
+            this.shape.flip(true,false);
+            this.shape.redraw();
+        }
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Flip Vertical" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onFlipVerticalClick = (_event) => {
+        const parent = this.shape.getParent();
+        if (parent && parent.options.groupChildShapes) {
+            parent.flip(false,true);
+            parent.redraw();
+        } else {
+            this.shape.flip(false,true);
+            this.shape.redraw();
         }
     }
 

@@ -786,7 +786,11 @@ function SmartShape() {
         children && children.forEach(child => child.calcPosition());
         const pos = this.getPosition(includeChildren);
         this.points.forEach(point=>this.flipPoint(point,byX,byY,pos));
-        children && children.forEach(child => child.points.forEach(point=>this.flipPoint(point,byX,byY,pos)));
+        children && children.forEach(child => {
+            child.points.forEach(point=>{
+                child.flipPoint(point,byX,byY,pos)
+            })
+        });
     }
 
     /**
@@ -854,6 +858,9 @@ function SmartShape() {
     this.redraw = () => {
         this.applyDisplayMode();
         SmartShapeDrawHelper.draw(this);
+        if (this.options.groupChildShapes) {
+            this.getChildren(true).forEach(child=>child.redraw());
+        }
     }
 
     /**
@@ -979,6 +986,51 @@ function SmartShape() {
 
     /**
      * @ignore
+     * Service method that used to update shape dimensions based on
+     * changed point coordinates (or if point removed)
+     * @param x {number} X coordinate
+     * @param y {number} Y coordinate
+     * @param removed {boolean} Indicates that point with specified (x,y) removed
+     */
+    this.updatePosition = (x,y,removed) => {
+        if (x<this.left) {
+            if (removed) {
+                this.left = this.oldLeft;
+            } else {
+                this.oldLeft = this.left;
+                this.left = x;
+            }
+        }
+        if (x>this.right) {
+            if (removed) {
+                this.right = this.oldRight
+            } else {
+                this.oldRight = this.right;
+                this.right = x
+            }
+        }
+        if (y<this.top) {
+            if (removed) {
+                this.top = this.oldTop;
+            } else {
+                this.oldTop = this.top;
+                this.top = y;
+            }
+        }
+        if (y>this.bottom) {
+            if (removed) {
+                this.bottom = this.oldBottom;
+            } else {
+                this.oldBottom = this.bottom;
+                this.bottom = y;
+            }
+        }
+        this.width = this.right - this.left || 1
+        this.height = this.bottom - this.top || 1
+    }
+
+    /**
+     * @ignore
      * Function calculates shape dimensions based on provided points array.
      * @param points {array} 2D array of points in format [ [x,y], [x,y] [x,y] ...]
      * @returns {object} Object with fields: `left`,`top`,`right`,`bottom`,`width`,`height`
@@ -1041,7 +1093,6 @@ function SmartShape() {
         const off = getOffset(this.root)
         if (this.findPoint(x-off.left,y-off.top)) {
             return true;
-        } else {
         }
         let points = this.getPointsArray();
         if (applyOffset) {

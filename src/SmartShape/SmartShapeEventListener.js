@@ -345,6 +345,7 @@ function SmartShapeEventListener(shape) {
      */
     this.onPointDragMove = (event) => {
         if (this.shape.isShapePoint(event.target)) {
+            this.shape.updatePosition(event.target.x,event.target.y);
             this.shape.redraw();
         }
     }
