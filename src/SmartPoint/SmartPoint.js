@@ -111,6 +111,23 @@ function SmartPoint() {
      */
     this.subscriptions = {}
 
+
+    /**
+     * @ignore
+     * Drag horizontal mode. If enabled, then point can be
+     * dragged only horizontally using UI
+     * @type {boolean}
+     */
+    this.dragHorizontal = false;
+
+    /**
+     * @ignore
+     * Drag vertical mode. If enabled, then point can be
+     * dragged only vertically using UI
+     * @type {boolean}
+     */
+    this.dragVertical = false;
+
     /**
      * Initializes new point and displays it on the screen.
      * @param x {number} X coordinate of point relative to shape's container left
@@ -211,9 +228,6 @@ function SmartPoint() {
             element.style.display = '';
         }
         element.style.position = 'absolute';
-        if (typeof(this.updateContextMenu) === "function") {
-            this.updateContextMenu();
-        }
         return element
     }
 
