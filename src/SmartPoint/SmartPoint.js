@@ -16,8 +16,7 @@ import SmartPointContextMenu from "./SmartPointContextMenu.js";
 /**
  * Class that represents a single point on the screen.
  * Can be created directly using class constructor, but more often they added by using `addPoint`, `addPoints`
- * methods of [SmartShape](#SmartShape) class or interactively when
- * user double-clicks on shape's container.
+ * methods of [SmartShape](#SmartShape) class or interactively using SmartShape context menu.
  * @returns {object} SmartPoint object that should be initialized by `init` method.
  * @constructor
  */

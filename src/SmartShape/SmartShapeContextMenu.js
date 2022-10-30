@@ -1,6 +1,6 @@
 import {Menus} from "../../context_menu/src/index.js";
 import {getMousePos} from "../events/functions.js";
-import {add,del,save,svg,png,copy,group,ungroup} from "../../assets/graphics.js";
+import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";
 import {PngExportTypes} from "./SmartShapeDrawHelper.js";
 
@@ -68,6 +68,8 @@ export default function SmartShapeContextMenu(shape) {
 
     this.getMenuItems = () => {
         const items = [
+            {id: "i" + shape.guid + "_move_to_top", title: "Move to Top", image: move_to_top },
+            {id: "i" + shape.guid + "_move_to_bottom", title: "Move to Bottom", image: move_to_bottom },
             {id: "i" + shape.guid + "_clone", title: "Clone", image: copy},
             {id: "i" + shape.guid + "_export_json", title: "Export to JSON", image: save},
             {id: "i" + shape.guid + "_export_svg", title: "Export to SVG", image: svg},
@@ -128,6 +130,13 @@ export default function SmartShapeContextMenu(shape) {
                     destShape = parent || this.shape;
                     destShape.setOptions({groupChildShapes:false});
                     destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                    break;
+                case "i"+this.shape.guid+"_move_to_top":
+                    this.onMoveToTopClick()
+                    break;
+                case "i"+this.shape.guid+"_move_to_bottom":
+                    this.onMoveToBottomClick()
+                    break;
             }
         })
     }
@@ -261,6 +270,24 @@ export default function SmartShapeContextMenu(shape) {
             parent.destroy();
         } else {
             this.shape.destroy();
+        }
+    }
+
+    this.onMoveToTopClick = (_event) => {
+        const parent = this.shape.getParent();
+        if (parent && parent.options.groupChildShapes) {
+            parent.moveToTop();
+        } else {
+            this.shape.moveToTop();
+        }
+    }
+
+    this.onMoveToBottomClick = (_event) => {
+        const parent = this.shape.getParent();
+        if (parent && parent.options.groupChildShapes) {
+            parent.moveToBottom();
+        } else {
+            this.shape.moveToBottom();
         }
     }
 

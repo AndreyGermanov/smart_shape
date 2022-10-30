@@ -323,7 +323,29 @@ function SmartShapeManager() {
         if (!shapes.length) {
             return 0;
         }
-        return shapes.map(shape=>shape.options.zIndex || 0).reduce((max,zIndex) => zIndex>max ? zIndex : max );
+        return parseInt(
+            shapes.map(shape=>shape.options.zIndex || 0).reduce((max,zIndex) => zIndex>max ? zIndex : max,0 )
+        );
+    }
+
+    /**
+     * Method returns zIndex of the bottommost shape either in specified container or globally
+     * @param container {HTMLElement|null} Container to search in or null if search through all shapes
+     * @returns {number} zIndex of the bottommost shape
+     */
+    this.getMinZIndex = (container=null) => {
+        let shapes;
+        if (container) {
+            shapes = this.getShapesByContainer(container);
+        } else {
+            shapes = this.getShapes();
+        }
+        if (!shapes.length) {
+            return 0;
+        }
+        return parseInt(
+            shapes.map(shape=>shape.options.zIndex || 0).reduce((min,zIndex) => zIndex<min ? zIndex : min ,999999)
+        );
     }
 
     /**
@@ -365,18 +387,7 @@ function SmartShapeManager() {
             this.deactivateShape(this.activeShape);
         }
         if (shape.options.moveToTop) {
-            const maxZIndex = this.getMaxZIndex(shape.root) + 1;
-            const diff = maxZIndex - shape.options.zIndex;
-            shape.options.prevZIndex = shape.options.zIndex;
-            shape.options.zIndex += diff;
-            SmartShapeDrawHelper.updateOptions(shape);
-            if (shape.options.groupChildShapes) {
-                shape.getChildren(true).forEach(child => {
-                    child.options.prevZIndex = child.options.zIndex;
-                    child.options.zIndex += diff;
-                    SmartShapeDrawHelper.updateOptions(child);
-                });
-            }
+            shape.moveToTop();
         }
         this.activeShape = shape;
         EventsManager.emit(ShapeEvents.SHAPE_ACTIVATED,this.activeShape);

@@ -184,3 +184,20 @@ export const rectsOverlap = (rect1,rect2) => {
 
     return !(rect1.bottom > rect2.top || rect2.bottom > rect1.top);
 }
+
+/**
+ * @ignore
+ * Function used to convert polar coordinates to
+ * screen coordinates
+ * @param lat {number} Latitude
+ * @param lon {number} Longitude
+ * @returns {array} X and Y coordinates as array [x,y]
+ */
+export const latLonToXY = (lat, lon) => {
+    const width = 1000000
+    const x = (width * (180 + lon) / 360) % (1.5 * width)
+    const rad = lat * Math.PI / 180
+    const merc = 0.5 * Math.log((1 + Math.sin(rad)) / (1 - Math.sin(rad)))
+    const y = (width * merc / (2 * Math.PI))
+    return [x,y]
+}

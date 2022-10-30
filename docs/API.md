@@ -572,8 +572,7 @@ this class automatically during init process
 ### new SmartPoint()
 Class that represents a single point on the screen.
 Can be created directly using class constructor, but more often they added by using `addPoint`, `addPoints`
-methods of [SmartShape](#SmartShape) class or interactively when
-user double-clicks on shape's container.
+methods of [SmartShape](#SmartShape) class or interactively using SmartShape context menu.
 
 **Returns**: <code>object</code> - SmartPoint object that should be initialized by `init` method.  
 <a name="SmartPoint+options"></a>
@@ -775,6 +774,9 @@ Method returns a distance from this point to other specified point
     * [.scaleBy(scaleX, scaleY)](#SmartShape+scaleBy)
     * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
     * [.flip(byX, byY, includeChildren)](#SmartShape+flip)
+    * [.moveToTop()](#SmartShape+moveToTop)
+    * [.moveToBottom()](#SmartShape+moveToBottom)
+    * [.changeZIndex(zIndex)](#SmartShape+changeZIndex)
     * [.redraw()](#SmartShape+redraw)
     * [.switchDisplayMode(mode)](#SmartShape+switchDisplayMode)
     * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
@@ -1172,6 +1174,29 @@ Method used to flip shape and its children vertically or horizontally
 | byY | <code>boolean</code> | Flip vertically |
 | includeChildren | <code>boolean</code> | Flip includes children shapes |
 
+<a name="SmartShape+moveToTop"></a>
+
+### smartShape.moveToTop()
+Method used to change shape z-index to topmost
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+moveToBottom"></a>
+
+### smartShape.moveToBottom()
+Method used to change shape z-index to bottommost
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+changeZIndex"></a>
+
+### smartShape.changeZIndex(zIndex)
+Method used to change shape z-index to specified number
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| zIndex | <code>number</code> | z-index value |
+
 <a name="SmartShape+redraw"></a>
 
 ### smartShape.redraw()
@@ -1559,6 +1584,7 @@ of all group if forGroup parameter is set
     * [.getShapeByGuid(guid)](#SmartShapeManager+getShapeByGuid) ⇒ <code>null</code> \| [<code>SmartShape</code>](#SmartShape)
     * [.getShapesByContainer(container)](#SmartShapeManager+getShapesByContainer) ⇒ <code>array</code>
     * [.getMaxZIndex(container)](#SmartShapeManager+getMaxZIndex) ⇒ <code>number</code>
+    * [.getMinZIndex(container)](#SmartShapeManager+getMinZIndex) ⇒ <code>number</code>
     * [.getShapes()](#SmartShapeManager+getShapes) ⇒ <code>array</code>
     * [.activateShape(shape, displayMode)](#SmartShapeManager+activateShape)
     * [.addContainerEvent(container, eventName, handler)](#SmartShapeManager+addContainerEvent)
@@ -1679,6 +1705,18 @@ Method returns zIndex of the topmost shape either in specified container or glob
 
 **Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
 **Returns**: <code>number</code> - zIndex of the topmost shape  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| container | <code>HTMLElement</code> \| <code>null</code> | Container to search in or null if search through all shapes |
+
+<a name="SmartShapeManager+getMinZIndex"></a>
+
+### smartShapeManager.getMinZIndex(container) ⇒ <code>number</code>
+Method returns zIndex of the bottommost shape either in specified container or globally
+
+**Kind**: instance method of [<code>SmartShapeManager</code>](#SmartShapeManager)  
+**Returns**: <code>number</code> - zIndex of the bottommost shape  
 
 | Param | Type | Description |
 | --- | --- | --- |

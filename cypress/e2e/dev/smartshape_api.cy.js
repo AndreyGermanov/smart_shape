@@ -244,7 +244,7 @@ describe('SmartShape API tests', () => {
       shape.setOptions({canRotate:false});
       await shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
       assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if ROTATE is disabled");
-      shape.setOptions({canScale:true,canRotate:true});
+      shape.setOptions({canScale:true,canRotate:true,pointOptions:{canDrag:false}});
       shape.points.forEach(point=>point.setOptions({canDrag:false}));
       await shape.redraw();
       await shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
@@ -513,7 +513,7 @@ describe('SmartShape API tests', () => {
   it("belongsToShape", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = setup();
-      assert.isTrue(shape.belongsToShape(0,100, false),"Point on border should belong to shape");
+      assert.isTrue(shape.belongsToShape(8,108, false),"Point on border should belong to shape");
       assert.isTrue(shape.belongsToShape(15,90, false),"Point inside shape should belong to shape");
       assert.isFalse(shape.belongsToShape(5,40, false),"Point above border should not belong to shape");
       assert.isFalse(shape.belongsToShape(195,60, false),"Point above border on the right side should not belong to shape");
@@ -735,4 +735,96 @@ describe('SmartShape API tests', () => {
       assert.isNull(point,"Should not return point if single coordinate is incorrect")
     });
   })
+
+  it("changeZIndex", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = new SmartShape().init(app,{zIndex:1000},[[0,100],[100,0],[200,100]]);
+      shape.show();
+      shape.changeZIndex(1001);
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      assert.equal(shape.options.zIndex,1001, "Should change zIndex option");
+      assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
+      assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
+      shape.changeZIndex(1000);
+      assert.equal(shape.options.zIndex,1000, "Should change zIndex option");
+      assert.equal(shape.svg.style.zIndex, 1000, "Should change z-index CSS style");
+      assert.equal(shape.points[0].element.style.zIndex,1002,"Should change z-index CSS style of points");
+      const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
+      shape.addChild(shape2);
+      shape2.show();
+      const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
+      shape2.addChild(shape3);
+      shape3.show();
+      shape.changeZIndex(1001);
+      assert.equal(shape.options.zIndex,1001, "Should change zIndex option");
+      assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
+      assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
+      assert.equal(shape2.options.zIndex,1002, "Should change zIndex option");
+      assert.equal(shape2.svg.style.zIndex, 1002, "Should change z-index CSS style");
+      assert.equal(shape2.points[0].element.style.zIndex,1004,"Should change z-index CSS style of points");
+      assert.equal(shape3.options.zIndex,1005, "Should change zIndex option");
+      assert.equal(shape3.svg.style.zIndex, 1005, "Should change z-index CSS style");
+      assert.equal(shape3.points[0].element.style.zIndex,1007,"Should change z-index CSS style of points");
+    });
+  });
+
+  it("moveToTop", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = new SmartShape().init(app,{zIndex:1000},[[0,100],[100,0],[200,100]]);
+      shape.show();
+      shape.moveToTop();
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      assert.equal(shape.options.zIndex,1000, "Should not move shape to top if it already on top");
+      assert.equal(shape.svg.style.zIndex, 1000,
+          "Should not change shape CSS style because it already on top"
+      );
+      assert.equal(shape.points[0].element.style.zIndex,1002,
+          "Should not change point CSS styles because shape is already on top"
+      );
+      const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
+      shape2.show();
+      const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
+      shape3.show();
+      shape.moveToTop();
+      assert.equal(shape.options.zIndex,1005, "Should move shape to top");
+      assert.equal(shape.svg.style.zIndex, 1005,
+          "Should change shape CSS style to top one"
+      );
+      assert.equal(shape.points[0].element.style.zIndex,1007,
+          "Should change point CSS styles to top ones"
+      );
+    });
+  });
+
+  it("moveToBottom", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      const app = Cypress.$("#app").toArray()[0];
+      const shape = new SmartShape().init(app,{zIndex:1000},[[0,100],[100,0],[200,100]]);
+      shape.show();
+      shape.moveToTop();
+      shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      assert.equal(shape.options.zIndex,1000, "Should not move shape to bottom if it already on top");
+      assert.equal(shape.svg.style.zIndex, 1000,
+          "Should not change shape CSS style because it already on bottom"
+      );
+      assert.equal(shape.points[0].element.style.zIndex,1002,
+          "Should not change point CSS styles because shape is already on bottom"
+      );
+      const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
+      shape2.show();
+      const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
+      shape3.show();
+      shape3.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+      shape3.moveToBottom();
+      assert.equal(shape3.options.zIndex,999, "Should move shape to bottom");
+      assert.equal(shape3.svg.style.zIndex, 999,
+          "Should change shape CSS style to bottom one"
+      );
+      assert.equal(shape3.points[0].element.style.zIndex,1001,
+          "Should change point CSS styles to bottom ones"
+      );
+    });
+  });
 })
