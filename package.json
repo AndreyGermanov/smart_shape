@@ -1,7 +1,7 @@
 {
   "name": "smart_shape",
   "private": false,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "MIT",
   "author": "Andrey Germanov <andrey@germanov.dev> (https://germanov.dev)",
   "type": "module",
