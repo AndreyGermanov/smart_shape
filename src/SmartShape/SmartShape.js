@@ -116,6 +116,7 @@ function SmartShape() {
      * to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
      * @param offsetX {number} Offset on X axis that shape moved from initial position when initially loaded from external source.
      * @param offsetY {number} Offset on Y axis that shape moved from initial position when initially loaded.
+     * @param displayAsPath {boolean} Should display all children of shape as a single SVG path. Default - false.
      * @type {object}
      */
     this.options = {
@@ -159,6 +160,7 @@ function SmartShape() {
         forceCreateEvent: false,
         zoomLevel:1,
         initialPoints: [],
+        displayAsPath: false
     };
 
     /**

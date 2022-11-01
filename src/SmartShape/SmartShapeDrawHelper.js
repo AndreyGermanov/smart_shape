@@ -24,7 +24,7 @@ function SmartShapeDrawHelper() {
                     shape.svg.innerHTML = "";
                 } catch (err) {
                 }
-            } else {
+            } else if (shape.points.length) {
                 shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 shape.svg.ondragstart = function () {
                     return false;
@@ -33,10 +33,14 @@ function SmartShapeDrawHelper() {
                     EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
                 }
                 shape.eventListener.setSvgEventListeners();
+                shape.svg.id = shape.options.id;
+                shape.svg.setAttribute("guid", shape.guid);
                 shape.root.appendChild(shape.svg);
             }
-            const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
-            shape.svg.appendChild(defs);
+            if (shape.svg) {
+                const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
+                shape.svg.appendChild(defs);
+            }
         } else {
             shape.svg = null;
             const svg = document.querySelector("svg[guid='"+shape.guid+"']");
@@ -53,7 +57,9 @@ function SmartShapeDrawHelper() {
             shape.shapeMenu.updateContextMenu();
         }
         this.updateOptions(shape);
-        this.drawPolygon(shape);
+        if (!parent || !parent.options.displayAsPath) {
+            this.drawPolygon(shape);
+        }
     }
 
     /**
@@ -71,13 +77,16 @@ function SmartShapeDrawHelper() {
                 if (shape.svg.style.display !== shape.options.visible) {
                     if (shape.options.visible) {
                         EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
+                        shape.getChildren(true).forEach(child => EventsManager.emit(ShapeEvents.SHAPE_SHOW,child))
                     } else {
                         EventsManager.emit(ShapeEvents.SHAPE_HIDE, shape);
+                        shape.getChildren(true).forEach(child => EventsManager.emit(ShapeEvents.SHAPE_HIDE,child));
                     }
                 }
                 shape.svg.style.display = shape.options.visible ? '' : 'none';
             }
             shape.svg.id = shape.options.id;
+            shape.svg.setAttribute("guid", shape.guid);
             let pos
             if (shape.options.groupChildShapes) {
                 pos = shape.getPosition(true);
@@ -90,16 +99,18 @@ function SmartShapeDrawHelper() {
             shape.svg.style.top = pos.top + "px";
             shape.svg.setAttribute("width", pos.width);
             shape.svg.setAttribute("height", pos.height);
-            shape.svg.setAttribute("guid", shape.guid);
             shape.svg.style.zIndex = shape.options.zIndex;
         }
-        this.setupShapeFill(shape);
-        this.createSVGFilters(shape);
+        if (!parent || !parent.options.displayAsPath) {
+            this.setupShapeFill(shape);
+            this.createSVGFilters(shape);
+
+            this.redrawResizeBox(parent || shape);
+            this.redrawRotateBox(parent || shape);
+        }
         if (shape.options.pointOptions.canDrag) {
             this.updatePoints(shape, parent);
         }
-        this.redrawResizeBox(parent || shape);
-        this.redrawRotateBox(parent || shape);
     }
 
     /**
@@ -144,8 +155,8 @@ function SmartShapeDrawHelper() {
                 svg.appendChild(polygon)
             }
         }
-        const points = this.getPolygonPath(shape);
-        polygon.setAttribute("d","M "+points+ " Z");
+        polygon.setAttribute("d",this.getPolygonPath(shape));
+        polygon.setAttribute("fill-rule","evenodd");
         polygon.id = "p"+shape.guid+"_polygon";
         this.setupPolygonFill(shape,polygon);
         this.setupPolygonStyles(shape,polygon);
@@ -159,10 +170,22 @@ function SmartShapeDrawHelper() {
         const parent = shape.getRootParent(true);
         if (parent) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
-            return shape.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ");
+            return "M "+shape.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ")+" Z";
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
-            return shape.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ");
+            let path = "M "+shape.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ")+" Z";
+            if (shape.options.displayAsPath && shape.options.groupChildShapes) {
+                shape.getChildren(true).forEach(child => {
+                    child.calcPosition();
+                    path += " M "+child.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ")+" Z";
+                })
+                const svg = this.getShapeSvg(shape);
+                svg.setAttribute("width",pos.width);
+                svg.setAttribute("height",pos.height);
+                this.createSVGFilters(shape);
+            }
+            return path
+
         }
     }
     /**
@@ -339,6 +362,7 @@ function SmartShapeDrawHelper() {
             }
         }
         filters.setAttribute("id","f"+shape.guid+"_filter");
+        filters.innerHTML = "";
         for (let filterName in shape.options.filters) {
             const filter = this.createSVGFilter(shape,filterName,shape.options.filters[filterName]);
             filters.appendChild(filter);
@@ -357,13 +381,14 @@ function SmartShapeDrawHelper() {
     this.createSVGFilter = (shape,filterName,filterOptions) => {
         const filter = document.createElementNS(shape.svg.namespaceURI,filterName);
         const svg = this.getShapeSvg(shape);
+        const pos = shape.getPosition(shape.options.groupChildShapes);
         for (let attribute in filterOptions) {
             filter.setAttribute(attribute,filterOptions[attribute].toString());
             if (attribute === "dx") {
-                svg.setAttribute("width",(shape.width + parseInt(filterOptions["dx"])*2).toString());
+                svg.setAttribute("width",(pos.width + parseInt(filterOptions["dx"])*2).toString());
             }
             if (attribute === "dy") {
-                svg.setAttribute("height",(shape.height + parseInt(filterOptions["dy"])*2).toString());
+                svg.setAttribute("height",(pos.height + parseInt(filterOptions["dy"])*2).toString());
             }
         }
         return filter;
@@ -488,39 +513,14 @@ function SmartShapeDrawHelper() {
      */
     this.addSvgPolygons = (shape,svg,includeChildren) => {
         const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
-        const polygons = [];
+        let polygons = [];
         if (!shape.svg) {
             shape.redraw();
         }
         if (shape.svg) {
-            let polygon = shape.svg.querySelector("path");
-            if (polygon) {
-                polygon = polygon.cloneNode()
-                const points = shape.points.map(point =>
-                    "" + (point.x - pos.left) + "," + (point.y - pos.top)
-                ).join(" ");
-                polygon.setAttribute("d", "M "+points+" Z");
-                polygons.push({polygon,zIndex:shape.options.zIndex})
-            }
-        }
-        if (includeChildren === true || (shape.options.groupChildShapes && includeChildren !== false)) {
-            shape.getChildren(true).forEach(child => {
-                if (!child.svg) {
-                    child.redraw();
-                }
-                if (!child.svg && !shape.options.groupChildShapes) {
-                    return;
-                }
-                let child_polygon = child.getShapeSvg().querySelector("path");
-                if (child_polygon) {
-                    child_polygon = child_polygon.cloneNode();
-                    const points = child.points.map(point =>
-                        "" + (point.x - pos.left) + "," + (point.y - pos.top)
-                    ).join(" ");
-                    child_polygon.setAttribute("d", "M "+points+" Z");
-                    polygons.push({polygon:child_polygon,zIndex:child.options.zIndex})
-                }
-            })
+            polygons = Array.from(shape.svg.querySelectorAll("path")).map(polygon => (
+                {polygon:polygon.cloneNode(true),zIndex:shape.options.zIndex}
+            ));
         }
         if (!polygons.length) { return }
         polygons.sort((item1,item2) => item1.zIndex-item2.zIndex);
