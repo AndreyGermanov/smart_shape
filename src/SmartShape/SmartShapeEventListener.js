@@ -55,6 +55,9 @@ function SmartShapeEventListener(shape) {
         EventsManager.subscribe(PointEvents.POINT_ADDED, this.onPointAdded);
         EventsManager.subscribe(PointEvents.POINT_DRAG_MOVE, this.onPointDragMove);
         EventsManager.subscribe(PointEvents.POINT_DELETE_REQUEST, this.onPointDeleteRequest);
+        EventsManager.subscribe(ShapeEvents.SHAPE_ADD_CHILD,() => {
+            this.shape.redraw();
+        })
     }
 
     this.setSvgEventListeners = () => {

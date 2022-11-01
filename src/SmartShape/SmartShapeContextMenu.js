@@ -318,7 +318,6 @@ export default function SmartShapeContextMenu(shape) {
         const parent = this.shape.getParent();
         if (parent && parent.options.groupChildShapes) {
             parent.flip(true,false);
-            parent.redraw();
         } else {
             this.shape.flip(true,false);
             this.shape.redraw();
@@ -334,6 +333,7 @@ export default function SmartShapeContextMenu(shape) {
         const parent = this.shape.getParent();
         if (parent && parent.options.groupChildShapes) {
             parent.flip(false,true);
+            parent.redraw();
             parent.redraw();
         } else {
             this.shape.flip(false,true);

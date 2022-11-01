@@ -612,8 +612,8 @@ function SmartShapeManager() {
     this.processShapesUnderCursor = (event) => {
         const [clientX,clientY] = [event.clientX,event.clientY];
         const shapeOnCursor = this.getShapeOnCursor(clientX, clientY);
-        if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor && this.shapeOnCursor.svg) {
-            this.shapeOnCursor.svg.style.cursor = "default";
+        if (this.shapeOnCursor && this.shapeOnCursor !== shapeOnCursor && this.shapeOnCursor.getShapeSvg()) {
+            this.shapeOnCursor.getShapeSvg().style.cursor = "default";
             this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:this.shapeOnCursor}));
         }
         if (shapeOnCursor && shapeOnCursor !== this.shapeOnCursor) {
@@ -622,7 +622,7 @@ function SmartShapeManager() {
         this.shapeOnCursor = shapeOnCursor;
         if (this.shapeOnCursor) {
             EventsManager.emit(ShapeEvents.SHAPE_MOUSE_MOVE,this.shapeOnCursor,createEvent(event));
-            this.shapeOnCursor.svg.style.cursor = "crosshair";
+            this.shapeOnCursor.getShapeSvg().style.cursor = "crosshair";
         }
     };
 

@@ -786,11 +786,10 @@ function SmartShape() {
         children && children.forEach(child => child.calcPosition());
         const pos = this.getPosition(includeChildren);
         this.points.forEach(point=>this.flipPoint(point,byX,byY,pos));
-        children && children.forEach(child => {
-            child.points.forEach(point=>{
-                child.flipPoint(point,byX,byY,pos)
-            })
-        });
+        if (!children) {
+            return
+        }
+        children.forEach(child=>child.points.forEach(point => child.flipPoint(point,byX,byY,pos)))
     }
 
     /**
@@ -1041,8 +1040,8 @@ function SmartShape() {
         result.top = points.map(point => point[1]).reduce((miny,y) => y < miny ? y : miny);
         result.right = points.map(point => point[0]).reduce((maxx,x) => x > maxx ? x : maxx);
         result.bottom = points.map(point => point[1]).reduce((maxy,y) => y > maxy ? y : maxy);
-        result.width = result.right-result.left || 1;
-        result.height = result.bottom-result.top || 1;
+        result.width = Math.abs(result.right-result.left) || 1;
+        result.height = Math.abs(result.bottom-result.top) || 1;
         return result;
     }
 
@@ -1307,6 +1306,18 @@ function SmartShape() {
         const pos = this.getPosition(forGroup)
         return [pos.left+pos.width/2, pos.top+pos.height/2]
     };
+
+    /**
+     * @ignore
+     * Internal method that used to return SVG element to which this shape belongs
+     * If this is a root shape, then just returns svg of current shape object,
+     * if it's a child, then SVG element of the parent
+     * @param shape {SmartShape} Shape to return SVG element for
+     * @returns {HTMLOrSVGElement|null|*}
+     */
+    this.getShapeSvg = () => {
+        return SmartShapeDrawHelper.getShapeSvg(this);
+    }
 
     /**
      * Method exports shape and all its children to SVG document.
