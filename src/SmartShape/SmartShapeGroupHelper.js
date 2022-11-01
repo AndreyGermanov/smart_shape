@@ -137,7 +137,7 @@ function SmartShapeGroupHelper(shape) {
             return false;
         }
         if (child === this.shape) {
-            return
+            return false;
         }
         if (child.getChildren().indexOf(this.shape) !== -1) {
             return false;

@@ -868,6 +868,7 @@ Options of shape as an object. Can have the following parameters.
 | zoomLevel | <code>number</code> | Current zoom level of shape. By default it is 1, which means that shape is not zoomed. If less than 1, than shape decreased, if greater than 1, then shape increased. to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
 | offsetX | <code>number</code> | Offset on X axis that shape moved from initial position when initially loaded from external source. |
 | offsetY | <code>number</code> | Offset on Y axis that shape moved from initial position when initially loaded. |
+| displayAsPath | <code>boolean</code> | Should display all children of shape as a single SVG path. Default - false. |
 
 <a name="SmartShape+left"></a>
 
