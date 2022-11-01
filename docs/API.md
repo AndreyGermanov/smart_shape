@@ -1428,6 +1428,7 @@ this class automatically during init process
     * [.removeChild(child)](#SmartShapeGroupHelper+removeChild)
     * [.removeAllChildren(all)](#SmartShapeGroupHelper+removeAllChildren)
     * [.getChildren(all)](#SmartShapeGroupHelper+getChildren) ⇒ <code>array</code>
+    * [.hasChild(child, all)](#SmartShapeGroupHelper+hasChild)
     * [.getParent()](#SmartShapeGroupHelper+getParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.getRootParent()](#SmartShapeGroupHelper+getRootParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.getParentsList(plist)](#SmartShapeGroupHelper+getParentsList) ⇒ <code>array</code>
@@ -1527,6 +1528,18 @@ Method returns array of children of current shape
 | Param | Type | Description |
 | --- | --- | --- |
 | all | <code>boolean</code> | If true, then it returns deep list, including all children of each children of this shape |
+
+<a name="SmartShapeGroupHelper+hasChild"></a>
+
+### smartShapeGroupHelper.hasChild(child, all)
+Method returns if specified shape is child of current shape
+
+**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>SmartShape</code>](#SmartShape) | Shape to check |
+| all | <code>boolean</code> | Should check include subchildren |
 
 <a name="SmartShapeGroupHelper+getParent"></a>
 

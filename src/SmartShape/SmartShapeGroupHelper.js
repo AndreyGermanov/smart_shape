@@ -114,6 +114,15 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * Method returns if specified shape is child of current shape
+     * @param child {SmartShape} Shape to check
+     * @param all {boolean} Should check include subchildren
+     */
+    this.hasChild = (child,all=false) => {
+        return child.guid !== this.guid && !!this.getChildren(all).find(item => item.guid === child.guid)
+    }
+
+    /**
      * @ignore
      * Internal method used to determine is it possible to add specified child
      * to current shape
@@ -205,8 +214,8 @@ function SmartShapeGroupHelper(shape) {
         pos.top = children.map(item => item.top).reduce((minTop,top) => top < minTop ? top : minTop);
         pos.right = children.map(item => item.right).reduce((maxRight,right) => right > maxRight ? right : maxRight);
         pos.bottom = children.map(item => item.bottom).reduce((maxBottom,bottom) => bottom > maxBottom ? bottom : maxBottom);
-        pos.width = pos.right-pos.left || 1;
-        pos.height = pos.bottom-pos.top || 1;
+        pos.width = Math.abs(pos.right-pos.left) || 1;
+        pos.height = Math.abs(pos.bottom-pos.top) || 1;
         return pos;
     }
 }
