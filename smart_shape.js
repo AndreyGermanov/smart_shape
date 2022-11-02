@@ -954,7 +954,7 @@ function qt() {
       const i = document.querySelector("svg[guid='" + e.guid + "']");
       i && i.parentNode.removeChild(i), e.resizeBox && e.resizeBox.hide(), e.rotateBox && e.rotateBox.hide();
     }
-    e.points.length < 1 || (e.shapeMenu.contextMenu || e.shapeMenu.updateContextMenu(), this.updateOptions(e), (!t || !t.options.displayAsPath) && this.drawPolygon(e));
+    e.points.length < 1 || (e.shapeMenu.contextMenu || e.shapeMenu.updateContextMenu(), this.updateOptions(e), !t || !t.options.displayAsPath ? this.drawPolygon(e) : t.options.groupChildShapes && t.options.displayAsPath && this.drawPolygon(t));
   }, this.updateOptions = (e) => {
     e.calcPosition();
     const t = e.getRootParent(!0);
