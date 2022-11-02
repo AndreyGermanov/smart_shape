@@ -59,6 +59,8 @@ function SmartShapeDrawHelper() {
         this.updateOptions(shape);
         if (!parent || !parent.options.displayAsPath) {
             this.drawPolygon(shape);
+        } else if (parent && parent.options.groupChildShapes && parent.options.displayAsPath) {
+            this.drawPolygon(parent);
         }
     }
 
