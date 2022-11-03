@@ -132,6 +132,7 @@ export default function SmartShapeContextMenu(shape) {
                     destShape = parent || this.shape;
                     destShape.setOptions({groupChildShapes:false});
                     destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                    destShape.getChildren(true).forEach(child=>child.redraw())
                     break;
                 case "i"+this.shape.guid+"_move_to_top":
                     this.onMoveToTopClick(event)

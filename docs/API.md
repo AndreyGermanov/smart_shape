@@ -752,6 +752,7 @@ Method returns a distance from this point to other specified point
     * [.width](#SmartShape+width) : <code>number</code>
     * [.height](#SmartShape+height) : <code>number</code>
     * [.guid](#SmartShape+guid) : <code>string</code>
+    * [.children](#SmartShape+children) : <code>array</code>
     * [.resizeBox](#SmartShape+resizeBox) : [<code>ResizeBox</code>](#ResizeBox)
     * [.rotateBox](#SmartShape+rotateBox) : [<code>RotateBox</code>](#RotateBox)
     * [.initCenter](#SmartShape+initCenter) : <code>array</code>
@@ -779,7 +780,7 @@ Method returns a distance from this point to other specified point
     * [.changeZIndex(zIndex)](#SmartShape+changeZIndex)
     * [.redraw()](#SmartShape+redraw)
     * [.switchDisplayMode(mode)](#SmartShape+switchDisplayMode)
-    * [.getPosition()](#SmartShape+getPosition) ⇒ <code>object</code>
+    * [.getPosition(forGroup)](#SmartShape+getPosition) ⇒ <code>object</code>
     * [.getBounds()](#SmartShape+getBounds) ⇒ <code>object</code>
     * [.isShapePoint(point)](#SmartShape+isShapePoint) ⇒ <code>boolean</code>
     * [.belongsToShape(x, y)](#SmartShape+belongsToShape) ⇒ <code>boolean</code>
@@ -794,6 +795,14 @@ Method returns a distance from this point to other specified point
     * [.toJSON(includeChildren, compact)](#SmartShape+toJSON) ⇒ <code>string</code>
     * [.clone(options, includeChildren)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.addChild(child)](#SmartShape+addChild)
+    * [.removeChild(child)](#SmartShape+removeChild)
+    * [.removeAllChildren(all)](#SmartShape+removeAllChildren)
+    * [.getChildren(all)](#SmartShape+getChildren) ⇒ <code>array</code>
+    * [.hasChild(child, all)](#SmartShape+hasChild)
+    * [.getParent()](#SmartShape+getParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.getRootParent()](#SmartShape+getRootParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+    * [.getParentsList(plist)](#SmartShape+getParentsList) ⇒ <code>array</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -869,6 +878,7 @@ Options of shape as an object. Can have the following parameters.
 | offsetX | <code>number</code> | Offset on X axis that shape moved from initial position when initially loaded from external source. |
 | offsetY | <code>number</code> | Offset on Y axis that shape moved from initial position when initially loaded. |
 | displayAsPath | <code>boolean</code> | Should display all children of shape as a single SVG path. Default - false. |
+| simpleMode | <code>boolean</code> | Simple load mode (do not create point objects) |
 
 <a name="SmartShape+left"></a>
 
@@ -916,6 +926,12 @@ Height of shape
 
 ### smartShape.guid : <code>string</code>
 Internal global unique identifier of shape. Generated automatically.
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+children"></a>
+
+### smartShape.children : <code>array</code>
+Array of children of current shape
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+resizeBox"></a>
@@ -1217,12 +1233,17 @@ Method used to switch display mode of SmartShape from Default to Resize to Rotat
 
 <a name="SmartShape+getPosition"></a>
 
-### smartShape.getPosition() ⇒ <code>object</code>
+### smartShape.getPosition(forGroup) ⇒ <code>object</code>
 Method used to get current position of shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
 **Returns**: <code>object</code> - Position with fields:
 `top`,`left`,`right`,`bottom`,`width`,`height`  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| forGroup | <code>boolean</code> | If true, then it calculates left, top, right and bottom of this shape and all its children |
+
 <a name="SmartShape+getBounds"></a>
 
 ### smartShape.getBounds() ⇒ <code>object</code>
@@ -1387,6 +1408,88 @@ Method used to load shape data from specified JSON string, that previously seria
 | json | <code>string</code> \| <code>object</code> | JSON-Serialized shape data as an object or as a string |
 | includeChildren | <code>boolean</code> | Should load children of this shape if existed. True by default. |
 
+<a name="SmartShape+addChild"></a>
+
+### smartShape.addChild(child)
+Method used to add specified shape as a child of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>SmartShape</code>](#SmartShape) | Shape to add |
+
+<a name="SmartShape+removeChild"></a>
+
+### smartShape.removeChild(child)
+Method used to remove specified shape from children list of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>SmartShape</code>](#SmartShape) | SmartShape object to add |
+
+<a name="SmartShape+removeAllChildren"></a>
+
+### smartShape.removeAllChildren(all)
+Method removes all children of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| all | <code>boolean</code> | If true, then it removes all children hierarchically |
+
+<a name="SmartShape+getChildren"></a>
+
+### smartShape.getChildren(all) ⇒ <code>array</code>
+Method returns array of children of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| all | <code>boolean</code> | If true, then it returns deep list, including all children of each children of this shape |
+
+<a name="SmartShape+hasChild"></a>
+
+### smartShape.hasChild(child, all)
+Method returns if specified shape is child of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>SmartShape</code>](#SmartShape) | Shape to check |
+| all | <code>boolean</code> | Should check include subchildren |
+
+<a name="SmartShape+getParent"></a>
+
+### smartShape.getParent() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method returns parent of current shape or null
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+getRootParent"></a>
+
+### smartShape.getRootParent() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
+Method returns top parent of current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Parent shape or null  
+<a name="SmartShape+getParentsList"></a>
+
+### smartShape.getParentsList(plist) ⇒ <code>array</code>
+Method returns a list of parents of current shape ordered from nearest to root
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| plist | <code>array</code> | Temporary list of parents from previous recursive call |
+
 <a name="SmartShapeDrawHelper"></a>
 
 ## SmartShapeDrawHelper
@@ -1422,18 +1525,6 @@ this class automatically during init process
 * [SmartShapeGroupHelper](#SmartShapeGroupHelper)
     * [new SmartShapeGroupHelper(shape)](#new_SmartShapeGroupHelper_new)
     * [.shape](#SmartShapeGroupHelper+shape) : [<code>SmartShape</code>](#SmartShape)
-    * [.children](#SmartShapeGroupHelper+children) : <code>array</code>
-    * [.parent](#SmartShapeGroupHelper+parent) : <code>object</code>
-    * [.init()](#SmartShapeGroupHelper+init) ⇒ [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
-    * [.addChild(child)](#SmartShapeGroupHelper+addChild)
-    * [.removeChild(child)](#SmartShapeGroupHelper+removeChild)
-    * [.removeAllChildren(all)](#SmartShapeGroupHelper+removeAllChildren)
-    * [.getChildren(all)](#SmartShapeGroupHelper+getChildren) ⇒ <code>array</code>
-    * [.hasChild(child, all)](#SmartShapeGroupHelper+hasChild)
-    * [.getParent()](#SmartShapeGroupHelper+getParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-    * [.getRootParent()](#SmartShapeGroupHelper+getRootParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-    * [.getParentsList(plist)](#SmartShapeGroupHelper+getParentsList) ⇒ <code>array</code>
-    * [.getPosition(forGroup)](#SmartShapeGroupHelper+getPosition) ⇒ <code>object</code>
 
 <a name="new_SmartShapeGroupHelper_new"></a>
 
@@ -1465,121 +1556,6 @@ and all other methods, declared here.
 SmartShape object to extend
 
 **Kind**: instance property of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-<a name="SmartShapeGroupHelper+children"></a>
-
-### smartShapeGroupHelper.children : <code>array</code>
-Array of children of current shape
-
-**Kind**: instance property of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-<a name="SmartShapeGroupHelper+parent"></a>
-
-### smartShapeGroupHelper.parent : <code>object</code>
-Object, that used to move all original methods of SmartShape class
-before override, to be able to call them if needed
-
-**Kind**: instance property of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-<a name="SmartShapeGroupHelper+init"></a>
-
-### smartShapeGroupHelper.init() ⇒ [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
-Initialization method. This function adds all methods of this
-class to provided `shape` object, extending it this way
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-<a name="SmartShapeGroupHelper+addChild"></a>
-
-### smartShapeGroupHelper.addChild(child)
-Method used to add specified shape as a child of current shape
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| child | [<code>SmartShape</code>](#SmartShape) | Shape to add |
-
-<a name="SmartShapeGroupHelper+removeChild"></a>
-
-### smartShapeGroupHelper.removeChild(child)
-Method used to remove specified shape from children list of current shape
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| child | [<code>SmartShape</code>](#SmartShape) | SmartShape object to add |
-
-<a name="SmartShapeGroupHelper+removeAllChildren"></a>
-
-### smartShapeGroupHelper.removeAllChildren(all)
-Method removes all children of current shape
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| all | <code>boolean</code> | If true, then it removes all children hierarchically |
-
-<a name="SmartShapeGroupHelper+getChildren"></a>
-
-### smartShapeGroupHelper.getChildren(all) ⇒ <code>array</code>
-Method returns array of children of current shape
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| all | <code>boolean</code> | If true, then it returns deep list, including all children of each children of this shape |
-
-<a name="SmartShapeGroupHelper+hasChild"></a>
-
-### smartShapeGroupHelper.hasChild(child, all)
-Method returns if specified shape is child of current shape
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| child | [<code>SmartShape</code>](#SmartShape) | Shape to check |
-| all | <code>boolean</code> | Should check include subchildren |
-
-<a name="SmartShapeGroupHelper+getParent"></a>
-
-### smartShapeGroupHelper.getParent() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-Method returns parent of current shape or null
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-<a name="SmartShapeGroupHelper+getRootParent"></a>
-
-### smartShapeGroupHelper.getRootParent() ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-Method returns top parent of current shape
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-**Returns**: [<code>SmartShape</code>](#SmartShape) \| <code>null</code> - Parent shape or null  
-<a name="SmartShapeGroupHelper+getParentsList"></a>
-
-### smartShapeGroupHelper.getParentsList(plist) ⇒ <code>array</code>
-Method returns a list of parents of current shape ordered from nearest to root
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-**Returns**: <code>array</code> - Array of [SmartShape](#SmartShape) objects  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| plist | <code>array</code> | Temporary list of parents from previous recursive call |
-
-<a name="SmartShapeGroupHelper+getPosition"></a>
-
-### smartShapeGroupHelper.getPosition(forGroup) ⇒ <code>object</code>
-Method overrides SmartShape's getPosition method to return position
-of all group if forGroup parameter is set
-
-**Kind**: instance method of [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)  
-**Returns**: <code>object</code> - Position object {left,top,right,bottom,width,height}  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| forGroup | <code>boolean</code> | If true, then it calculates left, top, right and bottom of this shape and all its children |
-
 <a name="SmartShapeManager"></a>
 
 ## SmartShapeManager
