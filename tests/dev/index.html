@@ -52,7 +52,7 @@
             dx: 10, dy: 10, "flood-opacity": 0.5, stdDeviation: 3, "flood-color": "#000000"
           }
         }
-        let style = {fill:"#gradient"};
+        let style = {fill:"#gradient","stroke-width":2};
         const body = document.querySelector("#app");
         body.style.height = (window.innerHeight-50)+"px";
         const s = new SmartShape().init(body,{style,fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[100,0],[100,25],[25,25],[25,50],[100,50],[100,150],[0,150],[0,125],[75,125],[75,75],[0,75]])
@@ -64,9 +64,9 @@
         const a1_sub = new SmartShape().init(body,{style:{fill:"white"},pointOptions:smartPointOptions,zIndex:1010,canScale:true,canRotate:true},[[45,60],[50,40],[55,60]])
         a1_sub.moveBy(325,15)
         a1.addChild(a1_sub);
-        const r = new SmartShape().init(body,{displayAsPath:true,style,fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[100,150],[75,150],[50,75],[25,75],[25,150],[0,150]])
+        const r = new SmartShape().init(body,{displayAsPath:true,id:"r",style,fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[75,0],[100,25],[100,50],[75,75],[100,150],[75,150],[50,75],[25,75],[25,150],[0,150]])
         r.moveBy(480,15);
-        const r_sub = new SmartShape().init(body,{style:{fill:"white"},pointOptions:smartPointOptions,zIndex:1010,canScale:true,canRotate:true},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]],false);
+        const r_sub = new SmartShape().init(body,{style:{fill:"white"},id:"r_sub",pointOptions:smartPointOptions,zIndex:1010,canScale:true,canRotate:true},[[25,20],[50,20],[65,30],[65,45],[50,55],[25,55]],false);
         r_sub.moveBy(480,15);
         r.addChild(r_sub);
         const t = new SmartShape().init(body,{style,fillGradient:gradientFill,pointOptions:smartPointOptions,filters:filters,canScale:true,canRotate:true},[[0,0],[100,0],[100,25],[66,25],[66,150],[33,150],[33,25],[0,25]])

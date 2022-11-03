@@ -37,7 +37,7 @@ function SmartShapeDrawHelper() {
                 shape.svg.setAttribute("guid", shape.guid);
                 shape.root.appendChild(shape.svg);
             }
-            if (shape.svg) {
+            if (shape.svg && typeof(shape.svg.appendChild) === "function") {
                 const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
                 shape.svg.appendChild(defs);
             }
@@ -53,12 +53,14 @@ function SmartShapeDrawHelper() {
         if (shape.points.length < 1) {
             return
         }
-        if (!shape.shapeMenu.contextMenu) {
+        if (shape.options.hasContextMenu && shape.shapeMenu && !shape.shapeMenu.contextMenu) {
             shape.shapeMenu.updateContextMenu();
         }
         this.updateOptions(shape);
         if (!parent || !parent.options.displayAsPath) {
             this.drawPolygon(shape);
+        } else if (parent && parent.options.displayAsPath && parent.guid !== shape.guid) {
+            this.draw(parent);
         }
     }
 
@@ -72,7 +74,7 @@ function SmartShapeDrawHelper() {
     this.updateOptions = (shape) => {
         shape.calcPosition();
         const parent = shape.getRootParent(true);
-        if (shape.svg && !parent) {
+        if (shape.svg && !parent && typeof(shape.svg.appendChild) === "function") {
             if (typeof (shape.options.visible) !== "undefined") {
                 if (shape.svg.style.display !== shape.options.visible) {
                     if (shape.options.visible) {
@@ -145,7 +147,7 @@ function SmartShapeDrawHelper() {
      */
     this.drawPolygon = (shape) => {
         const svg = this.getShapeSvg(shape);
-        if (!svg) {
+        if (!svg || typeof(svg.appendChild) !== "function") {
             return
         }
         let polygon = svg.querySelector("#p"+shape.guid+"_polygon");
@@ -166,18 +168,24 @@ function SmartShapeDrawHelper() {
         polygon.style.zIndex = shape.options.zIndex;
     }
 
+    /**
+     * @ignore
+     * Returns a path string for "d" attribute of <path> tag for specified shape
+     * @param shape {SmartShape} Shape to return path to
+     * @returns {string}
+     */
     this.getPolygonPath = (shape) => {
         const parent = shape.getRootParent(true);
         if (parent) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
-            return "M "+shape.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ")+" Z";
+            return this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
-            let path = "M "+shape.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ")+" Z";
+            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
                 shape.getChildren(true).forEach(child => {
                     child.calcPosition();
-                    path += " M "+child.points.map(point => ""+(point.x-pos.left)+","+(point.y-pos.top)).join(" ")+" Z";
+                    path += this.getPolygonPathForShape(child,pos,this.getMaxStrokeWidth(child));
                 })
                 const svg = this.getShapeSvg(shape);
                 svg.setAttribute("width",pos.width);
@@ -185,8 +193,35 @@ function SmartShapeDrawHelper() {
                 this.createSVGFilters(shape);
             }
             return path
-
         }
+    }
+
+    /**
+     * @ignore
+     * Returns path string for specified shape, taking to account the 'stroke-width' SVG argument
+     * @param shape {SmartShape} Shape to get polygon for
+     * @param pos {object} Dimensions of shape. Object with fields `left`,`top`,`bottom`,`right`
+     * @param size {number} The size of stroke, used to draw this shape
+     * @returns {string} Path of points for polygon
+     */
+    this.getPolygonPathForShape = (shape,pos,size) => {
+        return "M "+shape.points
+            .map(point => {
+                let x = point.x - pos.left;
+                let y = point.y - pos.top;
+                if (x<=0) {
+                    x += size
+                } else if (point.x>=pos.right) {
+                    x -= size;
+                }
+                if (y<=0) {
+                    y += size
+                } else if (point.y>=pos.bottom) {
+                    y -= size;
+                }
+                return ""+x+","+y
+            })
+            .join(" ")+" Z";
     }
     /**
      * @ignore
@@ -467,6 +502,29 @@ function SmartShapeDrawHelper() {
 
     /**
      * @ignore
+     * Method returns maximal stroke width of this shape or its children
+     * @param shape {SmartShape} Shape to return stroke width for
+     * @returns {number|*}
+     */
+    this.getMaxStrokeWidth = (shape) => {
+        const svg = this.getShapeSvg(shape);
+        if (!svg) {
+            return 0;
+        }
+        let width = parseInt(shape.options.style["stroke-width"]);
+        if (isNaN(width)) {
+            width = 0;
+        }
+        if (!shape.options.groupChildShapes) {
+            return width;
+        }
+        return shape.getChildren(true)
+                .map(child => isNaN(parseInt(child.options.style["stroke-width"])) ? 0 : parseInt(child.options.style["stroke-width"]))
+                .reduce((w1,w2) => w1 > w2 ? w1 : w2,width)
+    }
+
+    /**
+     * @ignore
      * Method used to generate `defs` tag for SVG document export feature.
      * It goes through all children of this shape and appends contents of all child `defs`
      * to root defs or current shape and returns resulting `defs` element
@@ -513,14 +571,40 @@ function SmartShapeDrawHelper() {
      */
     this.addSvgPolygons = (shape,svg,includeChildren) => {
         const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
-        let polygons = [];
+        const polygons = [];
         if (!shape.svg) {
             shape.redraw();
         }
         if (shape.svg) {
-            polygons = Array.from(shape.svg.querySelectorAll("path")).map(polygon => (
-                {polygon:polygon.cloneNode(true),zIndex:shape.options.zIndex}
-            ));
+            Array.from(shape.svg.querySelectorAll("path")).forEach(polygon => {
+                polygon = polygon.cloneNode()
+                if (!shape.options.groupChildShapes) {
+                    const points = shape.points.map(point =>
+                        "" + (point.x - pos.left) + "," + (point.y - pos.top)
+                    ).join(" ");
+                    polygon.setAttribute("d", "M "+points+" Z");
+                }
+                polygons.push({polygon,zIndex:shape.options.zIndex})
+            })
+        }
+        if (includeChildren === true && !shape.options.groupChildShapes) {
+            shape.getChildren(true).forEach(child => {
+                if (!child.svg) {
+                    child.redraw();
+                }
+                if (!child.svg && !shape.options.groupChildShapes) {
+                    return;
+                }
+                let child_polygon = child.getShapeSvg().querySelector("path");
+                if (child_polygon) {
+                    child_polygon = child_polygon.cloneNode();
+                    const points = child.points.map(point =>
+                        "" + (point.x - pos.left) + "," + (point.y - pos.top)
+                    ).join(" ");
+                    child_polygon.setAttribute("d", "M "+points+" Z");
+                    polygons.push({polygon:child_polygon,zIndex:child.options.zIndex})
+                }
+            })
         }
         if (!polygons.length) { return }
         polygons.sort((item1,item2) => item1.zIndex-item2.zIndex);

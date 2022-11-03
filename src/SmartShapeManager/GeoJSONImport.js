@@ -59,12 +59,31 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
         const shapeOpts = mergeObjects({},options)
         shapeOpts.initialPoints = [...origPolygons[idx]]
         if (idx==0) {
-            shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx],false)
+            if (importOptions.onlyData) {
+                shape = {
+                    points: polygons[idx],
+                    options: shapeOpts,
+                    children: []
+                }
+            } else {
+                shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx],false)
+            }
         } else {
             shapeOpts.id += "_"+idx;
             shapeOpts.name += " "+idx;
-            shape.addChild(SmartShapeManager.createShape(container,shapeOpts,polygons[idx]),false)
+            if (importOptions.onlyData) {
+                shape.children.push({
+                    points: polygons[idx],
+                    options:shapeOpts,
+                })
+            } else {
+                shape.addChild(SmartShapeManager.createShape(container,shapeOpts,polygons[idx]),false)
+            }
+
         }
+    }
+    if (importOptions.onlyData) {
+        return shape;
     }
     if (notNull(importOptions.scale)) {
         shape.scaleBy(importOptions.scale,importOptions.scale,true);

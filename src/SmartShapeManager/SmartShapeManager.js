@@ -407,6 +407,9 @@ function SmartShapeManager() {
         if (shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
             shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
         }
+        if (!shape.options.groupChildShapes) {
+            return
+        }
         shape.getChildren(true).forEach(child => {
             if (typeof(child.options.prevZIndex) !== "undefined") {
                 SmartShapeDrawHelper.updateOptions(child);

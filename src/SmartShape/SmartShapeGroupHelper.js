@@ -28,37 +28,7 @@ function SmartShapeGroupHelper(shape) {
     this.shape = shape;
 
     /**
-     * Array of children of current shape
-     * @type {array}
-     */
-    this.children = [];
-
-    /**
-     * Object, that used to move all original methods of SmartShape class
-     * before override, to be able to call them if needed
-     * @type {object}
-     */
-    this.parent = {};
-
-    /**
-     * Initialization method. This function adds all methods of this
-     * class to provided `shape` object, extending it this way
-     * @returns {SmartShapeGroupHelper}
-     */
-    this.init = () => {
-        for (let prop_name in this) {
-            if (typeof(this[prop_name]) !== "function" || prop_name === 'init') {
-                continue;
-            }
-            if (typeof(this.shape[prop_name]) === "function") {
-                this.parent[prop_name] = this.shape[prop_name];
-            }
-            this.shape[prop_name] = this[prop_name];
-        }
-        return this;
-    }
-
-    /**
+     * @ignore
      * Method used to add specified shape as a child of current shape
      * @param child {SmartShape} Shape to add
      */
@@ -73,40 +43,43 @@ function SmartShapeGroupHelper(shape) {
                 child.options.displayMode = shape.options.displayMode;
             }
         }
-        this.children.push(child);
+        this.shape.children.push(child);
         EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD,this.shape,{child});
     }
 
     /**
+     * @ignore
      * Method used to remove specified shape from children list of current shape
      * @param child {SmartShape} SmartShape object to add
      */
     this.removeChild = (child) => {
-        this.children.splice(this.children.indexOf(child),1);
+        this.shape.children.splice(this.shape.children.indexOf(child),1);
         EventsManager.emit(ShapeEvents.SHAPE_REMOVE_CHILD,this.shape,{child});
     }
 
     /**
+     * @ignore
      * Method removes all children of current shape
      * @param all {boolean} If true, then it removes all children hierarchically
      */
-    this.removeAllChildren = (all) => {
+    this.removeAllChildren = (all=false) => {
         while (this.getChildren(all).length) {
             this.removeChild(this.getChildren(all)[0])
         }
     }
 
     /**
+     * @ignore
      * Method returns array of children of current shape
      * @param all {boolean} If true, then it returns deep list, including all children of each children of this shape
      * @returns {array} Array of [SmartShape](#SmartShape) objects
      */
     this.getChildren = (all=false) => {
         if (!all) {
-            return this.children;
+            return this.shape.children;
         }
         const result = []
-        result.push(...this.children)
+        result.push(...this.shape.children)
         for (let child of result) {
             result.push(...child.getChildren())
         }
@@ -114,6 +87,7 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * @ignore
      * Method returns if specified shape is child of current shape
      * @param child {SmartShape} Shape to check
      * @param all {boolean} Should check include subchildren
@@ -133,7 +107,7 @@ function SmartShapeGroupHelper(shape) {
         if (!child || typeof(child) !== "object" || typeof(child.getChildren) === "undefined") {
             return false;
         }
-        if (this.children.indexOf(child) !== -1) {
+        if (this.shape.children.indexOf(child) !== -1) {
             return false;
         }
         if (child === this.shape) {
@@ -150,6 +124,7 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * @ignore
      * Method returns parent of current shape or null
      * @returns {SmartShape|null}
      */
@@ -164,6 +139,7 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * @ignore
      * Method returns top parent of current shape
      * @returns {SmartShape|null} Parent shape or null
      */
@@ -179,6 +155,7 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * @ignore
      * Method returns a list of parents of current shape ordered from nearest to root
      * @param plist {array} Temporary list of parents from previous recursive call
      * @returns {array} Array of [SmartShape](#SmartShape) objects
@@ -193,27 +170,24 @@ function SmartShapeGroupHelper(shape) {
     }
 
     /**
+     * @ignore
      * Method overrides SmartShape's getPosition method to return position
      * of all group if forGroup parameter is set
-     * @param forGroup {boolean} If true, then it calculates left, top, right and bottom of this shape
-     * and all its children
      * @returns {object} Position object {left,top,right,bottom,width,height}
      */
-    this.getPosition = (forGroup = false) => {
-        const pos = this.parent.getPosition();
-        if (!forGroup) {
-            return pos;
-        }
+    this.getPosition = () => {
         let children = this.getChildren(true);
         children.push(this.shape);
         children = children.filter(child=>child.points.length);
         if (!children.length) {
-            return pos;
+            return {left:0,right:0,top:0,bottom:0};
         }
-        pos.left = children.map(item => item.left).reduce((minLeft,left) => left < minLeft ? left : minLeft);
-        pos.top = children.map(item => item.top).reduce((minTop,top) => top < minTop ? top : minTop);
-        pos.right = children.map(item => item.right).reduce((maxRight,right) => right > maxRight ? right : maxRight);
-        pos.bottom = children.map(item => item.bottom).reduce((maxBottom,bottom) => bottom > maxBottom ? bottom : maxBottom);
+        const pos = {
+            left: children.map(item => item.left).reduce((minLeft,left) => left < minLeft ? left : minLeft),
+            top: children.map(item => item.top).reduce((minTop,top) => top < minTop ? top : minTop),
+            right: children.map(item => item.right).reduce((maxRight,right) => right > maxRight ? right : maxRight),
+            bottom: children.map(item => item.bottom).reduce((maxBottom,bottom) => bottom > maxBottom ? bottom : maxBottom)
+        }
         pos.width = Math.abs(pos.right-pos.left) || 1;
         pos.height = Math.abs(pos.bottom-pos.top) || 1;
         return pos;
