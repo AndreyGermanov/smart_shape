@@ -59,6 +59,16 @@ function SmartShapeDrawHelper() {
         this.updateOptions(shape);
         if (!parent || !parent.options.displayAsPath) {
             this.drawPolygon(shape);
+            if (shape.svg && shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1) {
+                setTimeout(() => {
+                    let paths = Array.from(shape.svg.querySelectorAll("path"));
+                    paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
+                    const defs = shape.svg.querySelector("defs");
+                    shape.svg.innerHTML = "";
+                    shape.svg.appendChild(defs);
+                    paths.forEach(path=>shape.svg.appendChild(path));
+                },1)
+            }
         } else if (parent && parent.options.displayAsPath && parent.guid !== shape.guid) {
             this.draw(parent);
         }
@@ -508,14 +518,24 @@ function SmartShapeDrawHelper() {
         const viewBox = "0 0 " + pos.width + " " + pos.height;
         svg.setAttribute("viewBox",viewBox);
         if (includeChildren && !shape.options.groupChildShapes) {
+            const paths = [];
             shape.getChildren(true).filter(child => child.svg).forEach(child => {
                 Array.from(child.svg.querySelector("defs").children).forEach(def => {
                     svg.querySelector("defs").appendChild(def.cloneNode(true));
                 })
                 const path = child.svg.querySelector("path").cloneNode(true);
                 path.setAttribute("d",this.getPolygonPathForShape(child,pos,this.getMaxStrokeWidth(child)))
-                svg.appendChild(path);
+                paths.push(path);
             })
+            const path = svg.querySelector("path")
+            if (path) {
+                paths.push(path);
+            }
+            paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
+            const defs = svg.querySelector("defs");
+            svg.innerHTML = "";
+            svg.appendChild(defs);
+            paths.forEach(path=>svg.appendChild(path));
         }
         return svg;
     }
