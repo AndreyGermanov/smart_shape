@@ -487,16 +487,36 @@ function SmartShapeDrawHelper() {
      * @returns {string} String body of SVG document
      */
     this.getSvg = (shape,includeChildren) => {
-        const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-        const pos = shape.getPosition(includeChildren === null ? shape.options.groupChildShapes : includeChildren);
-        svg.appendChild(this.getSvgDefs(shape,includeChildren));
-        if (!shape.svg) {
-            this.draw(shape);
+        let svg = shape.svg;
+        if (!svg) {
+            const parent = shape.getRootParent();
+            if (parent) {
+                svg = parent.svg;
+            }
         }
-        this.addSvgPolygons(shape,svg,includeChildren);
+        if (!svg) {
+            return
+        }
+        svg = svg.cloneNode(true);
+        svg.removeAttribute("style");
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+        svg.removeAttribute("id");
+        svg.removeAttribute("guid");
+        const pos = shape.getPosition(includeChildren === null ? shape.options.groupChildShapes : includeChildren);
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
         const viewBox = "0 0 " + pos.width + " " + pos.height;
         svg.setAttribute("viewBox",viewBox);
+        if (includeChildren && !shape.options.groupChildShapes) {
+            shape.getChildren(true).filter(child => child.svg).forEach(child => {
+                Array.from(child.svg.querySelector("defs").children).forEach(def => {
+                    svg.querySelector("defs").appendChild(def.cloneNode(true));
+                })
+                const path = child.svg.querySelector("path").cloneNode(true);
+                path.setAttribute("d",this.getPolygonPathForShape(child,pos,this.getMaxStrokeWidth(child)))
+                svg.appendChild(path);
+            })
+        }
         return svg;
     }
 

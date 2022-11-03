@@ -236,8 +236,11 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportJsonClick = (_event) => {
-        const parent =  this.shape.options.groupChildShapes ? this.shape.getRootParent() : null;
-        const destShape = parent || this.shape;
+        let destShape = this.shape;
+        const parent = destShape.getRootParent();
+        if (parent && parent.options.groupChildShapes) {
+            destShape = parent;
+        }
         const jsonString = destShape.toJSON(destShape.options.groupChildShapes);
         const blob = new Blob([jsonString]);
         this.saveToFile(blob,this.getExportFileName("json"))
@@ -249,8 +252,11 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportSvgClick = (_event) => {
-        const parent = this.shape.options.groupChildShapes ? this.shape.getRootParent() : null;
-        const destShape = parent || this.shape;
+        let destShape = this.shape;
+        const parent = destShape.getRootParent();
+        if (parent && parent.options.groupChildShapes) {
+            destShape = parent;
+        }
         const svgString = destShape.toSvg();
         const blob = new Blob([svgString]);
         this.saveToFile(blob,this.getExportFileName("svg"))
@@ -262,8 +268,11 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onExportPngClick = async(_event) => {
-        const parent = this.shape.options.groupChildShapes ? this.shape.getRootParent() : null;
-        const destShape = parent || this.shape;
+        let destShape = this.shape;
+        const parent = destShape.getRootParent();
+        if (parent && parent.options.groupChildShapes) {
+            destShape = parent;
+        }
         const blob = await destShape.toPng(PngExportTypes.BLOB);
         this.saveToFile(blob,this.getExportFileName("png"));
     }
