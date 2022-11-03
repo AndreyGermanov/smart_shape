@@ -955,11 +955,8 @@ function $t() {
       i && i.parentNode.removeChild(i), t.resizeBox && t.resizeBox.hide(), t.rotateBox && t.rotateBox.hide();
     }
     t.points.length < 1 || (t.options.hasContextMenu && t.shapeMenu && !t.shapeMenu.contextMenu && t.shapeMenu.updateContextMenu(), this.updateOptions(t), !e || !e.options.displayAsPath ? (this.drawPolygon(t), t.svg && t.options.id.search("_resizebox") === -1 && t.options.id.search("_rotatebox") === -1 && setTimeout(() => {
-      let i = Array.from(t.svg.querySelectorAll("path"));
-      i.sort((o, n) => parseInt(o.style.zIndex) - parseInt(n.style.zIndex));
-      const s = t.svg.querySelector("defs");
-      t.svg.innerHTML = "", t.svg.appendChild(s), i.forEach((o) => t.svg.appendChild(o));
-    }, 1)) : e && e.options.displayAsPath && e.guid !== t.guid && this.draw(e));
+      this.setupZIndex(t);
+    }, 0)) : e && e.options.displayAsPath && e.guid !== t.guid && this.draw(e));
   }, this.updateOptions = (t) => {
     t.calcPosition();
     const e = t.getRootParent(!0);
@@ -1142,6 +1139,11 @@ function $t() {
   }, this.getShapeSvg = (t) => {
     const e = t.getRootParent(!0);
     return e && e.svg ? e.svg : t.svg;
+  }, this.setupZIndex = (t) => {
+    let e = Array.from(t.svg.querySelectorAll("path"));
+    e.sort((s, o) => parseInt(s.style.zIndex) - parseInt(o.style.zIndex));
+    const i = t.svg.querySelector("defs");
+    t.svg.innerHTML = "", t.svg.appendChild(i), e.forEach((s) => t.svg.appendChild(s));
   };
 }
 const V = {

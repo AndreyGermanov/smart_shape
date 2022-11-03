@@ -61,13 +61,8 @@ function SmartShapeDrawHelper() {
             this.drawPolygon(shape);
             if (shape.svg && shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1) {
                 setTimeout(() => {
-                    let paths = Array.from(shape.svg.querySelectorAll("path"));
-                    paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
-                    const defs = shape.svg.querySelector("defs");
-                    shape.svg.innerHTML = "";
-                    shape.svg.appendChild(defs);
-                    paths.forEach(path=>shape.svg.appendChild(path));
-                },1)
+                    this.setupZIndex(shape);
+                },0);
             }
         } else if (parent && parent.options.displayAsPath && parent.guid !== shape.guid) {
             this.draw(parent);
@@ -682,6 +677,20 @@ function SmartShapeDrawHelper() {
             return parent.svg
         }
         return shape.svg;
+    }
+
+    /**
+     * @ignore
+     * Method used to correct order of items of SVG shape according to Z-Index CSS style
+     * @param shape {SmartShape} Shape to correct
+     */
+    this.setupZIndex = (shape) => {
+        let paths = Array.from(shape.svg.querySelectorAll("path"));
+        paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
+        const defs = shape.svg.querySelector("defs");
+        shape.svg.innerHTML = "";
+        shape.svg.appendChild(defs);
+        paths.forEach(path=>shape.svg.appendChild(path));
     }
 }
 
