@@ -1,6 +1,6 @@
 import {Menus} from "../../context_menu/src/index.js";
 import {getMousePos} from "../events/functions.js";
-import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical} from "../../assets/graphics.js";
+import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical,to_path,to_shapes} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";
 import {PngExportTypes} from "./SmartShapeDrawHelper.js";
 
@@ -130,8 +130,22 @@ export default function SmartShapeContextMenu(shape) {
                 case "i"+this.shape.guid+"_ungroup":
                     parent = this.shape.getRootParent();
                     destShape = parent || this.shape;
-                    destShape.setOptions({groupChildShapes:false});
+                    destShape.setOptions({groupChildShapes:false,displayAsPath:false});
                     destShape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+                    destShape.getChildren(true).forEach(child=>child.redraw())
+                    break;
+                case "i"+this.shape.guid+"_topath":
+                    parent = this.shape.getRootParent();
+                    destShape =  parent || this.shape;
+                    destShape.setOptions({groupChildShapes:true,displayAsPath:true});
+                    destShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+                    destShape.getChildren(true).forEach(child=>child.redraw())
+                    break;
+                case "i"+this.shape.guid+"_toshapes":
+                    parent = this.shape.getRootParent();
+                    destShape = parent || this.shape;
+                    destShape.setOptions({displayAsPath:false});
+                    destShape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
                     destShape.getChildren(true).forEach(child=>child.redraw())
                     break;
                 case "i"+this.shape.guid+"_move_to_top":
@@ -162,6 +176,8 @@ export default function SmartShapeContextMenu(shape) {
         if (!destShape.getChildren().length) {
             this.contextMenu.removeItem("i"+this.shape.guid+"_group");
             this.contextMenu.removeItem("i"+this.shape.guid+"_ungroup");
+            this.contextMenu.removeItem("i"+this.shape.guid+"_topath");
+            this.contextMenu.removeItem("i"+this.shape.guid+"_toshapes");
             return
         }
         if (destShape.options.groupChildShapes) {
@@ -173,6 +189,17 @@ export default function SmartShapeContextMenu(shape) {
             if (!this.contextMenu.items.find(item => item.id === "i"+this.shape.guid+"_group")) {
                 this.contextMenu.removeItem("i"+this.shape.guid+"_ungroup");
                 this.contextMenu.addItem("i" + this.shape.guid + "_group", "Group", group);
+            }
+        }
+        if (destShape.options.displayAsPath) {
+            if (!this.contextMenu.items.find(item => item.id === "i"+this.shape.guid+"_toshapes")) {
+                this.contextMenu.addItem("i" + this.shape.guid + "_toshapes", "Convert to shapes", to_shapes);
+                this.contextMenu.removeItem("i"+this.shape.guid+"_topath");
+            }
+        } else {
+            if (!this.contextMenu.items.find(item => item.id === "i"+this.shape.guid+"_topath")) {
+                this.contextMenu.addItem("i" + this.shape.guid + "_topath", "Convert to path", to_path);
+                this.contextMenu.removeItem("i"+this.shape.guid+"_toshapes");
             }
         }
     }
@@ -212,12 +239,12 @@ export default function SmartShapeContextMenu(shape) {
      * @param _event {MouseEvent} Event object
      */
     this.onCloneClick = (_event) => {
-        let shape = this.shape;
-        const parent = shape.getRootParent();
+        let destShape = this.shape;
+        const parent = destShape.getRootParent();
         if (parent && parent.options.groupChildShapes) {
-            shape = parent;
+            destShape = parent;
         }
-        const clone = shape.clone({},shape.options.groupChildShapes);
+        const clone = destShape.clone({},destShape.options.groupChildShapes);
         const pos = clone.getPosition(true);
         clone.moveTo(pos.left+5,pos.top+5);
         SmartShapeManager.activateShape(clone);
@@ -226,7 +253,7 @@ export default function SmartShapeContextMenu(shape) {
             if (cloneParent) {
                 cloneParent.removeChild(child);
             }
-            shape.addChild(child);
+            destShape.addChild(child);
         }
     }
 
