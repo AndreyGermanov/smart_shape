@@ -139,13 +139,13 @@ const loadPolygons = (obj) => {
     result.offsetY = 0;
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
+        const destPolygon = []
         for (let point of polygon) {
             const [x,y] = latLonToXY(point[1],point[0]);
-            point[0] = x;
-            point[1] = y;
+            destPolygon.push({x,y})
         }
 
-        result.polygons.push(polygon)
+        result.polygons.push(destPolygon)
     }
     return result;
 }

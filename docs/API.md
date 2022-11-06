@@ -795,7 +795,8 @@ Method returns a distance from this point to other specified point
     * [.toJSON(includeChildren, compact)](#SmartShape+toJSON) ⇒ <code>string</code>
     * [.clone(options, includeChildren)](#SmartShape+clone) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.fromJSON(root, json, includeChildren)](#SmartShape+fromJSON) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
-    * [.addChild(child)](#SmartShape+addChild)
+    * [.addChild(child, emitEvent)](#SmartShape+addChild)
+    * [.addChildren(children)](#SmartShape+addChildren)
     * [.removeChild(child)](#SmartShape+removeChild)
     * [.removeAllChildren(all)](#SmartShape+removeAllChildren)
     * [.getChildren(all)](#SmartShape+getChildren) ⇒ <code>array</code>
@@ -1410,7 +1411,7 @@ Method used to load shape data from specified JSON string, that previously seria
 
 <a name="SmartShape+addChild"></a>
 
-### smartShape.addChild(child)
+### smartShape.addChild(child, emitEvent)
 Method used to add specified shape as a child of current shape
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1418,6 +1419,18 @@ Method used to add specified shape as a child of current shape
 | Param | Type | Description |
 | --- | --- | --- |
 | child | [<code>SmartShape</code>](#SmartShape) | Shape to add |
+| emitEvent | <code>boolean</code> | Should this method emit ADD_CHILD event. True by default |
+
+<a name="SmartShape+addChildren"></a>
+
+### smartShape.addChildren(children)
+Method used to add specified children to current shape
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| children | <code>array</code> | Array of [SmartShape][#SmartShape) objects |
 
 <a name="SmartShape+removeChild"></a>
 

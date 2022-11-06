@@ -23,7 +23,7 @@ describe('Shadow SVG filter tests', () => {
       assert.isNotNull(defs,"Should contain 'defs' tag inside svg container");
       const filters = defs.querySelectorAll("filter");
       assert(filters.length>0,"Should contain filter tags inside defs");
-      assert.equal(filters[0].getAttribute("id"),shape.guid+"_filter")
+      assert.equal(filters[0].getAttribute("id"),"f"+shape.guid+"_filter")
       const dropShadow = filters[0].querySelector("feDropShadow");
       assert.isNotNull(dropShadow,"Should contain drop shadow filter inside filters")
       assert.equal(dropShadow.getAttribute("dx"),2,"Should contain dx attribute");
@@ -31,8 +31,8 @@ describe('Shadow SVG filter tests', () => {
       assert.equal(dropShadow.getAttribute("stdDeviation"),0.5,"Should contain stdDeviation attribute");
       assert.equal(dropShadow.getAttribute("flood-color"),"#555555","Should contain floodColor attribute");
       assert.equal(dropShadow.getAttribute("flood-opacity"),0.9,"Should contain floodColor attribute");
-      const polygon = shape.svg.querySelector("polygon");
-      assert.equal(polygon.style.filter,'url("#'+shape.guid+'_filter")',"Should apply filter to polygon");
+      const polygon = shape.svg.querySelector("path");
+      assert.equal(path.style.filter,'url("#f'+shape.guid+'_filter")',"Should apply filter to polygon");
     });
   })
 })

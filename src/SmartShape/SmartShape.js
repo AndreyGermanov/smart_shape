@@ -50,7 +50,7 @@ function SmartShape() {
      */
     this.groupHelper = null;
 
-    this.eventListener = new SmartShapeEventListener(this);
+    this.eventListener = null;
 
     /**
      * Options of shape as an object. Can have the following parameters.
@@ -269,7 +269,10 @@ function SmartShape() {
         }
         this.root = root;
         this.root.style.position = "relative";
-        this.shapeMenu = new SmartShapeContextMenu(this)
+        if (this.options.hasContextMenu && (typeof(options.hasContextMenu)==="undefined" || options.hasContextMenu)) {
+            this.shapeMenu = new SmartShapeContextMenu(this)
+        }
+        this.eventListener = new SmartShapeEventListener(this);
         this.setOptions(options);
         this.groupHelper = new SmartShapeGroupHelper(this);
         if (points && points.length) {
@@ -417,13 +420,19 @@ function SmartShape() {
             return
         }
         if (this.options.simpleMode) {
-            this.points = points.map(point => ({x: point[0], y: point[1]}))
+            if (typeof(points[0].x) !== "undefined") {
+                this.points = mergeObjects({},points);
+            } else {
+                this.points = points.map(point => ({x: point[0], y: point[1]}))
+            }
         } else {
-            this.points = points.map(point => {
+            for (let point of points) {
+                const x = typeof(point.x) !== "undefined" ? point.x : point[0];
+                const y = typeof(point.y) !== "undefined" ? point.y : point[1];
                 if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
                     pointOptions.createDOMElement = true;
                 }
-                const p = this.putPoint(point[0], point[1],
+                const p = this.putPoint(x, y,
                     mergeObjects({}, this.options.pointOptions,pointOptions)
                 )
                 if (p) {
@@ -435,8 +444,7 @@ function SmartShape() {
                         } catch (err) {}
                     }
                 }
-                return p;
-            })
+            }
         }
 
         if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
@@ -633,11 +641,15 @@ function SmartShape() {
      * @param y {number} new Y coordinate
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      */
-    this.moveTo = (x,y,redraw= true) => {
+    this.moveTo = (x,y,redraw= true,respectBounds=true) => {
         const bounds = this.getBounds();
         const pos = this.getPosition(this.options.groupChildShapes);
-        let newX = x+pos.width > bounds.right ? bounds.right - pos.width : x;
-        let newY = y+pos.height > bounds.bottom ? bounds.bottom - pos.height: y;
+        let newX = x;
+        let newY = y;
+        if (respectBounds) {
+            newX = x + pos.width > bounds.right ? bounds.right - pos.width : x;
+            newY = y + pos.height > bounds.bottom ? bounds.bottom - pos.height : y;
+        }
         this.moveBy(newX-pos.left,newY-pos.top, redraw);
         this.calcPosition();
     }
@@ -652,18 +664,29 @@ function SmartShape() {
         for (let index in this.points) {
             this.points[index].x += stepX;
             this.points[index].y += stepY;
-            if (redraw && typeof(this.points[index].redraw) === "function") {
+            if (!this.options.simpleMode && redraw && typeof(this.points[index].redraw) === "function") {
                 this.points[index].redraw();
             }
         }
-        this.calcPosition();
-        const children = this.getChildren()
+        this.left += stepX;
+        this.top += stepY;
+        this.right += stepX;
+        this.bottom += stepY;
+        const children = this.getChildren(true)
         if (redraw) {
             this.redraw();
         }
         if (children.length && this.options.groupChildShapes) {
             children.forEach(child => {
-                child.moveBy(stepX, stepY, redraw);
+                for (let point of child.points) {
+                    point.x += stepX;
+                    point.y += stepY;
+                }
+                child.left += stepX;
+                child.top += stepY;
+                child.right += stepX;
+                child.bottom += stepY;
+                //child.moveBy(stepX, stepY, redraw);
             });
         }
     }
@@ -693,10 +716,10 @@ function SmartShape() {
         if (pos.height>=10 && height<10) {
             height = 10;
         }
-        let newWidth = pos.left + width > bounds.right && bounds.right !== -1 ? bounds.right - pos.left : width;
-        let newHeight = pos.top + height > bounds.bottom && bounds.bottom !== -1 ? bounds.bottom - pos.top : height;
-        let scaleX = newWidth/pos.width;
-        let scaleY = newHeight/pos.height;
+        let newWidth = Math.abs(pos.left) + width > bounds.right && bounds.right !== -1 ? bounds.right - Math.abs(pos.left) : width;
+        let newHeight = Math.abs(pos.top) + height > bounds.bottom && bounds.bottom !== -1 ? bounds.bottom - Math.abs(pos.top) : height;
+        let scaleX = Math.abs(newWidth/pos.width);
+        let scaleY = Math.abs(newHeight/pos.height);
         this.scaleBy(scaleX,scaleY,includeChildren);
     }
 
@@ -711,6 +734,8 @@ function SmartShape() {
             point.x = (point.x-pos.left)*scaleX+pos.left;
             point.y = (point.y-pos.top)*scaleY+pos.top}
         );
+        this.width *= scaleX;
+        this.height *= scaleY;
         if (this.options.groupChildShapes || includeChildren) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
@@ -718,6 +743,8 @@ function SmartShape() {
                         point.y = (point.y - pos.top) * scaleY + pos.top
                     }
                 );
+                child.width *= scaleX;
+                child.height *= scaleY;
                 child.calcPosition();
             })
             this.getChildren(true).forEach(child => child.redraw());
@@ -1257,7 +1284,7 @@ function SmartShape() {
                 hasContextMenu:false
             }
         })
-        this.calcPosition();
+       // this.calcPosition();
         this.eventListener.addResizeEventListener();
         this.resizeBox.redraw();
         return this.resizeBox;
@@ -1282,7 +1309,7 @@ function SmartShape() {
                 hasContextMenu: false
             }
         })
-        this.calcPosition();
+       // this.calcPosition();
         this.eventListener.addRotateEventListener();
         this.rotateBox.redraw();
         return this.rotateBox;
@@ -1294,11 +1321,11 @@ function SmartShape() {
      * @returns {{top: number, left: number, bottom: *, width: *, right: *, height: *}}
      */
     this.getResizeBoxBounds = () => {
-        this.calcPosition();
+        //this.calcPosition();
         let pos = this.getPosition(this.options.groupChildShapes);
         const parent = this.getRootParent(true);
         if (parent && parent.options.groupChildShapes) {
-            parent.calcPosition();
+        //    parent.calcPosition();
             pos = parent.getPosition(parent.options.groupChildShapes);
         }
         const [pointWidth,pointHeight] = this.getMaxPointSize();
@@ -1513,8 +1540,15 @@ function SmartShape() {
     /**
      * Method used to add specified shape as a child of current shape
      * @param child {SmartShape} Shape to add
+     * @param emitEvent {boolean} Should this method emit ADD_CHILD event. True by default
      */
-    this.addChild = (child) => this.groupHelper.addChild(child);
+    this.addChild = (child,emitEvent) => this.groupHelper.addChild(child,emitEvent);
+
+    /**
+     * Method used to add specified children to current shape
+     * @param children {array} Array of [SmartShape][#SmartShape) objects
+     */
+    this.addChildren = (children=[]) => this.groupHelper.addChildren(children);
 
     /**
      * Method used to remove specified shape from children list of current shape

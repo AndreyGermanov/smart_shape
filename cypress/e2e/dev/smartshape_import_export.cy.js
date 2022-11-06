@@ -2,7 +2,7 @@ import SmartShapeManager from "../../../src/SmartShapeManager/SmartShapeManager.
 import SmartShape from "../../../src/SmartShape/SmartShape.js";
 import {SmartShapeDisplayMode} from "../../../src/SmartShape/SmartShape.js";
 import {readJSON} from "../../../src/utils/index.js";
-import {ShapeEvents} from "../../../src/SmartShape/SmartShapeEventListener.js";
+import SmartShapeEventListener,{ShapeEvents} from "../../../src/SmartShape/SmartShapeEventListener.js";
 
 describe('SmartShape import/export tests', () => {
   const shape1Options = {
@@ -103,7 +103,9 @@ describe('SmartShape import/export tests', () => {
     compactExport: false,
     forceCreateEvent: false,
     zoomLevel:1,
-    initialPoints: []
+    initialPoints: [],
+    displayAsPath: false,
+    simpleMode: false
   }
   it('toJSON basic', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
@@ -176,6 +178,7 @@ describe('SmartShape import/export tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       app.style.height = "800px";
       const shape = new SmartShape();
+      shape.eventListener = new SmartShapeEventListener(shape);
       let triggered = false;
       shape.addEventListener(ShapeEvents.SHAPE_CREATE, (event) => {
         triggered = true;
@@ -218,6 +221,7 @@ describe('SmartShape import/export tests', () => {
       app.style.height = "800px";
       const shape = new SmartShape();
       let triggered = false;
+      shape.eventListener = new SmartShapeEventListener(shape);
       shape.addEventListener(ShapeEvents.SHAPE_CREATE, (event) => {
         triggered = true;
         assert.equal(event.target, shape, "Should send correct object to event");

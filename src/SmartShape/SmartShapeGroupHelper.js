@@ -32,7 +32,7 @@ function SmartShapeGroupHelper(shape) {
      * Method used to add specified shape as a child of current shape
      * @param child {SmartShape} Shape to add
      */
-    this.addChild = (child) => {
+    this.addChild = (child,emitEvent=true) => {
         if (!this.shouldAddChild(child)) {
             return
         }
@@ -44,7 +44,21 @@ function SmartShapeGroupHelper(shape) {
             }
         }
         this.shape.children.push(child);
-        EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD,this.shape,{child});
+        if (emitEvent) {
+            EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD, this.shape, {child});
+        }
+    }
+
+    /**
+     * @ignore
+     * Method used to add specified children to current shape
+     * @param children {array} Array of [SmartShape][#SmartShape) objects
+     */
+    this.addChildren = (children=[]) => {
+        children.forEach(child => {
+            this.addChild(child,false)
+        })
+        EventsManager.emit(ShapeEvents.SHAPE_ADD_CHILD, this.shape, {children});
     }
 
     /**

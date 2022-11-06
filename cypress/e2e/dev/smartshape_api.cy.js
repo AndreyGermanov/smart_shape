@@ -295,15 +295,15 @@ describe('SmartShape API tests', () => {
         shape.redraw();
         cy.get("#shape1").should("not.exist").then(() => {
           cy.get("#shape2").should("exist").then(() => {
-            cy.get("#shape2 > polygon").should("have.css", "fill", "rgb(0, 255, 0)").then(() => {
-              cy.get("#shape2 > polygon").should("have.css", "stroke", "rgb(150, 150, 150)").then(() => {
-                cy.get("#shape2 > polygon").should("have.css", "stroke-width", "5px").then(() => {
-                  cy.get("#shape2 > polygon").should("have.css", "stroke-dasharray", "10px, 20px, 10px").then(() => {
-                    cy.get("#shape2 > polygon").should("have.css", "stroke-linecap", "round").then(() => {
-                      cy.get("#shape2 > polygon").should("have.class", "myShape").then(() => {
-                        cy.get("#shape2 > polygon").should("have.css", "stroke-opacity", "0").then(() => {
+            cy.get("#shape2 > path").should("have.css", "fill", "rgb(0, 255, 0)").then(() => {
+              cy.get("#shape2 > path").should("have.css", "stroke", "rgb(150, 150, 150)").then(() => {
+                cy.get("#shape2 > path").should("have.css", "stroke-width", "5px").then(() => {
+                  cy.get("#shape2 > path").should("have.css", "stroke-dasharray", "10px, 20px, 10px").then(() => {
+                    cy.get("#shape2 > path").should("have.css", "stroke-linecap", "round").then(() => {
+                      cy.get("#shape2 > path").should("have.class", "myShape").then(() => {
+                        cy.get("#shape2 > path").should("have.css", "stroke-opacity", "0").then(() => {
                           cy.get("#shape2").should("have.css","z-index","1010").then(() => {
-                            cy.get("#shape2 > polygon").should("have.css", "z-index", "1010").then(() => {
+                            cy.get("#shape2 > path").should("have.css", "z-index", "1010").then(() => {
                               const point1 = shape.findPoint(100, 0)
                               point1.element.id = "point1";
                               assert.equal(shape.options.name, "Cool shape");
@@ -560,7 +560,7 @@ describe('SmartShape API tests', () => {
       assert.equal(defs.length,1,"Should be single 'defs' tag inside");
       defs = defs[0];
       assert.equal(defs.children.length,2, "Should be 2 defs inside");
-      const polygons = svg.querySelectorAll("polygon");
+      const polygons = svg.querySelectorAll("path");
       assert.equal(polygons.length, 2, "Should be two 'polygons' inside svg");
     })
   });
@@ -761,10 +761,10 @@ describe('SmartShape API tests', () => {
       assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
       assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
       assert.equal(shape2.options.zIndex,1002, "Should change zIndex option");
-      assert.equal(shape2.svg.style.zIndex, 1002, "Should change z-index CSS style");
+      assert.equal(shape.svg.querySelector("#p"+shape2.guid+"_polygon").style.zIndex, 1002, "Should change z-index CSS style");
       assert.equal(shape2.points[0].element.style.zIndex,1004,"Should change z-index CSS style of points");
       assert.equal(shape3.options.zIndex,1005, "Should change zIndex option");
-      assert.equal(shape3.svg.style.zIndex, 1005, "Should change z-index CSS style");
+      assert.equal(shape.svg.querySelector("#p"+shape3.guid+"_polygon").style.zIndex, 1005, "Should change z-index CSS style");
       assert.equal(shape3.points[0].element.style.zIndex,1007,"Should change z-index CSS style of points");
     });
   });

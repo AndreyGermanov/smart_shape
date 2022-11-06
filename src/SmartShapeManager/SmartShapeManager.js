@@ -377,6 +377,9 @@ function SmartShapeManager() {
     this.activateShape = (shape,displayMode=null) => {
         if (this.activeShape === shape) {
             this.activeShape.switchDisplayMode(displayMode);
+            if (shape.options.moveToTop) {
+                shape.moveToTop();
+            }
             return;
         }
         if (typeof(shape.id) !== "undefined" &&

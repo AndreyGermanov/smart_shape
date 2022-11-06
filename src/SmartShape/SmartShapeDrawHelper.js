@@ -107,6 +107,11 @@ function SmartShapeDrawHelper() {
             shape.svg.setAttribute("width", pos.width);
             shape.svg.setAttribute("height", pos.height);
             shape.svg.style.zIndex = shape.options.zIndex;
+        } else if (parent && parent.svg) {
+            const polygon =parent.svg.querySelector("#p"+shape.guid+"_polygon");
+            if (polygon) {
+                polygon.style.zIndex = shape.options.zIndex;
+            }
         }
         if (!parent || !parent.options.displayAsPath) {
             this.setupShapeFill(shape);
@@ -150,8 +155,10 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object to which polygon should be appended
      * @returns {object} SVG <polygon> object
      */
-    this.drawPolygon = (shape) => {
-        const svg = this.getShapeSvg(shape);
+    this.drawPolygon = (shape,svg=null) => {
+        if (!svg) {
+            svg = this.getShapeSvg(shape);
+        }
         if (!svg || typeof(svg.appendChild) !== "function") {
             return
         }
@@ -405,7 +412,9 @@ function SmartShapeDrawHelper() {
         filters.innerHTML = "";
         for (let filterName in shape.options.filters) {
             const filter = this.createSVGFilter(shape,filterName,shape.options.filters[filterName]);
-            filters.appendChild(filter);
+            if (filter) {
+                filters.appendChild(filter);
+            }
         }
     }
 
@@ -419,6 +428,9 @@ function SmartShapeDrawHelper() {
      * @returns {SVGElement} Constructed filter element
      */
     this.createSVGFilter = (shape,filterName,filterOptions) => {
+        if (!shape.svg) {
+            return null;
+        }
         const filter = document.createElementNS(shape.svg.namespaceURI,filterName);
         const svg = this.getShapeSvg(shape);
         const pos = shape.getPosition(shape.options.groupChildShapes);
@@ -492,6 +504,8 @@ function SmartShapeDrawHelper() {
      * @returns {string} String body of SVG document
      */
     this.getSvg = (shape,includeChildren) => {
+        let groupChanged = false;
+        let pathChanged = false;
         let svg = shape.svg;
         if (!svg) {
             const parent = shape.getRootParent();
@@ -503,6 +517,25 @@ function SmartShapeDrawHelper() {
             return
         }
         svg = svg.cloneNode(true);
+        if (includeChildren) {
+            shape = shape.getRootParent() || shape;
+            if (!shape.options.groupChildShapes) {
+                shape.options.groupChildShapes = true;
+                groupChanged = true;
+            }
+            if (!shape.options.displayAsPath) {
+                shape.getChildren(true).forEach(child => {
+                    this.drawPolygon(child, svg);
+                })
+            }
+            this.drawPolygon(shape,svg);
+            let paths = Array.from(svg.querySelectorAll("path"));
+            paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
+            const defs = svg.querySelector("defs");
+            svg.innerHTML = "";
+            svg.appendChild(defs);
+            paths.forEach(path=>svg.appendChild(path));
+        }
         svg.removeAttribute("style");
         svg.removeAttribute("width");
         svg.removeAttribute("height");
@@ -512,25 +545,11 @@ function SmartShapeDrawHelper() {
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
         const viewBox = "0 0 " + pos.width + " " + pos.height;
         svg.setAttribute("viewBox",viewBox);
-        if (includeChildren && !shape.options.groupChildShapes) {
-            const paths = [];
-            shape.getChildren(true).filter(child => child.svg).forEach(child => {
-                Array.from(child.svg.querySelector("defs").children).forEach(def => {
-                    svg.querySelector("defs").appendChild(def.cloneNode(true));
-                })
-                const path = child.svg.querySelector("path").cloneNode(true);
-                path.setAttribute("d",this.getPolygonPathForShape(child,pos,this.getMaxStrokeWidth(child)))
-                paths.push(path);
-            })
-            const path = svg.querySelector("path")
-            if (path) {
-                paths.push(path);
-            }
-            paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
-            const defs = svg.querySelector("defs");
-            svg.innerHTML = "";
-            svg.appendChild(defs);
-            paths.forEach(path=>svg.appendChild(path));
+        if (groupChanged) {
+            shape.options.groupChildShapes = false;
+        }
+        if (pathChanged) {
+            shape.options.displayAsPath = false;
         }
         return svg;
     }
@@ -685,6 +704,9 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape to correct
      */
     this.setupZIndex = (shape) => {
+        if (!shape.svg) {
+            return
+        }
         let paths = Array.from(shape.svg.querySelectorAll("path"));
         paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
         const defs = shape.svg.querySelector("defs");
