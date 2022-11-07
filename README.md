@@ -9,24 +9,24 @@ Smart shape is a polygon (array of connected points) which can be attached to an
 </p>
 
 [Install](#Install)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[As a module](#Install_Module)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[On a Web Page](#Install_Web)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[As a module](#InstallModule)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[On a Web Page](#InstallWeb)<br/>
 [Use](#Use)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Use_SmartShape)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import/Export](#Import_Export)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#UseSmartShape)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import/Export](#ImportExport)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Collections](#Collections)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape Studio](#Studio)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#Use_ResizeBox)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#UseResizeBox)<br/>
 [Examples](#Examples)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#Examples_SmartShape)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#Examples_ResizeBox)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[SmartShape](#ExamplesSmartShape)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[ResizeBox](#ExamplesResizeBox)<br/>
 [Contribution](#Plans)
 
 <a name="Install"></a>
 
 # Install
 
-<a name="Install_Module"></a>
+<a name="InstallModule"></a>
 
 ## As a module
 
@@ -42,7 +42,7 @@ Then, you can import SmartShape class to your project:
 import {SmartShape} from "smart_shape";
 ```
 
-<a name="Install_Web"></a>
+<a name="InstallWeb"></a>
 
 ## On a Web page
 
@@ -62,7 +62,7 @@ This will add `SmartShape` object to a global namespace automatically, and you c
 
 The main class is obviously `SmartShape`, but there are other helper classes exist as well, that either used by SmartShape, or can be instantiated independently for different tasks. Their specifications you can find in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).
 
-<a name="Use_SmartShape"></a>
+<a name="UseSmartShape"></a>
 
 ## SmartShape
 
@@ -87,7 +87,7 @@ SmartShape.init(container_node,options,array_of_points);
 ```
 
 * `container_node` - HTML DOM element to inject figure into
-* `options` - Javascript object with options, that defines look and behavior of shape. For example, {fill:'#00ff00'} means that shape must be filled with light green color. All shape and points options described in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartShape+options).
+* `options` - Javascript object with options, that defines look and behavior of shape. For example, {fill:'#00ff00'} means that shape must be filled with light green color. All shape and points options described in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#SmartShape_options).
 * `array_of_points` - array of points of polygon where each point is a subarray of coordinates [x,y].
 
 After running HTML page with code above, you should see this:
@@ -98,7 +98,7 @@ You can not only see this shape, but use mouse to drag and drop it to any place 
 
 ![demo2](https://code.germanov.dev/smart_shape/assets/demo2.png)
 
-The full code of this demo is available in [Examples](#Examples_SmartShape).
+The full code of this demo is available in [Examples](#ExamplesSmartShape).
 
 After create the shape with default options, you can change them, using `setOptions` method. For example, this will change background color to yellow:
 
@@ -119,13 +119,13 @@ shape.addEventListener("move",(event) => {
 
 In this example, event listener will run every time when user moves the shape on the screen. `event` object contains old position of the shape and new position (left,right,top,bottom,width and height).
 
-Using the options, the event listeners and the API methods of SmartShape objects, developer can create highly customized types of shapes for specific tasks and integrate them to their applications. Look [Examples](#Examples_SmartShape) section to see source code and live applications, that use the SmartShape.
+Using the options, the event listeners and the API methods of SmartShape objects, developer can create highly customized types of shapes for specific tasks and integrate them to their applications. Look [Examples](#ExamplesSmartShape) section to see source code and live applications, that use the SmartShape.
 
 Full API that available for customization is in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md).
 
 One of these customized shapes that already created is `ResizeBox`, which described below. This component is a special SmartShape with custom properties, with predefined set of points and with customized reactions on events. This shape can be used as a widget to resize something on your application screen, or select rectangular area on it.
 
-<a name="Import_Export"></a>
+<a name="ImportExport"></a>
 
 ### Import/Export
 
@@ -235,7 +235,7 @@ const shapes = SmartShapeManager.getShapes()
 const shape = SmartShapeManager.getShapeById("shape1")
 ```
 
-<a name="Use_ResizeBox"></a>
+<a name="UseResizeBox"></a>
 
 ## ResizeBox
 
@@ -277,7 +277,7 @@ In this example, these event handlers intercept `resize` and `move` events of Re
 
 ResizeBox class created on top of SmartShape, however it doesn't use class inheritance for that. Instead, it uses `object composition` and contains a link to this SmartShape in `resizeBox.shape` property. ResizeBox class decorates this shape by applying specific properties, methods and event listeners to it. At the same time, you can use all properties and methods of original shape by calling them from `resizeBox.shape` object directly.
 
-See examples of using ResizeBox in [Examples](#Examples_ResizeBox) section.
+See examples of using ResizeBox in [Examples](#ExamplesResizeBox) section.
 
 Full API and properties of ResizeBox available in [API docs](https://github.com/AndreyGermanov/smart_shape/blob/main/docs/API.md#ResizeBox).
 
@@ -287,7 +287,7 @@ Full API and properties of ResizeBox available in [API docs](https://github.com/
 
 Examples below show how you can use SmartShape and it's derivatives in basic mode and also how they can be customized and integrated in real world applications.
 
-<a name="Examples_SmartShape"></a>
+<a name="ExamplesSmartShape"></a>
 
 ## SmartShape
 
@@ -312,7 +312,7 @@ The next video shows how SmartShape used inside online text recognition tool to 
 
 Watch on YouTube: https://youtu.be/4ee-HYCtgJ4 .
 
-<a name="Examples_ResizeBox"></a>
+<a name="ExamplesResizeBox"></a>
 
 ## Resize Box
 
