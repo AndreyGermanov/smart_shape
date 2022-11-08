@@ -12,7 +12,7 @@ import {
     uuid,
     isPointInsidePolygon,
     getOffset,
-    readJSON
+    readJSON, abs
 } from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {applyAspectRatio, distance, distanceFromLine} from "../utils/geometry.js";
@@ -506,7 +506,7 @@ function SmartShape() {
         if (!points || !points.length) {
             return null;
         }
-        points = points.filter(([x1,y1]) => !isNaN(parseInt(x1)) && !isNaN(parseInt(y1)));
+        points = points.filter(([x1,y1]) => !isNaN(parseFloat(x1)) && !isNaN(parseFloat(y1)));
         if (points.length === 1) {
             return this.points[0];
         }
@@ -716,10 +716,10 @@ function SmartShape() {
         if (pos.height>=10 && height<10) {
             height = 10;
         }
-        let newWidth = Math.abs(pos.left) + width > bounds.right && bounds.right !== -1 ? bounds.right - Math.abs(pos.left) : width;
-        let newHeight = Math.abs(pos.top) + height > bounds.bottom && bounds.bottom !== -1 ? bounds.bottom - Math.abs(pos.top) : height;
-        let scaleX = Math.abs(newWidth/pos.width);
-        let scaleY = Math.abs(newHeight/pos.height);
+        let newWidth = abs(pos.left) + width > bounds.right && bounds.right !== -1 ? bounds.right - abs(pos.left) : width;
+        let newHeight = abs(pos.top) + height > bounds.bottom && bounds.bottom !== -1 ? bounds.bottom - abs(pos.top) : height;
+        let scaleX = abs(newWidth/pos.width);
+        let scaleY = abs(newHeight/pos.height);
         this.scaleBy(scaleX,scaleY,includeChildren);
     }
 
@@ -866,10 +866,10 @@ function SmartShape() {
      */
     this.flipPoint = (point, byX, byY, pos) => {
         if (byX) {
-            point.x = Math.abs(pos.right - point.x) + pos.left
+            point.x = abs(pos.right - point.x) + pos.left
         }
         if (byY) {
-            point.y = Math.abs(pos.bottom - point.y) + pos.top
+            point.y = abs(pos.bottom - point.y) + pos.top
         }
         return point
     }
@@ -1101,8 +1101,8 @@ function SmartShape() {
         result.top = points.map(point => point[1]).reduce((miny,y) => y < miny ? y : miny);
         result.right = points.map(point => point[0]).reduce((maxx,x) => x > maxx ? x : maxx);
         result.bottom = points.map(point => point[1]).reduce((maxy,y) => y > maxy ? y : maxy);
-        result.width = Math.abs(result.right-result.left) || 1;
-        result.height = Math.abs(result.bottom-result.top) || 1;
+        result.width = abs(result.right-result.left) || 1;
+        result.height = abs(result.bottom-result.top) || 1;
         return result;
     }
 
@@ -1122,8 +1122,8 @@ function SmartShape() {
             left: this.left,
             bottom: this.bottom,
             right: this.right,
-            width: parseInt(this.width),
-            height: parseInt(this.height)
+            width: parseFloat(this.width),
+            height: parseFloat(this.height)
         }
     }
 

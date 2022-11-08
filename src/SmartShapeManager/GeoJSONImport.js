@@ -1,6 +1,5 @@
 import {mergeObjects, notNull} from "../utils/index.js";
 import SmartShapeManager from "./SmartShapeManager.js";
-import {latLonToXY} from "../utils/geometry.js";
 
 /**
  * @ignore
@@ -51,35 +50,50 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
     }
     let options = loadOptions(obj,index,importOptions);
     options.visible = false;
-    const {polygons,origPolygons,offsetX,offsetY} = loadPolygons(obj)
-    options.offsetX = offsetX;
-    options.offsetY = offsetY;
+    const polygons = loadPolygons(obj);
+    if (!polygons || !polygons.length) {
+        return
+    }
+    polygons.sort((p1,p2) => p2.dims.width*p2.dims.height - p1.dims.width * p1.dims.height)
     let shape = null;
     for (let idx in polygons) {
-        const shapeOpts = mergeObjects({},options)
-        shapeOpts.initialPoints = [...origPolygons[idx]]
+        const shapeOpts = mergeObjects({},options);
         if (idx==0) {
             if (importOptions.onlyData) {
                 shape = {
-                    points: polygons[idx],
-                    options: shapeOpts,
-                    children: []
+                    points:   polygons[idx].cords,
+                    options:  shapeOpts,
+                    children: [],
+                    ...polygons[idx].dims
                 }
             } else {
-                shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx],false)
+                shape = SmartShapeManager.createShape(container,shapeOpts,polygons[idx].cords,false)
+                shape.left = polygons[idx].dims.left;
+                shape.top = polygons[idx].dims.top;
+                shape.right = polygons[idx].dims.right;
+                shape.bottom = polygons[idx].dims.bottom;
+                shape.width = polygons[idx].dims.width;
+                shape.height = polygons[idx].dims.height;
             }
         } else {
-            shapeOpts.id += "_"+idx;
-            shapeOpts.name += " "+idx;
+            shapeOpts.id += "_" + idx;
+            shapeOpts.name += " " + idx;
             if (importOptions.onlyData) {
                 shape.children.push({
-                    points: polygons[idx],
+                    points: polygons[idx].cords,
                     options:shapeOpts,
+                    ...polygons[idx].dims
                 })
             } else {
-                shape.addChild(SmartShapeManager.createShape(container,shapeOpts,polygons[idx]),false)
+                const child = SmartShapeManager.createShape(container,shapeOpts,polygons[idx].cords);
+                child.left = polygons[idx].dims.left;
+                child.top = polygons[idx].dims.top;
+                child.right = polygons[idx].dims.right;
+                child.bottom = polygons[idx].dims.bottom;
+                child.width = polygons[idx].dims.width;
+                child.height = polygons[idx].dims.height;
+                shape.addChild(child, false)
             }
-
         }
     }
     if (importOptions.onlyData) {
@@ -134,18 +148,28 @@ const loadPolygons = (obj) => {
     if (obj.geometry.type === "Polygon") {
         polygons = [polygons];
     }
-    const result = {polygons:[],origPolygons:polygons.map(polygon => mergeObjects({},polygon[0]))};
-    result.offsetX = 0;
-    result.offsetY = 0;
+    const result = [];
     for (let _polygon of polygons) {
         const polygon = _polygon[0];
-        const destPolygon = []
+        const cords = [];
+        let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity;
         for (let point of polygon) {
-            const [x,y] = latLonToXY(point[1],point[0]);
-            destPolygon.push({x,y})
+            const [x,y] = [point[1],-point[0]];
+            if (x<left) {
+                left = x;
+            }
+            if (x>right) {
+                right = x;
+            }
+            if (y<top) {
+                top = y;
+            }
+            if (y>bottom) {
+                bottom = y;
+            }
+            cords.push({x,y})
         }
-
-        result.polygons.push(destPolygon)
+        result.push({cords,dims:{left,top,bottom,right,width:right-left,height:bottom-top}});
     }
     return result;
 }

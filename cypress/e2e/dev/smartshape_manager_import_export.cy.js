@@ -2,6 +2,7 @@ import SmartShapeManager from "../../../src/SmartShapeManager/SmartShapeManager.
 import {readJSON} from "../../../src/utils/index.js";
 import countries from "../../../tests/assets/geocountries.json";
 import country from "../../../tests/assets/AFG.json";
+import TST1 from "../../../tests/assets/TST1.json";
 
 describe('SmartShapeManager import/export', () => {
   it('toJSON', () => {
@@ -85,5 +86,46 @@ describe('SmartShapeManager import/export', () => {
       assert.equal(shape2.options.id,"AFG","Should correctly load from single item GeoJSON file");
       assert.equal(shape2.options.continent,"Asia","Should correctly load custom fields from GeoJSON file");
     })
+  })
+  it('fromGeoJson raw data', () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "500px";
+      const obj = SmartShapeManager.fromGeoJson(app,TST1,{onlyData:true});
+      assert.equal(obj.left,-2.197360934999949,"Should have correct left corner value");
+      assert.equal(obj.top,-41.09888756600009,"Should have correct flipped top corner value");
+      assert.equal(obj.right,-2.049574476999908,"Should have correct right corner value");
+      assert.equal(obj.bottom,-40.95728600400008,"Should have correct flipped right corner value");
+      assert.equal(obj.width,0.14778645800004098,"Should have correct width");
+      assert.equal(obj.height,0.1416015620000053, "Should have correct height");
+      assert.equal(obj.points.length, 28, "Should import all points");
+      assert.isFalse(obj.options.visible,"Should be invisible by default");
+      assert.equal(obj.options.id,"shape_0", "Should have correct ID");
+      assert.equal(obj.options.name,"Shape 0", "Should have correct name");
+      assert.equal(obj.children.length,2, "Should include single child");
+      const child1 = obj.children[0];
+      assert.equal(child1.points.length,6,"Child should have correct number of points");
+      assert.equal(child1.left,32.90210133900011,"Should have correct left corner value");
+      assert.equal(child1.top,-11.50604659000004,"Should have correct flipped top corner value");
+      assert.equal(child1.right,33.18122531500005,"Should have correct right corner value");
+      assert.equal(child1.bottom,-11.456540567000076,"Should have correct flipped right corner value");
+      assert.equal(child1.width,0.2791239759999371,"Should have correct width");
+      assert.equal(child1.height,0.04950602299996376, "Should have correct height");
+      assert.isFalse(child1.options.visible,"Should be invisible by default");
+      assert.equal(child1.options.id,"shape_0_1", "Should have correct ID");
+      assert.equal(child1.options.name,"Shape 0 1", "Should have correct name");
+      const child2 = obj.children[1];
+      assert.equal(child2.points.length,4,"Child should have correct number of points");
+      assert.equal(child2.left,-2.049574476999908,"Should have correct left corner value");
+      assert.equal(child2.top,-41.12273196700005,"Should have correct flipped top corner value");
+      assert.equal(child2.right,-2.036309502999927,"Should have correct right corner value");
+      assert.equal(child2.bottom,-41.05396569100009,"Should have correct flipped right corner value");
+      assert.equal(child2.width,0.013264973999980612,"Should have correct width");
+      assert.equal(child2.height,0.06876627599996255, "Should have correct height");
+      assert.isFalse(child2.options.visible,"Should be invisible by default");
+      assert.equal(child2.options.id,"shape_0_2", "Should have correct ID");
+      assert.equal(child2.options.name,"Shape 0 2", "Should have correct name");
+    });
   })
 })
