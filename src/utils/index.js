@@ -123,4 +123,6 @@ export const recursiveDeepCopy = (o) => {
     return newO;
 }
 
+export const abs = (value) => value < 0 ? -value : value;
+
 export {radians_to_degrees,degrees_to_radians,getRotatedCoords,distance,isPointInsidePolygon,rectsOverlap};
