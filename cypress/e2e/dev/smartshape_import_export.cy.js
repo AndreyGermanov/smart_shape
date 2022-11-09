@@ -105,7 +105,12 @@ describe('SmartShape import/export tests', () => {
     zoomLevel:1,
     initialPoints: [],
     displayAsPath: false,
-    simpleMode: false
+    simpleMode: false,
+    scaleFactorX: 1,
+    scaleFactorY: 1,
+    rotateAngle: 0,
+    flippedX: false,
+    flippedY: false
   }
   it('toJSON basic', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {

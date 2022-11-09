@@ -166,12 +166,17 @@ function SmartShapeEventListener(shape) {
     this.onResize = (event) => {
         const parent = this.shape.getRootParent(true);
         if (parent) {
-            EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,parent.resizeBox,{newPos:event.newPos,oldPos:event.oldPos});
+            EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,parent.resizeBox,createEvent(event,
+                {newPos:event.newPos,oldPos:event.oldPos})
+            );
+            return
+        }
+        if (event.buttons && this.shape.options.simpleMode) {
             return
         }
         const diffX = event.newPos.left - event.oldPos.left;
         const diffY = event.newPos.top - event.oldPos.top;
-        this.shape.moveBy(diffX,diffY);
+        this.shape.moveBy(diffX,diffY,false);
         const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
         this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
         this.shape.redraw();

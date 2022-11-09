@@ -173,29 +173,35 @@ describe('SmartShape API tests', () => {
       shape.init(app,{visible:false,canScale:true,id:"shape1"},[[0,100],[100,0],[200,100]]);
       shape.setOptions({canScale:true,canRotate:true,displayMode:SmartShapeDisplayMode.SCALE});
       await shape.redraw();
-      assert.equal(shape.svg.style.display,'none',"Should create invisible shape");
-      assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
-      for (let point of shape.resizeBox.shape.points) {
-        assert.equal(point.element.style.display,'none',"Resize box point must be invisible");
-      }
-      await shape.show();
-      assert.notEqual(shape.svg.style.display,'none',"Should show visible shape");
-      assert.notEqual(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also visible")
-      for (let point of shape.points) {
-        assert.notEqual(point.element.style.display,'none',"Point must be visible");
-      }
-      for (let point of shape.resizeBox.shape.points) {
-        assert.notEqual(point.element.style.display,'none',"Resize box point must be visible");
-      }
-      await shape.hide();
-      assert.equal(shape.svg.style.display,'none',"Should hide shape");
-      assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
-      for (let point of shape.points) {
-        assert.equal(point.element.style.display,'none',"Point must be invisible");
-      }
-      for (let point of shape.resizeBox.shape.points) {
-        assert.equal(point.element.style.display,'none',"Resize box point must be invisible");
-      }
+      cy.wait(1).then(async() => {
+        assert.equal(shape.svg.style.display,'none',"Should create invisible shape");
+        assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
+        for (let point of shape.resizeBox.shape.points) {
+          assert.equal(point.element.style.display,'none',"Resize box point must be invisible");
+        }
+        await shape.show();
+        cy.wait(1).then(async() => {
+          assert.notEqual(shape.svg.style.display,'none',"Should show visible shape");
+          assert.notEqual(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also visible")
+          for (let point of shape.points) {
+            assert.notEqual(point.element.style.display,'none',"Point must be visible");
+          }
+          for (let point of shape.resizeBox.shape.points) {
+            assert.notEqual(point.element.style.display,'none',"Resize box point must be visible");
+          }
+          await shape.hide();
+          cy.wait(1).then(() => {
+            assert.equal(shape.svg.style.display,'none',"Should hide shape");
+            assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
+            for (let point of shape.points) {
+              assert.equal(point.element.style.display,'none',"Point must be invisible");
+            }
+            for (let point of shape.resizeBox.shape.points) {
+              assert.equal(point.element.style.display,'none',"Resize box point must be invisible");
+            }
+          })
+        })
+      })
     });
   })
 
@@ -743,29 +749,35 @@ describe('SmartShape API tests', () => {
       shape.show();
       shape.changeZIndex(1001);
       shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-      assert.equal(shape.options.zIndex,1001, "Should change zIndex option");
-      assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
-      assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
-      shape.changeZIndex(1000);
-      assert.equal(shape.options.zIndex,1000, "Should change zIndex option");
-      assert.equal(shape.svg.style.zIndex, 1000, "Should change z-index CSS style");
-      assert.equal(shape.points[0].element.style.zIndex,1002,"Should change z-index CSS style of points");
-      const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
-      shape.addChild(shape2);
-      shape2.show();
-      const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
-      shape2.addChild(shape3);
-      shape3.show();
-      shape.changeZIndex(1001);
-      assert.equal(shape.options.zIndex,1001, "Should change zIndex option");
-      assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
-      assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
-      assert.equal(shape2.options.zIndex,1002, "Should change zIndex option");
-      assert.equal(shape.svg.querySelector("#p"+shape2.guid+"_polygon").style.zIndex, 1002, "Should change z-index CSS style");
-      assert.equal(shape2.points[0].element.style.zIndex,1004,"Should change z-index CSS style of points");
-      assert.equal(shape3.options.zIndex,1005, "Should change zIndex option");
-      assert.equal(shape.svg.querySelector("#p"+shape3.guid+"_polygon").style.zIndex, 1005, "Should change z-index CSS style");
-      assert.equal(shape3.points[0].element.style.zIndex,1007,"Should change z-index CSS style of points");
+      cy.wait(3).then(() => {
+        assert.equal(shape.options.zIndex,1001, "Should change zIndex option");
+        assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
+        assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
+        shape.changeZIndex(1000);
+        cy.wait(1).then(() => {
+          assert.equal(shape.options.zIndex,1000, "Should change zIndex option");
+          assert.equal(shape.svg.style.zIndex, 1000, "Should change z-index CSS style");
+          assert.equal(shape.points[0].element.style.zIndex,1002,"Should change z-index CSS style of points");
+          const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
+          shape.addChild(shape2);
+          shape2.show();
+          const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
+          shape2.addChild(shape3);
+          shape3.show();
+          shape.changeZIndex(1001);
+          cy.wait(3).then(() => {
+            assert.equal(shape.options.zIndex,1001, "Should change zIndex option");
+            assert.equal(shape.svg.style.zIndex, 1001, "Should change z-index CSS style");
+            assert.equal(shape.points[0].element.style.zIndex,1003,"Should change z-index CSS style of points");
+            assert.equal(shape2.options.zIndex,1002, "Should change zIndex option");
+            assert.equal(shape.svg.querySelector("#p"+shape2.guid+"_polygon").style.zIndex, 1002, "Should change z-index CSS style");
+            assert.equal(shape2.points[0].element.style.zIndex,1004,"Should change z-index CSS style of points");
+            assert.equal(shape3.options.zIndex,1005, "Should change zIndex option");
+            assert.equal(shape.svg.querySelector("#p"+shape3.guid+"_polygon").style.zIndex, 1005, "Should change z-index CSS style");
+            assert.equal(shape3.points[0].element.style.zIndex,1007,"Should change z-index CSS style of points");
+          })
+        })
+      })
     });
   });
 
@@ -776,25 +788,29 @@ describe('SmartShape API tests', () => {
       shape.show();
       shape.moveToTop();
       shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-      assert.equal(shape.options.zIndex,1000, "Should not move shape to top if it already on top");
-      assert.equal(shape.svg.style.zIndex, 1000,
-          "Should not change shape CSS style because it already on top"
-      );
-      assert.equal(shape.points[0].element.style.zIndex,1002,
-          "Should not change point CSS styles because shape is already on top"
-      );
-      const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
-      shape2.show();
-      const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
-      shape3.show();
-      shape.moveToTop();
-      assert.equal(shape.options.zIndex,1005, "Should move shape to top");
-      assert.equal(shape.svg.style.zIndex, 1005,
-          "Should change shape CSS style to top one"
-      );
-      assert.equal(shape.points[0].element.style.zIndex,1007,
-          "Should change point CSS styles to top ones"
-      );
+      cy.wait(1).then(() => {
+        assert.equal(shape.options.zIndex,1000, "Should not move shape to top if it already on top");
+        assert.equal(shape.svg.style.zIndex, 1000,
+            "Should not change shape CSS style because it already on top"
+        );
+        assert.equal(shape.points[0].element.style.zIndex,1002,
+            "Should not change point CSS styles because shape is already on top"
+        );
+        const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
+        shape2.show();
+        const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
+        shape3.show();
+        shape.moveToTop();
+        cy.wait(1).then(() => {
+          assert.equal(shape.options.zIndex,1005, "Should move shape to top");
+          assert.equal(shape.svg.style.zIndex, 1005,
+              "Should change shape CSS style to top one"
+          );
+          assert.equal(shape.points[0].element.style.zIndex,1007,
+              "Should change point CSS styles to top ones"
+          );
+        })
+      })
     });
   });
 
@@ -805,26 +821,30 @@ describe('SmartShape API tests', () => {
       shape.show();
       shape.moveToTop();
       shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-      assert.equal(shape.options.zIndex,1000, "Should not move shape to bottom if it already on top");
-      assert.equal(shape.svg.style.zIndex, 1000,
-          "Should not change shape CSS style because it already on bottom"
-      );
-      assert.equal(shape.points[0].element.style.zIndex,1002,
-          "Should not change point CSS styles because shape is already on bottom"
-      );
-      const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
-      shape2.show();
-      const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
-      shape3.show();
-      shape3.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-      shape3.moveToBottom();
-      assert.equal(shape3.options.zIndex,999, "Should move shape to bottom");
-      assert.equal(shape3.svg.style.zIndex, 999,
-          "Should change shape CSS style to bottom one"
-      );
-      assert.equal(shape3.points[0].element.style.zIndex,1001,
-          "Should change point CSS styles to bottom ones"
-      );
+      cy.wait(1).then(() => {
+        assert.equal(shape.options.zIndex,1000, "Should not move shape to bottom if it already on top");
+        assert.equal(shape.svg.style.zIndex, 1000,
+            "Should not change shape CSS style because it already on bottom"
+        );
+        assert.equal(shape.points[0].element.style.zIndex,1002,
+            "Should not change point CSS styles because shape is already on bottom"
+        );
+        const shape2 = new SmartShape().init(app, {zIndex:1001}, [[10,20],[20,10],[30,20]]);
+        shape2.show();
+        const shape3 = new SmartShape().init(app, {zIndex:1004}, [[40,20],[50,10],[60,20]]);
+        shape3.show();
+        shape3.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+        shape3.moveToBottom();
+        cy.wait(1).then(() => {
+          assert.equal(shape3.options.zIndex,999, "Should move shape to bottom");
+          assert.equal(shape3.svg.style.zIndex, 999,
+              "Should change shape CSS style to bottom one"
+          );
+          assert.equal(shape3.points[0].element.style.zIndex,1001,
+              "Should change point CSS styles to bottom ones"
+          );
+        })
+      })
     });
   });
 })

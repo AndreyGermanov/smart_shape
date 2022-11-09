@@ -111,7 +111,7 @@ function ResizeBoxEventListener(resizeBox) {
         const newPos = this.resizeBox.getPosition();
         this.resizeBox.redraw();
         EventsManager.emit(ShapeEvents.POINT_DRAG_END,this.resizeBox,createEvent(event,{point:event.target}));
-        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBox,{oldPos,newPos});
+        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.resizeBox,createEvent(event,{oldPos,newPos}));
     }
 
     /**
