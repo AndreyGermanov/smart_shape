@@ -118,6 +118,13 @@ function SmartShape() {
      * @param offsetY {number} Offset on Y axis that shape moved from initial position when initially loaded.
      * @param displayAsPath {boolean} Should display all children of shape as a single SVG path. Default - false.
      * @param simpleMode {boolean} Simple load mode (do not create point objects)
+     * @param scaleFactorX {number} Scaling factor that shows to which extent the shape was scaled in current moment
+     * after create by X axis. By default 1 (not scaled)
+     * @param scaleFactorY {number} Scaling factor that shows to which extent the shape was scaled in current moment
+     * after create by Y axis. By default 1 (not scaled)
+     * @param flippedX {boolean}  Shows that the shape was flipped by X axis after create. By default false.
+     * @param flippedY {boolean}  Shows that the shape was flipped by Y axis after create. By default false.
+     * @param rotateAngle {number} Shows the angle to which the shape was rotated after create. By default 0.
      * @type {object}
      */
     this.options = {
@@ -162,7 +169,12 @@ function SmartShape() {
         zoomLevel:1,
         initialPoints: [],
         displayAsPath: false,
-        simpleMode: false
+        simpleMode: false,
+        scaleFactorX: 1,
+        scaleFactorY: 1,
+        rotateAngle: 0,
+        flippedX: false,
+        flippedY: false
     };
 
     /**
@@ -668,6 +680,8 @@ function SmartShape() {
                 this.points[index].redraw();
             }
         }
+        this.options.offsetX += stepX;
+        this.options.offsetY += stepY;
         this.left += stepX;
         this.top += stepY;
         this.right += stepX;
@@ -681,12 +695,16 @@ function SmartShape() {
                 for (let point of child.points) {
                     point.x += stepX;
                     point.y += stepY;
+                    if (!this.options.simpleMode && redraw && typeof(point.redraw) === "function") {
+                        point.redraw();
+                    }
                 }
                 child.left += stepX;
                 child.top += stepY;
                 child.right += stepX;
                 child.bottom += stepY;
-                //child.moveBy(stepX, stepY, redraw);
+                child.options.offsetX += stepX;
+                child.options.offsetY += stepY;
             });
         }
     }
@@ -736,6 +754,8 @@ function SmartShape() {
         );
         this.width *= scaleX;
         this.height *= scaleY;
+        this.options.scaleFactorX *= scaleX;
+        this.options.scaleFactorY *= scaleY;
         if (this.options.groupChildShapes || includeChildren) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
@@ -745,9 +765,13 @@ function SmartShape() {
                 );
                 child.width *= scaleX;
                 child.height *= scaleY;
+                child.options.scaleFactorX *= scaleX;
+                child.options.scaleFactorY *= scaleY;
                 child.calcPosition();
             })
-            this.getChildren(true).forEach(child => child.redraw());
+            if (!this.options.displayAsPath && this.options.visible) {
+                this.getChildren().forEach(child => child.redraw());
+            }
         }
         this.calcPosition();
     }
@@ -818,6 +842,7 @@ function SmartShape() {
                 [point.x,point.y] = getRotatedCoords(angle, point.x,point.y, centerX,centerY)
             }
         });
+        this.options.rotateAngle += angle;
         if (this.options.groupChildShapes) {
             this.getChildren(true).forEach(child => {
                 child.points.forEach(point => {
@@ -827,6 +852,7 @@ function SmartShape() {
                         [point.x,point.y] = getRotatedCoords(angle, point.x,point.y, centerX,centerY)
                     }
                 });
+                child.options.rotateAngle += angle;
                 child.redraw();
             })
         }
@@ -848,10 +874,22 @@ function SmartShape() {
         children && children.forEach(child => child.calcPosition());
         const pos = this.getPosition(includeChildren);
         this.points.forEach(point=>this.flipPoint(point,byX,byY,pos));
+        if (byX) {
+            this.options.flippedX = !this.options.flippedX;
+        }
+        if (byY) {
+            this.options.flippedY = !this.options.flippedY;
+        }
         if (!children) {
             return
         }
-        children.forEach(child=>child.points.forEach(point => child.flipPoint(point,byX,byY,pos)))
+        children.forEach(child=>{
+            if (byX) {
+                child.options.flippedX = !child.options.flippedX;
+                child.options.flippedY = !child.options.flippedY;
+            }
+            child.points.forEach(point => child.flipPoint(point,byX,byY,pos))
+        })
     }
 
     /**
@@ -918,8 +956,8 @@ function SmartShape() {
     this.redraw = () => {
         this.applyDisplayMode();
         SmartShapeDrawHelper.draw(this);
-        if (this.options.groupChildShapes) {
-            this.getChildren(true).forEach(child=>child.redraw());
+        if (this.options.groupChildShapes && !this.options.displayAsPath) {
+            this.getChildren().forEach(child=>child.redraw());
         }
     }
 
@@ -945,7 +983,7 @@ function SmartShape() {
             }
         }
         this.points.filter(point=>typeof(point.setOptions) === "function").forEach(point => {
-            const options = {zIndex: this.options.zIndex + 2}
+            const options = {zIndex: this.options.zIndex + 15}
             if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
                 options.createDOMElement = false;
             } else {
@@ -994,10 +1032,21 @@ function SmartShape() {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         this.options.displayMode = mode;
-        this.redraw();
+        if (this.options.simpleMode) {
+            this.applyDisplayMode();
+        } else {
+            this.redraw();
+        }
         if (mode === SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {
             setTimeout(() => {
-                this.getChildren(true).forEach(child => child.switchDisplayMode(mode));
+                this.getChildren(true).forEach(child => {
+                    child.switchDisplayMode(mode)
+                    if (this.options.simpleMode) {
+                        child.applyDisplayMode();
+                    } else {
+                        child.redraw();
+                    }
+                });
             },10)
         }
     }
@@ -1206,9 +1255,8 @@ function SmartShape() {
      */
     this.show = () => {
         this.setOptions({visible:true});
-        this.getChildren(true).forEach(child => {
-            child.setOptions({visible: true})
-            child.redraw();
+        this.getChildren().forEach(child => {
+            child.options.visible = true;
         });
         this.redraw();
     }
@@ -1218,9 +1266,8 @@ function SmartShape() {
      */
     this.hide = () => {
         this.setOptions({visible:false});
-        this.getChildren(true).forEach(child => {
-            child.setOptions({visible: false})
-            child.redraw();
+        this.getChildren().forEach(child => {
+            child.options.visible = false;
         });
         this.redraw();
     }

@@ -80,11 +80,17 @@ describe('SmartPoint API tests', () => {
       shape.init(app,{canScale:false,visible:false,id:"shape1",pointOptions:{createDOMElement:true}},[[0,100],[100,0],[200,100]]);
       shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
       const point = shape.findPoint(100,0);
-      assert.equal(point.element.style.display,'none',"Should create invisible point");
-      point.show();
-      assert.notEqual(point.element.style.display,'none',"Should show the point");
-      point.hide();
-      assert.equal(point.element.style.display,'none',"Should hide the point");
+      cy.wait(1).then(() => {
+        assert.equal(point.element.style.display,'none',"Should create invisible point");
+        point.show();
+        cy.wait(1).then(() => {
+          assert.notEqual(point.element.style.display,'none',"Should show the point");
+          point.hide();
+          cy.wait(1).then(() => {
+            assert.equal(point.element.style.display,'none',"Should hide the point");
+          })
+        })
+      })
     });
   });
 

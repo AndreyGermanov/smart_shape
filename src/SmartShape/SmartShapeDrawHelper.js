@@ -1,5 +1,5 @@
 import {EventsManager, ShapeEvents,SmartShapeManager,SmartShapeDisplayMode} from "../index.js";
-import {blobToDataURL, dataURLtoBlob, notNull} from "../utils";
+import {blobToDataURL, dataURLtoBlob, notNull, timeout} from "../utils";
 import {applyAspectRatio} from "../utils/geometry.js";
 
 /**
@@ -16,7 +16,7 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object to draw
      */
     this.draw = (shape) => {
-        const parent = shape.getRootParent(true);
+        const parent = shape.getParent();
         if (!parent || parent.guid === shape.guid) {
             if (shape.svg) {
                 try {
@@ -78,7 +78,7 @@ function SmartShapeDrawHelper() {
      */
     this.updateOptions = (shape) => {
         shape.calcPosition();
-        const parent = shape.getRootParent(true);
+        const parent = shape.getRootParent();
         if (shape.svg && !parent && typeof(shape.svg.appendChild) === "function") {
             if (typeof (shape.options.visible) !== "undefined") {
                 if (shape.svg.style.display !== shape.options.visible) {
@@ -108,7 +108,7 @@ function SmartShapeDrawHelper() {
             shape.svg.setAttribute("height", pos.height);
             shape.svg.style.zIndex = shape.options.zIndex;
         } else if (parent && parent.svg) {
-            const polygon =parent.svg.querySelector("#p"+shape.guid+"_polygon");
+            const polygon = parent.svg.querySelector("#p"+shape.guid+"_polygon");
             if (polygon) {
                 polygon.style.zIndex = shape.options.zIndex;
             }
@@ -131,7 +131,10 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape that need to update
      * @param parent {SmartShape} Root parent of this shape or null
      */
-    this.updatePoints = (shape,parent) => {
+    this.updatePoints = async(shape,parent) => {
+        if (shape.points[0] && !shape.points[0].element) {
+            await timeout(1);
+        }
         shape.points.filter(point => point.element).forEach(point => {
             if (point.element.parentNode !== shape.root) {
                 shape.root.appendChild(point.element);
@@ -187,15 +190,22 @@ function SmartShapeDrawHelper() {
      * @returns {string}
      */
     this.getPolygonPath = (shape) => {
-        const parent = shape.getRootParent(true);
+        const parent = shape.getParent();
         if (parent) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
-            return this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
+            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
+            if (shape.options.displayAsPath && shape.options.groupChildShapes) {
+                shape.getChildren().forEach(child => {
+                    child.calcPosition();
+                    path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child));
+                })
+            }
+            return path;
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
-                shape.getChildren(true).forEach(child => {
+                shape.getChildren().forEach(child => {
                     child.calcPosition();
                     path += this.getPolygonPathForShape(child,pos,this.getMaxStrokeWidth(child));
                 })
@@ -252,6 +262,10 @@ function SmartShapeDrawHelper() {
         shape.resizeBox.height = bounds.height;
         shape.resizeBox.options.zIndex = shape.options.zIndex+1;
         shape.resizeBox.redraw();
+        shape.resizeBox.shape.points.forEach(point => {
+            point.options.zIndex = shape.options.zIndex+2;
+            point.element.style.zIndex = shape.options.zIndex+2;
+        })
     }
 
     /**
@@ -271,6 +285,10 @@ function SmartShapeDrawHelper() {
         shape.rotateBox.height = bounds.height;
         shape.rotateBox.options.zIndex = shape.options.zIndex+1;
         shape.rotateBox.redraw();
+        shape.rotateBox.shape.points.forEach(point => {
+            point.options.zIndex = shape.options.zIndex+2;
+            point.element.style.zIndex = shape.options.zIndex+2;
+        })
     }
 
     /**
@@ -508,7 +526,7 @@ function SmartShapeDrawHelper() {
         let pathChanged = false;
         let svg = shape.svg;
         if (!svg) {
-            const parent = shape.getRootParent();
+            const parent = shape.getParent();
             if (parent) {
                 svg = parent.svg;
             }
@@ -518,7 +536,7 @@ function SmartShapeDrawHelper() {
         }
         svg = svg.cloneNode(true);
         if (includeChildren) {
-            shape = shape.getRootParent() || shape;
+            shape = shape.getParent() || shape;
             if (!shape.options.groupChildShapes) {
                 shape.options.groupChildShapes = true;
                 groupChanged = true;
@@ -691,7 +709,7 @@ function SmartShapeDrawHelper() {
      * @returns {HTMLOrSVGElement|null|*}
      */
     this.getShapeSvg = (shape) => {
-        const parent = shape.getRootParent(true)
+        const parent = shape.getRootParent()
         if (parent && parent.svg) {
             return parent.svg
         }

@@ -880,6 +880,11 @@ Options of shape as an object. Can have the following parameters.
 | offsetY | <code>number</code> | Offset on Y axis that shape moved from initial position when initially loaded. |
 | displayAsPath | <code>boolean</code> | Should display all children of shape as a single SVG path. Default - false. |
 | simpleMode | <code>boolean</code> | Simple load mode (do not create point objects) |
+| scaleFactorX | <code>number</code> | Scaling factor that shows to which extent the shape was scaled in current moment after create by X axis. By default 1 (not scaled) |
+| scaleFactorY | <code>number</code> | Scaling factor that shows to which extent the shape was scaled in current moment after create by Y axis. By default 1 (not scaled) |
+| flippedX | <code>boolean</code> | Shows that the shape was flipped by X axis after create. By default false. |
+| flippedY | <code>boolean</code> | Shows that the shape was flipped by Y axis after create. By default false. |
+| rotateAngle | <code>number</code> | Shows the angle to which the shape was rotated after create. By default 0. |
 
 <a name="SmartShape+left"></a>
 

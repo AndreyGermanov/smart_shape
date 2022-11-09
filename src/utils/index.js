@@ -125,4 +125,11 @@ export const recursiveDeepCopy = (o) => {
 
 export const abs = (value) => value < 0 ? -value : value;
 
+export const timeout = (ms) => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve()
+        },ms);
+    })
+}
 export {radians_to_degrees,degrees_to_radians,getRotatedCoords,distance,isPointInsidePolygon,rectsOverlap};

@@ -154,7 +154,7 @@ const loadPolygons = (obj) => {
         const cords = [];
         let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity;
         for (let point of polygon) {
-            const [x,y] = [point[1],-point[0]];
+            const [x,y] = [point[0],-point[1]];
             if (x<left) {
                 left = x;
             }

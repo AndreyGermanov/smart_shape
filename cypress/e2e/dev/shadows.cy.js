@@ -31,7 +31,7 @@ describe('Shadow SVG filter tests', () => {
       assert.equal(dropShadow.getAttribute("stdDeviation"),0.5,"Should contain stdDeviation attribute");
       assert.equal(dropShadow.getAttribute("flood-color"),"#555555","Should contain floodColor attribute");
       assert.equal(dropShadow.getAttribute("flood-opacity"),0.9,"Should contain floodColor attribute");
-      const polygon = shape.svg.querySelector("path");
+      const path = shape.svg.querySelector("path");
       assert.equal(path.style.filter,'url("#f'+shape.guid+'_filter")',"Should apply filter to polygon");
     });
   })
