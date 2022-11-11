@@ -204,7 +204,7 @@ function SmartShapeEventListener(shape) {
         EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOWN,this.shape,createEvent(event));
         setTimeout(() => {
             EventsManager.emit(ShapeEvents.SHAPE_MOVE_START,
-                this.shape, createEvent(event,{pos:this.shape.getPosition(this.shape.options.groupChildShapes)}));
+                this.shape, createEvent(event,{pos:this.shape.getPosition(this.shape.options.groupChildShapes)}))
         },100);
     }
 
@@ -233,8 +233,10 @@ function SmartShapeEventListener(shape) {
             return
         }
         const oldPos = this.shape.getPosition(this.shape.options.groupChildShapes);
-        this.shape.moveBy(stepX,stepY);
-        this.shape.redraw();
+        this.shape.moveBy(stepX,stepY,true,this.shape.options.simpleMode);
+        if (!this.shape.options.simpleMode) {
+            this.shape.redraw();
+        }
         const newPos = this.shape.getPosition(this.shape.options.groupChildShapes);
         EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,createEvent(event,{oldPos,newPos}));
     }

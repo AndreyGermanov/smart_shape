@@ -67,6 +67,7 @@ function SmartShapeDrawHelper() {
         } else if (parent && parent.options.displayAsPath && parent.guid !== shape.guid) {
             this.draw(parent);
         }
+        EventsManager.emit("show_finish",shape);
     }
 
     /**
@@ -174,6 +175,8 @@ function SmartShapeDrawHelper() {
         }
         polygon.setAttribute("d",this.getPolygonPath(shape));
         polygon.setAttribute("fill-rule","evenodd");
+        polygon.setAttribute("shape_id", shape.options.id);
+        polygon.setAttribute("shape_guid",shape.guid);
         polygon.id = "p"+shape.guid+"_polygon";
         this.setupPolygonFill(shape,polygon);
         this.setupPolygonStyles(shape,polygon);
@@ -181,6 +184,7 @@ function SmartShapeDrawHelper() {
             polygon.style.filter ='url("#f'+shape.guid+'_filter")';
         }
         polygon.style.zIndex = shape.options.zIndex;
+        shape.polygon = polygon;
     }
 
     /**

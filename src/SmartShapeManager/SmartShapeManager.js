@@ -6,6 +6,7 @@ import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import SmartShapeDrawHelper from "../SmartShape/SmartShapeDrawHelper.js";
 import {createEvent, getMouseCursorPos} from "../events/functions.js";
 import {fromGeoJSON} from "./GeoJSONImport.js";
+import {ResizeBoxEvents} from "../ResizeBox/ResizeBoxEventListener.js";
 
 /**
  * Object that keeps collection of shapes and keep track of
@@ -430,10 +431,11 @@ function SmartShapeManager() {
      * @param shape {SmartShape} Smart shape object
      */
     this.addContainerEvents = (shape) => {
-        this.addContainerEvent(shape.root,"mousemove",this.mousemove)
+        this.addContainerEvent(shape.root,"mousemove",this.mousemove);
         this.addContainerEvent(shape.root,"mouseup",this.mouseup,shape.options.id)
         this.addContainerEvent(shape.root,"dblclick",this.doubleclick);
         this.addContainerEvent(shape.root,"contextmenu", this.contextmenu);
+        this.addContainerEvent(shape.root,"mouseleave", this.mouseleave);
         EventsManager.emit(SmartShapeManagerEvents.MANAGER_ADD_CONTAINER_EVENT_LISTENERS,shape.root)
     }
 
@@ -591,6 +593,27 @@ function SmartShapeManager() {
     this.mouseout = (event) => {
         if (this.shapeOnCursor) {
             this.shapeOnCursor.eventListener.mouseout(createEvent(event,{target:event.target}));
+        }
+    }
+
+    /**
+     * @ignore
+     * onMouseLeave event handler for shape's container. If cursor leaves some shape area
+     * during resizing the shape in a simple mode, it redraws the shape with new size
+     * @param event {MouseEvent} Mouse leave event
+     */
+    this.mouseleave = (event) => {
+        if (this.draggedShape && this.draggedShape.draggedPoint &&
+            this.draggedShape.options.id.search("_resizebox") !== -1) {
+            const id = this.draggedShape.options.id.replace("_resizebox","");
+            const destShape = this.findShapeById(id);
+            if (destShape && destShape.options.simpleMode) {
+                EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE, destShape.resizeBox, createEvent(event, {
+                    buttons: 0,
+                    oldPos: destShape.getPosition(true),
+                    newPos: destShape.resizeBox.getPosition()
+                }))
+            }
         }
     }
 
