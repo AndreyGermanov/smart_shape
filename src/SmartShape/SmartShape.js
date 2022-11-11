@@ -45,6 +45,13 @@ function SmartShape() {
     this.svg = null;
 
     /**
+     * [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
+     * SVG Polygon element that defines a shape inside <SVG> element
+     * @type {HTMLOrSVGElement}
+     */
+    this.polygon = null;
+
+    /**
      * Helper object that used to manage children shapes of this shape
      * @type {SmartShapeGroupHelper}
      */
@@ -314,8 +321,10 @@ function SmartShape() {
             return
         }
         if (notNull(options.visible) && options.visible !== this.options.visible) {
-            this.points.filter(point=>typeof(point.setOptions) === "function")
-                .forEach(point => point.options.visible = options.visible);
+            if (!this.options.simpleMode) {
+                this.points.filter(point => typeof (point.setOptions) === "function")
+                    .forEach(point => point.options.visible = options.visible);
+            }
             this.resizeBox && this.resizeBox.setOptions({shapeOptions:{visible:options.visible}});
             this.rotateBox && this.rotateBox.setOptions({shapeOptions:{visible:options.visible}});
         }
@@ -326,14 +335,16 @@ function SmartShape() {
             this.options.fillImage = {};
         }
         this.options = mergeObjects(this.options,options);
-        this.points.filter(point=>typeof(point.setOptions) === "function").forEach(point=>{
-            point.setOptions(mergeObjects({},this.options.pointOptions))
-            point.options.bounds = this.getBounds();
-            if (point.options.zIndex <= this.options.zIndex) {
-                point.options.zIndex = this.options.zIndex+1;
-            }
-            point.redraw();
-        })
+        if (!this.options.simpleMode) {
+            this.points.filter(point => typeof (point.setOptions) === "function").forEach(point => {
+                point.setOptions(mergeObjects({}, this.options.pointOptions))
+                point.options.bounds = this.getBounds();
+                if (point.options.zIndex <= this.options.zIndex) {
+                    point.options.zIndex = this.options.zIndex + 1;
+                }
+                point.redraw();
+            })
+        }
         if (this.shapeMenu && typeof(this.shapeMenu) === "object") {
             this.shapeMenu.updateContextMenu();
         }
@@ -652,8 +663,9 @@ function SmartShape() {
      * @param x {number} new X coordinate
      * @param y {number} new Y coordinate
      * @param redraw {boolean} should the function redraw the shape after move. True by default
+     * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
-    this.moveTo = (x,y,redraw= true,respectBounds=true) => {
+    this.moveTo = (x,y,redraw= true,respectBounds=true,fast=false) => {
         const bounds = this.getBounds();
         const pos = this.getPosition(this.options.groupChildShapes);
         let newX = x;
@@ -671,12 +683,13 @@ function SmartShape() {
      * @param stepX {number} number of pixels to move horizontally
      * @param stepY {number} number of pixes to move vertically
      * @param redraw {boolean} should the function redraw the shape after move. True by default
+     * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
-    this.moveBy = (stepX, stepY,redraw= true) => {
+    this.moveBy = (stepX, stepY,redraw=true,fast=false) => {
         for (let index in this.points) {
             this.points[index].x += stepX;
             this.points[index].y += stepY;
-            if (!this.options.simpleMode && redraw && typeof(this.points[index].redraw) === "function") {
+            if (!this.options.simpleMode && redraw && typeof (this.points[index].redraw) === "function") {
                 this.points[index].redraw();
             }
         }
@@ -688,14 +701,21 @@ function SmartShape() {
         this.bottom += stepY;
         const children = this.getChildren(true)
         if (redraw) {
-            this.redraw();
+            if (!fast) {
+                this.redraw();
+            } else {
+                if (this.svg) {
+                    this.svg.style.left = this.left + "px";
+                    this.svg.style.top = this.top + "px";
+                }
+            }
         }
         if (children.length && this.options.groupChildShapes) {
             children.forEach(child => {
                 for (let point of child.points) {
                     point.x += stepX;
                     point.y += stepY;
-                    if (!this.options.simpleMode && redraw && typeof(point.redraw) === "function") {
+                    if (!this.options.simpleMode && redraw && typeof (point.redraw) === "function") {
                         point.redraw();
                     }
                 }
@@ -705,7 +725,15 @@ function SmartShape() {
                 child.bottom += stepY;
                 child.options.offsetX += stepX;
                 child.options.offsetY += stepY;
+                if (fast && child.svg) {
+                    child.svg.style.left = child.left + "px";
+                    child.svg.style.top = child.top + "px";
+                }
             });
+        }
+        if (fast) {
+            SmartShapeDrawHelper.redrawResizeBox(this);
+            SmartShapeDrawHelper.redrawRotateBox(this);
         }
     }
 
@@ -747,6 +775,9 @@ function SmartShape() {
      * @param scaleY {number} Vertical scale ratio
      */
     this.scaleBy = (scaleX=null,scaleY= null,includeChildren=null) => {
+        if (scaleX === 1 && scaleY === 1) {
+            return
+        }
         const pos = this.getPosition(includeChildren || this.options.groupChildShapes);
         this.points.forEach(point => {
             point.x = (point.x-pos.left)*scaleX+pos.left;
@@ -1368,11 +1399,9 @@ function SmartShape() {
      * @returns {{top: number, left: number, bottom: *, width: *, right: *, height: *}}
      */
     this.getResizeBoxBounds = () => {
-        //this.calcPosition();
         let pos = this.getPosition(this.options.groupChildShapes);
         const parent = this.getRootParent(true);
         if (parent && parent.options.groupChildShapes) {
-        //    parent.calcPosition();
             pos = parent.getPosition(parent.options.groupChildShapes);
         }
         const [pointWidth,pointHeight] = this.getMaxPointSize();
@@ -1394,11 +1423,11 @@ function SmartShape() {
         }
         const bounds = this.getBounds();
         if (result.bottom > bounds.bottom) {
-            this.moveTo(pos.left,result.bottom-bounds.bottom+pos.top,false);
+            this.moveTo(pos.left,result.bottom-bounds.bottom+pos.top,false,true,this.options.simpleMode);
             result.bottom = bounds.bottom;
         }
         if (result.right > bounds.right) {
-            this.moveTo(result.right-bounds.right+pos.left,pos.top,false);
+            this.moveTo(result.right-bounds.right+pos.left,pos.top,false,true,this.options.simpleMode);
             result.bottom = bounds.bottom;
         }
         return result;
