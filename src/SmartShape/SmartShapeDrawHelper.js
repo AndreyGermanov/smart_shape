@@ -117,7 +117,6 @@ function SmartShapeDrawHelper() {
         if (!parent || !parent.options.displayAsPath) {
             this.setupShapeFill(shape);
             this.createSVGFilters(shape);
-
             this.redrawResizeBox(parent || shape);
             this.redrawRotateBox(parent || shape);
         }
@@ -260,6 +259,9 @@ function SmartShapeDrawHelper() {
             return
         }
         const bounds = shape.getResizeBoxBounds();
+        if (shape.options.displayMode === SmartShapeDisplayMode.SCALE) {
+            shape.resizeBox.options.shapeOptions.visible = shape.options.visible;
+        }
         shape.resizeBox.left = bounds.left;
         shape.resizeBox.top = bounds.top;
         shape.resizeBox.width = bounds.width;
@@ -283,6 +285,9 @@ function SmartShapeDrawHelper() {
             return
         }
         const bounds = shape.getResizeBoxBounds();
+        if (shape.options.displayMode === SmartShapeDisplayMode.ROTATE) {
+            shape.rotateBox.options.shapeOptions.visible = shape.options.visible;
+        }
         shape.rotateBox.left = bounds.left;
         shape.rotateBox.top = bounds.top;
         shape.rotateBox.width = bounds.width;

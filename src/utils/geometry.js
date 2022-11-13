@@ -1,3 +1,5 @@
+import {abs} from "./index.js";
+
 /**
  * @ignore
  * Function converts degrees to radians
@@ -26,6 +28,9 @@ export const radians_to_degrees = (radians) => radians * (180/Math.PI);
  * @returns {array} New coordinates of point in array [x,y]
  */
 export const getRotatedCoords = (angle, x, y, centerX, centerY) => {
+    if (angle === 0) {
+        return [x,y];
+    }
     const radians = degrees_to_radians(angle);
     const resultX = (x-centerX)*Math.cos(radians)-(y-centerY)*Math.sin(radians)+centerX;
     const resultY = (x-centerX)*Math.sin(radians)+(y-centerY)*Math.cos(radians)+centerY;
@@ -186,6 +191,63 @@ export const rectsOverlap = (rect1,rect2) => {
 }
 
 /**
+ * Method used to transform specified coordinates
+ * using transformations, specified in `params` argument.
+ * @param x {number} X coordinate
+ * @param y {number} Y coordinate
+ * @param type {PointMapTypes} This options specifies the transformation direction.
+ * If it equals to `original_to_current` then need to apply specified transformations
+ * to point, if  it equals `current_to_original`, the it assumed that all transformations
+ * already applied to specified coordinates and need to un-apply them.
+ * @param params Transformation parameters: `offsetX` - move by X, `offsetY` - move by Y,
+ * `scaleX` - scale by X, `scaleY` - scale by Y, `flippedX` - flip by X, `flippedY` - flip by Y
+ * @returns {array} New coordinates after transformation in [x,y] format
+ */
+export const mapPointCords = (x,y,type,params) => {
+    const scaleX = params.scaleFactorX || 1;
+    const scaleY = params.scaleFactorY || 1;
+    const offsetX = params.offsetX || 0;
+    const offsetY = params.offsetY || 0;
+    const flippedX = params.flippedX || false;
+    const flippedY = params.flippedY || false;
+    if (type === PointMapTypes.CURRENT_TO_ORIGINAL) {
+        [x,y] = flipPoint(x,y,flippedX,flippedY,params);
+        x -= offsetX;
+        y -= offsetY;
+        x *= (1/scaleX);
+        y *= (1/scaleY);
+    } else if (type === PointMapTypes.ORIGINAL_TO_CURRENT) {
+        x *= scaleX;
+        y *= scaleY;
+        x += offsetX;
+        y += offsetY;
+        [x,y] = flipPoint(x,y,flippedX,flippedY,params);
+    }
+    return [x,y];
+}
+
+/**
+ * @ignore
+ * Internal method to flip specified point over X or/and Y axis
+ * according to specified dimensions of shape
+ * @param x {number} X coordinate of point
+ * @param y {number} Y coordinate of point
+ * @param byX {boolean} Flip horizontally
+ * @param byY {boolean} Flip vertically
+ * @param pos {object} Shape dimensions, object with fields: `top`,`left`,`bottom`,`right`,`width`,`height`
+ * @returns {array} New point coordinates in [x,y] format
+ */
+export const flipPoint = (x,y, byX, byY, pos) => {
+    if (byX) {
+        x = abs(pos.right - x) + pos.left
+    }
+    if (byY) {
+        y = abs(pos.bottom - y) + pos.top
+    }
+    return [x,y]
+}
+
+/**
  * @ignore
  * Function used to convert polar coordinates to
  * screen coordinates
@@ -200,4 +262,9 @@ export const latLonToXY = (lat, lon) => {
     const merc = 0.5 * Math.log((1 + Math.sin(rad)) / (1 - Math.sin(rad)))
     const y = (width * merc / (2 * Math.PI))
     return [x,y]
+}
+
+export const PointMapTypes = {
+    CURRENT_TO_ORIGINAL: "current_to_original",
+    ORIGINAL_TO_CURRENT: "original_to_current"
 }

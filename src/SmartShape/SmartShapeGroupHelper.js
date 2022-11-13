@@ -194,7 +194,7 @@ function SmartShapeGroupHelper(shape) {
         children.push(this.shape);
         children = children.filter(child=>child.points.length);
         if (!children.length) {
-            return {left:0,right:0,top:0,bottom:0};
+            return {left:0,right:0,top:0,bottom:0,width:0,height:0};
         }
         const pos = {
             left: children.map(item => item.left).reduce((minLeft,left) => left < minLeft ? left : minLeft),

@@ -33,6 +33,15 @@
 </dd>
 </dl>
 
+## Constants
+
+<dl>
+<dt><a href="#mapPointCords">mapPointCords</a> ⇒ <code>array</code></dt>
+<dd><p>Method used to transform specified coordinates
+using transformations, specified in <code>params</code> argument.</p>
+</dd>
+</dl>
+
 <a name="ResizeBox"></a>
 
 ## ResizeBox
@@ -743,6 +752,7 @@ Method returns a distance from this point to other specified point
     * [.root](#SmartShape+root) : <code>HTMLElement</code>
     * [.points](#SmartShape+points) : <code>array</code>
     * [.svg](#SmartShape+svg) : <code>HTMLOrSVGElement</code>
+    * [.polygon](#SmartShape+polygon) : <code>HTMLOrSVGElement</code>
     * [.groupHelper](#SmartShape+groupHelper) : [<code>SmartShapeGroupHelper</code>](#SmartShapeGroupHelper)
     * [.options](#SmartShape+options) : <code>object</code>
     * [.left](#SmartShape+left) : <code>number</code>
@@ -769,8 +779,8 @@ Method returns a distance from this point to other specified point
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.findPointById(id)](#SmartShape+findPointById) ⇒ <code>null</code> \| <code>object</code>
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
-    * [.moveTo(x, y, redraw)](#SmartShape+moveTo)
-    * [.moveBy(stepX, stepY, redraw)](#SmartShape+moveBy)
+    * [.moveTo(x, y, redraw, fast)](#SmartShape+moveTo)
+    * [.moveBy(stepX, stepY, redraw, fast)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.scaleBy(scaleX, scaleY)](#SmartShape+scaleBy)
     * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
@@ -804,6 +814,8 @@ Method returns a distance from this point to other specified point
     * [.getParent()](#SmartShape+getParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.getRootParent()](#SmartShape+getRootParent) ⇒ [<code>SmartShape</code>](#SmartShape) \| <code>null</code>
     * [.getParentsList(plist)](#SmartShape+getParentsList) ⇒ <code>array</code>
+    * [.mapCurrentPointToOriginal(x, y)](#SmartShape+mapCurrentPointToOriginal) ⇒ <code>array</code>
+    * [.mapOriginalPointToCurrent(x, y)](#SmartShape+mapOriginalPointToCurrent) ⇒ <code>array</code>
 
 <a name="new_SmartShape_new"></a>
 
@@ -829,6 +841,13 @@ Array of points of shape polygon. Each item of array is [SmartPoint](#SmartPoint
 ### smartShape.svg : <code>HTMLOrSVGElement</code>
 [SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
 SmartShape constructs SVG element based on provided point coordinates and options.
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+polygon"></a>
+
+### smartShape.polygon : <code>HTMLOrSVGElement</code>
+[SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element), which used as a backend for shape.
+SVG Polygon element that defines a shape inside <SVG> element
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+groupHelper"></a>
@@ -1120,7 +1139,7 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 **Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
 <a name="SmartShape+moveTo"></a>
 
-### smartShape.moveTo(x, y, redraw)
+### smartShape.moveTo(x, y, redraw, fast)
 Moves shape to specific position. It only changes coordinates of points, but do not
 redraw the shape on new position. So, you need to call `redraw` yourself after move.
 
@@ -1131,10 +1150,11 @@ redraw the shape on new position. So, you need to call `redraw` yourself after m
 | x | <code>number</code> | new X coordinate |
 | y | <code>number</code> | new Y coordinate |
 | redraw | <code>boolean</code> | should the function redraw the shape after move. True by default |
+| fast | <code>boolean</code> | if true, then only change shape dimensions without recalculate points |
 
 <a name="SmartShape+moveBy"></a>
 
-### smartShape.moveBy(stepX, stepY, redraw)
+### smartShape.moveBy(stepX, stepY, redraw, fast)
 Moves shape by specified number of pixels by X and Y.
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1144,6 +1164,7 @@ Moves shape by specified number of pixels by X and Y.
 | stepX | <code>number</code> | number of pixels to move horizontally |
 | stepY | <code>number</code> | number of pixes to move vertically |
 | redraw | <code>boolean</code> | should the function redraw the shape after move. True by default |
+| fast | <code>boolean</code> | if true, then only change shape dimensions without recalculate points |
 
 <a name="SmartShape+scaleTo"></a>
 
@@ -1507,6 +1528,36 @@ Method returns a list of parents of current shape ordered from nearest to root
 | Param | Type | Description |
 | --- | --- | --- |
 | plist | <code>array</code> | Temporary list of parents from previous recursive call |
+
+<a name="SmartShape+mapCurrentPointToOriginal"></a>
+
+### smartShape.mapCurrentPointToOriginal(x, y) ⇒ <code>array</code>
+Method used to transform coordinates of point on current shape
+to coordinate of points of original shape, before all transformations done
+on it (move,scale or flip)
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - Array of new coordinates [x,y]  
+
+| Param | Description |
+| --- | --- |
+| x | X coordinate |
+| y | Y coordinate |
+
+<a name="SmartShape+mapOriginalPointToCurrent"></a>
+
+### smartShape.mapOriginalPointToCurrent(x, y) ⇒ <code>array</code>
+Method used to transform coordinates of point of orignal shape
+to coordinate of points of current shape, after all transformations done
+on it (move,scale or flip)
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+**Returns**: <code>array</code> - Array of new coordinates [x,y]  
+
+| Param | Description |
+| --- | --- |
+| x | X coordinate |
+| y | Y coordinate |
 
 <a name="SmartShapeDrawHelper"></a>
 
@@ -2103,4 +2154,20 @@ Enumeration of event names, that can be emitted by [SmartShape](#SmartShape) obj
 | Param | Description |
 | --- | --- |
 | CONTAINER_BOUNDS_CHANGED | Emitted by shape when dimensions of container changed, e.g. browser  window resized. Sends the event with the following fields: `bounds` -an object with the following fields:  left:number,top:number,right:number,bottom:number, `points` - array of points ([SmartPoint](#SmartPoint) objects)  with array of all points of this shape, which could be affected by this bounds change. |
+
+<a name="mapPointCords"></a>
+
+## mapPointCords ⇒ <code>array</code>
+Method used to transform specified coordinates
+using transformations, specified in `params` argument.
+
+**Kind**: global constant  
+**Returns**: <code>array</code> - New coordinates after transformation in [x,y] format  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | X coordinate |
+| y | <code>number</code> | Y coordinate |
+| type | <code>PointMapTypes</code> | This options specifies the transformation direction. If it equals to `original_to_current` then need to apply specified transformations to point, if  it equals `current_to_original`, the it assumed that all transformations already applied to specified coordinates and need to un-apply them. |
+| params |  | Transformation parameters: `offsetX` - move by X, `offsetY` - move by Y, `scaleX` - scale by X, `scaleY` - scale by Y, `flippedX` - flip by X, `flippedY` - flip by Y |
 
