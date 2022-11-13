@@ -15,7 +15,14 @@ import {
     readJSON, abs
 } from "../utils";
 import EventsManager from "../events/EventsManager.js";
-import {applyAspectRatio, distance, distanceFromLine} from "../utils/geometry.js";
+import {
+    applyAspectRatio,
+    distance,
+    distanceFromLine,
+    flipPoint,
+    mapPointCords,
+    PointMapTypes
+} from "../utils/geometry.js";
 import SmartShapeContextMenu from "./SmartShapeContextMenu.js";
 /**
  * SmartShape class. Used to construct shapes.
@@ -674,7 +681,7 @@ function SmartShape() {
             newX = x + pos.width > bounds.right ? bounds.right - pos.width : x;
             newY = y + pos.height > bounds.bottom ? bounds.bottom - pos.height : y;
         }
-        this.moveBy(newX-pos.left,newY-pos.top, redraw);
+        this.moveBy(newX-pos.left,newY-pos.top, redraw, fast);
         this.calcPosition();
     }
 
@@ -931,15 +938,10 @@ function SmartShape() {
      * @param byX {boolean} Flip horizontally
      * @param byY {boolean} Flip vertically
      * @param pos {object} Shape dimensions, object with fields: `top`,`left`,`bottom`,`right`,`width`,`height`
-     * @returns {*}
+     * @returns {SmartPoint} point object with flipped coordinates
      */
     this.flipPoint = (point, byX, byY, pos) => {
-        if (byX) {
-            point.x = abs(pos.right - point.x) + pos.left
-        }
-        if (byY) {
-            point.y = abs(pos.bottom - point.y) + pos.top
-        }
+        [point.x,point.y] = flipPoint(point.x,point.y,byX,byY,pos);
         return point
     }
 
@@ -1004,10 +1006,12 @@ function SmartShape() {
                 this.rotateBox && this.rotateBox.hide();
                 !this.resizeBox && this.setupResizeBox();
                 this.resizeBox && this.resizeBox.setOptions({shapeOptions: {visible: this.options.visible}})
+                this.resizeBox.show();
             } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
                 this.resizeBox && this.resizeBox.hide();
                 !this.rotateBox && this.setupRotateBox();
                 this.rotateBox && this.rotateBox.setOptions({shapeOptions: {visible: this.options.visible}})
+                this.rotateBox.show();
             } else {
                 this.resizeBox && this.resizeBox.hide();
                 this.rotateBox && this.rotateBox.hide();
@@ -1413,23 +1417,6 @@ function SmartShape() {
             width: pos.width + (pointWidth)*2,
             height: pos.height + (pointHeight)*2,
         }
-        if (result.left < 0) {
-            this.moveTo(result.left*-1,pos.top,false);
-            result.left = 0;
-        }
-        if (result.top < 0) {
-            this.moveTo(pos.left,result.top*-1,false);
-            result.top = 0;
-        }
-        const bounds = this.getBounds();
-        if (result.bottom > bounds.bottom) {
-            this.moveTo(pos.left,result.bottom-bounds.bottom+pos.top,false,true,this.options.simpleMode);
-            result.bottom = bounds.bottom;
-        }
-        if (result.right > bounds.right) {
-            this.moveTo(result.right-bounds.right+pos.left,pos.top,false,true,this.options.simpleMode);
-            result.bottom = bounds.bottom;
-        }
         return result;
     }
 
@@ -1671,9 +1658,35 @@ function SmartShape() {
      */
     this.getParentsList = (plist=[]) => this.groupHelper.getParentsList(plist);
 
+    /**
+     * Method used to transform coordinates of point on current shape
+     * to coordinate of points of original shape, before all transformations done
+     * on it (move,scale or flip)
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @returns {array} Array of new coordinates [x,y]
+     */
+    this.mapCurrentPointToOriginal = (x,y) =>
+        mapPointCords(x, y, PointMapTypes.CURRENT_TO_ORIGINAL, {
+            ...this.options,
+            ...this.getPosition(this.options.groupChildShapes),
+        }
+    );
 
-
-
+    /**
+     * Method used to transform coordinates of point of orignal shape
+     * to coordinate of points of current shape, after all transformations done
+     * on it (move,scale or flip)
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @returns {array} Array of new coordinates [x,y]
+     */
+    this.mapOriginalPointToCurrent = (x,y) =>
+        mapPointCords(x, y, PointMapTypes.ORIGINAL_TO_CURRENT, {
+            ...this.options,
+            ...this.getPosition(this.options.groupChildShapes),
+        }
+    );
 }
 
 /**

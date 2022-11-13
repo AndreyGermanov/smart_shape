@@ -172,7 +172,7 @@ describe('SmartShape API tests', () => {
       const shape = new SmartShape();
       shape.init(app,{visible:false,canScale:true,id:"shape1"},[[0,100],[100,0],[200,100]]);
       shape.setOptions({canScale:true,canRotate:true,displayMode:SmartShapeDisplayMode.SCALE});
-      await shape.redraw();
+      shape.redraw();
       cy.wait(1).then(async() => {
         assert.equal(shape.svg.style.display,'none',"Should create invisible shape");
         assert.equal(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also invisible")
@@ -845,6 +845,46 @@ describe('SmartShape API tests', () => {
           );
         })
       })
+    });
+  });
+
+  it("mapCurrentPointToOriginal", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.width = "1000px";
+      app.style.height = "1000px";
+      const shape = new SmartShape().init(app,{zIndex:1000,id:"shape"},[[0,100],[100,0],[150,50],[200,0],[200,100]]);
+      const point = shape.findPoint(150,50);
+      [shape.options.centerX,shape.options.centerY] = shape.getCenter(shape.options.groupChildShapes);
+      shape.moveBy(140,130);
+      shape.scaleTo(500,400);
+      shape.scaleTo(100,30);
+      shape.flip(true,true,true);
+      shape.show();
+      let [x,y] = shape.mapCurrentPointToOriginal(point.x,point.y);
+      assert.equal(parseInt(x),150,"Should correctly map X coordinate");
+      assert.equal(parseInt(y),50,"Should correctly map Y coordinate");
+    });
+  });
+
+  it("mapOriginalPointToCurrent", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
+      SmartShapeManager.clear();
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.width = "1000px";
+      app.style.height = "1000px";
+      const shape = new SmartShape().init(app,{zIndex:1000,id:"shape"},[[0,100],[100,0],[150,50],[200,0],[200,100]]);
+      const point = shape.findPoint(150,50);
+      [shape.options.centerX,shape.options.centerY] = shape.getCenter(shape.options.groupChildShapes);
+      shape.moveBy(140,130);
+      shape.scaleTo(500,400);
+      shape.flip(true,true,true);
+      shape.scaleTo(100,30);
+      shape.show();
+      let [x,y] = shape.mapOriginalPointToCurrent(150,50);
+      assert.equal(parseInt(x),point.x,"Should correctly map X coordinate");
+      assert.equal(parseInt(y),point.y,"Should correctly map Y coordinate");
     });
   });
 })

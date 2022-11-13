@@ -209,14 +209,14 @@ function ResizeBox() {
      * Method used to add marker points to ResizeBox, that lately used to resize the box
      */
     this.addPoints = () => {
-        this.left_top = this.shape.addPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{backgroundImage: "url('"+resize_lt+"')"}});
-        this.center_top = this.shape.addPoint(this.left+this.width/2,this.top,{id:this.shape.guid+"_center_top",style:{backgroundImage: "url('"+resize_ct+"')"}});
-        this.right_top = this.shape.addPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{backgroundImage: "url('"+resize_rt+"')"}});
-        this.right_center = this.shape.addPoint(this.right,this.top+this.height/2,{id:this.shape.guid+"_right_center",style:{backgroundImage: "url('"+resize_rc+"')"}});
-        this.right_bottom = this.shape.addPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{backgroundImage: "url('"+resize_rb+"')"}});
-        this.center_bottom = this.shape.addPoint(this.left+this.width/2,this.bottom,{id:this.shape.guid+"_center_bottom",style:{backgroundImage: "url('"+resize_cb+"')"}});
-        this.left_bottom = this.shape.addPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{backgroundImage: "url('"+resize_lb+"')"}});
-        this.left_center = this.shape.addPoint(this.left,this.top+this.height/2,{id:this.shape.guid+"_left_center",style:{backgroundImage: "url('"+resize_lc+"')"}});
+        this.left_top = this.shape.putPoint(this.left,this.top,{id:this.shape.guid+"_left_top",style:{backgroundImage: "url('"+resize_lt+"')"}});
+        this.center_top = this.shape.putPoint(this.left+this.width/2,this.top,{id:this.shape.guid+"_center_top",style:{backgroundImage: "url('"+resize_ct+"')"}});
+        this.right_top = this.shape.putPoint(this.right,this.top,{id:this.shape.guid+"_right_top",style:{backgroundImage: "url('"+resize_rt+"')"}});
+        this.right_center = this.shape.putPoint(this.right,this.top+this.height/2,{id:this.shape.guid+"_right_center",style:{backgroundImage: "url('"+resize_rc+"')"}});
+        this.right_bottom = this.shape.putPoint(this.right,this.bottom,{id:this.shape.guid+"_right_bottom",style:{backgroundImage: "url('"+resize_rb+"')"}});
+        this.center_bottom = this.shape.putPoint(this.left+this.width/2,this.bottom,{id:this.shape.guid+"_center_bottom",style:{backgroundImage: "url('"+resize_cb+"')"}});
+        this.left_bottom = this.shape.putPoint(this.left,this.bottom,{id:this.shape.guid+"_left_bottom",style:{backgroundImage: "url('"+resize_lb+"')"}});
+        this.left_center = this.shape.putPoint(this.left,this.top+this.height/2,{id:this.shape.guid+"_left_center",style:{backgroundImage: "url('"+resize_lc+"')"}});
         this.setPointsOptions();
     }
 
