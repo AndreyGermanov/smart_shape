@@ -1,5 +1,5 @@
 import {EventsManager, ShapeEvents,SmartShapeManager,SmartShapeDisplayMode} from "../index.js";
-import {blobToDataURL, dataURLtoBlob, notNull, timeout} from "../utils";
+import {blobToDataURL, dataURLtoBlob, getRotatedCoords, notNull, timeout} from "../utils";
 import {applyAspectRatio} from "../utils/geometry.js";
 
 /**
@@ -287,6 +287,8 @@ function SmartShapeDrawHelper() {
         const bounds = shape.getResizeBoxBounds();
         if (shape.options.displayMode === SmartShapeDisplayMode.ROTATE) {
             shape.rotateBox.options.shapeOptions.visible = shape.options.visible;
+        } else {
+            shape.rotateBox.options.shapeOptions.visible = false;
         }
         shape.rotateBox.left = bounds.left;
         shape.rotateBox.top = bounds.top;
