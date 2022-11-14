@@ -807,7 +807,7 @@ function SmartShape() {
                 child.options.scaleFactorY *= scaleY;
                 child.calcPosition();
             })
-            if (!this.options.displayAsPath && this.options.visible) {
+            if (!this.options.simpleMode && this.options.visible) {
                 this.getChildren().forEach(child => child.redraw());
             }
         }

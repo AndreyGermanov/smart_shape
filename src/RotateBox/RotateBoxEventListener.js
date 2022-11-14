@@ -244,7 +244,7 @@ function RotateBoxEventListener(rotateBox) {
      * onMouseUp event for marker points
      * @param _event {MouseEvent} Standard Mouse event object
      */
-    this.onPointMouseUp = (_event) => {
+    this.onPointMouseUp = (event) => {
         this.rotateBox.shape.points.forEach(point => {
             point.setOptions({visible:true});
             point.redraw();
