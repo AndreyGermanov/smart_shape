@@ -248,13 +248,6 @@ export default function SmartShapeContextMenu(shape) {
         const pos = clone.getPosition(true);
         clone.moveTo(pos.left+5,pos.top+5);
         SmartShapeManager.activateShape(clone);
-        for (let child of clone.getChildren(true)) {
-            const cloneParent = child.getParent();
-            if (cloneParent) {
-                cloneParent.removeChild(child);
-            }
-            destShape.addChild(child);
-        }
     }
 
     /**

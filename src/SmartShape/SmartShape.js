@@ -12,7 +12,7 @@ import {
     uuid,
     isPointInsidePolygon,
     getOffset,
-    readJSON, abs
+    readJSON, abs, recursiveDeepCopy
 } from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {
@@ -1406,7 +1406,11 @@ function SmartShape() {
         let pos = this.getPosition(this.options.groupChildShapes);
         const parent = this.getRootParent(true);
         if (parent && parent.options.groupChildShapes) {
-            pos = parent.getPosition(parent.options.groupChildShapes);
+            if (parent.options.displayAsPath) {
+                pos = parent.getPosition(parent.options.groupChildShapes);
+            } else {
+                pos = this.getPosition(this.options.groupChildShapes);
+            }
         }
         const [pointWidth,pointHeight] = this.getMaxPointSize();
         const result = {

@@ -1620,10 +1620,6 @@ function Ae(t) {
     s && s.options.groupChildShapes && (i = s);
     const o = i.clone({}, i.options.groupChildShapes), n = o.getPosition(!0);
     o.moveTo(n.left + 5, n.top + 5), SmartShapeManager.activateShape(o);
-    for (let h of o.getChildren(!0)) {
-      const r = h.getParent();
-      r && r.removeChild(h), i.addChild(h);
-    }
   }, this.onExportJsonClick = (e) => {
     let i = this.shape;
     const s = i.getRootParent();
@@ -1996,7 +1992,7 @@ function R() {
   }, this.getResizeBoxBounds = () => {
     let t = this.getPosition(this.options.groupChildShapes);
     const e = this.getRootParent(!0);
-    e && e.options.groupChildShapes && (t = e.getPosition(e.options.groupChildShapes));
+    e && e.options.groupChildShapes && (e.options.displayAsPath ? t = e.getPosition(e.options.groupChildShapes) : t = this.getPosition(this.options.groupChildShapes));
     const [i, s] = this.getMaxPointSize();
     return {
       left: t.left - i,
