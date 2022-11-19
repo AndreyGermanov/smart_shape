@@ -1,6 +1,6 @@
 import {Menus} from "../../context_menu/src/index.js";
 import {getMousePos} from "../events/functions.js";
-import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical,to_path,to_shapes} from "../../assets/graphics.js";
+import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical,to_path,to_shapes,base64_export} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";
 import {PngExportTypes} from "./SmartShapeDrawHelper.js";
 
@@ -76,6 +76,7 @@ export default function SmartShapeContextMenu(shape) {
             {id: "i" + shape.guid + "_export_json", title: "Export to JSON", image: save},
             {id: "i" + shape.guid + "_export_svg", title: "Export to SVG", image: svg},
             {id: "i" + shape.guid + "_export_png", title: "Export to PNG", image: png},
+            {id: "i" + shape.guid + "_get_base64", title: "Copy Base64 to clipboard", image: base64_export},
             {id: "i" + shape.guid + "_destroy", title: "Destroy", image: del}
         ];
         if (shape.options.canAddPoints) {
@@ -120,6 +121,9 @@ export default function SmartShapeContextMenu(shape) {
                     break;
                 case "i"+this.shape.guid+"_export_png":
                     this.onExportPngClick(event);
+                    break;
+                case "i"+this.shape.guid+"_get_base64":
+                    this.onGetBase64ToClipboardClick(event);
                     break;
                 case "i"+this.shape.guid+"_group":
                     parent = this.shape.getRootParent();
@@ -295,6 +299,20 @@ export default function SmartShapeContextMenu(shape) {
         }
         const blob = await destShape.toPng(PngExportTypes.BLOB);
         this.saveToFile(blob,this.getExportFileName("png"));
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Copy Base64 to clipboard" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onGetBase64ToClipboardClick = async(_event) => {
+        let destShape = this.shape;
+        const parent = destShape.getRootParent();
+        if (parent && parent.options.groupChildShapes) {
+            destShape = parent;
+        }
+        await window.navigator.clipboard.writeText(await destShape.toPng(PngExportTypes.DATAURL));
     }
 
     /**
