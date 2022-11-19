@@ -158,7 +158,6 @@ function RotateBox() {
         this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds();
         this.addPoints();
         this.eventListener = new RotateBoxEventListener(this).run();
-        this.redraw()
         return this;
     }
 

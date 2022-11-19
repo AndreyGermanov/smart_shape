@@ -10,6 +10,7 @@ describe('ResizeBox tests', () => {
     const app = Cypress.$("#app").toArray()[0];
     app.style.height = "800px";
     const box = new ResizeBox().init(app,10,10,90,90,{id:"box1"});
+    box.redraw();
     return [app,box];
   }
   const initShape = () => {
@@ -241,6 +242,7 @@ describe('ResizeBox tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       const box = new ResizeBox();
       box.init(app,0,0,100,100,{shapeOptions:{visible:false}},);
+      box.redraw();
       assert.equal(box.shape.svg.style.display,'none',"Should create invisible shape");
       box.show();
       assert.notEqual(box.shape.svg.style.display,'none',"Should show visible shape");
@@ -380,6 +382,7 @@ describe('ResizeBox tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       app.style.height = "800px";
       const box = new ResizeBox().init(app,10,10,90,90,{id:"box1",onlyMove:true});
+      box.redraw();
       assert.equal(box.shape.svg.style.opacity,"0",
           "Should hide resize box if 'onlyMove' enabled"
       )

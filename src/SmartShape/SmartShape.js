@@ -829,6 +829,9 @@ function SmartShape() {
     this.zoomBy = (level) => {
         this.options.zoomLevel *= level;
         this.scaleBy(level,level);
+        if (this.options.groupChildShapes) {
+            this.getChildren(true).forEach(child => child.options.zoomLevel *= level);
+        }
     }
 
     /**
@@ -1017,23 +1020,6 @@ function SmartShape() {
      * Depending on this it shows either ResizeBox around it, or RotateBox, or nothing.
      */
     this.applyDisplayMode = () => {
-        const parent = this.getRootParent();
-        if (!parent || !parent.options.groupChildShapes) {
-            if (this.options.displayMode === SmartShapeDisplayMode.SCALE && this.options.canScale) {
-                this.rotateBox && this.rotateBox.hide();
-                !this.resizeBox && this.setupResizeBox();
-                this.resizeBox && this.resizeBox.setOptions({shapeOptions: {visible: this.options.visible}})
-                this.resizeBox.show();
-            } else if (this.options.displayMode === SmartShapeDisplayMode.ROTATE && this.options.canRotate) {
-                this.resizeBox && this.resizeBox.hide();
-                !this.rotateBox && this.setupRotateBox();
-                this.rotateBox && this.rotateBox.setOptions({shapeOptions: {visible: this.options.visible}})
-                this.rotateBox.show();
-            } else {
-                this.resizeBox && this.resizeBox.hide();
-                this.rotateBox && this.rotateBox.hide();
-            }
-        }
         this.points.filter(point=>typeof(point.setOptions) === "function").forEach(point => {
             const options = {zIndex: this.options.zIndex + 15}
             if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
@@ -1383,10 +1369,8 @@ function SmartShape() {
                 hasContextMenu:false
             }
         })
-       // this.calcPosition();
-        this.eventListener.addResizeEventListener();
         this.resizeBox.redraw();
-        return this.resizeBox;
+        this.eventListener.addResizeEventListener();
     }
 
     /**
@@ -1408,10 +1392,8 @@ function SmartShape() {
                 hasContextMenu: false
             }
         })
-       // this.calcPosition();
-        this.eventListener.addRotateEventListener();
         this.rotateBox.redraw();
-        return this.rotateBox;
+        this.eventListener.addRotateEventListener();
     }
 
     /**

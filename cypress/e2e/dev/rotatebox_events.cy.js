@@ -9,6 +9,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"},);
+      shape.show();
       let triggered = false;
       shape.addEventListener("mousedown",(event) => {
         triggered = true;
@@ -29,6 +30,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("mouseup",(event) => {
         triggered = true;
@@ -51,6 +53,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("click",(event) => {
         triggered = true;
@@ -71,6 +74,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggeredOver = false;
       let triggeredOut = false;
       shape.addEventListener("mouseover",(event) => {
@@ -101,6 +105,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("mousemove",(event) => {
         triggered = true;
@@ -119,6 +124,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("dblclick",(event) => {
         triggered = true;
@@ -139,6 +145,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("move_start",(event) => {
         triggered = true;
@@ -159,6 +166,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("move",(event) => {
         triggered = true;
@@ -183,6 +191,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("move_end",(event) => {
         triggered = true;
@@ -209,6 +218,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("rotate",(event) => {
         triggered = true;
@@ -229,6 +239,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("point_drag_start",(event) => {
         triggered = true;
@@ -248,6 +259,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("point_drag_move",(event) => {
         triggered = true;
@@ -269,6 +281,7 @@ describe('RotateBox events', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = new RotateBox().init(app,0,0,100,100,{id:"shape1"});
+      shape.show();
       let triggered = false;
       shape.addEventListener("point_drag_end",(event) => {
         triggered = true;

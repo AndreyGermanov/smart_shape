@@ -887,4 +887,37 @@ describe('SmartShape API tests', () => {
       assert.equal(parseInt(y),point.y,"Should correctly map Y coordinate");
     });
   });
+
+  it("zoomBy", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(async() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "800px";
+      const shape = new SmartShape().init(app, {hasContextMenu:true},[[0, 100], [100, 0], [200, 100]]);
+      const point1 = shape.findPoint(0,100);
+      const point2 = shape.findPoint(100,0);
+      const point3 = shape.findPoint(200,100);
+      shape.scaleBy(2,3);
+      assert.equal(shape.options.scaleFactorX, 2, "Should correctly scale shape by X");
+      assert.equal(shape.options.scaleFactorY, 3, "Should correctly scale shape by Y");
+      assert.equal(point1.x, 0, "Should correctly scale point 1 by X");
+      assert.equal(point1.y, 300, "Should correctly scale point 1 by Y");
+      assert.equal(point2.x, 200, "Should correctly scale point 2 by X");
+      assert.equal(point2.y, 0, "Should correctly scale point 2 by Y");
+      assert.equal(point3.x, 400, "Should correctly scale point 3 by X");
+      assert.equal(point3.y, 300, "Should correctly scale point 3 by Y");
+      shape.zoomBy(2)
+      assert.equal(shape.options.zoomLevel, 2, "Should set zoom level");
+      assert.equal(shape.options.scaleFactorX, 4, "Should correctly scale shape by X");
+      assert.equal(shape.options.scaleFactorY, 6, "Should correctly scale shape by Y");
+      assert.equal(point1.x, 0, "Should correctly scale point 1 by X");
+      assert.equal(point1.y, 600, "Should correctly scale point 1 by Y");
+      assert.equal(point2.x, 400, "Should correctly scale point 2 by X");
+      assert.equal(point2.y, 0, "Should correctly scale point 2 by Y");
+      assert.equal(point3.x, 800, "Should correctly scale point 3 by X");
+      assert.equal(point3.y, 600, "Should correctly scale point 3 by Y");
+      assert.equal(shape.width, 800, "Should recalculate shape position according to zoom level");
+      assert.equal(shape.height, 600, "Should recalculate shape position according to zoom level");
+      shape.redraw();
+    })
+  });
 })
