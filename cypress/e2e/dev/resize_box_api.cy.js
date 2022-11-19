@@ -374,4 +374,26 @@ describe('ResizeBox tests', () => {
           "Should correctly bind internal shape to specified HTML container element");
     });
   });
+
+  it("onlyMove", () => {
+    cy.visit('http://localhost:5173/tests/empty.html').then(async() => {
+      const app = Cypress.$("#app").toArray()[0];
+      app.style.height = "800px";
+      const box = new ResizeBox().init(app,10,10,90,90,{id:"box1",onlyMove:true});
+      assert.equal(box.shape.svg.style.opacity,"0",
+          "Should hide resize box if 'onlyMove' enabled"
+      )
+      assert.equal(box.shape.points[0].element.style.display,"none",
+          "Points must be invisible"
+      )
+      box.setOptions({onlyMove:false});
+      box.redraw();
+      assert.equal(box.shape.svg.style.opacity,"1",
+          "Should show resize box if 'onlyMove' disabled"
+      )
+      assert.equal(box.shape.points[0].element.style.display,"",
+          "Points must be visible"
+      )
+    });
+  });
 });

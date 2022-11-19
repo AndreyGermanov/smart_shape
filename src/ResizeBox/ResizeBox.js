@@ -72,6 +72,8 @@ function ResizeBox() {
      * [SmartShape.options](#SmartShape+options)
      * @param zIndex {number} Order of element in a stack of HTML elements
      * (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top.
+     * @param onlyMove {boolean} If enabled, then resizeBox displayed as hidden. It's possible to drag it, but
+     * but not resize
      * @type {object}
      */
     this.options = {
@@ -98,7 +100,8 @@ function ResizeBox() {
                 fill:"none",
             }
         },
-        zIndex: 1000
+        zIndex: 1000,
+        onlyMove: false
     }
 
     /**
@@ -197,8 +200,8 @@ function ResizeBox() {
             return
         }
         this.options = mergeObjects(this.options,options);
-        this.options.shapeOptions.zIndex = this.options.zIndex || this.options.zIndex;
-        this.options.shapeOptions.id = this.options.id ? this.options.id : this.options.id;
+        this.options.shapeOptions.zIndex = this.options.zIndex || 1000;
+        this.options.shapeOptions.id = this.options.id || "";
         if (this.shape) {
             this.shape.setOptions(this.options.shapeOptions);
         }
@@ -330,6 +333,7 @@ function ResizeBox() {
         this.shape.setOptions(this.options.shapeOptions);
         this.setPointsMoveBounds();
         this.shape.redraw();
+        this.applyOnlyMove();
     }
 
     /**
@@ -380,6 +384,26 @@ function ResizeBox() {
      */
     this.removeEventListener = (eventName,listener) => {
         this.eventListener.removeEventListener(eventName,listener);
+    }
+
+    this.applyOnlyMove = () => {
+        if (this.options.onlyMove) {
+            this.shape.svg.style.opacity = 0;
+            this.shape.points.forEach((point) => {
+               point.options.visible = false;
+               if (point.element) {
+                   point.redraw();
+               }
+            })
+        } else {
+            this.shape.svg.style.opacity = 1;
+            this.shape.points.forEach((point) => {
+                point.options.visible = true;
+                if (point.element) {
+                    point.redraw();
+                }
+            })
+        }
     }
 }
 
