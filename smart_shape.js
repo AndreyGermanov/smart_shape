@@ -2089,9 +2089,10 @@ function rt() {
         fill: "none"
       }
     },
-    zIndex: 1e3
+    zIndex: 1e3,
+    onlyMove: !1
   }, this.eventListener = null, this.left_top = null, this.left_center = null, this.left_bottom = null, this.center_top = null, this.center_bottom = null, this.right_top = null, this.right_center = null, this.right_bottom = null, this.init = (t, e, i, s, o, n = {}) => (this.left = parseInt(e), this.top = parseInt(i), this.width = parseInt(s), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new R().init(t, S({}, this.options.shapeOptions), []), a.emit(l.SHAPE_CREATE, this.shape, {}), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new se(this).run(), this.redraw(), this), this.setOptions = (t = {}) => {
-    !t || typeof t != "object" || (this.options = S(this.options, t), this.options.shapeOptions.zIndex = this.options.zIndex || this.options.zIndex, this.options.shapeOptions.id = this.options.id ? this.options.id : this.options.id, this.shape && this.shape.setOptions(this.options.shapeOptions));
+    !t || typeof t != "object" || (this.options = S(this.options, t), this.options.shapeOptions.zIndex = this.options.zIndex || 1e3, this.options.shapeOptions.id = this.options.id || "", this.shape && this.shape.setOptions(this.options.shapeOptions));
   }, this.addPoints = () => {
     this.left_top = this.shape.putPoint(this.left, this.top, { id: this.shape.guid + "_left_top", style: { backgroundImage: "url('" + kt + "')" } }), this.center_top = this.shape.putPoint(this.left + this.width / 2, this.top, { id: this.shape.guid + "_center_top", style: { backgroundImage: "url('" + Nt + "')" } }), this.right_top = this.shape.putPoint(this.right, this.top, { id: this.shape.guid + "_right_top", style: { backgroundImage: "url('" + Wt + "')" } }), this.right_center = this.shape.putPoint(this.right, this.top + this.height / 2, { id: this.shape.guid + "_right_center", style: { backgroundImage: "url('" + Ft + "')" } }), this.right_bottom = this.shape.putPoint(this.right, this.bottom, { id: this.shape.guid + "_right_bottom", style: { backgroundImage: "url('" + Gt + "')" } }), this.center_bottom = this.shape.putPoint(this.left + this.width / 2, this.bottom, { id: this.shape.guid + "_center_bottom", style: { backgroundImage: "url('" + Vt + "')" } }), this.left_bottom = this.shape.putPoint(this.left, this.bottom, { id: this.shape.guid + "_left_bottom", style: { backgroundImage: "url('" + zt + "')" } }), this.left_center = this.shape.putPoint(this.left, this.top + this.height / 2, { id: this.shape.guid + "_left_center", style: { backgroundImage: "url('" + Ht + "')" } }), this.setPointsOptions();
   }, this.setPointsOptions = () => {
@@ -2107,7 +2108,7 @@ function rt() {
   }, this.calcPosition = () => {
     this.shape.calcPosition(), this.left = this.shape.left, this.top = this.shape.top, this.bottom = this.shape.bottom, this.right = this.shape.right, this.width = this.shape.width, this.height = this.shape.height;
   }, this.getPosition = () => ({ top: this.top, left: this.left, bottom: this.bottom, right: this.right, width: this.width, height: this.height }), this.redraw = () => {
-    this.adjustCoordinates(), this.shape.setOptions(this.options.shapeOptions), this.setPointsMoveBounds(), this.shape.redraw();
+    this.adjustCoordinates(), this.shape.setOptions(this.options.shapeOptions), this.setPointsMoveBounds(), this.shape.redraw(), this.applyOnlyMove();
   }, this.show = () => {
     this.options.shapeOptions.visible = !0, this.shape.show();
   }, this.hide = () => {
@@ -2116,6 +2117,12 @@ function rt() {
     a.emit(l.SHAPE_DESTROY, this, {}), this.eventListener.destroy(), this.shape.destroy();
   }, this.addEventListener = (t, e) => this.eventListener.addEventListener(t, e), this.removeEventListener = (t, e) => {
     this.eventListener.removeEventListener(t, e);
+  }, this.applyOnlyMove = () => {
+    this.options.onlyMove ? (this.shape.svg.style.opacity = 0, this.shape.points.forEach((t) => {
+      t.options.visible = !1, t.element && t.redraw();
+    })) : (this.shape.svg.style.opacity = 1, this.shape.points.forEach((t) => {
+      t.options.visible = !0, t.element && t.redraw();
+    }));
   };
 }
 try {

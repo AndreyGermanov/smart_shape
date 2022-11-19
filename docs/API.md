@@ -147,6 +147,7 @@ Options of resize box
 | id | <code>string</code> | Unique ID or resize box. If instantiated by [SmartShape](#SmartShape), then setup automatically |
 | shapeOptions | <code>object</code> | Options of underlying shape, that used to draw and manage this ResizeBox. See [SmartShape.options](#SmartShape+options) |
 | zIndex | <code>number</code> | Order of element in a stack of HTML elements (https://www.w3schools.com/cssref/pr_pos_z-index.asp). Elements if higher z-index value placed on top. |
+| onlyMove | <code>boolean</code> | If enabled, then resizeBox displayed as hidden. It's possible to drag it, but but not resize |
 
 <a name="ResizeBox+eventListener"></a>
 
