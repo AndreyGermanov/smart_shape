@@ -1,6 +1,7 @@
 import {Menus} from "../../context_menu/src/index.js";
 import {getMousePos} from "../events/functions.js";
-import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical,to_path,to_shapes,base64_export} from "../../assets/graphics.js";
+import {add,del,save,svg,png,copy,group,ungroup,move_to_top,move_to_bottom,horizontal,vertical,to_path,to_shapes,
+    base64_export,zoom_in,zoom_out,reset_zoom} from "../../assets/graphics.js";
 import {SmartShapeDisplayMode} from "./SmartShape.js";
 import {PngExportTypes} from "./SmartShapeDrawHelper.js";
 
@@ -81,6 +82,11 @@ export default function SmartShapeContextMenu(shape) {
         ];
         if (shape.options.canAddPoints) {
             items.push({id:"i"+shape.guid+"_add_point", title:"Add Point", image:add});
+        }
+        if (shape.options.zoomable) {
+            items.push({id:"i"+shape.guid+"_zoom_in", title:"Zoom in", image:zoom_in});
+            items.push({id:"i"+shape.guid+"_zoom_out", title:"Zoom out", image:zoom_out});
+            items.push({id:"i"+shape.guid+"_reset_zoom", title:"Reset zoom", image:reset_zoom});
         }
         return items;
     }
@@ -163,6 +169,15 @@ export default function SmartShapeContextMenu(shape) {
                     break;
                 case "i"+this.shape.guid+"_flip_vertical":
                     this.onFlipVerticalClick(event)
+                    break;
+                case "i"+this.shape.guid+"_zoom_in":
+                    this.onZoomInClick(event)
+                    break;
+                case "i"+this.shape.guid+"_zoom_out":
+                    this.onZoomOutClick(event)
+                    break;
+                case "i"+this.shape.guid+"_reset_zoom":
+                    this.onResetZoomClick(event)
                     break;
             }
         })
@@ -387,6 +402,40 @@ export default function SmartShapeContextMenu(shape) {
             this.shape.flip(false,true);
             this.shape.redraw();
         }
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Zoom In" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onZoomInClick = (_event) => {
+        const destShape = this.shape.getRootParent() || this.shape;
+        destShape.zoomBy(1+destShape.options.zoomStep);
+        destShape.redraw();
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Zoom out" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onZoomOutClick = (_event) => {
+        const destShape = this.shape.getRootParent() || this.shape;
+        destShape.zoomBy(1-destShape.options.zoomStep);
+        destShape.redraw();
+    }
+
+    /**
+     * @ignore
+     * Runs when click on "Reset zoom" menu option
+     * @param _event {MouseEvent} Event object
+     */
+    this.onResetZoomClick = (_event) => {
+        const destShape = this.shape.getRootParent() || this.shape;
+        destShape.scaleBy(1/destShape.options.zoomLevel,1/destShape.options.zoomLevel);
+        destShape.options.zoomLevel = 1;
+        destShape.redraw();
     }
 
     /**

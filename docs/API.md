@@ -784,6 +784,7 @@ Method returns a distance from this point to other specified point
     * [.moveBy(stepX, stepY, redraw, fast)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
     * [.scaleBy(scaleX, scaleY)](#SmartShape+scaleBy)
+    * [.zoomBy(level)](#SmartShape+zoomBy)
     * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
     * [.flip(byX, byY, includeChildren)](#SmartShape+flip)
     * [.moveToTop()](#SmartShape+moveToTop)
@@ -863,6 +864,9 @@ Helper object that used to manage children shapes of this shape
 Options of shape as an object. Can have the following parameters.
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+**Parap**: zoomStep {number} Defines to which extend the shape will be increased/decreased when apply Zoom in/Zoom out
+command from menu or drag mouse wheel. By default 0.1 .
+     to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -896,6 +900,7 @@ Options of shape as an object. Can have the following parameters.
 | forceCreateEvent | <code>boolean</code> | Internal parameter used by JSON import. By default, if shape does not have point when create, it does not emit SHAPE_CREATE event on init() method. If this option set to true, then init() methods emits SHAPE_CREATE event event for empty shapes. |
 | initialPoints | <code>array</code> | 2D array of initial coordinates of points in format [ [x,y], [x,y] ...] If this shape loaded from external resource and then modified, this array is a way to return back to initial coordinates |
 | zoomLevel | <code>number</code> | Current zoom level of shape. By default it is 1, which means that shape is not zoomed. If less than 1, than shape decreased, if greater than 1, then shape increased. to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0` |
+| zoomable | <code>boolean</code> | Determines if shape can be zoomed in or out using context menu or mouse wheel. True by default |
 | offsetX | <code>number</code> | Offset on X axis that shape moved from initial position when initially loaded from external source. |
 | offsetY | <code>number</code> | Offset on Y axis that shape moved from initial position when initially loaded. |
 | displayAsPath | <code>boolean</code> | Should display all children of shape as a single SVG path. Default - false. |
@@ -1191,6 +1196,17 @@ Method used to scale the shape by specified ratio by X and Y
 | --- | --- | --- |
 | scaleX | <code>number</code> | Horizontal scale ratio |
 | scaleY | <code>number</code> | Vertical scale ratio |
+
+<a name="SmartShape+zoomBy"></a>
+
+### smartShape.zoomBy(level)
+Method used to zoom shape by specified level
+
+**Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| level | <code>number</code> | Zoom level. Can be any positive number. If number is greater than 1, then it increases the size of shape, if it between 0 and 1, then it decreases the shape. |
 
 <a name="SmartShape+rotateBy"></a>
 
