@@ -2143,3 +2143,4 @@ export {
   W as getMouseCursorPos,
   Q as getMousePos
 };
+//# sourceMappingURL=smart_shape.js.map

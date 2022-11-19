@@ -6,6 +6,7 @@ export default defineConfig({
         host: true
     },
     build: {
+        sourcemap: "true",
         outDir : "",
         lib: {
             entry: resolve(__dirname, 'src/index.js'),
