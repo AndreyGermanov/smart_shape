@@ -79,6 +79,9 @@ function SmartShapeEventListener(shape) {
         this.svg_dblclick = this.shape.svg.addEventListener("dblclick", (event) => {
             SmartShapeManager.doubleclick(createEvent(event,{target:this.shape}))
         });
+        this.svg_wheel = this.shape.svg.addEventListener("wheel", (event) => {
+            this.wheel(event);
+        })
     }
 
     this.removeSvgEventListeners = () => {
@@ -88,6 +91,7 @@ function SmartShapeEventListener(shape) {
         this.shape.svg.removeEventListener("mousedown",this.svg_mousedown);
         this.shape.svg.removeEventListener("click",this.svg_click);
         this.shape.svg.removeEventListener("dblclick",this.svg_dblclick);
+        this.shape.svg.removeEventListener("wheel",this.svg_wheel);
     }
     /**
      * @ignore
@@ -117,6 +121,9 @@ function SmartShapeEventListener(shape) {
             if (this.shape.contextMenu) {
                 this.shape.contextMenu.onEvent(event);
             }
+        })
+        this.resizeBoxWheelEventListener = this.shape.resizeBox.shape.svg.addEventListener("wheel", (event) => {
+            this.wheel(event);
         })
     }
 
@@ -160,6 +167,9 @@ function SmartShapeEventListener(shape) {
             if (this.shape.contextMenu) {
                 this.shape.contextMenu.onEvent(event);
             }
+        })
+        this.rotateBoxWheelEventListener = this.shape.rotateBox.shape.svg.addEventListener("wheel", (event) => {
+            this.wheel(event);
         })
     }
 
@@ -287,6 +297,23 @@ function SmartShapeEventListener(shape) {
      */
     this.doubleclick = (event) => {
         EventsManager.emit(ShapeEvents.SHAPE_MOUSE_DOUBLE_CLICK, this.shape, createEvent(event));
+    }
+
+    /**
+     * @ignore
+     * Mouse wheel event handler. Zooms in or out the shape if it zoomable
+     * @param event {MouseEvent} Event object
+     */
+    this.wheel = (event) => {
+        if (this.shape.options.zoomable && this.shape.options.id.search("_resizebox") === -1 &&
+            this.shape.options.id.search("_rotatebox") === -1) {
+            if (event.deltaY < 0) {
+                this.shape.zoomBy(1+this.shape.options.zoomStep);
+            } else {
+                this.shape.zoomBy(1-this.shape.options.zoomStep);
+            }
+            this.shape.redraw();
+        }
     }
 
     /**
@@ -443,6 +470,7 @@ function SmartShapeEventListener(shape) {
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.resizeMouseOverEventListener);
             this.shape.resizeBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.resizeMouseOutEventListener);
             this.shape.resizeBox.removeEventListener("contextmenu",this.resizeBoxContextMenuEventListener);
+            this.shape.resizeBox.removeEventListener("wheel", this.resizeBoxWheelEventListener);
         }
         if (this.shape.rotateBox) {
             this.shape.rotateBox.removeEventListener(RotateBoxEvents.ROTATE_BOX_ROTATE,this.rotateBoxListener);
@@ -456,6 +484,7 @@ function SmartShapeEventListener(shape) {
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.rotateMouseOverEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.rotateMouseOutEventListener);
             this.shape.rotateBox.removeEventListener("contextmenu",this.rotateBoxContextMenuEventListener);
+            this.shape.resizeBox.removeEventListener("wheel", this.rotateBoxWheelEventListener);
         }
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];

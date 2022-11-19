@@ -1,5 +1,5 @@
 import {EventsManager, ShapeEvents,SmartShapeManager,SmartShapeDisplayMode} from "../index.js";
-import {blobToDataURL, dataURLtoBlob, getRotatedCoords, notNull, timeout} from "../utils";
+import {blobToDataURL, dataURLtoBlob, notNull, timeout} from "../utils";
 import {applyAspectRatio} from "../utils/geometry.js";
 
 /**
@@ -572,13 +572,29 @@ function SmartShapeDrawHelper() {
         svg.removeAttribute("guid");
         const pos = shape.getPosition(includeChildren === null ? shape.options.groupChildShapes : includeChildren);
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg")
-        const viewBox = "0 0 " + pos.width + " " + pos.height;
+        const zoom = shape.options.zoomLevel || 1;
+        const viewBox = "0 0 " + pos.width/zoom + " " + pos.height/zoom;
         svg.setAttribute("viewBox",viewBox);
         if (groupChanged) {
             shape.options.groupChildShapes = false;
         }
         if (pathChanged) {
             shape.options.displayAsPath = false;
+        }
+        if (shape.options.zoomLevel !== 1) {
+            svg.querySelectorAll("path").forEach(path => {
+                let result = "";
+                const d = path.getAttribute("d").split(" ")
+                for (let item of d) {
+                    if (item.search(",") === -1) {
+                        result += item + " "
+                    } else {
+                        const parts = item.split(",");
+                        result += (parseFloat(parts[0])/zoom)+","+(parseFloat(parts[1])/zoom)+" "
+                    }
+                }
+                path.setAttribute("d",result);
+            })
         }
         return svg;
     }
@@ -623,11 +639,12 @@ function SmartShapeDrawHelper() {
     this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null, includeChildren=null) => {
         return new Promise(async(resolve) => {
             shape.calcPosition();
+            const zoom = shape.options.zoomLevel || 1;
             const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
-            [width, height] = applyAspectRatio(width, height, pos.width, pos.height);
+            [width, height] = applyAspectRatio(width, height, pos.width/zoom, pos.height/zoom);
             const svgObj = this.getSvg(shape,includeChildren);
-            svgObj.setAttribute("width", pos.width);
-            svgObj.setAttribute("height", pos.height);
+            svgObj.setAttribute("width", pos.width/zoom);
+            svgObj.setAttribute("height", pos.height/zoom);
             for (let item of svgObj.querySelectorAll("image")) {
                 if (item.getAttribute("href") && item.getAttribute("href").length) {
                     const href = await blobToDataURL(await (await fetch(item.getAttribute("href"))).blob());
@@ -643,8 +660,8 @@ function SmartShapeDrawHelper() {
             const url = await blobToDataURL(svg);
             img.addEventListener("load", () => {
                 const canvas = document.createElement("canvas");
-                img.width = pos.width;
-                img.height = pos.height;
+                img.width = pos.width/zoom;
+                img.height = pos.height/zoom;
                 canvas.width = img.width;
                 canvas.height = img.height;
                 const ctx = canvas.getContext("2d");

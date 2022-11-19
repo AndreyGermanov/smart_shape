@@ -12,7 +12,7 @@ import {
     uuid,
     isPointInsidePolygon,
     getOffset,
-    readJSON, abs, recursiveDeepCopy
+    readJSON, abs
 } from "../utils";
 import EventsManager from "../events/EventsManager.js";
 import {
@@ -128,6 +128,11 @@ function SmartShape() {
      * @param zoomLevel {number} Current zoom level of shape. By default it is 1, which means that shape is not zoomed.
      * If less than 1, than shape decreased, if greater than 1, then shape increased.
      * to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
+     * @param zoomable {boolean} Determines if shape can be zoomed in or out using context menu or mouse wheel.
+     * True by default
+     * @parap zoomStep {number} Defines to which extend the shape will be increased/decreased when apply Zoom in/Zoom out
+     * command from menu or drag mouse wheel. By default 0.1 .
+     to the bottom. Helps to move entire figure without need to change coordinates of each point. Default: `0`
      * @param offsetX {number} Offset on X axis that shape moved from initial position when initially loaded from external source.
      * @param offsetY {number} Offset on Y axis that shape moved from initial position when initially loaded.
      * @param displayAsPath {boolean} Should display all children of shape as a single SVG path. Default - false.
@@ -181,6 +186,8 @@ function SmartShape() {
         compactExport: false,
         forceCreateEvent: false,
         zoomLevel:1,
+        zoomable: true,
+        zoomStep: 0.1,
         initialPoints: [],
         displayAsPath: false,
         simpleMode: false,
@@ -188,7 +195,7 @@ function SmartShape() {
         scaleFactorY: 1,
         rotateAngle: 0,
         flippedX: false,
-        flippedY: false
+        flippedY: false,
     };
 
     /**
@@ -812,6 +819,16 @@ function SmartShape() {
             }
         }
         this.calcPosition();
+    }
+
+    /**
+     * Method used to zoom shape by specified level
+     * @param level {number} Zoom level. Can be any positive number. If number is greater than 1,
+     * then it increases the size of shape, if it between 0 and 1, then it decreases the shape.
+     */
+    this.zoomBy = (level) => {
+        this.options.zoomLevel *= level;
+        this.scaleBy(level,level);
     }
 
     /**

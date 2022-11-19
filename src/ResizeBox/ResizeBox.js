@@ -398,7 +398,7 @@ function ResizeBox() {
         } else {
             this.shape.svg.style.opacity = 1;
             this.shape.points.forEach((point) => {
-                point.options.visible = true;
+                point.options.visible = this.shape.options.visible;
                 if (point.element) {
                     point.redraw();
                 }
