@@ -9,6 +9,7 @@ function setup() {
   const app = Cypress.$("#app").toArray()[0];
   app.style.height = "800px";
   const box = new RotateBox().init(app,10,10, 90, 90, {id:"box1"});
+  box.show();
   return [app,box];
 }
 
@@ -135,6 +136,7 @@ describe('RotateBox Tests', () => {
       const app = Cypress.$("#app").toArray()[0];
       const box = new RotateBox();
       box.init(app,0,0,100,100,{shapeOptions:{visible:false}},);
+      box.redraw();
       assert.equal(box.shape.svg.style.display,'none',"Should create invisible shape");
       box.show();
       assert.notEqual(box.shape.svg.style.display,'none',"Should show visible shape");

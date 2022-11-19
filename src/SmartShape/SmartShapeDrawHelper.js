@@ -117,8 +117,8 @@ function SmartShapeDrawHelper() {
         if (!parent || !parent.options.displayAsPath) {
             this.setupShapeFill(shape);
             this.createSVGFilters(shape);
-            this.redrawResizeBox(parent || shape);
-            this.redrawRotateBox(parent || shape);
+            shape.options.canScale && this.redrawResizeBox(parent || shape);
+            shape.options.canRotate && this.redrawRotateBox(parent || shape);
         }
         if (shape.options.pointOptions.canDrag) {
             this.updatePoints(shape, parent);
@@ -255,7 +255,20 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      */
     this.redrawResizeBox = (shape) => {
+        if (shape.options.displayMode !== SmartShapeDisplayMode.SCALE || !shape.options.canScale) {
+            if (shape.resizeBox) {
+                shape.resizeBox.hide();
+            }
+            return
+        }
         if (!shape.resizeBox) {
+            shape.setupResizeBox();
+            if (shape.resizeBox) {
+                shape.resizeBox.shape.points.forEach(point => {
+                    point.options.zIndex = shape.options.zIndex + 2;
+                    point.element.style.zIndex = shape.options.zIndex + 2;
+                })
+            }
             return
         }
         const bounds = shape.getResizeBoxBounds();
@@ -281,7 +294,20 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      */
     this.redrawRotateBox = (shape) => {
+        if (shape.options.displayMode !== SmartShapeDisplayMode.ROTATE || !shape.options.canRotate) {
+            if (shape.rotateBox) {
+                shape.rotateBox.hide();
+            }
+            return
+        }
         if (!shape.rotateBox) {
+            shape.setupRotateBox();
+            if (shape.rotateBox) {
+                shape.rotateBox.shape.points.forEach(point => {
+                    point.options.zIndex = shape.options.zIndex + 2;
+                    point.element.style.zIndex = shape.options.zIndex + 2;
+                })
+            }
             return
         }
         const bounds = shape.getResizeBoxBounds();

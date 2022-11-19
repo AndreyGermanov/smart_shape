@@ -103,6 +103,8 @@ describe('SmartShape import/export tests', () => {
     compactExport: false,
     forceCreateEvent: false,
     zoomLevel:1,
+    zoomable: true,
+    zoomStep: 0.1,
     initialPoints: [],
     displayAsPath: false,
     simpleMode: false,

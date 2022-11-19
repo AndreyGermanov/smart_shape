@@ -484,7 +484,7 @@ function SmartShapeEventListener(shape) {
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OVER,this.rotateMouseOverEventListener);
             this.shape.rotateBox.removeEventListener(ShapeEvents.SHAPE_MOUSE_OUT,this.rotateMouseOutEventListener);
             this.shape.rotateBox.removeEventListener("contextmenu",this.rotateBoxContextMenuEventListener);
-            this.shape.resizeBox.removeEventListener("wheel", this.rotateBoxWheelEventListener);
+            this.shape.rotateBox.removeEventListener("wheel", this.rotateBoxWheelEventListener);
         }
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];
