@@ -17,7 +17,7 @@ function SmartShapeDrawHelper() {
      */
     this.draw = (shape) => {
         const parent = shape.getParent();
-        if (!parent || parent.guid === shape.guid) {
+        if (!parent || parent.guid === shape.guid || !parent.options.groupChildShapes) {
             if (shape.svg) {
                 try {
                     shape.eventListener.removeSvgEventListeners();
@@ -80,7 +80,7 @@ function SmartShapeDrawHelper() {
     this.updateOptions = (shape) => {
         shape.calcPosition();
         const parent = shape.getRootParent();
-        if (shape.svg && !parent && typeof(shape.svg.appendChild) === "function") {
+        if (shape.svg && (!parent || !parent.options.groupChildShapes) && typeof(shape.svg.appendChild) === "function") {
             if (typeof (shape.options.visible) !== "undefined") {
                 if (shape.svg.style.display !== shape.options.visible) {
                     if (shape.options.visible) {
@@ -117,8 +117,8 @@ function SmartShapeDrawHelper() {
         if (!parent || !parent.options.displayAsPath) {
             this.setupShapeFill(shape);
             this.createSVGFilters(shape);
-            shape.options.canScale && this.redrawResizeBox(parent || shape);
-            shape.options.canRotate && this.redrawRotateBox(parent || shape);
+            shape.options.canScale && this.redrawResizeBox(parent && parent.options.groupChildShapes ? parent : shape);
+            shape.options.canRotate && this.redrawRotateBox(parent && parent.options.groupChildShapes ? parent : shape);
         }
         if (shape.options.pointOptions.canDrag) {
             this.updatePoints(shape, parent);
@@ -194,7 +194,7 @@ function SmartShapeDrawHelper() {
      */
     this.getPolygonPath = (shape) => {
         const parent = shape.getParent();
-        if (parent) {
+        if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
@@ -763,7 +763,7 @@ function SmartShapeDrawHelper() {
      * @returns {HTMLOrSVGElement|null|*}
      */
     this.getShapeSvg = (shape) => {
-        const parent = shape.getRootParent()
+        const parent = shape.getRootParent(true);
         if (parent && parent.svg) {
             return parent.svg
         }

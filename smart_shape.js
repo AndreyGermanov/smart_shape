@@ -961,7 +961,7 @@ const l = {
 function pe() {
   this.draw = (t) => {
     const e = t.getParent();
-    if (!e || e.guid === t.guid) {
+    if (!e || e.guid === t.guid || !e.options.groupChildShapes) {
       if (t.svg)
         try {
           t.eventListener.removeSvgEventListeners(), t.svg.innerHTML = "";
@@ -986,7 +986,7 @@ function pe() {
   }, this.updateOptions = (t) => {
     t.calcPosition();
     const e = t.getRootParent();
-    if (t.svg && !e && typeof t.svg.appendChild == "function") {
+    if (t.svg && (!e || !e.options.groupChildShapes) && typeof t.svg.appendChild == "function") {
       typeof t.options.visible < "u" && (t.svg.style.display !== t.options.visible && (t.options.visible ? (a.emit(l.SHAPE_SHOW, t), t.getChildren(!0).forEach((s) => a.emit(l.SHAPE_SHOW, s))) : (a.emit(l.SHAPE_HIDE, t), t.getChildren(!0).forEach((s) => a.emit(l.SHAPE_HIDE, s)))), t.svg.style.display = t.options.visible ? "" : "none"), t.svg.id = t.options.id, t.svg.setAttribute("guid", t.guid);
       let i;
       t.options.groupChildShapes ? i = t.getPosition(!0) : i = t.getPosition(), t.svg.style.position = "absolute", t.svg.style.cursor = "default", t.svg.style.left = i.left + "px", t.svg.style.top = i.top + "px", t.svg.setAttribute("width", i.width), t.svg.setAttribute("height", i.height), t.svg.style.zIndex = t.options.zIndex;
@@ -994,7 +994,7 @@ function pe() {
       const i = e.svg.querySelector("#p" + t.guid + "_polygon");
       i && (i.style.zIndex = t.options.zIndex);
     }
-    (!e || !e.options.displayAsPath) && (this.setupShapeFill(t), this.createSVGFilters(t), t.options.canScale && this.redrawResizeBox(e || t), t.options.canRotate && this.redrawRotateBox(e || t)), t.options.pointOptions.canDrag && this.updatePoints(t, e);
+    (!e || !e.options.displayAsPath) && (this.setupShapeFill(t), this.createSVGFilters(t), t.options.canScale && this.redrawResizeBox(e && e.options.groupChildShapes ? e : t), t.options.canRotate && this.redrawRotateBox(e && e.options.groupChildShapes ? e : t)), t.options.pointOptions.canDrag && this.updatePoints(t, e);
   }, this.updatePoints = async (t, e) => {
     t.points[0] && !t.points[0].element && await Pt(1), t.points.filter((i) => i.element).forEach((i) => {
       i.element.parentNode !== t.root && t.root.appendChild(i.element), i.options.zIndex = t.options.zIndex + 2, t.options.visible || (i.options.visible = !1), i.redraw(), t.options.displayMode === d.DEFAULT && !i.options.forceDisplay && (!e || e.options.displayMode === d.DEFAULT) && (i.element.style.display = "none");
@@ -1006,7 +1006,7 @@ function pe() {
     i || (i = document.createElementNS("http://www.w3.org/2000/svg", "path"), e && e.appendChild(i)), i.setAttribute("d", this.getPolygonPath(t)), i.setAttribute("fill-rule", "evenodd"), i.setAttribute("shape_id", t.options.id), i.setAttribute("shape_guid", t.guid), i.id = "p" + t.guid + "_polygon", this.setupPolygonFill(t, i), this.setupPolygonStyles(t, i), e.querySelector("#f" + t.guid + "_filter") && (i.style.filter = 'url("#f' + t.guid + '_filter")'), i.style.zIndex = t.options.zIndex, t.polygon = i;
   }, this.getPolygonPath = (t) => {
     const e = t.getParent();
-    if (e) {
+    if (e && e.options.groupChildShapes) {
       const i = e.getPosition(e.options.groupChildShapes);
       let s = this.getPolygonPathForShape(t, i, this.getMaxStrokeWidth(e));
       return t.options.displayAsPath && t.options.groupChildShapes && t.getChildren().forEach((o) => {
@@ -1196,7 +1196,7 @@ function pe() {
       s.options.prevZIndex = s.options.zIndex, s.options.zIndex += i, this.updateOptions(s);
     });
   }, this.getShapeSvg = (t) => {
-    const e = t.getRootParent();
+    const e = t.getRootParent(!0);
     return e && e.svg ? e.svg : t.svg;
   }, this.setupZIndex = (t) => {
     if (!t.svg)
@@ -1608,13 +1608,13 @@ function me(t) {
           i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ groupChildShapes: !0 }), e.switchDisplayMode(d.DEFAULT);
           break;
         case "i" + this.shape.guid + "_ungroup":
-          i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ groupChildShapes: !1, displayAsPath: !1 }), e.switchDisplayMode(d.DEFAULT), e.getChildren(!0).forEach((o) => o.redraw());
+          i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ groupChildShapes: !1, displayAsPath: !1 }), e.switchDisplayMode(d.DEFAULT), e.getChildren().forEach((o) => o.switchDisplayMode(d.DEFAULT));
           break;
         case "i" + this.shape.guid + "_topath":
-          i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ groupChildShapes: !0, displayAsPath: !0 }), e.switchDisplayMode(d.SELECTED), e.getChildren(!0).forEach((o) => o.redraw());
+          i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ groupChildShapes: !0, displayAsPath: !0 }), e.switchDisplayMode(d.SELECTED), e.getChildren().forEach((o) => o.switchDisplayMode(d.DEFAULT));
           break;
         case "i" + this.shape.guid + "_toshapes":
-          i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ displayAsPath: !1 }), e.switchDisplayMode(d.SELECTED), e.getChildren(!0).forEach((o) => o.redraw());
+          i = this.shape.getRootParent(), e = i || this.shape, e.setOptions({ displayAsPath: !1 }), e.switchDisplayMode(d.SELECTED), e.getChildren().forEach((o) => o.switchDisplayMode(d.DEFAULT));
           break;
         case "i" + this.shape.guid + "_move_to_top":
           this.onMoveToTopClick(s);
