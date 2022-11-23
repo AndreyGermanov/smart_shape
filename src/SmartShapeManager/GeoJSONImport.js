@@ -99,6 +99,10 @@ const createShapeFromGeoJson = (obj, index, importOptions, container) => {
     if (importOptions.onlyData) {
         return shape;
     }
+    const pos = shape.getPosition();
+    if ((pos.left < 0 || pos.top < 0) && (importOptions.scale || importOptions.width || importOptions.height)) {
+        shape.moveTo(0,0,false,false)
+    }
     if (notNull(importOptions.scale)) {
         shape.scaleBy(importOptions.scale,importOptions.scale,true);
     } else if (notNull(importOptions.width) || notNull(importOptions.height)) {

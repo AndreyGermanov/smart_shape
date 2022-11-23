@@ -197,10 +197,10 @@ function SmartShapeGroupHelper(shape) {
             return {left:0,right:0,top:0,bottom:0,width:0,height:0};
         }
         const pos = {
-            left: children.map(item => item.left).reduce((minLeft,left) => left < minLeft ? left : minLeft),
-            top: children.map(item => item.top).reduce((minTop,top) => top < minTop ? top : minTop),
-            right: children.map(item => item.right).reduce((maxRight,right) => right > maxRight ? right : maxRight),
-            bottom: children.map(item => item.bottom).reduce((maxBottom,bottom) => bottom > maxBottom ? bottom : maxBottom)
+            left: children.map(item => item.left).reduce((minLeft,left) => left < minLeft ? left : minLeft,9999999),
+            top: children.map(item => item.top).reduce((minTop,top) => top < minTop ? top : minTop,99999999),
+            right: children.map(item => item.right).reduce((maxRight,right) => right > maxRight ? right : maxRight,-9999999),
+            bottom: children.map(item => item.bottom).reduce((maxBottom,bottom) => bottom > maxBottom ? bottom : maxBottom,-99999999)
         }
         pos.width = Math.abs(pos.right-pos.left) || 1;
         pos.height = Math.abs(pos.bottom-pos.top) || 1;

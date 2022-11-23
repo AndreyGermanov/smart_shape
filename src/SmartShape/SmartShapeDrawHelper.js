@@ -157,13 +157,17 @@ function SmartShapeDrawHelper() {
                 shape.root.appendChild(point.element);
             }
             point.options.zIndex = shape.options.zIndex + 2;
-            if (!shape.options.visible) {
+            if (!shape.options.visible && !point.options.forceDisplay) {
                 point.options.visible = false;
+            } else if (shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+                point.options.visible = true;
             }
             point.redraw();
             if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
                 if (!parent || parent.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
                     point.element.style.display = 'none';
+                } else {
+                    point.element.style.display = '';
                 }
             }
         });
