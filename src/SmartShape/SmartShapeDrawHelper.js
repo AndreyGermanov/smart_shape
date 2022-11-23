@@ -17,39 +17,7 @@ function SmartShapeDrawHelper() {
      */
     this.draw = (shape) => {
         const parent = shape.getParent();
-        if (!parent || parent.guid === shape.guid || !parent.options.groupChildShapes) {
-            if (shape.svg) {
-                try {
-                    shape.eventListener.removeSvgEventListeners();
-                    shape.svg.innerHTML = "";
-                } catch (err) {
-                }
-            } else if (shape.points.length) {
-                shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                shape.svg.ondragstart = function () {
-                    return false;
-                }
-                if (shape.options.visible) {
-                    EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
-                }
-                shape.eventListener.setSvgEventListeners();
-                shape.svg.id = shape.options.id;
-                shape.svg.setAttribute("guid", shape.guid);
-                shape.root.appendChild(shape.svg);
-            }
-            if (shape.svg && typeof(shape.svg.appendChild) === "function") {
-                const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
-                shape.svg.appendChild(defs);
-            }
-        } else {
-            shape.svg = null;
-            const svg = document.querySelector("svg[guid='"+shape.guid+"']");
-            if (svg) {
-                svg.parentNode.removeChild(svg);
-            }
-            shape.resizeBox && shape.resizeBox.hide();
-            shape.rotateBox && shape.rotateBox.hide();
-        }
+        this.initSvg(shape,parent);
         if (shape.points.length < 1) {
             return
         }
@@ -57,17 +25,52 @@ function SmartShapeDrawHelper() {
             shape.shapeMenu.updateContextMenu();
         }
         this.updateOptions(shape);
-        if (!parent || !parent.options.displayAsPath) {
-            this.drawPolygon(shape);
-            if (shape.svg && shape.options.id.search("_resizebox") === -1 && shape.options.id.search("_rotatebox") === -1) {
-                setTimeout(() => {
-                    this.setupZIndex(shape);
-                },0);
-            }
-        } else if (parent && parent.options.displayAsPath && parent.guid !== shape.guid) {
-            this.draw(parent);
-        }
+        this.drawShape(shape,parent);
         EventsManager.emit("show_finish",shape);
+    }
+
+    this.initSvg = (shape,parent) => {
+        if (!parent || parent.guid === shape.guid || !parent.options.groupChildShapes) {
+            this.initRootSvg(shape)
+        } else {
+            this.clearSvg(shape)
+        }
+    }
+
+    this.initRootSvg = (shape) => {
+        if (shape.svg) {
+            try {
+                shape.eventListener.removeSvgEventListeners();
+                shape.svg.innerHTML = "";
+            } catch (err) {
+            }
+        } else if (shape.points.length) {
+            shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            shape.svg.ondragstart = function () {
+                return false;
+            }
+            if (shape.options.visible) {
+                EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
+            }
+            shape.eventListener.setSvgEventListeners();
+            shape.svg.id = shape.options.id;
+            shape.svg.setAttribute("guid", shape.guid);
+            shape.root.appendChild(shape.svg);
+        }
+        if (shape.svg && typeof(shape.svg.appendChild) === "function") {
+            const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
+            shape.svg.appendChild(defs);
+        }
+    }
+
+    this.clearSvg = (shape) => {
+        shape.svg = null;
+        const svg = document.querySelector("svg[guid='"+shape.guid+"']");
+        if (svg) {
+            svg.parentNode.removeChild(svg);
+        }
+        shape.resizeBox && shape.resizeBox.hide();
+        shape.rotateBox && shape.rotateBox.hide();
     }
 
     /**
@@ -80,27 +83,24 @@ function SmartShapeDrawHelper() {
     this.updateOptions = (shape) => {
         shape.calcPosition();
         const parent = shape.getRootParent();
+        this.updateShapeSvgOptions(shape,parent);
+        if (!parent || !parent.options.displayAsPath) {
+            this.setupShapeFill(shape);
+            this.createSVGFilters(shape);
+            shape.options.canScale && this.redrawResizeBox(parent && parent.options.groupChildShapes ? parent : shape);
+            shape.options.canRotate && this.redrawRotateBox(parent && parent.options.groupChildShapes ? parent : shape);
+        }
+        if (shape.options.pointOptions.canDrag) {
+            this.updatePoints(shape, parent);
+        }
+    }
+
+    this.updateShapeSvgOptions = (shape,parent) => {
         if (shape.svg && (!parent || !parent.options.groupChildShapes) && typeof(shape.svg.appendChild) === "function") {
-            if (typeof (shape.options.visible) !== "undefined") {
-                if (shape.svg.style.display !== shape.options.visible) {
-                    if (shape.options.visible) {
-                        EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
-                        shape.getChildren(true).forEach(child => EventsManager.emit(ShapeEvents.SHAPE_SHOW,child))
-                    } else {
-                        EventsManager.emit(ShapeEvents.SHAPE_HIDE, shape);
-                        shape.getChildren(true).forEach(child => EventsManager.emit(ShapeEvents.SHAPE_HIDE,child));
-                    }
-                }
-                shape.svg.style.display = shape.options.visible ? '' : 'none';
-            }
+            this.updateVisible(shape);
             shape.svg.id = shape.options.id;
             shape.svg.setAttribute("guid", shape.guid);
-            let pos
-            if (shape.options.groupChildShapes) {
-                pos = shape.getPosition(true);
-            } else {
-                pos = shape.getPosition();
-            }
+            let pos = shape.getPosition(shape.options.groupChildShapes);
             shape.svg.style.position = 'absolute';
             shape.svg.style.cursor = 'default';
             shape.svg.style.left = pos.left + "px";
@@ -114,15 +114,32 @@ function SmartShapeDrawHelper() {
                 polygon.style.zIndex = shape.options.zIndex;
             }
         }
+    }
+
+    this.updateVisible = (shape) => {
+        if (typeof (shape.options.visible) !== "undefined") {
+            if (shape.svg.style.display !== shape.options.visible) {
+                if (shape.options.visible) {
+                    EventsManager.emit(ShapeEvents.SHAPE_SHOW, shape);
+                    shape.getChildren(true).forEach(child => EventsManager.emit(ShapeEvents.SHAPE_SHOW,child))
+                } else {
+                    EventsManager.emit(ShapeEvents.SHAPE_HIDE, shape);
+                    shape.getChildren(true).forEach(child => EventsManager.emit(ShapeEvents.SHAPE_HIDE,child));
+                }
+            }
+            shape.svg.style.display = shape.options.visible ? '' : 'none';
+        }
+    }
+
+    this.drawShape = (shape,parent) => {
         if (!parent || !parent.options.displayAsPath) {
-            this.setupShapeFill(shape);
-            this.createSVGFilters(shape);
-            shape.options.canScale && this.redrawResizeBox(parent && parent.options.groupChildShapes ? parent : shape);
-            shape.options.canRotate && this.redrawRotateBox(parent && parent.options.groupChildShapes ? parent : shape);
+            this.drawPolygon(shape);
+            if (shape.svg && SmartShapeManager.isNormalShape(shape)) {
+                this.setupZIndex(shape);
+            }
+            return
         }
-        if (shape.options.pointOptions.canDrag) {
-            this.updatePoints(shape, parent);
-        }
+        this.draw(parent);
     }
 
     /**
@@ -140,13 +157,17 @@ function SmartShapeDrawHelper() {
                 shape.root.appendChild(point.element);
             }
             point.options.zIndex = shape.options.zIndex + 2;
-            if (!shape.options.visible) {
+            if (!shape.options.visible && !point.options.forceDisplay) {
                 point.options.visible = false;
+            } else if (shape.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+                point.options.visible = true;
             }
             point.redraw();
             if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
                 if (!parent || parent.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
                     point.element.style.display = 'none';
+                } else {
+                    point.element.style.display = '';
                 }
             }
         });
@@ -161,16 +182,14 @@ function SmartShapeDrawHelper() {
     this.drawPolygon = (shape,svg=null) => {
         if (!svg) {
             svg = this.getShapeSvg(shape);
-        }
-        if (!svg || typeof(svg.appendChild) !== "function") {
-            return
+            if (!svg || typeof(svg.appendChild) !== "function") {
+                return
+            }
         }
         let polygon = svg.querySelector("#p"+shape.guid+"_polygon");
         if (!polygon) {
             polygon = document.createElementNS("http://www.w3.org/2000/svg","path");
-            if (svg) {
-                svg.appendChild(polygon)
-            }
+            svg.appendChild(polygon)
         }
         polygon.setAttribute("d",this.getPolygonPath(shape));
         polygon.setAttribute("fill-rule","evenodd");
@@ -197,21 +216,13 @@ function SmartShapeDrawHelper() {
         if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
-            if (shape.options.displayAsPath && shape.options.groupChildShapes) {
-                shape.getChildren().forEach(child => {
-                    child.calcPosition();
-                    path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child));
-                })
-            }
+            path += this.getPolygonPathForChildren(shape,pos);
             return path;
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
+            path += this.getPolygonPathForChildren(shape,pos);
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
-                shape.getChildren().forEach(child => {
-                    child.calcPosition();
-                    path += this.getPolygonPathForShape(child,pos,this.getMaxStrokeWidth(child));
-                })
                 const svg = this.getShapeSvg(shape);
                 svg.setAttribute("width",pos.width);
                 svg.setAttribute("height",pos.height);
@@ -219,6 +230,17 @@ function SmartShapeDrawHelper() {
             }
             return path
         }
+    }
+
+    this.getPolygonPathForChildren = (shape,pos) => {
+        let path = "";
+        if (shape.options.displayAsPath && shape.options.groupChildShapes) {
+            shape.getChildren().forEach(child => {
+                child.calcPosition();
+                path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child));
+            })
+        }
+        return path;
     }
 
     /**
@@ -248,6 +270,7 @@ function SmartShapeDrawHelper() {
             })
             .join(" ")+" Z";
     }
+
     /**
      * @ignore
      * If shape scaling feature is enabled, this method
@@ -271,20 +294,7 @@ function SmartShapeDrawHelper() {
             }
             return
         }
-        const bounds = shape.getResizeBoxBounds();
-        if (shape.options.displayMode === SmartShapeDisplayMode.SCALE) {
-            shape.resizeBox.options.shapeOptions.visible = shape.options.visible;
-        }
-        shape.resizeBox.left = bounds.left;
-        shape.resizeBox.top = bounds.top;
-        shape.resizeBox.width = bounds.width;
-        shape.resizeBox.height = bounds.height;
-        shape.resizeBox.options.zIndex = shape.options.zIndex+1;
-        shape.resizeBox.redraw();
-        shape.resizeBox.shape.points.forEach(point => {
-            point.options.zIndex = shape.options.zIndex+2;
-            point.element.style.zIndex = shape.options.zIndex+2;
-        })
+        this.setupBox(shape,shape.resizeBox,SmartShapeDisplayMode.SCALE);
     }
 
     /**
@@ -310,19 +320,23 @@ function SmartShapeDrawHelper() {
             }
             return
         }
+        this.setupBox(shape,shape.rotateBox,SmartShapeDisplayMode.ROTATE);
+    }
+
+    this.setupBox = (shape,box,displayMode) => {
         const bounds = shape.getResizeBoxBounds();
-        if (shape.options.displayMode === SmartShapeDisplayMode.ROTATE) {
-            shape.rotateBox.options.shapeOptions.visible = shape.options.visible;
+        if (shape.options.displayMode === displayMode) {
+            box.options.shapeOptions.visible = shape.options.visible;
         } else {
-            shape.rotateBox.options.shapeOptions.visible = false;
+            box.options.shapeOptions.visible = false;
         }
-        shape.rotateBox.left = bounds.left;
-        shape.rotateBox.top = bounds.top;
-        shape.rotateBox.width = bounds.width;
-        shape.rotateBox.height = bounds.height;
-        shape.rotateBox.options.zIndex = shape.options.zIndex+1;
-        shape.rotateBox.redraw();
-        shape.rotateBox.shape.points.forEach(point => {
+        box.left = bounds.left;
+        box.top = bounds.top;
+        box.width = bounds.width;
+        box.height = bounds.height;
+        box.options.zIndex = shape.options.zIndex+1;
+        box.redraw();
+        box.shape.points.forEach(point => {
             point.options.zIndex = shape.options.zIndex+2;
             point.element.style.zIndex = shape.options.zIndex+2;
         })
@@ -353,10 +367,9 @@ function SmartShapeDrawHelper() {
      * `radialGradient`. See: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient
      */
     this.createGradient = (shape) => {
-        const gradientOptions = shape.options.fillGradient;
         const svg = this.getShapeSvg(shape);
         let gradient = svg.querySelector("#g"+shape.guid+"_gradient");
-        let gradientTag = gradientOptions.type === "linear" ? "linearGradient" : "radialGradient";
+        let gradientTag = shape.options.fillGradient.type === "linear" ? "linearGradient" : "radialGradient";
         if (gradient) {
             if (gradient.tagName.toLowerCase() !== gradientTag.toLowerCase()) {
                 gradient.parentNode.removeChild(gradient);
@@ -367,21 +380,25 @@ function SmartShapeDrawHelper() {
                 svg.querySelector('defs').appendChild(gradient);
             }
         }
+        return this.createGradientSteps(shape, svg, gradient);
+    }
+
+    this.createGradientSteps = (shape, svg, gradient) => {
         gradient.innerHTML = "";
         gradient.id = "g"+shape.guid+"_gradient";
         let foundSteps = false;
-        for (let index in gradientOptions) {
+        for (let index in shape.options.fillGradient) {
             if (index === "type") { continue }
             if (index === "steps") {
                 foundSteps = true;
                 continue;
             }
-            gradient.setAttribute(index,gradientOptions[index])
+            gradient.setAttribute(index,shape.options.fillGradient[index])
         }
         if (!foundSteps) {
             return gradient;
         }
-        for (let step of gradientOptions.steps) {
+        for (let step of shape.options.fillGradient.steps) {
             const stepNode = document.createElementNS(svg.namespaceURI,"stop");
             if (notNull(step.stopColor)) {
                 stepNode.setAttribute("offset", step.offset);
@@ -395,8 +412,8 @@ function SmartShapeDrawHelper() {
             gradient.appendChild(stepNode);
         }
         return gradient;
-    }
 
+    }
     /**
      * @ignore
      * Method used to construct SVG pattern to fill the shape with an image. Consists of
@@ -406,7 +423,7 @@ function SmartShapeDrawHelper() {
      * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
      * Triggered automatically when redraw the shape, if `options.fillImage` specified.
      * Should not be called directly.
-     * @param shape {object} Shape for which image fill should be created
+     * @param shape {SmartShape} Shape for which image fill should be created
      * @returns {HTMLOrSVGElement} Constructed `pattern` SVG tag or null, in case of errors
      */
     this.createImageFill = (shape) => {
@@ -556,40 +573,22 @@ function SmartShapeDrawHelper() {
      * @param shape {SmartShape} Shape object
      * @param includeChildren {boolean|null} Should include children of this shape to output.
      * 'null' by default. In this case value of shape.options.groupChildShapes will be used
-     * @returns {string} String body of SVG document
+     * @returns {SVGElement|null} SVG document
      */
     this.getSvg = (shape,includeChildren) => {
-        let groupChanged = false;
-        let pathChanged = false;
         let svg = shape.svg;
         if (!svg) {
             const parent = shape.getParent();
             if (parent) {
                 svg = parent.svg;
             }
-        }
-        if (!svg) {
-            return
+            if (!svg) {
+                return
+            }
         }
         svg = svg.cloneNode(true);
         if (includeChildren) {
-            shape = shape.getParent() || shape;
-            if (!shape.options.groupChildShapes) {
-                shape.options.groupChildShapes = true;
-                groupChanged = true;
-            }
-            if (!shape.options.displayAsPath) {
-                shape.getChildren(true).forEach(child => {
-                    this.drawPolygon(child, svg);
-                })
-            }
-            this.drawPolygon(shape,svg);
-            let paths = Array.from(svg.querySelectorAll("path"));
-            paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
-            const defs = svg.querySelector("defs");
-            svg.innerHTML = "";
-            svg.appendChild(defs);
-            paths.forEach(path=>svg.appendChild(path));
+            svg = this.addChildrenToSvg(shape,svg)
         }
         svg.removeAttribute("style");
         svg.removeAttribute("width");
@@ -601,28 +600,51 @@ function SmartShapeDrawHelper() {
         const zoom = shape.options.zoomLevel || 1;
         const viewBox = "0 0 " + pos.width/zoom + " " + pos.height/zoom;
         svg.setAttribute("viewBox",viewBox);
+        if (zoom !== 1) {
+            this.unZoomSvg(svg,zoom);
+        }
+        return svg;
+    }
+
+    this.addChildrenToSvg = (shape,svg) => {
+        let groupChanged = false;
+        shape = shape.getParent() || shape;
+        if (!shape.options.groupChildShapes) {
+            shape.options.groupChildShapes = true;
+            groupChanged = true;
+        }
+        if (!shape.options.displayAsPath) {
+            shape.getChildren(true).forEach(child => {
+                this.drawPolygon(child, svg);
+            })
+        }
+        this.drawPolygon(shape,svg);
+        let paths = Array.from(svg.querySelectorAll("path"));
+        paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
+        const defs = svg.querySelector("defs");
+        svg.innerHTML = "";
+        svg.appendChild(defs);
+        paths.forEach(path=>svg.appendChild(path));
         if (groupChanged) {
             shape.options.groupChildShapes = false;
         }
-        if (pathChanged) {
-            shape.options.displayAsPath = false;
-        }
-        if (shape.options.zoomLevel !== 1) {
-            svg.querySelectorAll("path").forEach(path => {
-                let result = "";
-                const d = path.getAttribute("d").split(" ")
-                for (let item of d) {
-                    if (item.search(",") === -1) {
-                        result += item + " "
-                    } else {
-                        const parts = item.split(",");
-                        result += (parseFloat(parts[0])/zoom)+","+(parseFloat(parts[1])/zoom)+" "
-                    }
-                }
-                path.setAttribute("d",result);
-            })
-        }
         return svg;
+    }
+
+    this.unZoomSvg = (svg,zoom) => {
+        svg.querySelectorAll("path").forEach(path => {
+            let result = "";
+            const d = path.getAttribute("d").split(" ")
+            for (let item of d) {
+                if (item.search(",") === -1) {
+                    result += item + " "
+                } else {
+                    const parts = item.split(",");
+                    result += (parseFloat(parts[0])/zoom)+","+(parseFloat(parts[1])/zoom)+" "
+                }
+            }
+            path.setAttribute("d",result);
+        })
     }
 
     /**
@@ -664,8 +686,8 @@ function SmartShapeDrawHelper() {
      */
     this.toPng = (shape,type= PngExportTypes.DATAURL,width=null,height=null, includeChildren=null) => {
         return new Promise(async(resolve) => {
-            shape.calcPosition();
             const zoom = shape.options.zoomLevel || 1;
+            shape.calcPosition();
             const pos = shape.getPosition(includeChildren || shape.options.groupChildShapes);
             [width, height] = applyAspectRatio(width, height, pos.width/zoom, pos.height/zoom);
             const svgObj = this.getSvg(shape,includeChildren);
