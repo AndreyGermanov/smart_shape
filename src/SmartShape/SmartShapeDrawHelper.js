@@ -215,13 +215,16 @@ function SmartShapeDrawHelper() {
         const parent = shape.getParent();
         if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
-            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
-            path += this.getPolygonPathForChildren(shape,pos);
-            return path;
+            return [
+                this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent)),
+                this.getPolygonPathForChildren(shape,pos)
+            ].join("")
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
-            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
-            path += this.getPolygonPathForChildren(shape,pos);
+            let path = [
+                this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape)),
+                this.getPolygonPathForChildren(shape,pos)
+            ].join("");
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
                 const svg = this.getShapeSvg(shape);
                 svg.setAttribute("width",pos.width);
@@ -233,11 +236,11 @@ function SmartShapeDrawHelper() {
     }
 
     this.getPolygonPathForChildren = (shape,pos) => {
-        let path = "";
+        let path = [];
         if (shape.options.displayAsPath && shape.options.groupChildShapes) {
             shape.getChildren().forEach(child => {
                 child.calcPosition();
-                path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child));
+                path.push(this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child)));
             })
         }
         return path;
@@ -252,23 +255,21 @@ function SmartShapeDrawHelper() {
      * @returns {string} Path of points for polygon
      */
     this.getPolygonPathForShape = (shape,pos,size) => {
-        return "M "+shape.points
-            .map(point => {
-                let x = point.x - pos.left;
-                let y = point.y - pos.top;
-                if (x<=0) {
-                    x += size
-                } else if (point.x>=pos.right) {
-                    x -= size;
-                }
-                if (y<=0) {
-                    y += size
-                } else if (point.y>=pos.bottom) {
-                    y -= size;
-                }
-                return ""+x+","+y
-            })
-            .join(" ")+" Z";
+        return ["M ",shape.points.map(point => {
+            let x = point.x - pos.left;
+            let y = point.y - pos.top;
+            if (x<=0) {
+                x += size
+            } else if (point.x>=pos.right) {
+                x -= size;
+            }
+            if (y<=0) {
+                y += size
+            } else if (point.y>=pos.bottom) {
+                y -= size;
+            }
+            return [x,",",y].join("")
+        })," Z"].join(" ")
     }
 
     /**

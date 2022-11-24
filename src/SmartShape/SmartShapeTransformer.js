@@ -218,7 +218,7 @@ export default function SmartShapeTransformer(shape) {
         const parent = this.shape.getRootParent(true);
         let shapeCenterX,shapeCenterY
         if (parent && parent.options.groupChildShapes) {
-            [shapeCenterX,shapeCenterY] = parent.shape.getCenter(parent.options.groupChildShapes);
+            [shapeCenterX,shapeCenterY] = parent.getCenter(parent.options.groupChildShapes);
         } else {
             [shapeCenterX,shapeCenterY] = this.shape.getCenter(this.shape.options.groupChildShapes)
         }
