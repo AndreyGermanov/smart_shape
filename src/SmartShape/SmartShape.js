@@ -792,16 +792,14 @@ function SmartShape() {
     this.redraw = () => {
         this.applyDisplayMode();
         SmartShapeDrawHelper.draw(this);
-        if (this.options.groupChildShapes) {
-            this.redrawChildren();
-        }
+        this.options.groupChildShapes && this.redrawChildren();
     }
 
     this.redrawChildren = () => {
         this.getChildren().forEach(child=>{
             if (!this.options.displayAsPath) {
                 child.redraw()
-            } else if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+            } else if (this.options.displayMode === SmartShapeDisplayMode.SELECTED) {
                 child.points.filter(point=>point.element).forEach(point => point.redraw())
             }
         });
@@ -822,7 +820,7 @@ function SmartShape() {
             }
             if (point.element) {
                 point.element.style.zIndex = point.options.zIndex;
-                if (this.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
+                if (this.options.displayMode !== SmartShapeDisplayMode.SELECTED && !point.options.forceDisplay) {
                     point.element.style.display = 'none';
                 } else {
                     point.element.style.display = '';
@@ -837,9 +835,13 @@ function SmartShape() {
     this.applyChildrenDisplayMode = () => {
         this.getChildren(true).forEach(child => {
             child.points.filter(point=>typeof(point.setOptions) === "function").forEach(point => {
-                point.setOptions({createDOMElement:this.options.displayMode !== SmartShapeDisplayMode.DEFAULT});
+                point.setOptions({createDOMElement:this.options.displayMode === SmartShapeDisplayMode.SELECTED});
                 if (point.options.createDOMElement && !point.element) {
                     point.redraw();
+                } else if (point.element) {
+                    try {
+                        point.element.parentNode.removeChild(point.element)
+                    } catch {}
                 }
                 if (point.options.visible && !point.options.hidden && point.options.canDrag && point.element) {
                     point.element.style.display = '';

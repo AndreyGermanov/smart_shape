@@ -210,7 +210,15 @@ export default function SmartShapeTransformer(shape) {
         });
         this.shape.options.rotateAngle += angle;
         if (this.shape.options.groupChildShapes) {
-            this.shape.getChildren(true).forEach(child=>child.rotateBy(angle,centerX,centerY,false))
+            this.shape.getChildren(true).forEach(child=>{
+                child.points.forEach(point => {
+                    if (typeof(point.rotateBy) === "function") {
+                        point.rotateBy(angle, centerX, centerY)
+                    } else {
+                        [point.x,point.y] = getRotatedCoords(angle, point.x,point.y, centerX,centerY)
+                    }
+                })
+            })
         }
     }
 
@@ -222,7 +230,7 @@ export default function SmartShapeTransformer(shape) {
         } else {
             [shapeCenterX,shapeCenterY] = this.shape.getCenter(this.shape.options.groupChildShapes)
         }
-        if (this.shape.initCenter) {
+        if (this.shape.initCenter && (!centerX && !centerY)) {
             [centerX,centerY] = this.shape.initCenter;
         }
         if (!centerX) {

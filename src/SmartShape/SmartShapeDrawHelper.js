@@ -163,11 +163,12 @@ function SmartShapeDrawHelper() {
                 point.options.visible = true;
             }
             point.redraw();
-            if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
-                if (!parent || parent.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
-                    point.element.style.display = 'none';
-                } else {
+            let shp = parent || shape;
+            if (SmartShapeManager.isNormalShape(shp)) {
+                if ((shp.options.displayMode === SmartShapeDisplayMode.SELECTED || point.options.forceDisplay) && shp.options.visible) {
                     point.element.style.display = '';
+                } else {
+                    point.element.style.display = 'none';
                 }
             }
         });

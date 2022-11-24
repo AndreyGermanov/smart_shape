@@ -5,6 +5,8 @@ import {PointEvents} from "../SmartPoint/SmartPoint.js";
 import {RotateBoxEvents} from "../RotateBox/RotateBoxEventListener.js";
 import {ResizeBoxEvents} from "../ResizeBox/ResizeBoxEventListener.js";
 import {createEvent} from "../events/functions.js";
+import SmartShapeDrawHelper from "./SmartShapeDrawHelper.js";
+import {SmartShapeDisplayMode} from "./SmartShape.js";
 
 /**
  * Internal helper class, that contains all event listening logic for the shape.
@@ -157,11 +159,6 @@ function SmartShapeEventListener(shape) {
         })
         this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(ShapeEvents.POINT_DRAG_END, (_event) => {
             this.shape.initCenter = null;
-            this.shape.points.filter(point=>point.options).forEach(point=> {
-                if (!point.options.hidden && point.element) {
-                    point.element.style.display = '';
-                }
-            })
         })
         this.rotateBoxContextMenuEventListener = this.shape.rotateBox.shape.svg.addEventListener("contextmenu", (event) => {
             if (this.shape.contextMenu) {
@@ -200,8 +197,16 @@ function SmartShapeEventListener(shape) {
             return
         }
         this.shape.rotateBy(event.angle);
-        this.shape.redraw()
-        EventsManager.emit(RotateBoxEvents.ROTATE_BOX_ROTATE,this.shape,event);
+        SmartShapeDrawHelper.draw(this.shape);
+        if (this.shape.options.groupChildShapes) {
+            this.shape.getChildren().forEach(child=>{
+                if (!this.shape.options.displayAsPath) {
+                    SmartShapeDrawHelper.draw(child);
+                } else if (this.shape.options.displayMode === SmartShapeDisplayMode.SELECTED) {
+                    child.points.filter(point=>point.element).forEach(point => point.redraw())
+                }
+            });
+        }
     }
 
     /**

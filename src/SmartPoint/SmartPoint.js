@@ -165,7 +165,7 @@ function SmartPoint() {
                 EventsManager.emit(PointEvents.POINT_ADDED,this);
             }
         } else {
-            if ((!this.options.createDOMElement || !this.options.canDrag) && !this.options.forceDisplay) {
+            if ((!this.options.createDOMElement || !this.options.canDrag) && !this.options.forceDisplay && this.element) {
                 try {
                     this.element.parentNode.removeChild(this.element);
                     this.element = null;
