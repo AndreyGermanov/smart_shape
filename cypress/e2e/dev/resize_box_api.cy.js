@@ -353,7 +353,7 @@ describe('ResizeBox tests', () => {
   it("Should correctly enable scale feature on SmartShape instance", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, shape] = initShape();
-      const [pointWidth,pointHeight] = shape.getMaxPointSize();
+      const [pointWidth,pointHeight] = shape.transformer.getMaxPointSize();
       assert.isNotNull(shape.resizeBox,"Resize box should be created if not null");
       assert.equal(shape.resizeBox.left,shape.left-pointWidth,
           "Should correctly setup left corner of ResizeBox around shape");

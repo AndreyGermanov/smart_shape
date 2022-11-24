@@ -285,7 +285,7 @@ function SmartShapeDrawHelper() {
             return
         }
         if (!shape.resizeBox) {
-            shape.setupResizeBox();
+            shape.transformer.setupResizeBox();
             if (shape.resizeBox) {
                 shape.resizeBox.shape.points.forEach(point => {
                     point.options.zIndex = shape.options.zIndex + 2;
@@ -311,7 +311,7 @@ function SmartShapeDrawHelper() {
             return
         }
         if (!shape.rotateBox) {
-            shape.setupRotateBox();
+            shape.transformer.setupRotateBox();
             if (shape.rotateBox) {
                 shape.rotateBox.shape.points.forEach(point => {
                     point.options.zIndex = shape.options.zIndex + 2;
@@ -324,7 +324,7 @@ function SmartShapeDrawHelper() {
     }
 
     this.setupBox = (shape,box,displayMode) => {
-        const bounds = shape.getResizeBoxBounds();
+        const bounds = shape.transformer.getResizeBoxBounds();
         if (shape.options.displayMode === displayMode) {
             box.options.shapeOptions.visible = shape.options.visible;
         } else {

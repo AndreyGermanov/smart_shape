@@ -42,6 +42,27 @@ using transformations, specified in <code>params</code> argument.</p>
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#scaleTo">scaleTo(width, height)</a></dt>
+<dd><p>Scales image to fit specified <code>width</code> and <code>height</code>. It only changes coordinates of points, but do not
+redraws the shape on new position. So, you need to call <code>redraw</code> yourself after scale.</p>
+</dd>
+<dt><a href="#scaleBy">scaleBy(scaleX, scaleY, includeChildren)</a></dt>
+<dd><p>Method used to scale the shape by specified ratio by X and Y</p>
+</dd>
+<dt><a href="#zoomBy">zoomBy(level)</a></dt>
+<dd><p>Method used to zoom shape by specified level</p>
+</dd>
+<dt><a href="#rotateBy">rotateBy(angle, centerX, centerY, checkBounds)</a></dt>
+<dd><p>Method used to rotate this shape by specified angle around it&#39;s center.</p>
+</dd>
+<dt><a href="#flip">flip(byX, byY, includeChildren)</a></dt>
+<dd><p>Method used to flip shape and its children vertically or horizontally</p>
+</dd>
+</dl>
+
 <a name="ResizeBox"></a>
 
 ## ResizeBox
@@ -768,6 +789,7 @@ Method returns a distance from this point to other specified point
     * [.rotateBox](#SmartShape+rotateBox) : [<code>RotateBox</code>](#RotateBox)
     * [.initCenter](#SmartShape+initCenter) : <code>array</code>
     * [.shapeMenu](#SmartShape+shapeMenu) : <code>SmartShapeContextMenu</code>
+    * [.transformer](#SmartShape+transformer) : <code>SmartShapeTransformer</code>
     * [.init(root, options, points, show)](#SmartShape+init) ⇒ <code>object</code>
     * [.setOptions(options)](#SmartShape+setOptions)
     * [.addPoint(x, y, pointOptions)](#SmartShape+addPoint) ⇒ <code>object</code>
@@ -780,10 +802,10 @@ Method returns a distance from this point to other specified point
     * [.findPoint(x, y)](#SmartShape+findPoint) ⇒ <code>null</code> \| <code>object</code>
     * [.findPointById(id)](#SmartShape+findPointById) ⇒ <code>null</code> \| <code>object</code>
     * [.getPointsArray()](#SmartShape+getPointsArray) ⇒ <code>array</code>
-    * [.moveTo(x, y, redraw, fast)](#SmartShape+moveTo)
+    * [.moveTo(x, y, redraw, respectBounds, fast)](#SmartShape+moveTo)
     * [.moveBy(stepX, stepY, redraw, fast)](#SmartShape+moveBy)
     * [.scaleTo(width, height)](#SmartShape+scaleTo)
-    * [.scaleBy(scaleX, scaleY)](#SmartShape+scaleBy)
+    * [.scaleBy(scaleX, scaleY, includeChildren)](#SmartShape+scaleBy)
     * [.zoomBy(level)](#SmartShape+zoomBy)
     * [.rotateBy(angle, centerX, centerY, checkBounds)](#SmartShape+rotateBy)
     * [.flip(byX, byY, includeChildren)](#SmartShape+flip)
@@ -993,6 +1015,12 @@ Context menu of shape that appear on right mouse click
 if `hasContextMenu` option is true
 
 **Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
+<a name="SmartShape+transformer"></a>
+
+### smartShape.transformer : <code>SmartShapeTransformer</code>
+Helper class that contains all methods for shape transofrmations
+
+**Kind**: instance property of [<code>SmartShape</code>](#SmartShape)  
 <a name="SmartShape+init"></a>
 
 ### smartShape.init(root, options, points, show) ⇒ <code>object</code>
@@ -1145,7 +1173,7 @@ Returns 2D array of points coordinates in format [ [x,y], [x,y], [x,y] ... ].
 **Returns**: <code>array</code> - 2D array of points in format [ [x,y], [x,y], [x,y] ... ]  
 <a name="SmartShape+moveTo"></a>
 
-### smartShape.moveTo(x, y, redraw, fast)
+### smartShape.moveTo(x, y, redraw, respectBounds, fast)
 Moves shape to specific position. It only changes coordinates of points, but do not
 redraw the shape on new position. So, you need to call `redraw` yourself after move.
 
@@ -1156,6 +1184,7 @@ redraw the shape on new position. So, you need to call `redraw` yourself after m
 | x | <code>number</code> | new X coordinate |
 | y | <code>number</code> | new Y coordinate |
 | redraw | <code>boolean</code> | should the function redraw the shape after move. True by default |
+| respectBounds | <code>boolean</code> | should the function disallow to move beyond defined shape bounds |
 | fast | <code>boolean</code> | if true, then only change shape dimensions without recalculate points |
 
 <a name="SmartShape+moveBy"></a>
@@ -1187,7 +1216,7 @@ redraws the shape on new position. So, you need to call `redraw` yourself after 
 
 <a name="SmartShape+scaleBy"></a>
 
-### smartShape.scaleBy(scaleX, scaleY)
+### smartShape.scaleBy(scaleX, scaleY, includeChildren)
 Method used to scale the shape by specified ratio by X and Y
 
 **Kind**: instance method of [<code>SmartShape</code>](#SmartShape)  
@@ -1196,6 +1225,7 @@ Method used to scale the shape by specified ratio by X and Y
 | --- | --- | --- |
 | scaleX | <code>number</code> | Horizontal scale ratio |
 | scaleY | <code>number</code> | Vertical scale ratio |
+| includeChildren | <code>boolean</code> | If true, then children of this shape scaled with it, if not specified then it determined by the `groupChildShapes` option. if children of shape grouped, then scaled together with it |
 
 <a name="SmartShape+zoomBy"></a>
 
@@ -2187,4 +2217,68 @@ using transformations, specified in `params` argument.
 | y | <code>number</code> | Y coordinate |
 | type | <code>PointMapTypes</code> | This options specifies the transformation direction. If it equals to `original_to_current` then need to apply specified transformations to point, if  it equals `current_to_original`, the it assumed that all transformations already applied to specified coordinates and need to un-apply them. |
 | params |  | Transformation parameters: `offsetX` - move by X, `offsetY` - move by Y, `scaleX` - scale by X, `scaleY` - scale by Y, `flippedX` - flip by X, `flippedY` - flip by Y |
+
+<a name="scaleTo"></a>
+
+## scaleTo(width, height)
+Scales image to fit specified `width` and `height`. It only changes coordinates of points, but do not
+redraws the shape on new position. So, you need to call `redraw` yourself after scale.
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| width | <code>number</code> \| <code>null</code> | new width. If not specified, then will be calculated automatically based on height to preserve aspect ratio |
+| height | <code>number</code> \| <code>null</code> | new height. If not specifie, then will be calculated automatically based on width to preserve aspect ratio |
+
+<a name="scaleBy"></a>
+
+## scaleBy(scaleX, scaleY, includeChildren)
+Method used to scale the shape by specified ratio by X and Y
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scaleX | <code>number</code> | Horizontal scale ratio |
+| scaleY | <code>number</code> | Vertical scale ratio |
+| includeChildren | <code>boolean</code> | If true, then children of this shape scaled with it, if not specified then it determined by the `groupChildShapes` option. if children of shape grouped, then scaled together with it |
+
+<a name="zoomBy"></a>
+
+## zoomBy(level)
+Method used to zoom shape by specified level
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| level | <code>number</code> | Zoom level. Can be any positive number. If number is greater than 1, then it increases the size of shape, if it between 0 and 1, then it decreases the shape. |
+
+<a name="rotateBy"></a>
+
+## rotateBy(angle, centerX, centerY, checkBounds)
+Method used to rotate this shape by specified angle around it's center.
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| angle | <code>number</code> | Angle in degrees. Positive - clockwise, Negative - counterclock-wise |
+| centerX | <code>number</code> | X coordinate of center around which to rotate the shape. By default it's a center of the shape |
+| centerY | <code>number</code> | Y coordinate of center around which to rotate the shape. By default it's a center of the shape |
+| checkBounds | <code>boolean</code> | Should the function check that shape won't go beyond defined bounds or container bounds after rotation. By default false. |
+
+<a name="flip"></a>
+
+## flip(byX, byY, includeChildren)
+Method used to flip shape and its children vertically or horizontally
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| byX | <code>boolean</code> | Flip horizontally |
+| byY | <code>boolean</code> | Flip vertically |
+| includeChildren | <code>boolean</code> | Flip includes children shapes |
 

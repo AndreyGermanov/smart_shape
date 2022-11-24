@@ -187,7 +187,7 @@ function SmartShapeEventListener(shape) {
         const diffX = event.newPos.left - event.oldPos.left;
         const diffY = event.newPos.top - event.oldPos.top;
         this.shape.moveBy(diffX,diffY,false);
-        const [pointWidth,pointHeight] = this.shape.getMaxPointSize();
+        const [pointWidth,pointHeight] = this.shape.transformer.getMaxPointSize();
         this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
         this.shape.redraw();
         EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
