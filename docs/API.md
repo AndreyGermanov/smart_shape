@@ -61,6 +61,16 @@ redraws the shape on new position. So, you need to call <code>redraw</code> your
 <dt><a href="#flip">flip(byX, byY, includeChildren)</a></dt>
 <dd><p>Method used to flip shape and its children vertically or horizontally</p>
 </dd>
+<dt><a href="#pngChunkGet">pngChunkGet(png, chunkName)</a> ⇒ <code>Promise.&lt;(DataView|null)&gt;</code></dt>
+<dd></dd>
+<dt><a href="#pngChunkSet">pngChunkSet(png, chunkName, data)</a> ⇒ <code>Promise.&lt;Blob&gt;</code></dt>
+<dd></dd>
+<dt><a href="#chunkSet">chunkSet(pngData, chunkNameUint32, data)</a> ⇒ <code>Blob</code></dt>
+<dd></dd>
+<dt><a href="#chunkGet">chunkGet(pngData, chunkNameUint32)</a> ⇒ <code>DataView</code> | <code>null</code></dt>
+<dd></dd>
+<dt><a href="#toUit32">toUit32(chunkName)</a> ⇒ <code>number</code></dt>
+<dd></dd>
 </dl>
 
 <a name="ResizeBox"></a>
@@ -2281,4 +2291,73 @@ Method used to flip shape and its children vertically or horizontally
 | byX | <code>boolean</code> | Flip horizontally |
 | byY | <code>boolean</code> | Flip vertically |
 | includeChildren | <code>boolean</code> | Flip includes children shapes |
+
+<a name="pngChunkGet"></a>
+
+## pngChunkGet(png, chunkName) ⇒ <code>Promise.&lt;(DataView\|null)&gt;</code>
+**Kind**: global function  
+**Returns**: <code>Promise.&lt;(DataView\|null)&gt;</code> - chunk data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| png | <code>Blob</code> |  |
+| chunkName | <code>string</code> | 4 symbol string |
+
+<a name="pngChunkSet"></a>
+
+## pngChunkSet(png, chunkName, data) ⇒ <code>Promise.&lt;Blob&gt;</code>
+**Kind**: global function  
+**Returns**: <code>Promise.&lt;Blob&gt;</code> - new png  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| png | <code>Blob</code> |  |
+| chunkName | <code>string</code> | 4 symbol string |
+| data | <code>Uint8Array</code> |  |
+
+<a name="chunkSet"></a>
+
+## chunkSet(pngData, chunkNameUint32, data) ⇒ <code>Blob</code>
+**Kind**: global function  
+**Returns**: <code>Blob</code> - new png  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pngData | <code>ArrayBuffer</code> |  |
+| chunkNameUint32 | <code>number</code> | chunk name as Uint32 |
+| data | <code>Uint8Array</code> |  |
+
+
+* [chunkSet(pngData, chunkNameUint32, data)](#chunkSet) ⇒ <code>Blob</code>
+    * [~startPart](#chunkSet..startPart) : <code>DataView</code>
+    * [~endPart](#chunkSet..endPart) : <code>DataView</code>
+
+<a name="chunkSet..startPart"></a>
+
+### chunkSet~startPart : <code>DataView</code>
+**Kind**: inner property of [<code>chunkSet</code>](#chunkSet)  
+<a name="chunkSet..endPart"></a>
+
+### chunkSet~endPart : <code>DataView</code>
+**Kind**: inner property of [<code>chunkSet</code>](#chunkSet)  
+<a name="chunkGet"></a>
+
+## chunkGet(pngData, chunkNameUint32) ⇒ <code>DataView</code> \| <code>null</code>
+**Kind**: global function  
+**Returns**: <code>DataView</code> \| <code>null</code> - chunk data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pngData | <code>ArrayBuffer</code> |  |
+| chunkNameUint32 | <code>number</code> | chunk name as Uint32 |
+
+<a name="toUit32"></a>
+
+## toUit32(chunkName) ⇒ <code>number</code>
+**Kind**: global function  
+**Returns**: <code>number</code> - uit32  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| chunkName | <code>string</code> | 4 symbol string |
 

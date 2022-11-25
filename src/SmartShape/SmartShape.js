@@ -838,7 +838,7 @@ function SmartShape() {
                 point.setOptions({createDOMElement:this.options.displayMode === SmartShapeDisplayMode.SELECTED});
                 if (point.options.createDOMElement && !point.element) {
                     point.redraw();
-                } else if (point.element) {
+                } else if (point.element && this.options.displayMode !== SmartShapeDisplayMode.SELECTED) {
                     try {
                         point.element.parentNode.removeChild(point.element)
                     } catch {}
