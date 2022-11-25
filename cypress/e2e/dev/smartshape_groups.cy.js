@@ -143,7 +143,7 @@ describe('SmartShape groups tests', () => {
       child.addChild(child2);
       shape.setOptions({canScale:true,canRotate:true});
       shape.switchDisplayMode(SmartShapeDisplayMode.SCALE);
-      const [pointWidth,pointHeight] = shape.getMaxPointSize();
+      const [pointWidth,pointHeight] = shape.transformer.getMaxPointSize();
       assert.equal(shape.resizeBox.shape.left,50-pointWidth,"Should set correct left of resize box");
       assert.equal(shape.resizeBox.shape.top,50-pointHeight,"Should set correct top of resize box");
       assert.equal(shape.resizeBox.shape.bottom,300+pointHeight,"Should set correct bottom of resize box");

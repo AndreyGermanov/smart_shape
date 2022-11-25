@@ -38,13 +38,10 @@ function SmartShapeDrawHelper() {
     }
 
     this.initRootSvg = (shape) => {
-        if (shape.svg) {
-            try {
-                shape.eventListener.removeSvgEventListeners();
-                shape.svg.innerHTML = "";
-            } catch (err) {
+        if (shape.points.length) {
+            if (shape.svg) {
+                return
             }
-        } else if (shape.points.length) {
             shape.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             shape.svg.ondragstart = function () {
                 return false;
@@ -56,6 +53,12 @@ function SmartShapeDrawHelper() {
             shape.svg.id = shape.options.id;
             shape.svg.setAttribute("guid", shape.guid);
             shape.root.appendChild(shape.svg);
+        } else {
+            try {
+                shape.eventListener.removeSvgEventListeners();
+                shape.svg.innerHTML = "";
+            } catch (err) {
+            }
         }
         if (shape.svg && typeof(shape.svg.appendChild) === "function") {
             const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
@@ -152,6 +155,7 @@ function SmartShapeDrawHelper() {
         if (shape.points[0] && !shape.points[0].element) {
             await timeout(1);
         }
+        let shp = parent || shape;
         shape.points.filter(point => point.element).forEach(point => {
             if (point.element.parentNode !== shape.root) {
                 shape.root.appendChild(point.element);
@@ -163,11 +167,11 @@ function SmartShapeDrawHelper() {
                 point.options.visible = true;
             }
             point.redraw();
-            if (shape.options.displayMode === SmartShapeDisplayMode.DEFAULT && !point.options.forceDisplay) {
-                if (!parent || parent.options.displayMode === SmartShapeDisplayMode.DEFAULT) {
-                    point.element.style.display = 'none';
-                } else {
+            if (SmartShapeManager.isNormalShape(shp)) {
+                if ((shp.options.displayMode === SmartShapeDisplayMode.SELECTED || point.options.forceDisplay) && shp.options.visible) {
                     point.element.style.display = '';
+                } else {
+                    point.element.style.display = 'none';
                 }
             }
         });
@@ -189,13 +193,16 @@ function SmartShapeDrawHelper() {
         let polygon = svg.querySelector("#p"+shape.guid+"_polygon");
         if (!polygon) {
             polygon = document.createElementNS("http://www.w3.org/2000/svg","path");
+            polygon.id = "p"+shape.guid+"_polygon";
+            polygon.setAttribute("fill-rule","evenodd");
+            polygon.setAttribute("shape_id", shape.options.id);
+            polygon.setAttribute("shape_guid",shape.guid);
             svg.appendChild(polygon)
         }
-        polygon.setAttribute("d",this.getPolygonPath(shape));
-        polygon.setAttribute("fill-rule","evenodd");
-        polygon.setAttribute("shape_id", shape.options.id);
-        polygon.setAttribute("shape_guid",shape.guid);
-        polygon.id = "p"+shape.guid+"_polygon";
+        const path = this.getPolygonPath(shape);
+        if (polygon.getAttribute("d") !== path) {
+            polygon.setAttribute("d", path);
+        }
         this.setupPolygonFill(shape,polygon);
         this.setupPolygonStyles(shape,polygon);
         if (svg.querySelector("#f"+shape.guid+"_filter")) {
@@ -215,13 +222,16 @@ function SmartShapeDrawHelper() {
         const parent = shape.getParent();
         if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
-            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
-            path += this.getPolygonPathForChildren(shape,pos);
-            return path;
+            return [
+                this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent)),
+                this.getPolygonPathForChildren(shape,pos)
+            ].join("")
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
-            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
-            path += this.getPolygonPathForChildren(shape,pos);
+            let path = [
+                this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape)),
+                this.getPolygonPathForChildren(shape,pos)
+            ].join("");
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
                 const svg = this.getShapeSvg(shape);
                 svg.setAttribute("width",pos.width);
@@ -233,11 +243,11 @@ function SmartShapeDrawHelper() {
     }
 
     this.getPolygonPathForChildren = (shape,pos) => {
-        let path = "";
+        let path = [];
         if (shape.options.displayAsPath && shape.options.groupChildShapes) {
             shape.getChildren().forEach(child => {
                 child.calcPosition();
-                path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child));
+                path.push(this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child)));
             })
         }
         return path;
@@ -252,23 +262,21 @@ function SmartShapeDrawHelper() {
      * @returns {string} Path of points for polygon
      */
     this.getPolygonPathForShape = (shape,pos,size) => {
-        return "M "+shape.points
-            .map(point => {
-                let x = point.x - pos.left;
-                let y = point.y - pos.top;
-                if (x<=0) {
-                    x += size
-                } else if (point.x>=pos.right) {
-                    x -= size;
-                }
-                if (y<=0) {
-                    y += size
-                } else if (point.y>=pos.bottom) {
-                    y -= size;
-                }
-                return ""+x+","+y
-            })
-            .join(" ")+" Z";
+        return ["M ",shape.points.map(point => {
+            let x = point.x - pos.left;
+            let y = point.y - pos.top;
+            if (x<=0) {
+                x += size
+            } else if (point.x>=pos.right) {
+                x -= size;
+            }
+            if (y<=0) {
+                y += size
+            } else if (point.y>=pos.bottom) {
+                y -= size;
+            }
+            return [x,",",y].join("")
+        })," Z"].join(" ")
     }
 
     /**
@@ -285,7 +293,7 @@ function SmartShapeDrawHelper() {
             return
         }
         if (!shape.resizeBox) {
-            shape.setupResizeBox();
+            shape.transformer.setupResizeBox();
             if (shape.resizeBox) {
                 shape.resizeBox.shape.points.forEach(point => {
                     point.options.zIndex = shape.options.zIndex + 2;
@@ -311,7 +319,7 @@ function SmartShapeDrawHelper() {
             return
         }
         if (!shape.rotateBox) {
-            shape.setupRotateBox();
+            shape.transformer.setupRotateBox();
             if (shape.rotateBox) {
                 shape.rotateBox.shape.points.forEach(point => {
                     point.options.zIndex = shape.options.zIndex + 2;
@@ -324,7 +332,7 @@ function SmartShapeDrawHelper() {
     }
 
     this.setupBox = (shape,box,displayMode) => {
-        const bounds = shape.getResizeBoxBounds();
+        const bounds = shape.transformer.getResizeBoxBounds();
         if (shape.options.displayMode === displayMode) {
             box.options.shapeOptions.visible = shape.options.visible;
         } else {
@@ -354,6 +362,27 @@ function SmartShapeDrawHelper() {
         } else if (fill === "#gradient" && shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
             this.createGradient(shape);
+        } else {
+            this.clearShapeFillTags(shape);
+        }
+    }
+
+    this.clearShapeFillTags = (shape) => {
+        const svg = this.getShapeSvg(shape);
+        if (!svg) {
+            return
+        }
+        const gradient = svg.querySelector("#g"+shape.guid+"_gradient");
+        if (gradient) {
+            try {
+                gradient.parentNode.removeChild(gradient);
+            } catch {}
+        }
+        const pattern = svg.querySelector("p"+shape.guid+"_pattern");
+        if (pattern) {
+            try {
+                pattern.parentNode.removeChild(pattern);
+            } catch {}
         }
     }
 
