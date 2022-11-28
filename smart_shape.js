@@ -838,7 +838,22 @@ function le() {
     let i = t.querySelector("#p" + e.guid + "_polygon");
     i || (i = document.createElementNS("http://www.w3.org/2000/svg", "path"), i.id = "p" + e.guid + "_polygon", i.setAttribute("fill-rule", "evenodd"), i.setAttribute("shape_id", e.options.id), i.setAttribute("shape_guid", e.guid), t.appendChild(i));
     const s = this.getPolygonPath(e);
-    i.getAttribute("d") !== s && i.setAttribute("d", s), this.setupPolygonFill(e, i), this.setupPolygonStyles(e, i), t.querySelector("#f" + e.guid + "_filter") && (i.style.filter = 'url("#f' + e.guid + '_filter")'), i.style.zIndex = e.options.zIndex, e.polygon = i;
+    i.getAttribute("d") !== s && i.setAttribute("d", s), this.setupPolygonFill(e, i), this.setupPolygonStyles(e, i), t.querySelector("#f" + e.guid + "_filter") && (i.style.filter = 'url("#f' + e.guid + '_filter")'), i.style.zIndex = e.options.zIndex, e.polygon = i, t && typeof t.querySelector == "function" && !e.getRootParent() && this.clearUnusedPolygons(e, t);
+  }, this.clearUnusedPolygons = (e, t) => {
+    const i = Array.from(t.querySelectorAll("path"));
+    for (let s of i) {
+      let o = s.id === "p" + e.guid + "_polygon";
+      if (!o && e.options.groupChildShapes && e.getChildren(!0).forEach((n) => {
+        if (s.id === "p" + n.guid + "_polygon") {
+          o = !0;
+          return;
+        }
+      }), !o)
+        try {
+          s.parentNode.removeChild(s);
+        } catch {
+        }
+    }
   }, this.getPolygonPath = (e) => {
     const t = e.getParent();
     if (t && t.options.groupChildShapes) {
@@ -898,31 +913,27 @@ function le() {
     });
   }, this.setupShapeFill = (e) => {
     const t = e.options.style.fill || "none";
-    if (t === "#image" && e.options.fillImage && typeof e.options.fillImage == "object")
-      this.createImageFill(e);
-    else if (t === "#gradient" && e.options.fillGradient && typeof e.options.fillGradient == "object" && ["linear", "radial"].indexOf(e.options.fillGradient.type) !== -1)
-      this.createGradient(e);
-    else {
-      const i = this.getShapeSvg(e);
-      if (!i)
-        return;
-      const s = i.querySelector("#g" + e.guid + "_gradient");
-      if (s)
-        try {
-          s.parentNode.removeChild(s);
-        } catch {
-        }
-      const o = i.querySelector("p" + e.guid + "_pattern");
-      if (o)
-        try {
-          o.parentNode.removeChild(o);
-        } catch {
-        }
-    }
+    t === "#image" && e.options.fillImage && typeof e.options.fillImage == "object" ? this.createImageFill(e) : t === "#gradient" && e.options.fillGradient && typeof e.options.fillGradient == "object" && ["linear", "radial"].indexOf(e.options.fillGradient.type) !== -1 ? this.createGradient(e) : this.clearShapeFillTags(e);
+  }, this.clearShapeFillTags = (e) => {
+    const t = this.getShapeSvg(e);
+    if (!t)
+      return;
+    const i = t.querySelector("#g" + e.guid + "_gradient");
+    if (i)
+      try {
+        i.parentNode.removeChild(i);
+      } catch {
+      }
+    const s = t.querySelector("p" + e.guid + "_pattern");
+    if (s)
+      try {
+        s.parentNode.removeChild(s);
+      } catch {
+      }
   }, this.createGradient = (e) => {
     const t = this.getShapeSvg(e);
     let i = t.querySelector("#g" + e.guid + "_gradient"), s = e.options.fillGradient.type === "linear" ? "linearGradient" : "radialGradient";
-    return i ? i.tagName.toLowerCase() !== s.toLowerCase() && i.parentNode.removeChild(i) : (i = document.createElementNS(t.namespaceURI, s), t && t.querySelector("defs").appendChild(i)), this.createGradientSteps(e, t, i);
+    return i && i.tagName.toLowerCase() !== s.toLowerCase() && (i.parentNode.removeChild(i), i = t.querySelector("#g" + e.guid + "_gradient")), i || (i = document.createElementNS(t.namespaceURI, s), t && t.querySelector("defs").appendChild(i)), this.createGradientSteps(e, t, i);
   }, this.createGradientSteps = (e, t, i) => {
     i.innerHTML = "", i.id = "g" + e.guid + "_gradient";
     let s = !1;
@@ -971,7 +982,7 @@ function le() {
     return s;
   }, this.setupPolygonFill = (e, t) => {
     const i = e.options.style.fill || "none";
-    i === "#image" && e.options.fillImage && typeof e.options.fillImage == "object" ? t.setAttribute("fill", 'url("#p' + e.guid + '_pattern")') : i === "#gradient" && e.options.fillGradient && typeof e.options.fillGradient == "object" && ["linear", "radial"].indexOf(e.options.fillGradient.type) !== -1 && t.setAttribute("fill", 'url("#g' + e.guid + '_gradient")');
+    i === "#image" && e.options.fillImage && typeof e.options.fillImage == "object" ? (t.setAttribute("fill", 'url("#p' + e.guid + '_pattern")'), t.style.fill = "") : i === "#gradient" && e.options.fillGradient && typeof e.options.fillGradient == "object" && ["linear", "radial"].indexOf(e.options.fillGradient.type) !== -1 && (t.setAttribute("fill", 'url("#g' + e.guid + '_gradient")'), t.style.fill = "");
   }, this.setupPolygonStyles = (e, t) => {
     if (e.options.classes && t.setAttribute("class", e.options.classes), !(!S(e.options.style) || typeof e.options.style != "object"))
       for (let i in e.options.style)
@@ -1146,7 +1157,7 @@ function pe(e) {
     }
     this.shape.rotateBy(t.angle), y.draw(this.shape), this.shape.options.groupChildShapes && this.shape.getChildren().forEach((s) => {
       this.shape.options.displayAsPath ? this.shape.options.displayMode === A.SELECTED && s.points.filter((o) => o.element).forEach((o) => o.redraw()) : y.draw(s);
-    });
+    }), r.emit(a.SHAPE_ROTATE, this.shape, t);
   }, this.mousedown = (t) => {
     it(t), r.emit(a.SHAPE_MOUSE_DOWN, this.shape, u(t)), setTimeout(() => {
       r.emit(

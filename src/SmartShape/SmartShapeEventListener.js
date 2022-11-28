@@ -207,6 +207,7 @@ function SmartShapeEventListener(shape) {
                 }
             });
         }
+        EventsManager.emit(ShapeEvents.SHAPE_ROTATE,this.shape,event);
     }
 
     /**
