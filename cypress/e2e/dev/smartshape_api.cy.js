@@ -183,9 +183,6 @@ describe('SmartShape API tests', () => {
         cy.wait(1).then(async() => {
           assert.notEqual(shape.svg.style.display,'none',"Should show visible shape");
           assert.notEqual(shape.resizeBox.shape.svg.style.display, 'none', "Resize box should be also visible")
-          for (let point of shape.points) {
-            assert.notEqual(point.element.style.display,'none',"Point must be visible");
-          }
           for (let point of shape.resizeBox.shape.points) {
             assert.notEqual(point.element.style.display,'none',"Resize box point must be visible");
           }

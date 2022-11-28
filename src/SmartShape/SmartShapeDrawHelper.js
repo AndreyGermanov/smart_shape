@@ -210,6 +210,35 @@ function SmartShapeDrawHelper() {
         }
         polygon.style.zIndex = shape.options.zIndex;
         shape.polygon = polygon;
+        if (svg && typeof(svg.querySelector) === "function" && !shape.getRootParent()) {
+            this.clearUnusedPolygons(shape, svg)
+        }
+    }
+
+    /**
+     * @ignore
+     * Remove unnecessary previous polygons
+     * @param shape {SmartShape} Shape to remove unnecessary polygons
+     * @param svg SVG of this shape
+     */
+    this.clearUnusedPolygons = (shape,svg) => {
+        const polygons = Array.from(svg.querySelectorAll("path"));
+        for (let polygon of polygons) {
+            let found = polygon.id === "p"+shape.guid+"_polygon";
+            if (!found && shape.options.groupChildShapes) {
+                shape.getChildren(true).forEach(child => {
+                    if (polygon.id === "p"+child.guid+"_polygon") {
+                        found = true
+                        return;
+                    }
+                });
+            }
+            if (!found) {
+                try {
+                    polygon.parentNode.removeChild(polygon)
+                }  catch (err) { }
+            }
+        }
     }
 
     /**
@@ -399,11 +428,11 @@ function SmartShapeDrawHelper() {
         const svg = this.getShapeSvg(shape);
         let gradient = svg.querySelector("#g"+shape.guid+"_gradient");
         let gradientTag = shape.options.fillGradient.type === "linear" ? "linearGradient" : "radialGradient";
-        if (gradient) {
-            if (gradient.tagName.toLowerCase() !== gradientTag.toLowerCase()) {
-                gradient.parentNode.removeChild(gradient);
-            }
-        } else {
+        if (gradient && gradient.tagName.toLowerCase() !== gradientTag.toLowerCase()) {
+            gradient.parentNode.removeChild(gradient);
+            gradient = svg.querySelector("#g"+shape.guid+"_gradient");
+        }
+        if (!gradient) {
             gradient = document.createElementNS(svg.namespaceURI,gradientTag);
             if (svg) {
                 svg.querySelector('defs').appendChild(gradient);
@@ -557,9 +586,11 @@ function SmartShapeDrawHelper() {
         const fill = shape.options.style.fill || "none";
         if (fill === "#image" && shape.options.fillImage && typeof(shape.options.fillImage) === "object") {
             polygon.setAttribute("fill",'url("#p'+shape.guid+'_pattern'+'")');
+            polygon.style.fill = "";
         }  else if (fill === "#gradient" && shape.options.fillGradient && typeof(shape.options.fillGradient) === "object" &&
             ["linear","radial"].indexOf(shape.options.fillGradient.type) !== -1) {
             polygon.setAttribute("fill",'url("#g'+shape.guid+'_gradient'+'")');
+            polygon.style.fill = "";
         }
     }
 

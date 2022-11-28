@@ -1,7 +1,7 @@
 {
   "name": "smart_shape",
   "private": false,
-  "version": "1.1.4",
+  "version": "1.1.5",
   "license": "MIT",
   "author": "Andrey Germanov <andrey@germanov.dev> (https://germanov.dev)",
   "type": "module",
@@ -46,6 +46,6 @@
   },
   "homepage": "https://github.com/AndreyGermanov/smart_shape#readme",
   "dependencies": {
-    "simple_js_menu": "^1.0.2"
+    "simple_js_menu": "^1.0.3"
   }
 }
