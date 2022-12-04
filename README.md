@@ -331,5 +331,3 @@ This is a new component on early stage of development. A lot of new features to 
 As an early stage software, be careful by using it in real world projects. Test all features of shapes that you use properly, before pushing to production. If you modify the code by adding new features to these shapes, I will be more than happy if you share your code with my GitHub repository.
 
 If you find bugs or have some great ideas to add here, feel free to post a message on `Disussions` tab of GitHub repository of SmartShape project. Perhaps I will include it to development plan.
-
-The development plan is public and available here: https://github.com/users/AndreyGermanov/projects/1/views/1 .
