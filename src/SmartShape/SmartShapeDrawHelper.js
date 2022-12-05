@@ -15,9 +15,9 @@ function SmartShapeDrawHelper() {
      * Method that implements drawing for provided shape.
      * @param shape {SmartShape} Shape object to draw
      */
-    this.draw = (shape) => {
+    this.draw = async (shape) => {
         const parent = shape.getParent();
-        this.initSvg(shape,parent);
+        await this.initSvg(shape,parent);
         if (shape.points.length < 1) {
             return
         }
@@ -29,9 +29,13 @@ function SmartShapeDrawHelper() {
         EventsManager.emit("show_finish",shape);
     }
 
-    this.initSvg = (shape,parent) => {
+    this.initSvg = async (shape,parent) => {
         if (!parent || parent.guid === shape.guid || !parent.options.groupChildShapes) {
-            this.initRootSvg(shape)
+            if (typeof(shape.options.svgLoadFunc) === "function") {
+                await this.loadExternalSvg(shape);
+            } else {
+                this.initRootSvg(shape)
+            }
         } else {
             this.clearSvg(shape)
         }
@@ -63,6 +67,74 @@ function SmartShapeDrawHelper() {
         if (shape.svg && typeof(shape.svg.appendChild) === "function") {
             const defs = document.createElementNS(shape.svg.namespaceURI, "defs");
             shape.svg.appendChild(defs);
+        }
+    }
+
+    this.loadExternalSvg = async(shape) => {
+        console.trace("LOAD SVG");
+        const svg = await shape.options.svgLoadFunc(shape);
+        if (!svg) { return }
+        const paths = Array.from(svg.querySelectorAll("path"));
+        const path = paths.find(path => path.getAttribute("shape_id") === shape.options.id);
+        if (!path) {
+            return
+        }
+        this.applyExternalSvg(shape,path);
+        const exists = !!shape.svg;
+        if (exists) {
+            shape.eventListener.removeSvgEventListeners();
+        }
+        shape.svg = svg;
+        shape.eventListener.setSvgEventListeners();
+        const pos = shape.getPosition();
+        shape.svg.setAttribute("width",pos.width+"px");
+        shape.svg.setAttribute("height",pos.height+"px");
+        if (!exists) {
+            shape.root.appendChild(shape.svg);
+            SmartShapeManager.addShape(shape);
+        }
+    }
+
+    const ASCII = {
+        DOT: 46,
+        COMMA: 44,
+        SPACE: 32,
+        ZERO: 48,
+        NINE: 57
+
+    }
+    this.applyExternalSvg = (shape, path) => {
+        if (!shape.polygon) {
+            shape.polygon = path;
+        } else {
+            shape.polygon.setAttribute("d",path.getAttribute("d"));
+        }
+        shape.polygon.setAttribute("shape_guid",shape.guid);
+        shape.polygon.id = "p"+shape.guid+"_polygon";
+        this.addPointsFromShape(shape);
+        shape.calcPosition();
+    }
+
+    this.addPointsFromShape = (shape) => {
+        shape.deleteAllPoints();
+        const d = shape.polygon.getAttribute("d")
+        let buffer = [];
+        let x = null;
+        let y = null;
+        for (let char of d) {
+            const code = char.charCodeAt(0);
+            if ((code >= ASCII.ZERO && code <= ASCII.NINE) || code === ASCII.DOT) {
+                buffer.push(char)
+            } else if ((code === ASCII.COMMA || code === ASCII.SPACE) && buffer.length) {
+                if (x === null) {
+                    x = parseFloat(buffer.join(""));
+                } else {
+                    y = parseFloat(buffer.join(""));
+                    shape.putPoint(x,y);
+                    x = null; y = null;
+                }
+                buffer = [];
+            }
         }
     }
 
@@ -865,7 +937,9 @@ function SmartShapeDrawHelper() {
         paths.sort((p1,p2) => parseInt(p1.style.zIndex)-parseInt(p2.style.zIndex));
         const defs = shape.svg.querySelector("defs");
         shape.svg.innerHTML = "";
-        shape.svg.appendChild(defs);
+        if (defs) {
+            shape.svg.appendChild(defs);
+        }
         paths.forEach(path=>shape.svg.appendChild(path));
     }
 }

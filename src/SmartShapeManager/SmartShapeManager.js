@@ -482,7 +482,7 @@ function SmartShapeManager() {
     this.contextmenu = (event) => {
         event.stopPropagation();
         event.preventDefault();
-        if (this.shapeOnCursor) {
+        if (this.shapeOnCursor && this.shapeOnCursor.options.hasContextMenu) {
             const menu = this.shapeOnCursor.shapeMenu
             if (!menu) {
                 return

@@ -315,7 +315,6 @@ function SmartShape() {
         }
         this.eventListener.run();
         if (show) {
-            this.applyDisplayMode();
             this.redraw();
         }
         if (points && points.length || this.options.forceCreateEvent) {
