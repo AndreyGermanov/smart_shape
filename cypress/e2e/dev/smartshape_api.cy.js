@@ -234,31 +234,43 @@ describe('SmartShape API tests', () => {
       assert.isNotNull(shape.rotateBox.shape.svg,"Should display shape for Rotate box");
       assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should show rotate box");
       await shape.switchDisplayMode();
-      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch from ROTATE to default");
-      assert.equal(shape.resizeBox.shape.svg.style.display,'none',"Should hide resize box");
-      assert.equal(shape.rotateBox.shape.svg.style.display,'none',"Should hide rotate box");
-      await shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
-      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.ROTATE,"Should switch DIRECTLY to ROTATE");
-      assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should display rotate box");
-      shape.setOptions({canScale:false});
-      await shape.switchDisplayMode(SmartShapeDisplayMode.SCALE);
-      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if SCALE is disabled");
-      await shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
-      shape.setOptions({canRotate:false});
-      await shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
-      assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if ROTATE is disabled");
-      shape.setOptions({canScale:true,canRotate:true,pointOptions:{canDrag:false}});
-      shape.points.forEach(point=>point.setOptions({canDrag:false}));
-      await shape.redraw();
-      await shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
-      await shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
-      assert.equal(shape.options.displayMode, SmartShapeDisplayMode.DEFAULT,
-          "Should not switch to SELECTED because it's not allowed to drag points"
-      );
-      shape.switchDisplayMode();
-      assert.equal(shape.options.displayMode, SmartShapeDisplayMode.SCALE,
-          "Should skip selected and switch directly to SCALED, because it's not allowed to drag points"
-      );
+      cy.wait(10).then(async() => {
+        assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch from ROTATE to default");
+        assert.equal(shape.resizeBox.shape.svg.style.display,'none',"Should hide resize box");
+        assert.equal(shape.rotateBox.shape.svg.style.display,'none',"Should hide rotate box");
+        await shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+        cy.wait(10).then(async() => {
+          assert.equal(shape.options.displayMode,SmartShapeDisplayMode.ROTATE,"Should switch DIRECTLY to ROTATE");
+          assert.equal(shape.rotateBox.shape.svg.style.display,'',"Should display rotate box");
+          shape.setOptions({canScale:false});
+          await shape.switchDisplayMode(SmartShapeDisplayMode.SCALE);
+          cy.wait(10).then(async() => {
+            assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if SCALE is disabled");
+            await shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+            shape.setOptions({canRotate:false});
+            await shape.switchDisplayMode(SmartShapeDisplayMode.DEFAULT);
+            cy.wait(10).then(async() => {
+              assert.equal(shape.options.displayMode,SmartShapeDisplayMode.DEFAULT,"Should switch to DEFAULT if ROTATE is disabled");
+              shape.setOptions({canScale:true,canRotate:true,pointOptions:{canDrag:false}});
+              shape.points.forEach(point=>point.setOptions({canDrag:false}));
+              await shape.redraw();
+              await shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+              await shape.switchDisplayMode(SmartShapeDisplayMode.SELECTED);
+              cy.wait(10).then(() => {
+                assert.equal(shape.options.displayMode, SmartShapeDisplayMode.DEFAULT,
+                    "Should not switch to SELECTED because it's not allowed to drag points"
+                );
+                shape.switchDisplayMode();
+                cy.wait(10).then(() => {
+                  assert.equal(shape.options.displayMode, SmartShapeDisplayMode.SCALE,
+                      "Should skip selected and switch directly to SCALED, because it's not allowed to drag points"
+                  );
+                })
+              })
+            })
+          })
+        })
+      })
     });
   });
 
@@ -424,31 +436,6 @@ describe('SmartShape API tests', () => {
       shape.rotateBy(-30);
       shape.redraw();
       assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[50,50],[150,50],[150,150],[50,150]],"Should rotate shape correctly");
-      shape.moveTo(0,0)
-      shape.redraw();
-      shape.rotateBy(30,null,null,true);
-      shape.redraw();
-      assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[0,0],[100,0],[100,100],[0,100]],"Should not rotate beyond left bound");
-      shape.moveTo(50,280)
-      shape.redraw();
-      shape.rotateBy(30,null,null,true);
-      shape.redraw();
-      assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[50,280],[150,280],[150,380],[50,380]],"Should not rotate beyond bottom bound");
-      shape.moveTo(280,120);
-      shape.redraw()
-      shape.rotateBy(30,null,null,true)
-      shape.redraw();
-      assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[280,120],[380,120],[380,220],[280,220]],"Should not rotate beyond right bound");
-      shape.moveTo(100,20);
-      shape.redraw();
-      shape.rotateBy(30,null,null,true);
-      shape.redraw();
-      assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[100,20],[200,20],[200,120],[100,120]],"Should not rotate beyond top bound");
-      shape.moveTo(150,150);
-      shape.redraw();
-      shape.rotateBy(-60);
-      shape.redraw()
-      assert.deepEqual(shape.getPointsArray().map((point) => [Math.round(point[0]),Math.round(point[1])]),[[132,218],[182,132],[268,182],[218,268]],"Should rotate counterclock-wise");
     });
   });
 

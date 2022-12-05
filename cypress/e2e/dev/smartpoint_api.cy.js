@@ -44,7 +44,7 @@ describe('SmartPoint API tests', () => {
             cy.get("#point2").should("have.css","background-color","rgb(0, 255, 0)").then(()=> {
               cy.get("#point2").should("have.css","border-width","5px").then(()=> {
                 cy.get("#point2").should("have.css","border-radius","0px").then(()=> {
-                  cy.get("#point2").should("have.css","z-index","1001").then(()=> {
+                  cy.get("#point2").should("have.css","z-index","1002").then(()=> {
                     assert.equal(point1.options.canDrag, false);
                     assert.equal(point1.options.canDelete, false);
                   });
@@ -61,12 +61,14 @@ describe('SmartPoint API tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app,shape] = initShape()
       const point1 = shape.addPoint(100,100,{id:"point1"});
-      point1.element.id = "point2";
-      cy.get("#point1").should("not.exist").then(() => {
-        cy.get("#point2").should("exist").then(() => {
-          point1.redraw();
-          cy.get("#point2").should("not.exist").then(() => {
-            cy.get("#point1").should("exist");
+      cy.wait(10).then(() => {
+        point1.element.id = "point2";
+        cy.get("#point1").should("not.exist").then(() => {
+          cy.get("#point2").should("exist").then(() => {
+            point1.redraw();
+            cy.get("#point2").should("not.exist").then(() => {
+              cy.get("#point1").should("exist");
+            })
           })
         })
       })

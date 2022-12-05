@@ -71,7 +71,6 @@ function SmartShapeDrawHelper() {
     }
 
     this.loadExternalSvg = async(shape) => {
-        console.trace("LOAD SVG");
         const svg = await shape.options.svgLoadFunc(shape);
         if (!svg) { return }
         const paths = Array.from(svg.querySelectorAll("path"));
@@ -297,7 +296,7 @@ function SmartShapeDrawHelper() {
         const polygons = Array.from(svg.querySelectorAll("path"));
         for (let polygon of polygons) {
             let found = polygon.id === "p"+shape.guid+"_polygon";
-            if (!found && shape.options.groupChildShapes) {
+            if (!found && shape.options.groupChildShapes && !shape.options.displayAsPath) {
                 shape.getChildren(true).forEach(child => {
                     if (polygon.id === "p"+child.guid+"_polygon") {
                         found = true
@@ -445,10 +444,12 @@ function SmartShapeDrawHelper() {
         box.height = bounds.height;
         box.options.zIndex = shape.options.zIndex+1;
         box.redraw();
-        box.shape.points.forEach(point => {
-            point.options.zIndex = shape.options.zIndex+2;
-            point.element.style.zIndex = shape.options.zIndex+2;
-        })
+        setTimeout(() => {
+            box.shape.points.forEach(point => {
+                point.options.zIndex = shape.options.zIndex+2;
+                point.element.style.zIndex = shape.options.zIndex+2;
+            })
+        },1)
     }
 
     /**

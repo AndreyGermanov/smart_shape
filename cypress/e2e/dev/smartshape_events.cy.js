@@ -199,13 +199,15 @@ describe('SmartShape and SmartPoint events', () => {
         triggered = true;
         assert.equal(event.target,shape,"Should have correct event target");
       })
-      cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mousedown", {buttons: 1}).then(() => {
-        cy.wait(200).then(() => {
-          cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mousemove",{buttons:1,movementX:100,movementY:10}).then(() => {
-            assert.isTrue(triggered, "Should trigger resize event");
-            shape.destroy();
+      cy.wait(10).then(() => {
+        cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mousedown", {buttons: 1}).then(() => {
+          cy.wait(200).then(() => {
+            cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mousemove",{buttons:1,movementX:100,movementY:10}).then(() => {
+              assert.isTrue(triggered, "Should trigger resize event");
+              shape.destroy();
+            });
           });
-        });
+        })
       })
     });
   })
@@ -220,13 +222,15 @@ describe('SmartShape and SmartPoint events', () => {
         triggered = true;
         assert.equal(event.target,shape,"Should have correct event target");
       })
-      cy.get("#"+shape.rotateBox.shape.guid+"_right_bottom").trigger("mousedown", {buttons: 1}).then(() => {
-        cy.wait(200).then(() => {
-          cy.get("#"+shape.rotateBox.shape.guid+"_right_bottom").trigger("mousemove",{buttons:1,movementX:100,movementY:10}).then(() => {
-            assert.isTrue(triggered, "Should trigger rotate event");
-            shape.destroy();
+      cy.wait(10).then(() => {
+        cy.get("#"+shape.rotateBox.shape.guid+"_right_bottom").trigger("mousedown", {buttons: 1}).then(() => {
+          cy.wait(200).then(() => {
+            cy.get("#"+shape.rotateBox.shape.guid+"_right_bottom").trigger("mousemove",{buttons:1,movementX:100,movementY:10}).then(() => {
+              assert.isTrue(triggered, "Should trigger rotate event");
+              shape.destroy();
+            });
           });
-        });
+        })
       })
     });
   })

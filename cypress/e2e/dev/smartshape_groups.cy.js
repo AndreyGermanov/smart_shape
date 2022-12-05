@@ -126,7 +126,7 @@ describe('SmartShape groups tests', () => {
       shape.addChild(child);
       child.addChild(child2);
       SmartShapeManager.shapeOnCursor = child2;
-      cy.get("#shape3").trigger("mousedown",{buttons:1}).then(() => {
+      cy.get("#shape3").trigger("mousedown",{buttons:1,force:true}).then(() => {
         assert.equal(SmartShapeManager.draggedShape,shape,"Should activate parent for dragging")
       })
     });
@@ -144,19 +144,23 @@ describe('SmartShape groups tests', () => {
       shape.setOptions({canScale:true,canRotate:true});
       shape.switchDisplayMode(SmartShapeDisplayMode.SCALE);
       const [pointWidth,pointHeight] = shape.transformer.getMaxPointSize();
-      assert.equal(shape.resizeBox.shape.left,50-pointWidth,"Should set correct left of resize box");
-      assert.equal(shape.resizeBox.shape.top,50-pointHeight,"Should set correct top of resize box");
-      assert.equal(shape.resizeBox.shape.bottom,300+pointHeight,"Should set correct bottom of resize box");
-      assert.equal(shape.resizeBox.shape.right,500+pointWidth,"Should set correct right of resize box");
-      assert.equal(shape.resizeBox.shape.width,450+pointWidth*2,"Should set correct width of resize box");
-      assert.equal(shape.resizeBox.shape.height,250+pointHeight*2,"Should set correct height of resize box");
-      shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
-      assert.equal(shape.rotateBox.shape.left,50-pointWidth,"Should set correct left of rotate box");
-      assert.equal(shape.rotateBox.shape.top,50-pointHeight,"Should set correct top of rotate box");
-      assert.equal(shape.rotateBox.shape.bottom,300+pointHeight,"Should set correct bottom of rotate box");
-      assert.equal(shape.rotateBox.shape.right,500+pointWidth,"Should set correct right of rotate box");
-      assert.equal(shape.rotateBox.shape.width,450+pointWidth*2,"Should set correct width of rotate box");
-      assert.equal(shape.rotateBox.shape.height,250+pointHeight*2,"Should set correct height of rotate box");
+      cy.wait(10).then(() => {
+        assert.equal(shape.resizeBox.shape.left,50-pointWidth,"Should set correct left of resize box");
+        assert.equal(shape.resizeBox.shape.top,50-pointHeight,"Should set correct top of resize box");
+        assert.equal(shape.resizeBox.shape.bottom,300+pointHeight,"Should set correct bottom of resize box");
+        assert.equal(shape.resizeBox.shape.right,500+pointWidth,"Should set correct right of resize box");
+        assert.equal(shape.resizeBox.shape.width,450+pointWidth*2,"Should set correct width of resize box");
+        assert.equal(shape.resizeBox.shape.height,250+pointHeight*2,"Should set correct height of resize box");
+        shape.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
+        cy.wait(10).then(() => {
+          assert.equal(shape.rotateBox.shape.left,50-pointWidth,"Should set correct left of rotate box");
+          assert.equal(shape.rotateBox.shape.top,50-pointHeight,"Should set correct top of rotate box");
+          assert.equal(shape.rotateBox.shape.bottom,300+pointHeight,"Should set correct bottom of rotate box");
+          assert.equal(shape.rotateBox.shape.right,500+pointWidth,"Should set correct right of rotate box");
+          assert.equal(shape.rotateBox.shape.width,450+pointWidth*2,"Should set correct width of rotate box");
+          assert.equal(shape.rotateBox.shape.height,250+pointHeight*2,"Should set correct height of rotate box");
+        })
+      })
     });
   });
 

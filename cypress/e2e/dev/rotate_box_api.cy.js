@@ -50,29 +50,31 @@ describe('RotateBox Tests', () => {
   it("should correctly setup new RotateBox object based on passed params", () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const [app, box] = setup();
-      assert.isNotNull(box.shape,"Should contain internal shape object");
-      assert.equal(box.shape.root, app,"Should set coorect container for internal shape object");
-      assert.equal(box.left,10,"Should set left coordinate");
-      assert.equal(box.top,10,"Should set top coordinate");
-      assert.equal(box.width,90,"Should set width");
-      assert.equal(box.height,90,"Should set height");
-      assert.equal(box.right, 100, "Should calculate and set right coordinate");
-      assert.equal(box.bottom, 100, "Should calculate and set bottom coordinate");
-      assert.equal(box.shape.left, box.left, "Should send correct left coordinate to shape");
-      assert.equal(box.shape.top, box.top, "Should send correct top coordinate to shape");
-      assert.equal(box.shape.width, box.width, "Should send correct width to shape");
-      assert.equal(box.shape.height, box.height, "Should send correct height to shape");
-      assert.equal(box.shape.right, box.right, "Should send correct right coordinate to shape");
-      assert.equal(box.shape.bottom, box.bottom, "Should send correct bottom coordinate to shape");
-      assert.equal(box.shape.options.id,"box1","Should set ID of internal shape correctly");
-      assert.equal(Cypress.$("#box1").toArray().length,1, "Should create HTML element for shape with correct id");
-      assert.equal(box.shape.points.length,4,"Should create 8 points as resize markers");
-      assert.isFalse(box.shape.options.canAddPoints,"Adding points should not be allowed");
-      assert.isFalse(box.shape.options.canDeletePoints,"Removing points should not be allowed");
-      assert.isObject(box.options.shapeOptions,"Options for shape should exist");
-      assert.isObject(box.options.shapeOptions.pointOptions,"Default point options for internal shape should exist");
-      assert.equal(box.options.shapeOptions.id,"box1","Correct ID should be inside options for shape");
-      checkAndGetPoints(box);
+      cy.wait(10).then(() => {
+        assert.isNotNull(box.shape,"Should contain internal shape object");
+        assert.equal(box.shape.root, app,"Should set coorect container for internal shape object");
+        assert.equal(box.left,10,"Should set left coordinate");
+        assert.equal(box.top,10,"Should set top coordinate");
+        assert.equal(box.width,90,"Should set width");
+        assert.equal(box.height,90,"Should set height");
+        assert.equal(box.right, 100, "Should calculate and set right coordinate");
+        assert.equal(box.bottom, 100, "Should calculate and set bottom coordinate");
+        assert.equal(box.shape.left, box.left, "Should send correct left coordinate to shape");
+        assert.equal(box.shape.top, box.top, "Should send correct top coordinate to shape");
+        assert.equal(box.shape.width, box.width, "Should send correct width to shape");
+        assert.equal(box.shape.height, box.height, "Should send correct height to shape");
+        assert.equal(box.shape.right, box.right, "Should send correct right coordinate to shape");
+        assert.equal(box.shape.bottom, box.bottom, "Should send correct bottom coordinate to shape");
+        assert.equal(box.shape.options.id,"box1","Should set ID of internal shape correctly");
+        assert.equal(Cypress.$("#box1").toArray().length,1, "Should create HTML element for shape with correct id");
+        assert.equal(box.shape.points.length,4,"Should create 8 points as resize markers");
+        assert.isFalse(box.shape.options.canAddPoints,"Adding points should not be allowed");
+        assert.isFalse(box.shape.options.canDeletePoints,"Removing points should not be allowed");
+        assert.isObject(box.options.shapeOptions,"Options for shape should exist");
+        assert.isObject(box.options.shapeOptions.pointOptions,"Default point options for internal shape should exist");
+        assert.equal(box.options.shapeOptions.id,"box1","Correct ID should be inside options for shape");
+        checkAndGetPoints(box);
+      })
     })
   })
 
@@ -137,18 +139,24 @@ describe('RotateBox Tests', () => {
       const box = new RotateBox();
       box.init(app,0,0,100,100,{shapeOptions:{visible:false}},);
       box.redraw();
-      assert.equal(box.shape.svg.style.display,'none',"Should create invisible shape");
-      box.show();
-      assert.notEqual(box.shape.svg.style.display,'none',"Should show visible shape");
-      for (let point of box.shape.points) {
-        assert.notEqual(point.element.style.display,'none',"Point must be visible");
-      }
-      box.hide();
-      assert.equal(box.shape.svg.style.display,'none',"Should hide shape");
-      for (let point of box.shape.points) {
-        assert.equal(point.element.style.display,'none',"Point must be invisible");
-      }
-      box.show();
+      cy.wait(10).then(() => {
+        assert.equal(box.shape.svg.style.display,'none',"Should create invisible shape");
+        box.show();
+        cy.wait(10).then(() => {
+          assert.notEqual(box.shape.svg.style.display, 'none', "Should show visible shape");
+          for (let point of box.shape.points) {
+            assert.notEqual(point.element.style.display, 'none', "Point must be visible");
+          }
+          box.hide();
+          cy.wait(10).then(() =>{
+            assert.equal(box.shape.svg.style.display, 'none', "Should hide shape");
+            for (let point of box.shape.points) {
+              assert.equal(point.element.style.display, 'none', "Point must be invisible");
+            }
+            box.show();
+          })
+        })
+      })
     });
   });
 
@@ -269,33 +277,6 @@ describe('RotateBox Tests', () => {
           "Should register SHAPE_MOVE_END event in local queue");
       assert.equal(box.eventListener.subscriptions[ShapeEvents.SHAPE_DESTROY].length,0,
           "Should register SHAPE_DESTROY event in local queue");
-    });
-  });
-
-  it("Should correctly enable scale feature on SmartShape instance", () => {
-    cy.visit('http://localhost:5173/tests/empty.html').then(() => {
-      const [app, shape] = initShape();
-      const [pointWidth,pointHeight] = shape.transformer.getMaxPointSize();
-      assert.isNotNull(shape.rotateBox,"Resize box should be created if not null");
-      assert.equal(shape.rotateBox.left,shape.left-pointWidth,
-          "Should correctly setup left corner of ResizeBox around shape");
-      assert.equal(shape.rotateBox.top,shape.top-pointHeight,
-          "Should correctly setup top corner of ResizeBox around shape");
-      assert.equal(shape.rotateBox.width,shape.width+(pointWidth)*2,
-          "Should correctly setup width of resize box");
-      assert.equal(shape.rotateBox.height, shape.height+(pointHeight)*2,
-          "Should correctly setup height of resize box"
-      );
-      assert.equal(shape.rotateBox.right,shape.right+pointWidth,
-          "Should correctly setup right corner of resize box around shape"
-      );
-      assert.equal(shape.rotateBox.bottom,shape.bottom+pointHeight,
-          "Should correctly setup bottom corner of resize box around shape"
-      );
-      assert.equal(shape.rotateBox.eventListener.subscriptions[RotateBoxEvents.ROTATE_BOX_ROTATE].length,1,
-          "Shape should add event listener for resize event of ResizeBox");
-      assert.equal(shape.rotateBox.shape.root,app,
-          "Should correctly bind internal shape to specified HTML container element");
     });
   });
 })
