@@ -1,5 +1,6 @@
 import {EventsManager, ShapeEvents,SmartShapeManager,SmartShapeDisplayMode} from "../index.js";
 import {blobToDataURL, dataURLtoBlob, notNull, timeout} from "../utils";
+import Rope from "../utils/rope.js"
 import {applyAspectRatio} from "../utils/geometry.js";
 
 /**
@@ -322,32 +323,29 @@ function SmartShapeDrawHelper() {
         const parent = shape.getParent();
         if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
-            return [
-                this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent)),
-                this.getPolygonPathForChildren(shape,pos)
-            ].join("")
+            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
+            path.append(this.getPolygonPathForChildren(shape,pos).toString())
+            return path.toString();
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
-            let path = [
-                this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape)),
-                this.getPolygonPathForChildren(shape,pos)
-            ].join("");
+            let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
+            path.append(this.getPolygonPathForChildren(shape,pos).toString())
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
                 const svg = this.getShapeSvg(shape);
                 svg.setAttribute("width",pos.width);
                 svg.setAttribute("height",pos.height);
                 this.createSVGFilters(shape);
             }
-            return path
+            return path.toString();
         }
     }
 
     this.getPolygonPathForChildren = (shape,pos) => {
-        let path = [];
+        const path = new Rope("");
         if (shape.options.displayAsPath && shape.options.groupChildShapes) {
             shape.getChildren().forEach(child => {
                 child.calcPosition();
-                path.push(this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child)));
+                path.append(this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child)).toString())
             })
         }
         return path;
@@ -362,7 +360,8 @@ function SmartShapeDrawHelper() {
      * @returns {string} Path of points for polygon
      */
     this.getPolygonPathForShape = (shape,pos,size) => {
-        return ["M ",shape.points.map(point => {
+        const path = new Rope("M");
+        shape.points.forEach(point => {
             let x = point.x - pos.left;
             let y = point.y - pos.top;
             if (x<=0) {
@@ -375,8 +374,10 @@ function SmartShapeDrawHelper() {
             } else if (point.y>=pos.bottom) {
                 y -= size;
             }
-            return [x,",",y].join("")
-        })," Z"].join(" ")
+            path.append(`${x},${y} `)
+        })
+        path.append("Z");
+        return path;
     }
 
     /**
