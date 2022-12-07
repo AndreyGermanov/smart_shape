@@ -496,8 +496,9 @@ function SmartPoint() {
      * Method used to destroy the point. Removes event listeners from point element and
      * raises the `point_destroyed` event. This event then intercepted by owner shape. Then owner shape
      * removes this point from shape's points array.
+     * @param sendDestroyEvent {boolean} Should emit 'point destroyed' event. True by default.
      */
-    this.destroy = () => {
+    this.destroy = (sendDestroyEvent = true) => {
         if (this.element) {
             this.element.removeEventListener("mouseup", this.mouseup);
             this.element.removeEventListener("mousedown", this.mousedown);
@@ -507,8 +508,8 @@ function SmartPoint() {
             this.element.removeEventListener("dblclick", this.doubleclick);
             this.element.removeEventListener("mousemove", this.mousemove);
         }
-        EventsManager.unsubscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
-        EventsManager.emit(PointEvents.POINT_DESTROYED,this);
+        sendDestroyEvent && EventsManager.unsubscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
+        sendDestroyEvent && EventsManager.emit(PointEvents.POINT_DESTROYED,this);
         for (let eventName in this.subscriptions) {
             const handlers = this.subscriptions[eventName];
             handlers.forEach(handler => EventsManager.unsubscribe(eventName,handler));

@@ -597,13 +597,11 @@ function SmartShape() {
      * Method used to delete all points from shape
      */
     this.deleteAllPoints = () => {
-        if (this.options.simpleMode) {
-            this.points = [];
-        } else {
-            while (this.points.length) {
-                this.points[0].destroy();
-            }
+        while (this.points.length) {
+            this.points[0].destroy(false);
+            this.points.splice(0,1);
         }
+        this.points = []
     }
 
     /**
@@ -788,9 +786,9 @@ function SmartShape() {
     /**
      * Method used to redraw shape polygon. Runs automatically when add/remove points or change their properties.
      */
-    this.redraw = () => {
+    this.redraw = async() => {
         this.applyDisplayMode();
-        SmartShapeDrawHelper.draw(this);
+        await SmartShapeDrawHelper.draw(this);
         this.options.groupChildShapes && this.redrawChildren();
     }
 
@@ -819,7 +817,8 @@ function SmartShape() {
             }
             if (point.element) {
                 point.element.style.zIndex = point.options.zIndex;
-                if (this.options.displayMode !== SmartShapeDisplayMode.SELECTED && !point.options.forceDisplay) {
+                if (this.options.displayMode !== SmartShapeDisplayMode.SELECTED && !point.options.forceDisplay ||
+                    typeof(this.options.svgLoadFunc) === "function") {
                     point.element.style.display = 'none';
                 } else {
                     point.element.style.display = '';
@@ -842,7 +841,8 @@ function SmartShape() {
                         point.element.parentNode.removeChild(point.element)
                     } catch {}
                 }
-                if (point.options.visible && !point.options.hidden && point.options.canDrag && point.element) {
+                if (point.options.visible && !point.options.hidden && point.options.canDrag && point.element &&
+                    typeof(this.options.svgLoadFunc) !== "function") {
                     point.element.style.display = '';
                 } else if (point.element) {
                     point.element.style.display = 'none';
@@ -864,14 +864,17 @@ function SmartShape() {
         }
         if ((mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) ||
             (mode === SmartShapeDisplayMode.ROTATE && !this.options.canRotate) ||
-            (mode === SmartShapeDisplayMode.SELECTED && (this.points.length && !this.options.pointOptions.canDrag))) {
+            (mode === SmartShapeDisplayMode.SELECTED &&
+                (this.points.length && !this.options.pointOptions.canDrag && typeof(this.options.svgLoadFunc) !== "function"))) {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
         this.options.displayMode = mode;
+        this.applyDisplayMode();
         if (this.options.simpleMode) {
             this.applyDisplayMode();
         } else {
-            this.redraw();
+            this.applyDisplayMode();
+            SmartShapeDrawHelper.updateOptions(this);
         }
         if (mode === SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {
             setTimeout(() => {
@@ -900,7 +903,7 @@ function SmartShape() {
         } else {
             mode = SmartShapeDisplayMode.DEFAULT;
         }
-        if (mode === SmartShapeDisplayMode.SELECTED && !this.options.pointOptions.canDrag) {
+        if (mode === SmartShapeDisplayMode.SELECTED && (!this.options.pointOptions.canDrag || typeof(this.options.svgLoadFunc) ==="function")) {
             mode = SmartShapeDisplayMode.SCALE
         }
         if (mode === SmartShapeDisplayMode.SCALE && !this.options.canScale) {

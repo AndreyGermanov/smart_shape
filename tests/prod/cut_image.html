@@ -64,7 +64,8 @@
                     // add loaded image to container
                     container.appendChild(img);
                     // remove previous polygon from shape, if it was defined
-                    shape.deleteAllPoints();
+                    shape.deleteAllPoints()
+                    shape.redraw();
                 });
                 reader.readAsDataURL(event.target.files[0]);
             })

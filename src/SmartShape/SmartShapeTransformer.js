@@ -23,7 +23,7 @@ export default function SmartShapeTransformer(shape) {
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
-    this.moveTo = (x,y,redraw= true,respectBounds=true,fast=false) => {
+    this.moveTo = (x,y,redraw= true,respectBounds=true,fast=true) => {
         const bounds = this.shape.getBounds();
         const pos = this.shape.getPosition(this.shape.options.groupChildShapes);
         let newX = x;
@@ -43,7 +43,7 @@ export default function SmartShapeTransformer(shape) {
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
-    this.moveBy = (stepX, stepY,redraw=true,fast=false) => {
+    this.moveBy = (stepX, stepY,redraw=true,fast=true) => {
         for (let index in this.shape.points) {
             this.shape.points[index].x += stepX;
             this.shape.points[index].y += stepY;
@@ -60,20 +60,16 @@ export default function SmartShapeTransformer(shape) {
         this.shape.width = this.shape.right - this.shape.left;
         this.shape.height = this.shape.bottom - this.shape.top;
         const children = this.shape.getChildren(true)
-        if (redraw) {
-            if (!fast) {
-                this.shape.redraw();
-            } else if (this.shape.svg) {
-                this.shape.svg.style.left = this.shape.left + "px";
-                this.shape.svg.style.top = this.shape.top + "px";
-            }
+        if (redraw && this.shape.svg) {
+            this.shape.svg.style.left = this.shape.left + "px";
+            this.shape.svg.style.top = this.shape.top + "px";
         }
         if (children.length && this.shape.options.groupChildShapes) {
             children.forEach(child => child.moveBy(stepX,stepY,redraw,fast))
         }
-        if (fast && !this.shape.getParent()) {
-            SmartShapeDrawHelper.redrawResizeBox(this);
-            SmartShapeDrawHelper.redrawRotateBox(this);
+        if (!this.shape.getParent()) {
+            SmartShapeDrawHelper.redrawResizeBox(this.shape);
+            SmartShapeDrawHelper.redrawRotateBox(this.shape);
         }
     }
 
@@ -353,7 +349,7 @@ export default function SmartShapeTransformer(shape) {
             }
         }
         const [pointWidth,pointHeight] = this.getMaxPointSize();
-        return {
+        const result = {
             left: pos.left - pointWidth,
             right: pos.right + pointWidth,
             top: pos.top - pointHeight,
@@ -361,6 +357,7 @@ export default function SmartShapeTransformer(shape) {
             width: pos.width + (pointWidth)*2,
             height: pos.height + (pointHeight)*2,
         }
+        return result;
     }
 
     /**
