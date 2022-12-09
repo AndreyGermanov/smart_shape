@@ -44,11 +44,12 @@ export default function SmartShapeTransformer(shape) {
      * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
     this.moveBy = (stepX, stepY,redraw=true,fast=true) => {
-        for (let index in this.shape.points) {
-            this.shape.points[index].x += stepX;
-            this.shape.points[index].y += stepY;
-            if (!this.shape.options.simpleMode && redraw && typeof (this.shape.points[index].redraw) === "function") {
-                this.shape.points[index].redraw();
+        const shp = this.shape.getParent(true) || this.shape;
+        for (let point of this.shape.points) {
+            point.x += stepX;
+            point.y += stepY;
+            if (shp.options.displayMode === SmartShapeDisplayMode.SELECTED) {
+                point.redraw();
             }
         }
         this.shape.options.offsetX += stepX;
@@ -60,12 +61,13 @@ export default function SmartShapeTransformer(shape) {
         this.shape.width = this.shape.right - this.shape.left;
         this.shape.height = this.shape.bottom - this.shape.top;
         const children = this.shape.getChildren(true)
-        if (redraw && this.shape.svg) {
-            this.shape.svg.style.left = this.shape.left + "px";
-            this.shape.svg.style.top = this.shape.top + "px";
-        }
         if (children.length && this.shape.options.groupChildShapes) {
             children.forEach(child => child.moveBy(stepX,stepY,redraw,fast))
+        }
+        if (redraw && this.shape.svg) {
+            const pos = this.shape.getPosition(true);
+            this.shape.svg.style.left = pos.left + "px";
+            this.shape.svg.style.top = pos.top + "px";
         }
         if (!this.shape.getParent()) {
             SmartShapeDrawHelper.redrawResizeBox(this.shape);

@@ -1306,7 +1306,7 @@ function SmartShape() {
             this.getChildren(true).forEach(child=>child.destroy());
             jsonObj.children.forEach(child => {
                 child.parent_guid = this.guid;
-                this.addChild(new SmartShape().fromJSON(root,child));
+                this.addChild(new SmartShape().fromJSON(root,child),false);
             })
         }
         if (emitCreateEvent) {
