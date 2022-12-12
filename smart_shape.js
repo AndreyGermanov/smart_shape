@@ -32,44 +32,44 @@ function pt() {
     this.subscriptions = {};
   };
 }
-const r = new pt(), At = (i) => i * (Math.PI / 180), dt = (i) => i * (180 / Math.PI), O = (i, t, e, s, o) => {
+const a = new pt(), dt = (i) => i * (Math.PI / 180), At = (i) => i * (180 / Math.PI), O = (i, t, e, s, o) => {
   if (i === 0)
     return [t, e];
-  const n = At(i), h = (t - s) * Math.cos(n) - (e - o) * Math.sin(n) + s, a = (t - s) * Math.sin(n) + (e - o) * Math.cos(n) + o;
-  return [h, a];
+  const n = dt(i), h = (t - s) * Math.cos(n) - (e - o) * Math.sin(n) + s, r = (t - s) * Math.sin(n) + (e - o) * Math.cos(n) + o;
+  return [h, r];
 }, P = (i, t, e, s) => Math.sqrt(Math.pow(e - i, 2) + Math.pow(s - t, 2)), ut = (i, t, e, s, o, n) => {
   let h = (i - e) * (o - e) + (t - s) * (n - s);
-  const a = Math.pow(o - e, 2) + Math.pow(n - s, 2);
-  return a === 0 ? -1 : (h /= a, h < 0 ? h = 0 : h > 1 && (h = 1), Math.sqrt(Math.pow(e - i + h * (o - e), 2) + Math.pow(s - t + h * (n - s), 2)));
+  const r = Math.pow(o - e, 2) + Math.pow(n - s, 2);
+  return r === 0 ? -1 : (h /= r, h < 0 ? h = 0 : h > 1 && (h = 1), Math.sqrt(Math.pow(e - i + h * (o - e), 2) + Math.pow(s - t + h * (n - s), 2)));
 }, gt = (i, t) => {
-  const e = (p, A, c) => A.x <= Math.max(p.x, c.x) && A.x >= Math.min(p.x, c.x) && A.y <= Math.max(p.y, c.y) && A.y >= Math.min(p.y, c.y), s = (p, A, c) => {
-    let b = (A[1] - p[1]) * (c[0] - A[0]) - (A[0] - p[0]) * (c[1] - A[1]);
-    return b === 0 ? 0 : b > 0 ? 1 : 2;
-  }, o = (p, A, c, b) => {
-    let y = s(p, A, c), N = s(p, A, b), z = s(c, b, p), D = s(c, b, A);
-    return y !== N && z !== D || y === 0 && e(p, c, A) || N === 0 && e(p, b, A) || z === 0 && e(c, p, b) ? !0 : !!(D === 0 && e(c, A, b));
+  const e = (p, d, c) => d.x <= Math.max(p.x, c.x) && d.x >= Math.min(p.x, c.x) && d.y <= Math.max(p.y, c.y) && d.y >= Math.min(p.y, c.y), s = (p, d, c) => {
+    let y = (d[1] - p[1]) * (c[0] - d[0]) - (d[0] - p[0]) * (c[1] - d[1]);
+    return y === 0 ? 0 : y > 0 ? 1 : 2;
+  }, o = (p, d, c, y) => {
+    let b = s(p, d, c), N = s(p, d, y), z = s(c, y, p), D = s(c, y, d);
+    return b !== N && z !== D || b === 0 && e(p, c, d) || N === 0 && e(p, y, d) || z === 0 && e(c, p, y) ? !0 : !!(D === 0 && e(c, d, y));
   };
   if (i.length < 3)
     return !1;
-  let n = [1e4, t[1]], h = 0, a = 0;
+  let n = [1e4, t[1]], h = 0, r = 0;
   do {
-    let p = (a + 1) % i.length;
-    if (o(i[a], i[p], t, n)) {
-      if (s(i[a], t, i[p]) === 0)
+    let p = (r + 1) % i.length;
+    if (o(i[r], i[p], t, n)) {
+      if (s(i[r], t, i[p]) === 0)
         return e(
-          i[a],
+          i[r],
           t,
           i[p]
         );
       h++;
     }
-    a = p;
-  } while (a !== 0);
+    r = p;
+  } while (r !== 0);
   return h % 2 === 1;
 }, et = (i, t, e, s) => !i && !t || !e || !s ? [e, s] : i && t ? [i, t] : (i || (i = t * (e / s)), t || (t = i * (s / e)), [i, t]), X = (i, t, e, s) => {
-  const o = s.scaleFactorX || 1, n = s.scaleFactorY || 1, h = s.offsetX || 0, a = s.offsetY || 0, p = s.flippedX || !1, A = s.flippedY || !1;
-  return e === k.CURRENT_TO_ORIGINAL ? ([i, t] = F(i, t, p, A, s), i -= h, t -= a, i *= 1 / o, t *= 1 / n) : e === k.ORIGINAL_TO_CURRENT && (i *= o, t *= n, i += h, t += a, [i, t] = F(i, t, p, A, s)), [i, t];
-}, F = (i, t, e, s, o) => (e && (i = C(o.right - i) + o.left), s && (t = C(o.bottom - t) + o.top), [i, t]), k = {
+  const o = s.scaleFactorX || 1, n = s.scaleFactorY || 1, h = s.offsetX || 0, r = s.offsetY || 0, p = s.flippedX || !1, d = s.flippedY || !1;
+  return e === F.CURRENT_TO_ORIGINAL ? ([i, t] = k(i, t, p, d, s), i -= h, t -= r, i *= 1 / o, t *= 1 / n) : e === F.ORIGINAL_TO_CURRENT && (i *= o, t *= n, i += h, t += r, [i, t] = k(i, t, p, d, s)), [i, t];
+}, k = (i, t, e, s, o) => (e && (i = C(o.right - i) + o.left), s && (t = C(o.bottom - t) + o.top), [i, t]), F = {
   CURRENT_TO_ORIGINAL: "current_to_original",
   ORIGINAL_TO_CURRENT: "original_to_current"
 };
@@ -81,17 +81,17 @@ function ft(i) {
 }
 function Et(i) {
   const t = Object.prototype.toString.call(i);
-  return t === "[object RegExp]" || t === "[object Date]" || bt(i);
+  return t === "[object RegExp]" || t === "[object Date]" || yt(i);
 }
 const mt = typeof Symbol == "function" && Symbol.for, St = mt ? Symbol.for("react.element") : 60103;
-function bt(i) {
+function yt(i) {
   return i.$$typeof === St;
 }
-function yt(i) {
+function bt(i) {
   return Array.isArray(i) ? [] : {};
 }
 function L(i, t) {
-  return t.clone !== !1 && t.isMergeableObject(i) ? T(yt(i), i, t) : i;
+  return t.clone !== !1 && t.isMergeableObject(i) ? T(bt(i), i, t) : i;
 }
 function vt(i, t, e) {
   return i.concat(t).map(function(s) {
@@ -203,7 +203,7 @@ const _ = (i, t = !0) => {
   const s = _(i, !0);
   return [t - s.left, e - s.top];
 };
-function It() {
+function wt() {
   this.subscriptions = {}, this.subscribe = (i, t) => {
     if (typeof i == "string")
       return this.subscribeToEvent(i, t);
@@ -237,8 +237,8 @@ function It() {
     this.subscriptions = {};
   };
 }
-const x = new It();
-function wt(i) {
+const x = new wt();
+function It(i) {
   this.menu = i, this.panelCssClass = "", this.itemCssClass = "", this.itemTextCssClass = "", this.itemImageCssClass = "", this.itemsCssClassesById = {}, this.setStyles = () => {
     if (!!this.menu.panel) {
       this.panelCssClass ? this.menu.panel.className = this.panelCssClass : (this.menu.panel.style.padding = "3px", this.menu.panel.style.borderStyle = "solid", this.menu.panel.style.borderColor = "#dddddd", this.menu.panel.style.borderWidth = "1px", this.menu.panel.style.backgroundColor = "#eeeeee", this.menu.panel.className = "");
@@ -303,7 +303,7 @@ const B = {
   }), e;
 };
 function Dt(i, t, e = null, s = {}) {
-  this.panel = null, this.container = t, this.items = i, this.event = e || "contextmenu", this.options = s, this.listeners = {}, this.origEvent = null, this.cursorX = 0, this.cursorY = 0, this.overflowY = "", this.maxImageHeight = 0, this.subscriptions = {}, this.init = () => (Object.assign(this, new wt(this)), this.listener = (o) => (this.onEvent(o), !1), this.container.addEventListener(this.event, this.listener), x.emit(w.CREATE, this, { owner: this }), this), this.onEvent = (o) => {
+  this.panel = null, this.container = t, this.items = i, this.event = e || "contextmenu", this.options = s, this.listeners = {}, this.origEvent = null, this.cursorX = 0, this.cursorY = 0, this.overflowY = "", this.maxImageHeight = 0, this.subscriptions = {}, this.init = () => (Object.assign(this, new It(this)), this.listener = (o) => (this.onEvent(o), !1), this.container.addEventListener(this.event, this.listener), x.emit(I.CREATE, this, { owner: this }), this), this.onEvent = (o) => {
     if (this.options.customHandler && typeof (this.options.customHandler === "function")) {
       this.options.customHandler(this, o);
       return;
@@ -333,11 +333,11 @@ function Dt(i, t, e = null, s = {}) {
       const h = new Image();
       if (!this.panel)
         continue;
-      const a = this.panel.querySelector("#" + n.id + " > span");
+      const r = this.panel.querySelector("#" + n.id + " > span");
       if (h.style.display = "none", h.src = n.image, !this.panel)
         return;
       const p = document.createElement("div");
-      p.style.marginRight = "5px", p.style.display = "flex", p.style.flexDirection = "row", p.style.justifyContent = "center", p.style.alignItems = "center", h.height = this.panel.querySelector("#" + n.id).clientHeight, h.height > this.maxImageHeight && (this.maxImageHeight = h.height), h.style.verticalAlign = "middle", h.style.display = "", p.appendChild(h), this.panel.querySelector("#" + n.id + " div") || this.panel.querySelector("#" + n.id).insertBefore(p, a);
+      p.style.marginRight = "5px", p.style.display = "flex", p.style.flexDirection = "row", p.style.justifyContent = "center", p.style.alignItems = "center", h.height = this.panel.querySelector("#" + n.id).clientHeight, h.height > this.maxImageHeight && (this.maxImageHeight = h.height), h.style.verticalAlign = "middle", h.style.display = "", p.appendChild(h), this.panel.querySelector("#" + n.id + " div") || this.panel.querySelector("#" + n.id).insertBefore(p, r);
     }
     this.adjustImagesWidth();
   }, this.setItemsEventListeners = () => {
@@ -347,15 +347,15 @@ function Dt(i, t, e = null, s = {}) {
     for (let n of this.items)
       this.setListenerForItem(o, n);
   }, this.setListenerForItem = (o, n) => {
-    const h = (a) => {
-      !this.origEvent || (x.emit(o, this.origEvent.target, Tt(a, {
+    const h = (r) => {
+      !this.origEvent || (x.emit(o, this.origEvent.target, Tt(r, {
         container: this.container,
         owner: this,
         cursorX: this.cursorX,
         cursorY: this.cursorY,
         itemId: n.id
       })), setTimeout(() => {
-        ["click", "mousedown", "mouseup", "dblclick"].indexOf(o) !== -1 && a.button !== 2 && this.hide();
+        ["click", "mousedown", "mouseup", "dblclick"].indexOf(o) !== -1 && r.button !== 2 && this.hide();
       }, 100));
     };
     this.listeners[o + "_" + n.id] = h, this.panel.querySelector("#" + n.id).addEventListener(o, h);
@@ -368,7 +368,7 @@ function Dt(i, t, e = null, s = {}) {
     for (let n of this.panel.querySelectorAll("img"))
       n.parentNode.style.width = o + "px", n.parentNode.style.height = o + "px";
   }, this.show = () => {
-    if (!this.container || (x.emit(w.SHOW, this, { owner: this }), this.drawMenu(), !this.panel))
+    if (!this.container || (x.emit(I.SHOW, this, { owner: this }), this.drawMenu(), !this.panel))
       return;
     this.panel.style.display = "";
     let o = this.cursorX, n = this.cursorY;
@@ -376,15 +376,15 @@ function Dt(i, t, e = null, s = {}) {
   }, this.hide = () => {
     this.panel && (this.panel.style.display = "none");
   }, this.addItem = (o, n, h = null) => {
-    const a = { id: o, title: n };
-    h && (a.image = h), this.items.push(a);
+    const r = { id: o, title: n };
+    h && (r.image = h), this.items.push(r);
   }, this.removeItem = (o) => {
     const n = this.items.findIndex((h) => h.id === o);
     n !== -1 && this.items.splice(n, 1);
   }, this.findItemById = (o) => Array.from(this.panel.querySelectorAll("div")).find((n) => n.id === o), this.setId = (o) => this.panel.id = o, this.addEventListener = (o, n) => {
     typeof this.subscriptions[o] > "u" && (this.subscriptions[o] = []);
-    const h = x.subscribe(o, (a) => {
-      a.owner === this && n(a);
+    const h = x.subscribe(o, (r) => {
+      r.owner === this && n(r);
     });
     return this.subscriptions[o].push(h), h;
   }, this.removeEventListener = (o, n) => {
@@ -397,8 +397,8 @@ function Dt(i, t, e = null, s = {}) {
         x.unsubscribe(o, n);
     if (this.container && this.container.removeEventListener(this.event, this.listener), this.subscriptions = {}, !!this.panel)
       for (let o in this.listeners) {
-        const [n, h] = o.split("_"), a = this.panel.querySelector("#" + h);
-        a && a.removeEventListener(n, this.listeners[o]);
+        const [n, h] = o.split("_"), r = this.panel.querySelector("#" + h);
+        r && r.removeEventListener(n, this.listeners[o]);
       }
   }, this.destroy = () => {
     this.removeAllEventListeners(), this.items = [], this.container = null;
@@ -406,20 +406,20 @@ function Dt(i, t, e = null, s = {}) {
       document.body.removeChild(this.panel);
     } catch {
     }
-    this.panel && (this.panel.innerHTML = ""), this.panel = null, x.emit(w.DESTROY, this, { owner: this });
+    this.panel && (this.panel.innerHTML = ""), this.panel = null, x.emit(I.DESTROY, this, { owner: this });
   };
 }
-const w = {
+const I = {
   CREATE: "create",
   DESTROY: "destroy",
   SHOW: "show"
 };
 function Lt() {
-  this.menus = [], this.create = (i, t, e = "contextmenu", s = {}) => new Dt(i, t, e, s).init(), x.subscribe(w.CREATE, (i) => {
+  this.menus = [], this.create = (i, t, e = "contextmenu", s = {}) => new Dt(i, t, e, s).init(), x.subscribe(I.CREATE, (i) => {
     this.menus.indexOf(i.target) === -1 && (this.menus.push(i.target), i.target.id = this.menus.length);
-  }), x.subscribe(w.DESTROY, (i) => {
+  }), x.subscribe(I.DESTROY, (i) => {
     this.menus.indexOf(i.target) !== -1 && this.menus.splice(this.menus.indexOf(i.target), 1);
-  }), x.subscribe(w.SHOW, (i) => {
+  }), x.subscribe(I.SHOW, (i) => {
     this.menus.forEach((t) => {
       t !== i.target && t.hide();
     });
@@ -432,7 +432,7 @@ try {
   window.Menus = Z;
 } catch {
 }
-const _t = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECcZZuWhdAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABaSURBVCjPlZBBEsAgCAMT/v/n7akzWAFtTo5mQ8SAJtkGcL4LXcg211A2L+eq3jc5C/AGTUBZ7wYAHH+B4yIAv8a8dkvilLz9qXuYKseU2E7qDFODqIwTIEkPSldAAa0WlbUAAAAASUVORK5CYII=", Ut = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECgYlnqNLQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABZSURBVCjPlZFBCgAxCANN/v/n2VOhiFU3N4U4GgXELUkAikbOhlhIh1QZXkR3hGc/IsaVMtHT0RXR3e5jescIqBpy05T/tInffw2AvEkr972N+a69+U8e8AGOtEABr4X+4AAAAABJRU5ErkJggg==", Vt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECkWaNmRawAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABjSURBVCjPlZBRDsAgCENbsnt6/1N0P2ocijASEy08iqC1BknhASCvsSeOQXImJXHcrQL4t1UAr4fjReDmdCsc/5LEZ7NOwOlUKVy3RwC/AAAwL2TAZ3t+xFszOxVl7lbtvsYLOtlZCOj2NccAAAAASUVORK5CYII=", Nt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECoXNPPyPgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABaSURBVCjPlVFBEgAhCAL+/2f21I5jqcXFGRMSpG1EkLRtooEyIdaRlAc7orqBsg+gVKy8yTYn49vqMb0pgCUuPOBP93Sniaxb8/FdL6mt/rZe5SMKXQWRf/4AYrs6C0ViuwUAAAAASUVORK5CYII=", zt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDsHep3BSgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA8SURBVCjPY2DADf7jkmAkQgMjMZr+EzKckVgnIatlJFIDinqynMfEQAYgSxNV/ERy6JEdT0SlCAZy0h4AXLILDAEWNOwAAAAASUVORK5CYII=", Ht = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDMMJZaSygAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA/SURBVCjPY2DADf7jkmAkQgMjMZr+EzKckVgnIatlJFIDinqynMfEQAYgSxNV/ERy6JEdT0SlCJxAWZoFp1MBY8cLTv/x72kAAAAASUVORK5CYII=", Gt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEQARsznxFAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABBSURBVCjPtZAxDgAgCAOvxP9/GTfjolISOxIK7UFDOszz5gnzGADRiReNeMuUVQPAcJbdTtrhqILY/aTvyG04T00vswcW6BsN2AAAAABJRU5ErkJggg==", kt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEQEbSvcpSwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA3SURBVCjPY2AYSPCfAJ+BiZACbOKMRGjAUM9Igga4RkYSNTCICjCTbxPJfsIWSv+JECM9nugHAG40DyW1OoLPAAAAAElFTkSuQmCC", Ft = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDIpd4l3zAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA+SURBVCjPY2AgAzBC6f9EqIEDJiINJUkTAzma/pNr0390NguRLvqPyyZGXB4nKnQIRQETiYZRP8j/M1AbAADcMAcWozKAnAAAAABJRU5ErkJggg==", Wt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDYr/evT5AAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA+SURBVCjPY2AgAzBC6f9EqIEDJiINJUkTAzma/pNr0390NguRLvqPyyZGXB4nKnQIRQETiYZRP8j/M1AbAADcMAcWozKAnAAAAABJRU5ErkJggg==", Qt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDUsSKIVhAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA0SURBVCjPY2AYSPCfAJ+BiZACbOKMRGjAUM9Igga4RkYSNTBQZBPJfsIWSv+JECM9nugHADv6Dv2P6G4ZAAAAAElFTkSuQmCC", jt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDQQftZYQgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABBSURBVCjPtZAxDgAgCAOvxP9/GTfjolISOxIK7UFDOszz5gnzGADRiReNeMuUVQPAcJbdTtrhqILY/aTvyG04T00vswcW6BsN2AAAAABJRU5ErkJggg==", $ = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAEDSURBVDjLzZPNSsQwEIC/CUWtQlnZi14EYb36Jj6DT+ZT+BSevImHPYggKLpo2bW1Ze14yJjFtKEed3poMpmvzZcf2LqQfkolZFV0FFDhkMI6JR99JAbczTlP/tGZung86yN7Spn+4ABw0PH5DyCoOoSvYOg00s9C+YSpL8oLGgMmnOILF2r68qvKibvWXd9hbsCZ/ajpLniULnKQO82tubb3vY3Uw9IrvhOmCaDFJYC2DyjLt1vNQGjzI5v7+1wrBWTN0uQ3R0OFfQRwz7PjS8td8UAHKFW0rCDqt0ud1mEfKlZ+bYYdNtGQjAFgh6L+M9sRQKev5Yu1F4zfh7ELtIXxA+JiW9aVMPJ4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwfzVXkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMA5o7y8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC", ot = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/gD+AP7rGNSCAAAACXBIWXMAAA3WAAAN1gGQb3mcAAAACXZwQWcAAAAYAAAAGAB4TKWmAAACn0lEQVRIx+2U30tTYRzGn/fsPdOmNkWDsEDnOiFCbv4KhPJCFAvDtBuRyL/A64TwQkGaCt7pVYqimHhTJAVhuYsRE5zipLuZeQKNsMQdN1vbzvbtwg2Oa5s/uvWBl3Px8P18OO/7ngNc5H9DROw8XTxCumEiygJwjYh4kp7HuqzTiJLBc8aslr5+vbiy43SWaiVExHecztJ+vbgyZrX0EVHOqSVx+ERFee8wR3hcBNky+VpcEofbMvnauAga5ghPVJT3ppKwJIKsqRrr0/3P68+KdeAMgBIFfgjc/cT+6TEATNffmbkaVa1GASAAcgRq3i3L806Xe4gxdqjl8QS4ACBPDPibpIwjOAAUAOBR1fqy8e4MAFwXVGuuZlLi4ErA3wTgBREFGGPRdG+gCytKy3JDTdfvrxv12s4bOXrm6o7PGEok++2PrhHRaJxnjEXSblFMog/7lea1xn8liTGUSPaKD64RMdv4jjEWOvEMtJKIX2lev1fTFdhKLrlkkuyW964RXQo4kOY7ABBVNj0e+eDwMudAsiUfHF5WNj0eANFUkFRbxPdWl268elA3Wyyq1nwx+fBeGJDD3P3oraMjv6r2C2NMPVFARLq91SXpTUvdrEmvWgv0SJtfIWArxN0P5x0d+VW1G2kPOXZNC6dMma+LebD6SgI8o+imHQCC3zzHzuRnCJDVjJXOrT9tAL5rr+mxM4gV+w3dPY7CbCEkciC+DGbJXjS3PFo0tzxqMEt2bVeYLYQaunscAPa18KSJ/SrMyuSgTa4WgnIlaLtVWlR93jYi0hORXvV527ZbpUW5EiRXC0FlctBGROaz/o/Mvumhgd32soU4XNPrVZ+3bbe9bME3PTRwJniCxERE97VwrSTWmc4MTxSdp7vIqfMXBoR6XMSZc1QAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDB/NVeTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwDmjvLwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=", Yt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAG6SURBVDjLlZK/TxNhGMc/z117FgWbNulITGMYTMvAaHAyhMTAIoOmcdD/wMWERdO4E8If4OJASBgcGcA4QRgx4YcLA4aUYDTRCoX2fj0OvTu441rwuem+7/N5n/f7PA/8ZwholiHuYCCXdMWnxYk4KYwWSws0+JX4GqUFLaqRVmHYWFUfTZ6I4U9ynKyRAUztoNsfq6f4gWrsDI6+VMGMPTMCwIHqGt+xA9Wq3uNFuukIoIUtduiYFs51QDIcwMSKrHn4otcBebJ4QfofmnghYKcANlCQxaj505xcAL0qGM1lFEXwwsH2B/zi0/DXXbps2k0YtDBxAbxvPbtUL7/Xi8HVy90ntXdwVUUgHKGADufedrJUsGKWd2857aXMXLAy4j7nUOxuhdabvfmR86/x0gPO7AFn3lYkCJaqON31HqVCNpZvMkCDA3kVtfUD5/yVYwFQ48qaZShO1VeqbEbKwyfbK+/kx5VtDO4TLO/Rs7FPpVCZ+bm8Za5LpwcAKuTajycebBQAxn9/3st9oSPaEwAVbjcnx+/vDlZON/bza5yJ0j9UNH9Um3h9VNO7/a6OIwWd0sIN09PiH5BSrD/OwMFRAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwfzVXkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMA5o7y8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC", Zt = "data:image/png;base64,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", Jt = "data:image/png;base64,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", Xt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAFdSURBVDjLzZO/TsJQFMZ/t1QsmthEjQkmLoZJA7ODq/EdHBx9BcTEmMjCxsA7+Ao+gFOdCImOuoAs/qtIldL2OECxLY1EJ88Zbu6933e+c/988MtQ8akotOQaQqAklSAaS5hkEgQfmzcVTImJEjPfoMNjIjv5hpiiEgqiyJLXLiVAEpWU0oJ9HpQHoEeaWWFZPpGbiy17QlK35vaBqBAXaWajzp3sYWFJUQzRx2lIEQtLNmVMGQ0ZzPYuXQQX6OON5EGgjxstHkrp8k4A8c1xpBJgAMAwhTBMJ7jT1X5WGP5nBQ1dvve1mQq1wjGEX02rFX5S8HPOh16pVOYjiAHNnIeXTuidtc/XnOv4ERa8ky42fkpL9dXyfTnLXAzf54UmvdBCCkB01hcPHZ0djHh15QVHdHBV5BYAfOzq06npXMXhhl995TkKnxhINEqUyE49WYtW3JxRx82w/x/jC67KmykWiVPXAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwfzVXkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMA5o7y8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC", Kt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/gD+AP7rGNSCAAAACXBIWXMAAA3WAAAN1gGQb3mcAAAACXZwQWcAAAAYAAAAGAB4TKWmAAACQElEQVRIx9WUz2sTURDHPzMvIb3VgyJKW/DXSXoKtSJIbaxtgi3of+BfIYKXgOAfUCh6zFFR9Ca1tomXigf7P/SQqo2giIrNpvvGw+7GStIlG/HgLI8dHvPmOzPvw4P/3SRx1hurde/9bL8g7z1mhveGWeQj0liq3CgNrLS28cKy2JNnj2yQvLnE6XQ6AHz/8Q3vPd6HhMk/3CcMw2j5fU5NnCMI2gMV3hUIggCAdrDHy9U1zDzeopF4b5g3jJCZKzN/xA8h0Ga2NAMIZoYRz91b3JmP4ttZBeIDPgzZWK8DgghEgzbMADNKc6W/6yD0nqtzJUQEVY2FonXQ2lkFkgNOlXq9gYoiqqgIiCJETM+XF7oFrTxYtjNnT6ci3NOBc45yuYxTh3MOVYeqxt0QJYjjp6cuUSwWe6p++vzxbE8HiYCosv5qI0rqFKeOxeuLqHOICHbgkr98/czH1k4qwj2XLMD8wjWcy5FzDudyICDxZ/FdBEHAm81Nms1mKsI9HRw/djL10hyuGz81fYHJyfOpCHcFDNu8c/f2RUveHTMS38xcNPookXlPYWSErXdbtHZ3UxHuCtyr3r9crd4qbCcb27+rHp848XNp8SYfdndQVUSEkUKBsbFxRo+MpiKcO7Bv1Wptr99YVh4uUywWab4/SqPxGhVFnaPV+nQowv0EDrVOp4Oqks/nqVQqAyGcSWAYhLMJDIHwUB1kQTiTQBrC0RtkRAhH+7l87m1yVgYRAOQwhPtZrVZrk7z0/9p+AWdQwNFPdOB+AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDA5LTEyLTAxVDAyOjIyOjM1KzAxOjAwqBTIawAAACV0RVh0ZGF0ZTptb2RpZnkAMjAwOS0xMi0wMVQwMjoyMjozNSswMTowMNlJcNcAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAE3RFWHRUaXRsZQBPcHRpY2FsIERyaXZlPme6DAAAAABJRU5ErkJggg==", qt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3WAAAN1gGQb3mcAAAAB3RJTUUH5goLBzIP6fiS+gAAAoFJREFUSMfVVk1rE2EQft55EyKeFU0PlcR6koIa+0FBa2NtEmyL9uLBIoHi0YvFogghIIjoTbx4MldB8BRUTJNeqh7MwT+gPaSpKdjak2bTnfGw3SVhP5p4EFxYmJf5eGbmfXZmgf/9UbZQqrwtM/OElxEzQ0TALBCxZChVmclcSe4HEGoLMjEwv+AoYvV6oOOr1y87kvkajYotxzc2lAug1Wp1BPi5swWTGcwmTHMXpmlaL+8i1n8ChtHsqkUOgGEYHYpisQgWqyXMAmGBwMT4hXFP+64AYvU66o0aFICx08OOUbj6EcICZgYzW/ZNw7ct3gBNKyM2TSyXyjjfZrRcKkMEgAiSk8m/rwAATGZcnEyi/UZSqRSU6kyw2SuA7aCJUC5XQE8eQRGBlMLoqbMdTt8AzAF4k7uH4wNxiAiKLOJFYVcFWmuk02lo0tBag0jjx+07ntmNDI0hkUgEUtgFoIhQer8MIgJpgiaNMz7lb+9s4fvmeiCFXZesAEylLkHrEEJaQ+sQGj4AH1ZXUavVAinsquDI4b6u58zQyDAGB096UtgFIJDVu/eXRsWeOyKw5VuA9gKofq5is9EIpLAD8CD/8Fw+n42s7Z1zz9/9snUvbmYxM30VG411EBGUUjgQieD6fNYJdPBL1ZPCobaEJJ8v/LYPuWjUURztiyKRSKBWP4RKZQWkCKQ14m3OK+UVTKVT/hUEPa1WC0SEcDiMTCbjUHh7ccmxmZmdtb6BIAC/2fLYMMSTws+eYvryNEhr1PqPOXGMhRu9VRBEYShAoXOM9NyiXinsC+A3coMobK1RAa7N7e0NRkipT66dvN/ubqcw1oKNC4VCE4D8k7+KP78ve+ZyfaadAAAAAElFTkSuQmCC", $t = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFRotCxUC6QAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAPfSURBVEjHtVS/TyNHGH27Ozv+sRj/CDYuQCJSdBRp6CkjLlWkFFGUUCJLSUkBhfMPUCJEQZciihwqpEsTiQasSBQnIaUgd2ALkC4sxpzDcuZ8O+udbzaF2cXEwF2QstLTzOx+s2/mfe/7tHL5h+DCceC6LgxDh5QSvpSQkiB9CQrXJCGlBEmCvF734m7e+f5N3LtOB2+v3oAFgUKhMIpM7iPkRvKQvoQkgiQCSQWp+uakQEpCSgW6jpFEIFK9A4VzUjiuv8Afz38H0zQNhmHA5ByxWByGIWFIgkEEYgRDKRhSgRiBUY/QkApECqyPhIUkSoGRgsnj0HUDzDCM128uHTiOA/uvV70bRBKEp7+RRRJBSgJRD354Yyl7e1Uv3vn7NXzPBQPwaYAAQRBAKdVDoG7mdyAI5xSuCUrRQBwC/P+PNj8//02tVoNt2/B9H57nodvtwvM8CCHgui5SqVQskUjUbdve6d+8tLQEAFq5XA5WVlYKZ2dnn6+vr8vp6Wk+NTX1cmFh4TlLJpO/WJaFoaEhSCnBOY+IOOfgnCOdTiORSDyzbfvLfoJyuQxcC9FsNr9utVqrnueh3W6j1Wr9trW19RWbnJxELBZDPp/vWe/a277vRxgZGUEqlcLe3t6dMqytra3t7u5+v7GxAcdxsL29Dc/zPhsfHz9i+Xz+qRACuq5DKRW5IySSUqJYLPJ0Ov3qPp3r9fonjuMgHo8jFovBNE0IIfjR0dEoq1arODw8RKPRABFF+ocQQiCVSiEej9+byEaj8asQ4m0ulwPn/AvG2C6Al81mM8Ysy9pMJpOwLAtEBNM0I3DOYZomMpkMksnkMwC3cjA7OwsAWqVSWQWwOjMzM3R1ddXUdX21Wq3+DACMMQZN0wa93lcXhmGAc37fBSK3CyGSjDENQBTMiOip53lwXRdKKXS73Vsyua4L13W5aZoDOahUKreZgkAL7R8RTExMQNM0FAqFyD39CZZSIp/PI5VKYWdn5z8XGmu325uXl5e4uLgYsKfv++h2uyAidDqdgRx8EMHJyQmOj49xenp6y0VCiGjMZDKwLOtRrYIJIb4NW0JIIIS4BcZYTClVfxTB8vLy+vuCzs/PAQBPnjzRAAS1Wu3DCRYXF/P7+/uwbRtEFDW78PSu6yKbzeqWZbm1Wq390M+CYLA/M03T/tQ0Df+Gruv9Y1bX9R8BfPcQgVJqkKBYLOY7nQ4Mw4hcFNZCiGubfnxwcPCgHGNjYzqABICor7BMJrOey+XQ7XajGghJwjoYHR0dGh4e3nyf3tls9h2AnwC8eJTlSqWSViqV7vw2Nzen3bX+BxxQD5I249kcAAAAAElFTkSuQmCC", te = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFRgEe5H4BwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAARuSURBVEjHtVRNaFRXFP7u+08mkxknYyxGU6QLEQwuko2LFkRw0UXAhWipWJql4LIEdCtuulfpYlZCbBdt0YKWLixIS2mLhVStEtJGOpSYZGbMOPPm3fvuOaeLyRsnpkY3PXC479537v3e+b77PYW+qFQqO0XkwdLS0s7V1dXrV69e/QCviNnZ2VPMPBfHMdI07aW1FlprRFGEYrEIr39To9EAM6NaraJarWK7ePjwIZgZnU4HWmsYY6C17qWIwPf9zQDtdhvMjHq9jpWVlW0BBgcHPWaG4zjwfR/GGPi+jzAMobUGM8N13c0ASikopeC6LlzX3RZgamqqxcytJEliIhJrLay1YGakaQrP85DL5TYDZCEieF2cOXPmJjPvSpJEAMBxHGQjEaFYLKJQKGwGEJHe4UqpbQFOnjw5yczntNZGay1aayRJ0tMiTVMQ0X938CZdDA8PH2Tm00mSIAgChGGIMAxhjIExBkQEpdRWgOzLX9dBoVCoE1HL87w4CAIxxiCKoh6AUgqe520V+U34B4BWq3WTiHbFcSwZNZkHjDFg5q0d9GvwOqCxsbFJZj4Xx7FJ01TSNIUxpmc413URRRG8SqWiZmZmBAAmJyfje/fuyQY9tv/A8+fPq0uXLvVQa7XaQWY+nTm5X1xjDESkS9HMzIxcu3ZteHV1VW7cuLGnVCo5Gy3mLly4MCgiOcdxmhcvXtT9gNVqtZ75oP8WZRRllHkb3H+aJMnHy8vL6/fv3y9Vq1UMDAy8v7i4uDQ+Pp6Loug0gK/6Ae7evXsTwC4A23LpAcDIyMg79Xrdb7Va5cePH6PRaMjQ0FBYLBZ3TkxMoFQqlV7eeOXKlUlmPpckibHWirUWRARmBhEhiqIXRisUCl/k8/nd+/fvP7CwsIC1tTVEUYTR0VHkcrnb5XJ5/mWAR48eHch80P83zdJxnK7It27dUocPH/7szp07T8Iw/LpWq0VBEKjx8XEcPXr0geM4x0+cOJFcvnxZnT17tkfH/Py8IaIe7y+ntbYrdMbhkSNHvp2bm5s6duzYrxMTE1Gz2by9b9++49PT00l2i/s7OHTokEtEaLfbm66ntRbGGARBgHw+jy12/eGn395d+uvPsmV//qMPpxdfJd4vv9eGvvum8l6z2bRaa7E2RWpT2NTCaI1CcRh794xBzc5+cmq9sQLdWVeA5fra02dkyfrh4IDnh3lrSawlWCIQEawlMLPTieOk8az+HHBAxCBLIOJunQD1RhPWAh4gc4HHCAYsIp+xI1fubiABMYPIhSUFYgdEbnedGFQI8NboMIjlxRoxLAmYBStrz/Dk72V4Qga7d3Tw9kgbe8sEKx5EXAg8MAIwPIg4EHgQuOCNFHHB4kFUVtsdRVyI8vDjz3/g8y+/h+e6PpqdAEtPA6y3GcQKxAAxg0VAbMGswALwxjsWgFiBGWBRvWeS7ihwsLD4D7RO4SnHu95KPDSbAWpNhqUX2d86sYCJkWbz3vpGrZXenBlYq69DmxT/e/wL/opRMma51lkAAAAASUVORK5CYII=", nt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAYCAYAAAARfGZ1AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFR8VXmBOMgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAItSURBVEjH7ZS9SitBFMd/M9nZddeYysYnCKQQsbTwMRQEbS1TpEsl+BIWwcLGMpXahBSCrVpY+ggJWiyus9mZc4uwMblJ7kW44TYeGM58nPnPf84XrFDUw8PDeKIUSqmvg6n1Iv03252dHfQqmf+Afw9caz0TtLlMUAqt9ffAtdZEUUSlUiEMw6XAYRiitZ7oP4KXF2q1Gi8vL7TbbVnGLggC4jim2WzKzc2NGGMwxsz9VJfG1WoVgG63K5eXl/L+/g6AMYYwDGeGMYYgCNjY2KDT6XB6eiqvr6+EYUilUvkikSQJxhienp7o9/tirSVJEoIg4P7+Hu89IjLRIjIhk6Yp1WqV4XBIs9mUvb09Wq2WSpJk7I1er8fd3Z0Mh0OcczjnKIqCoijw3lMUxWRvWk/blXtZlqG15uTkhLOzM6XLL/4LERG01qyvr4+ZPz4+EkURz8/P9Ho9sdby9vaGtZbj42MlIgAz7jHGUKvVuLi4kMFggLWWNE3Z39+n1WqptbU1Go0GQZZljEYjtre3qdfr6vb2Vvr9PlmWsbu7i/d+rimVPr+6uiJNUzY3Nzk/P1eNRgPnHHmej+0AiqIgTVOiKOLg4EBtbW1xfX0t5VnJfjrVnHMMBgMODw85OjpSIjIBXdpyy8Kw1hLHMdbameKZLrSPjw/iOMY5N0dgYcv13vP5+YnWmjzPJ5d+D1ye5xhjyPMc7/3CAC9Nk2lfL8uMRQ//9PP/C75S+QX3zx/c9r2O6AAAAABJRU5ErkJggg==", ht = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAXCAYAAAARIY8tAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFR8FQ9deVgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAJgSURBVEjHtZW9TutAEIW/2V175QSQIvESUIUiEhQ0gISAJ0C8AM/AA1AlbwANBQUtDRIFEgWiTIEoqCkoKAIyRrZ37Vs5yr0Xx7k/jORmd2fPnOOZs/DNIQDD4bDxYBiGXFxclO12m729PcmyrDGn2+1iZqlCa02SJJydnaGUYnNzkyAI8N435iqAsixrvwpgMBiURVGQ5zmDwaDUWjNLrmqqwBjD09MTd3d3RFFEq9Xi9vaWx8dHjDH/xkBEEBH6/X7ZarXQWqO1Zm5ujn6/X1b7jQzqDmituby8LF9eXrDWYozBGIO1ltfXV87Pz0ut9d9JpJSiKAqurq5YWlqi0+mMARYXF1leXubm5obPz0+Uqle6VsSKwenpqRhjuL6+5uTkpAQ4PDyUXq+H954kSZjWsqa67CuANE3x3hMEAXEcU3XO+/s7cRzjnMM592V+I0C1XlXnnBsD5HmOc45Zhs3MPPIi47acpvkfMZhkIiJjBpOt+d8YKKW+h0F12SSDSVZNTMw0zcMwRER+YyAiKKUIwxCALMsoiqLeru/v77+sXGvN0dFRORqNmJ+fZ2FhAYDRaMTHxwftdpvj42OphvLXWF1drbcK7z0iwsHBgURRRBiGP1lFFEXs7++LtRbvfa1VTP3JeZ7T6/V4fn7m4eFhvN7pdFhbW2N9fZ23t7dmN62LoihIkoTt7W2x1o7d1FrL7u6uJElSq/3MD06WZYRhyMbGhlQAW1tbYq0lTdPGB6exTcuyJEkSVlZWGA6HGGPodrvEcdxY/cyD5pwjz3N2dnYkCALSNMU5N9Og/QC/FsDpo71BjQAAAABJRU5ErkJggg==", ee = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gsEBhoGqbjXJQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAH3SURBVDjLhZGxSxthGMZ/392l+b6E4IUQjENRQulWKXUwcwJZ8idk0D2IiIMdm03o0MnJ1aXQRSHF+AcEkiWEQFECwSXoZsPlcrnz9OsQsbWk12d83/f78T3PIzzPYzab0Ww2db/fx3EcTk4+cX+/hGEYSKm5vPSFlCyUcByHo6MjnclkKBaLIp1Os7xs662t72xufmB3d4Xr65lIpRYDrFarpaWUVKtVIYQAwDAEGxtvGY1+IMQKUbK63S7lcvn5MYBSmoODN/j+6/mR9W+AMR6PyWazL4bDoS+urgKxvV1nOPwplIoAJBIJJpPJi6FSYNuaVCrENP1IC0Y+n6ff7+tFS9M0CcMwOoNisShWV20dBFIDJJNwezsTlgUPDw9YUQEAhm3bBIGkVvvK4WGLIADHcQEIw/C/AOF5HkpJ3Wg4DAYD9vffU6t9ZDq9e8pD8WdDAFJK1tbWqFQqQnieRy4n9Xg8X6ZScHMzE6YJe3t7ul6vi1gs9gLgui69Xk+3220smHte9L1YLIZlWai/elRKUSqVRKPR0JEGk8kkruuSSCSeMoFcTmp3HhHx+BeMKEA+n2cwGDxX/PgIQQCnp3fs7HzD9+PRgEKhwPn5OaPR6Nm71pqLiybr6+9+txClTqejz87OmE6nmOYrjo8/4/vzUJeW4BekTMTiOlyMpQAAAABJRU5ErkJggg==", ie = "data:image/png;base64,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", se = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKzSURBVEiJtZTbbtpAEIa/9XqdcAEXEQoHoQhkBVXKde7yEH2Kvg9v0su+CFKFAnYSSDlUqQISyBh7etOlNnbP6kgje9fjmf//Z2eViPA/zc0ulFJngPePOfciEh1XIoKIMBwO322321kcx/Ivvt1uZ8Ph8J3Nq0QEpVRls9mMtdatNE2zjH4LclZmx3FIkuRTtVr1RWRnJTrzPK+13++PSZ+fn5nNZtRqNdbrNa1Wi06nA0Acx4xGIxaLBXd3d3jed1WTJMHzvBZwBuwcC9ZSsj4ej7m5uaHf72OMYTweH5EaY/B9P4f89H9AAeQKWPRKKaIowvM8FosFzWaTJElIkqSQ8FROpVRpAecUgfX5fM7l5WXpt5+5zW17oE4RiQgvLy/UarWCBD+Q5PRZlCgbYIwhDEPa7Ta2+Y7j/Ap1oQc5BlnzfZ+Hhwcmkwnr9Rrf91FKsdvtCMOQw+GAiDAajdBa0+12qVQqBQa2uc31ev0pSZLc2f+bORARtNbUarWWiMwtAydN08Kp+JN7KivRt2H9cZOVUhwOB+7v71kul9ze3nJ+fn5MtlqtmE6nVKtVNpsN7XabRqPx6znImtaaXq9XyiIMQ/r9Pr7vo7UmCIIyNvkCVqLf8f1+j+u6LJdLGo0GURTlvn+T6O8LWF+tVlxcXBT2swWOTS6Touyc2/3X11eq1WppXHaSjwxKNCy8W3Ndl+l0SrPZJI5jjDFlceWDJiJEUcTT0xNWtslkgtaaTqdDpVLh6uqKx8dHgiBgs9nQ7XbLroxcgTQIgs+9Xq8O4Hkevu8DcH19nYOVpin1ep16vV7YtxYEwWfg+zAA88Fg8CEMwy+O46C1xnVdXNfFGIMxBs/zcm73bZzWGsdxCMPwy2Aw+ADMc9IopW6At8CbTOE/tRT4CLwXkWGuwP+yr0z0vLd4EzkyAAAAAElFTkSuQmCC", oe = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAIPSURBVDjLtZLLTxNRFMa/O52ZPsYqtCQgI6WhQCRBCwm+GqguTBOJIXHpxoV7+QOIJYgSEg0mdmliAltNSGShCza2IiEQqcuKGmamWF4akxbL9HlctKClBbvQb3Vzc37nfOcB/G+xgx/EgQEglq8CIANEWGABkEQSaZY7shiJJLvGhRAUKEKodZxkEo8MH/UKQai2oGfKM2ULQhWCo95yhO07bzBNks3/6m4UOwCOPWi630/xrds10YrGyNzhx/LYMHWF3VCghN3UNebHcts9MpdGcsX8ktoqR4YWkLCLUKHaRSSGFuWI1g4rcX8CfNGYOWVtWcE3bhp5bAPNT8HNDrZosU6YSifJ7z9SG7sArQPIArQJ1OQ2daN+0HwBIOgnVa0Z7MPrjHDOAyy9EbMdedVRr0EHlfXA8ti5pqbsFy67ZxwhpJF2hM6+7LuYsp//hETpzvcspZ4szDuXfL2ZuTmaB5Dpvb7ow1b310NPg4wfbwz0rHSLP2s14IcjLUFD1rn69vmpNaZXAAA6kbkacD2TlXqgff1WzKdPShM9vDDxcPD9b6T0+Hi0wYVaANtQ8D13ptMbaeTrHj+6E2Zl89qDODKQobAsMq3ddPoR4F8ELpGxQoUK+PGNgb6mz3V84+zIlS8sWxzr4WLxhpl30dMxbjUpVVUBAMi625+3SNOIM/p7dAERyURVpP43+gWF+ca8/eA5yQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMH81V5MAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDAOaO8vAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==", ne = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAH1SURBVDjLtZLNaxNRFMXPm7yZfBGtMWhM/AjEig12UailsRhciJ9Q7MKFmy6617/AAa2VglLBbAShEBdFUFAQBMFVKhZRW3faiNJkWpNSESS16SRtclzEJqaJMQt9y/vO797DPRf4309sLlCBAEBRagGgBRoccADIIYeCKDYdRo3+4Kg6iSSS6uT+UfqpNZUPR9Q4Uu54X6wv5o4jpcaHI/WIqDj32mJ0X36qv8ciAO+10MhZZpeG2uYbGqO9Q8fMdZ0hSgoKSoZGdMy0X6W9kVyhx3HPN8FeykpNstc3Yb3PHVR+18pfxux5VzCBWZGoen0WDhqZTthqN1npKPMZE8SH6leR6VWrudlNGSDMXSljH1y8i43AFFgHAl4DJlgHiBJ/nE7d6eg5/3ocKygBUOA8PFTY3vMGy7WZb1jK3341FXh78sja1GMsA3CFz02fwlLXlz+eBq2Jgf7uj13aSpsBfN9bcMLAemDuxYPdC8JsAADcunY8Ghz3J3cCBzKD6RNmzDnWLdWxG5emq0jt8Um0I4htAL4iiW/FzkORWZ/03Lp58Z2o21c1RAst5bBoW7gQ0BGVD6NhWhtMaIBvWew/uueTR/qeXzn2WawDSnNAZL1PXs4fTCtzOWdLEwCArtUzJYfzEbKCf1eXEY02ttD637yfWKq5q2bQBKcAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDB/NVeTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwDmjvLwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=", he = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAIBSURBVDjLtZLLaxNRFMa/O5lXZhi1aag1sRocUxSsUKjFhhpciI8uCoIupODCvf4FxketFJQKZq3QLIqg4ELQjZtO1eLC1o2L1gdNZmoqFSmkNZ1ckxwXCW3TjDULPZsDl+93z8f5DvC/i21+IAEMALFyAwD5IEODBiCPPDgrbTmMZAqbw9IE0khLE/uHKUzylvLBuGQhE7BiqVgqYCEjWYPxeoStOW9VRymQeHHVwQoY9KG2W32UW7y0w/E0Rv6DCUzfvka9HdfhwKF2OjyUwHT0Jvm95AIFtVRojHooig8YxzjtI4WOhsaUR9RCwkatUDXmLximjVks8wfg4ADKmDFtbkCt3eQaLRYWXJSwJD2vAgBlVxV3s5sKQHB3Zey9MACUqoAAw4m02HBBdQArY+VMhjd3n4cGERwcIrQj53hz9ycs12YuVnvh/tvJyLtTvcXXFk0CUGMDU6ex2Pn1j6dByuzZ/q6PnfLPJhtY2sN12ChG5l493j3PXA8AoO2/TiTNh+H0TqB94WL2pDuqj3SJ0sidK1PrSO3xiYjCRBOA70jjR6njUHwmJAbv3b38ntXtaz1EH/kqYZE6fyGSQFJ8kuwhxWOCB77tW/+xts9BMfTyxvEvrLghOO9iudZnb5wDWWEurzc0AQDIWO0ra/pT5Bj9XV1BZFKpga//Tf0Gp9/DBQB2y1wAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDB/NVeTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwDmjvLwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=";
+const _t = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECcZZuWhdAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABaSURBVCjPlZBBEsAgCAMT/v/n7akzWAFtTo5mQ8SAJtkGcL4LXcg211A2L+eq3jc5C/AGTUBZ7wYAHH+B4yIAv8a8dkvilLz9qXuYKseU2E7qDFODqIwTIEkPSldAAa0WlbUAAAAASUVORK5CYII=", Ut = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECgYlnqNLQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABZSURBVCjPlZFBCgAxCANN/v/n2VOhiFU3N4U4GgXELUkAikbOhlhIh1QZXkR3hGc/IsaVMtHT0RXR3e5jescIqBpy05T/tInffw2AvEkr972N+a69+U8e8AGOtEABr4X+4AAAAABJRU5ErkJggg==", Vt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECkWaNmRawAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABjSURBVCjPlZBRDsAgCENbsnt6/1N0P2ocijASEy08iqC1BknhASCvsSeOQXImJXHcrQL4t1UAr4fjReDmdCsc/5LEZ7NOwOlUKVy3RwC/AAAwL2TAZ3t+xFszOxVl7lbtvsYLOtlZCOj2NccAAAAASUVORK5CYII=", Nt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIECoXNPPyPgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABaSURBVCjPlVFBEgAhCAL+/2f21I5jqcXFGRMSpG1EkLRtooEyIdaRlAc7orqBsg+gVKy8yTYn49vqMb0pgCUuPOBP93Sniaxb8/FdL6mt/rZe5SMKXQWRf/4AYrs6C0ViuwUAAAAASUVORK5CYII=", zt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDsHep3BSgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA8SURBVCjPY2DADf7jkmAkQgMjMZr+EzKckVgnIatlJFIDinqynMfEQAYgSxNV/ERy6JEdT0SlCAZy0h4AXLILDAEWNOwAAAAASUVORK5CYII=", Ht = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDMMJZaSygAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA/SURBVCjPY2DADf7jkmAkQgMjMZr+EzKckVgnIatlJFIDinqynMfEQAYgSxNV/ERy6JEdT0SlCJxAWZoFp1MBY8cLTv/x72kAAAAASUVORK5CYII=", Gt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEQARsznxFAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABBSURBVCjPtZAxDgAgCAOvxP9/GTfjolISOxIK7UFDOszz5gnzGADRiReNeMuUVQPAcJbdTtrhqILY/aTvyG04T00vswcW6BsN2AAAAABJRU5ErkJggg==", Ft = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEQEbSvcpSwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA3SURBVCjPY2AYSPCfAJ+BiZACbOKMRGjAUM9Igga4RkYSNTCICjCTbxPJfsIWSv+JECM9nugHAG40DyW1OoLPAAAAAElFTkSuQmCC", kt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDIpd4l3zAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA+SURBVCjPY2AgAzBC6f9EqIEDJiINJUkTAzma/pNr0390NguRLvqPyyZGXB4nKnQIRQETiYZRP8j/M1AbAADcMAcWozKAnAAAAABJRU5ErkJggg==", Wt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDYr/evT5AAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA+SURBVCjPY2AgAzBC6f9EqIEDJiINJUkTAzma/pNr0390NguRLvqPyyZGXB4nKnQIRQETiYZRP8j/M1AbAADcMAcWozKAnAAAAABJRU5ErkJggg==", Qt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDUsSKIVhAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAA0SURBVCjPY2AYSPCfAJ+BiZACbOKMRGjAUM9Igga4RkYSNTBQZBPJfsIWSv+JECM9nugHADv6Dv2P6G4ZAAAAAElFTkSuQmCC", jt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gkIEDQQftZYQgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABBSURBVCjPtZAxDgAgCAOvxP9/GTfjolISOxIK7UFDOszz5gnzGADRiReNeMuUVQPAcJbdTtrhqILY/aTvyG04T00vswcW6BsN2AAAAABJRU5ErkJggg==", $ = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAEDSURBVDjLzZPNSsQwEIC/CUWtQlnZi14EYb36Jj6DT+ZT+BSevImHPYggKLpo2bW1Ze14yJjFtKEed3poMpmvzZcf2LqQfkolZFV0FFDhkMI6JR99JAbczTlP/tGZung86yN7Spn+4ABw0PH5DyCoOoSvYOg00s9C+YSpL8oLGgMmnOILF2r68qvKibvWXd9hbsCZ/ajpLniULnKQO82tubb3vY3Uw9IrvhOmCaDFJYC2DyjLt1vNQGjzI5v7+1wrBWTN0uQ3R0OFfQRwz7PjS8td8UAHKFW0rCDqt0ud1mEfKlZ+bYYdNtGQjAFgh6L+M9sRQKev5Yu1F4zfh7ELtIXxA+JiW9aVMPJ4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwfzVXkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMA5o7y8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC", ot = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/gD+AP7rGNSCAAAACXBIWXMAAA3WAAAN1gGQb3mcAAAACXZwQWcAAAAYAAAAGAB4TKWmAAACn0lEQVRIx+2U30tTYRzGn/fsPdOmNkWDsEDnOiFCbv4KhPJCFAvDtBuRyL/A64TwQkGaCt7pVYqimHhTJAVhuYsRE5zipLuZeQKNsMQdN1vbzvbtwg2Oa5s/uvWBl3Px8P18OO/7ngNc5H9DROw8XTxCumEiygJwjYh4kp7HuqzTiJLBc8aslr5+vbiy43SWaiVExHecztJ+vbgyZrX0EVHOqSVx+ERFee8wR3hcBNky+VpcEofbMvnauAga5ghPVJT3ppKwJIKsqRrr0/3P68+KdeAMgBIFfgjc/cT+6TEATNffmbkaVa1GASAAcgRq3i3L806Xe4gxdqjl8QS4ACBPDPibpIwjOAAUAOBR1fqy8e4MAFwXVGuuZlLi4ErA3wTgBREFGGPRdG+gCytKy3JDTdfvrxv12s4bOXrm6o7PGEok++2PrhHRaJxnjEXSblFMog/7lea1xn8liTGUSPaKD64RMdv4jjEWOvEMtJKIX2lev1fTFdhKLrlkkuyW964RXQo4kOY7ABBVNj0e+eDwMudAsiUfHF5WNj0eANFUkFRbxPdWl268elA3Wyyq1nwx+fBeGJDD3P3oraMjv6r2C2NMPVFARLq91SXpTUvdrEmvWgv0SJtfIWArxN0P5x0d+VW1G2kPOXZNC6dMma+LebD6SgI8o+imHQCC3zzHzuRnCJDVjJXOrT9tAL5rr+mxM4gV+w3dPY7CbCEkciC+DGbJXjS3PFo0tzxqMEt2bVeYLYQaunscAPa18KSJ/SrMyuSgTa4WgnIlaLtVWlR93jYi0hORXvV527ZbpUW5EiRXC0FlctBGROaz/o/Mvumhgd32soU4XNPrVZ+3bbe9bME3PTRwJniCxERE97VwrSTWmc4MTxSdp7vIqfMXBoR6XMSZc1QAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDB/NVeTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwDmjvLwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=", Yt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAG6SURBVDjLlZK/TxNhGMc/z117FgWbNulITGMYTMvAaHAyhMTAIoOmcdD/wMWERdO4E8If4OJASBgcGcA4QRgx4YcLA4aUYDTRCoX2fj0OvTu441rwuem+7/N5n/f7PA/8ZwholiHuYCCXdMWnxYk4KYwWSws0+JX4GqUFLaqRVmHYWFUfTZ6I4U9ynKyRAUztoNsfq6f4gWrsDI6+VMGMPTMCwIHqGt+xA9Wq3uNFuukIoIUtduiYFs51QDIcwMSKrHn4otcBebJ4QfofmnghYKcANlCQxaj505xcAL0qGM1lFEXwwsH2B/zi0/DXXbps2k0YtDBxAbxvPbtUL7/Xi8HVy90ntXdwVUUgHKGADufedrJUsGKWd2857aXMXLAy4j7nUOxuhdabvfmR86/x0gPO7AFn3lYkCJaqON31HqVCNpZvMkCDA3kVtfUD5/yVYwFQ48qaZShO1VeqbEbKwyfbK+/kx5VtDO4TLO/Rs7FPpVCZ+bm8Za5LpwcAKuTajycebBQAxn9/3st9oSPaEwAVbjcnx+/vDlZON/bza5yJ0j9UNH9Um3h9VNO7/a6OIwWd0sIN09PiH5BSrD/OwMFRAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwfzVXkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMA5o7y8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC", Zt = "data:image/png;base64,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", Jt = "data:image/png;base64,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", Xt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAFdSURBVDjLzZO/TsJQFMZ/t1QsmthEjQkmLoZJA7ODq/EdHBx9BcTEmMjCxsA7+Ao+gFOdCImOuoAs/qtIldL2OECxLY1EJ88Zbu6933e+c/988MtQ8akotOQaQqAklSAaS5hkEgQfmzcVTImJEjPfoMNjIjv5hpiiEgqiyJLXLiVAEpWU0oJ9HpQHoEeaWWFZPpGbiy17QlK35vaBqBAXaWajzp3sYWFJUQzRx2lIEQtLNmVMGQ0ZzPYuXQQX6OON5EGgjxstHkrp8k4A8c1xpBJgAMAwhTBMJ7jT1X5WGP5nBQ1dvve1mQq1wjGEX02rFX5S8HPOh16pVOYjiAHNnIeXTuidtc/XnOv4ERa8ky42fkpL9dXyfTnLXAzf54UmvdBCCkB01hcPHZ0djHh15QVHdHBV5BYAfOzq06npXMXhhl995TkKnxhINEqUyE49WYtW3JxRx82w/x/jC67KmykWiVPXAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwfzVXkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMA5o7y8AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC", Kt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/gD+AP7rGNSCAAAACXBIWXMAAA3WAAAN1gGQb3mcAAAACXZwQWcAAAAYAAAAGAB4TKWmAAACQElEQVRIx9WUz2sTURDHPzMvIb3VgyJKW/DXSXoKtSJIbaxtgi3of+BfIYKXgOAfUCh6zFFR9Ca1tomXigf7P/SQqo2giIrNpvvGw+7GStIlG/HgLI8dHvPmOzPvw4P/3SRx1hurde/9bL8g7z1mhveGWeQj0liq3CgNrLS28cKy2JNnj2yQvLnE6XQ6AHz/8Q3vPd6HhMk/3CcMw2j5fU5NnCMI2gMV3hUIggCAdrDHy9U1zDzeopF4b5g3jJCZKzN/xA8h0Ga2NAMIZoYRz91b3JmP4ttZBeIDPgzZWK8DgghEgzbMADNKc6W/6yD0nqtzJUQEVY2FonXQ2lkFkgNOlXq9gYoiqqgIiCJETM+XF7oFrTxYtjNnT6ci3NOBc45yuYxTh3MOVYeqxt0QJYjjp6cuUSwWe6p++vzxbE8HiYCosv5qI0rqFKeOxeuLqHOICHbgkr98/czH1k4qwj2XLMD8wjWcy5FzDudyICDxZ/FdBEHAm81Nms1mKsI9HRw/djL10hyuGz81fYHJyfOpCHcFDNu8c/f2RUveHTMS38xcNPookXlPYWSErXdbtHZ3UxHuCtyr3r9crd4qbCcb27+rHp848XNp8SYfdndQVUSEkUKBsbFxRo+MpiKcO7Bv1Wptr99YVh4uUywWab4/SqPxGhVFnaPV+nQowv0EDrVOp4Oqks/nqVQqAyGcSWAYhLMJDIHwUB1kQTiTQBrC0RtkRAhH+7l87m1yVgYRAOQwhPtZrVZrk7z0/9p+AWdQwNFPdOB+AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDA5LTEyLTAxVDAyOjIyOjM1KzAxOjAwqBTIawAAACV0RVh0ZGF0ZTptb2RpZnkAMjAwOS0xMi0wMVQwMjoyMjozNSswMTowMNlJcNcAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAE3RFWHRUaXRsZQBPcHRpY2FsIERyaXZlPme6DAAAAABJRU5ErkJggg==", qt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3WAAAN1gGQb3mcAAAAB3RJTUUH5goLBzIP6fiS+gAAAoFJREFUSMfVVk1rE2EQft55EyKeFU0PlcR6koIa+0FBa2NtEmyL9uLBIoHi0YvFogghIIjoTbx4MldB8BRUTJNeqh7MwT+gPaSpKdjak2bTnfGw3SVhP5p4EFxYmJf5eGbmfXZmgf/9UbZQqrwtM/OElxEzQ0TALBCxZChVmclcSe4HEGoLMjEwv+AoYvV6oOOr1y87kvkajYotxzc2lAug1Wp1BPi5swWTGcwmTHMXpmlaL+8i1n8ChtHsqkUOgGEYHYpisQgWqyXMAmGBwMT4hXFP+64AYvU66o0aFICx08OOUbj6EcICZgYzW/ZNw7ct3gBNKyM2TSyXyjjfZrRcKkMEgAiSk8m/rwAATGZcnEyi/UZSqRSU6kyw2SuA7aCJUC5XQE8eQRGBlMLoqbMdTt8AzAF4k7uH4wNxiAiKLOJFYVcFWmuk02lo0tBag0jjx+07ntmNDI0hkUgEUtgFoIhQer8MIgJpgiaNMz7lb+9s4fvmeiCFXZesAEylLkHrEEJaQ+sQGj4AH1ZXUavVAinsquDI4b6u58zQyDAGB096UtgFIJDVu/eXRsWeOyKw5VuA9gKofq5is9EIpLAD8CD/8Fw+n42s7Z1zz9/9snUvbmYxM30VG411EBGUUjgQieD6fNYJdPBL1ZPCobaEJJ8v/LYPuWjUURztiyKRSKBWP4RKZQWkCKQ14m3OK+UVTKVT/hUEPa1WC0SEcDiMTCbjUHh7ccmxmZmdtb6BIAC/2fLYMMSTws+eYvryNEhr1PqPOXGMhRu9VRBEYShAoXOM9NyiXinsC+A3coMobK1RAa7N7e0NRkipT66dvN/ubqcw1oKNC4VCE4D8k7+KP78ve+ZyfaadAAAAAElFTkSuQmCC", $t = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFRotCxUC6QAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAPfSURBVEjHtVS/TyNHGH27Ozv+sRj/CDYuQCJSdBRp6CkjLlWkFFGUUCJLSUkBhfMPUCJEQZciihwqpEsTiQasSBQnIaUgd2ALkC4sxpzDcuZ8O+udbzaF2cXEwF2QstLTzOx+s2/mfe/7tHL5h+DCceC6LgxDh5QSvpSQkiB9CQrXJCGlBEmCvF734m7e+f5N3LtOB2+v3oAFgUKhMIpM7iPkRvKQvoQkgiQCSQWp+uakQEpCSgW6jpFEIFK9A4VzUjiuv8Afz38H0zQNhmHA5ByxWByGIWFIgkEEYgRDKRhSgRiBUY/QkApECqyPhIUkSoGRgsnj0HUDzDCM128uHTiOA/uvV70bRBKEp7+RRRJBSgJRD354Yyl7e1Uv3vn7NXzPBQPwaYAAQRBAKdVDoG7mdyAI5xSuCUrRQBwC/P+PNj8//02tVoNt2/B9H57nodvtwvM8CCHgui5SqVQskUjUbdve6d+8tLQEAFq5XA5WVlYKZ2dnn6+vr8vp6Wk+NTX1cmFh4TlLJpO/WJaFoaEhSCnBOY+IOOfgnCOdTiORSDyzbfvLfoJyuQxcC9FsNr9utVqrnueh3W6j1Wr9trW19RWbnJxELBZDPp/vWe/a277vRxgZGUEqlcLe3t6dMqytra3t7u5+v7GxAcdxsL29Dc/zPhsfHz9i+Xz+qRACuq5DKRW5IySSUqJYLPJ0Ov3qPp3r9fonjuMgHo8jFovBNE0IIfjR0dEoq1arODw8RKPRABFF+ocQQiCVSiEej9+byEaj8asQ4m0ulwPn/AvG2C6Al81mM8Ysy9pMJpOwLAtEBNM0I3DOYZomMpkMksnkMwC3cjA7OwsAWqVSWQWwOjMzM3R1ddXUdX21Wq3+DACMMQZN0wa93lcXhmGAc37fBSK3CyGSjDENQBTMiOip53lwXRdKKXS73Vsyua4L13W5aZoDOahUKreZgkAL7R8RTExMQNM0FAqFyD39CZZSIp/PI5VKYWdn5z8XGmu325uXl5e4uLgYsKfv++h2uyAidDqdgRx8EMHJyQmOj49xenp6y0VCiGjMZDKwLOtRrYIJIb4NW0JIIIS4BcZYTClVfxTB8vLy+vuCzs/PAQBPnjzRAAS1Wu3DCRYXF/P7+/uwbRtEFDW78PSu6yKbzeqWZbm1Wq390M+CYLA/M03T/tQ0Df+Gruv9Y1bX9R8BfPcQgVJqkKBYLOY7nQ4Mw4hcFNZCiGubfnxwcPCgHGNjYzqABICor7BMJrOey+XQ7XajGghJwjoYHR0dGh4e3nyf3tls9h2AnwC8eJTlSqWSViqV7vw2Nzen3bX+BxxQD5I249kcAAAAAElFTkSuQmCC", te = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFRgEe5H4BwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAARuSURBVEjHtVRNaFRXFP7u+08mkxknYyxGU6QLEQwuko2LFkRw0UXAhWipWJql4LIEdCtuulfpYlZCbBdt0YKWLixIS2mLhVStEtJGOpSYZGbMOPPm3fvuOaeLyRsnpkY3PXC479537v3e+b77PYW+qFQqO0XkwdLS0s7V1dXrV69e/QCviNnZ2VPMPBfHMdI07aW1FlprRFGEYrEIr39To9EAM6NaraJarWK7ePjwIZgZnU4HWmsYY6C17qWIwPf9zQDtdhvMjHq9jpWVlW0BBgcHPWaG4zjwfR/GGPi+jzAMobUGM8N13c0ASikopeC6LlzX3RZgamqqxcytJEliIhJrLay1YGakaQrP85DL5TYDZCEieF2cOXPmJjPvSpJEAMBxHGQjEaFYLKJQKGwGEJHe4UqpbQFOnjw5yczntNZGay1aayRJ0tMiTVMQ0X938CZdDA8PH2Tm00mSIAgChGGIMAxhjIExBkQEpdRWgOzLX9dBoVCoE1HL87w4CAIxxiCKoh6AUgqe520V+U34B4BWq3WTiHbFcSwZNZkHjDFg5q0d9GvwOqCxsbFJZj4Xx7FJ01TSNIUxpmc413URRRG8SqWiZmZmBAAmJyfje/fuyQY9tv/A8+fPq0uXLvVQa7XaQWY+nTm5X1xjDESkS9HMzIxcu3ZteHV1VW7cuLGnVCo5Gy3mLly4MCgiOcdxmhcvXtT9gNVqtZ75oP8WZRRllHkb3H+aJMnHy8vL6/fv3y9Vq1UMDAy8v7i4uDQ+Pp6Loug0gK/6Ae7evXsTwC4A23LpAcDIyMg79Xrdb7Va5cePH6PRaMjQ0FBYLBZ3TkxMoFQqlV7eeOXKlUlmPpckibHWirUWRARmBhEhiqIXRisUCl/k8/nd+/fvP7CwsIC1tTVEUYTR0VHkcrnb5XJ5/mWAR48eHch80P83zdJxnK7It27dUocPH/7szp07T8Iw/LpWq0VBEKjx8XEcPXr0geM4x0+cOJFcvnxZnT17tkfH/Py8IaIe7y+ntbYrdMbhkSNHvp2bm5s6duzYrxMTE1Gz2by9b9++49PT00l2i/s7OHTokEtEaLfbm66ntRbGGARBgHw+jy12/eGn395d+uvPsmV//qMPpxdfJd4vv9eGvvum8l6z2bRaa7E2RWpT2NTCaI1CcRh794xBzc5+cmq9sQLdWVeA5fra02dkyfrh4IDnh3lrSawlWCIQEawlMLPTieOk8az+HHBAxCBLIOJunQD1RhPWAh4gc4HHCAYsIp+xI1fubiABMYPIhSUFYgdEbnedGFQI8NboMIjlxRoxLAmYBStrz/Dk72V4Qga7d3Tw9kgbe8sEKx5EXAg8MAIwPIg4EHgQuOCNFHHB4kFUVtsdRVyI8vDjz3/g8y+/h+e6PpqdAEtPA6y3GcQKxAAxg0VAbMGswALwxjsWgFiBGWBRvWeS7ihwsLD4D7RO4SnHu95KPDSbAWpNhqUX2d86sYCJkWbz3vpGrZXenBlYq69DmxT/e/wL/opRMma51lkAAAAASUVORK5CYII=", nt = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAYCAYAAAARfGZ1AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFR8VXmBOMgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAItSURBVEjH7ZS9SitBFMd/M9nZddeYysYnCKQQsbTwMRQEbS1TpEsl+BIWwcLGMpXahBSCrVpY+ggJWiyus9mZc4uwMblJ7kW44TYeGM58nPnPf84XrFDUw8PDeKIUSqmvg6n1Iv03252dHfQqmf+Afw9caz0TtLlMUAqt9ffAtdZEUUSlUiEMw6XAYRiitZ7oP4KXF2q1Gi8vL7TbbVnGLggC4jim2WzKzc2NGGMwxsz9VJfG1WoVgG63K5eXl/L+/g6AMYYwDGeGMYYgCNjY2KDT6XB6eiqvr6+EYUilUvkikSQJxhienp7o9/tirSVJEoIg4P7+Hu89IjLRIjIhk6Yp1WqV4XBIs9mUvb09Wq2WSpJk7I1er8fd3Z0Mh0OcczjnKIqCoijw3lMUxWRvWk/blXtZlqG15uTkhLOzM6XLL/4LERG01qyvr4+ZPz4+EkURz8/P9Ho9sdby9vaGtZbj42MlIgAz7jHGUKvVuLi4kMFggLWWNE3Z39+n1WqptbU1Go0GQZZljEYjtre3qdfr6vb2Vvr9PlmWsbu7i/d+rimVPr+6uiJNUzY3Nzk/P1eNRgPnHHmej+0AiqIgTVOiKOLg4EBtbW1xfX0t5VnJfjrVnHMMBgMODw85OjpSIjIBXdpyy8Kw1hLHMdbameKZLrSPjw/iOMY5N0dgYcv13vP5+YnWmjzPJ5d+D1ye5xhjyPMc7/3CAC9Nk2lfL8uMRQ//9PP/C75S+QX3zx/c9r2O6AAAAABJRU5ErkJggg==", ht = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAXCAYAAAARIY8tAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5godFR8FQ9deVgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAJgSURBVEjHtZW9TutAEIW/2V175QSQIvESUIUiEhQ0gISAJ0C8AM/AA1AlbwANBQUtDRIFEgWiTIEoqCkoKAIyRrZ37Vs5yr0Xx7k/jORmd2fPnOOZs/DNIQDD4bDxYBiGXFxclO12m729PcmyrDGn2+1iZqlCa02SJJydnaGUYnNzkyAI8N435iqAsixrvwpgMBiURVGQ5zmDwaDUWjNLrmqqwBjD09MTd3d3RFFEq9Xi9vaWx8dHjDH/xkBEEBH6/X7ZarXQWqO1Zm5ujn6/X1b7jQzqDmituby8LF9eXrDWYozBGIO1ltfXV87Pz0ut9d9JpJSiKAqurq5YWlqi0+mMARYXF1leXubm5obPz0+Uqle6VsSKwenpqRhjuL6+5uTkpAQ4PDyUXq+H954kSZjWsqa67CuANE3x3hMEAXEcU3XO+/s7cRzjnMM592V+I0C1XlXnnBsD5HmOc45Zhs3MPPIi47acpvkfMZhkIiJjBpOt+d8YKKW+h0F12SSDSVZNTMw0zcMwRER+YyAiKKUIwxCALMsoiqLeru/v77+sXGvN0dFRORqNmJ+fZ2FhAYDRaMTHxwftdpvj42OphvLXWF1drbcK7z0iwsHBgURRRBiGP1lFFEXs7++LtRbvfa1VTP3JeZ7T6/V4fn7m4eFhvN7pdFhbW2N9fZ23t7dmN62LoihIkoTt7W2x1o7d1FrL7u6uJElSq/3MD06WZYRhyMbGhlQAW1tbYq0lTdPGB6exTcuyJEkSVlZWGA6HGGPodrvEcdxY/cyD5pwjz3N2dnYkCALSNMU5N9Og/QC/FsDpo71BjQAAAABJRU5ErkJggg==", ee = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH5gsEBhoGqbjXJQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAH3SURBVDjLhZGxSxthGMZ/392l+b6E4IUQjENRQulWKXUwcwJZ8idk0D2IiIMdm03o0MnJ1aXQRSHF+AcEkiWEQFECwSXoZsPlcrnz9OsQsbWk12d83/f78T3PIzzPYzab0Ww2db/fx3EcTk4+cX+/hGEYSKm5vPSFlCyUcByHo6MjnclkKBaLIp1Os7xs662t72xufmB3d4Xr65lIpRYDrFarpaWUVKtVIYQAwDAEGxtvGY1+IMQKUbK63S7lcvn5MYBSmoODN/j+6/mR9W+AMR6PyWazL4bDoS+urgKxvV1nOPwplIoAJBIJJpPJi6FSYNuaVCrENP1IC0Y+n6ff7+tFS9M0CcMwOoNisShWV20dBFIDJJNwezsTlgUPDw9YUQEAhm3bBIGkVvvK4WGLIADHcQEIw/C/AOF5HkpJ3Wg4DAYD9vffU6t9ZDq9e8pD8WdDAFJK1tbWqFQqQnieRy4n9Xg8X6ZScHMzE6YJe3t7ul6vi1gs9gLgui69Xk+3220smHte9L1YLIZlWai/elRKUSqVRKPR0JEGk8kkruuSSCSeMoFcTmp3HhHx+BeMKEA+n2cwGDxX/PgIQQCnp3fs7HzD9+PRgEKhwPn5OaPR6Nm71pqLiybr6+9+txClTqejz87OmE6nmOYrjo8/4/vzUJeW4BekTMTiOlyMpQAAAABJRU5ErkJggg==", ie = "data:image/png;base64,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", se = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKzSURBVEiJtZTbbtpAEIa/9XqdcAEXEQoHoQhkBVXKde7yEH2Kvg9v0su+CFKFAnYSSDlUqQISyBh7etOlNnbP6kgje9fjmf//Z2eViPA/zc0ulFJngPePOfciEh1XIoKIMBwO322321kcx/Ivvt1uZ8Ph8J3Nq0QEpVRls9mMtdatNE2zjH4LclZmx3FIkuRTtVr1RWRnJTrzPK+13++PSZ+fn5nNZtRqNdbrNa1Wi06nA0Acx4xGIxaLBXd3d3jed1WTJMHzvBZwBuwcC9ZSsj4ej7m5uaHf72OMYTweH5EaY/B9P4f89H9AAeQKWPRKKaIowvM8FosFzWaTJElIkqSQ8FROpVRpAecUgfX5fM7l5WXpt5+5zW17oE4RiQgvLy/UarWCBD+Q5PRZlCgbYIwhDEPa7Ta2+Y7j/Ap1oQc5BlnzfZ+Hhwcmkwnr9Rrf91FKsdvtCMOQw+GAiDAajdBa0+12qVQqBQa2uc31ev0pSZLc2f+bORARtNbUarWWiMwtAydN08Kp+JN7KivRt2H9cZOVUhwOB+7v71kul9ze3nJ+fn5MtlqtmE6nVKtVNpsN7XabRqPx6znImtaaXq9XyiIMQ/r9Pr7vo7UmCIIyNvkCVqLf8f1+j+u6LJdLGo0GURTlvn+T6O8LWF+tVlxcXBT2swWOTS6Touyc2/3X11eq1WppXHaSjwxKNCy8W3Ndl+l0SrPZJI5jjDFlceWDJiJEUcTT0xNWtslkgtaaTqdDpVLh6uqKx8dHgiBgs9nQ7XbLroxcgTQIgs+9Xq8O4Hkevu8DcH19nYOVpin1ep16vV7YtxYEwWfg+zAA88Fg8CEMwy+O46C1xnVdXNfFGIMxBs/zcm73bZzWGsdxCMPwy2Aw+ADMc9IopW6At8CbTOE/tRT4CLwXkWGuwP+yr0z0vLd4EzkyAAAAAElFTkSuQmCC", oe = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAIPSURBVDjLtZLLTxNRFMa/O52ZPsYqtCQgI6WhQCRBCwm+GqguTBOJIXHpxoV7+QOIJYgSEg0mdmliAltNSGShCza2IiEQqcuKGmamWF4akxbL9HlctKClBbvQb3Vzc37nfOcB/G+xgx/EgQEglq8CIANEWGABkEQSaZY7shiJJLvGhRAUKEKodZxkEo8MH/UKQai2oGfKM2ULQhWCo95yhO07bzBNks3/6m4UOwCOPWi630/xrds10YrGyNzhx/LYMHWF3VCghN3UNebHcts9MpdGcsX8ktoqR4YWkLCLUKHaRSSGFuWI1g4rcX8CfNGYOWVtWcE3bhp5bAPNT8HNDrZosU6YSifJ7z9SG7sArQPIArQJ1OQ2daN+0HwBIOgnVa0Z7MPrjHDOAyy9EbMdedVRr0EHlfXA8ti5pqbsFy67ZxwhpJF2hM6+7LuYsp//hETpzvcspZ4szDuXfL2ZuTmaB5Dpvb7ow1b310NPg4wfbwz0rHSLP2s14IcjLUFD1rn69vmpNaZXAAA6kbkacD2TlXqgff1WzKdPShM9vDDxcPD9b6T0+Hi0wYVaANtQ8D13ptMbaeTrHj+6E2Zl89qDODKQobAsMq3ddPoR4F8ELpGxQoUK+PGNgb6mz3V84+zIlS8sWxzr4WLxhpl30dMxbjUpVVUBAMi625+3SNOIM/p7dAERyURVpP43+gWF+ca8/eA5yQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNy0xMS0yMFQxMDoxNToxMS0wMDowMH81V5MAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDAOaO8vAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==", ne = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAH1SURBVDjLtZLNaxNRFMXPm7yZfBGtMWhM/AjEig12UailsRhciJ9Q7MKFmy6617/AAa2VglLBbAShEBdFUFAQBMFVKhZRW3faiNJkWpNSESS16SRtclzEJqaJMQt9y/vO797DPRf4309sLlCBAEBRagGgBRoccADIIYeCKDYdRo3+4Kg6iSSS6uT+UfqpNZUPR9Q4Uu54X6wv5o4jpcaHI/WIqDj32mJ0X36qv8ciAO+10MhZZpeG2uYbGqO9Q8fMdZ0hSgoKSoZGdMy0X6W9kVyhx3HPN8FeykpNstc3Yb3PHVR+18pfxux5VzCBWZGoen0WDhqZTthqN1npKPMZE8SH6leR6VWrudlNGSDMXSljH1y8i43AFFgHAl4DJlgHiBJ/nE7d6eg5/3ocKygBUOA8PFTY3vMGy7WZb1jK3341FXh78sja1GMsA3CFz02fwlLXlz+eBq2Jgf7uj13aSpsBfN9bcMLAemDuxYPdC8JsAADcunY8Ghz3J3cCBzKD6RNmzDnWLdWxG5emq0jt8Um0I4htAL4iiW/FzkORWZ/03Lp58Z2o21c1RAst5bBoW7gQ0BGVD6NhWhtMaIBvWew/uueTR/qeXzn2WawDSnNAZL1PXs4fTCtzOWdLEwCArtUzJYfzEbKCf1eXEY02ttD637yfWKq5q2bQBKcAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDB/NVeTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwDmjvLwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=", he = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAAmJLR0QA/vCI/CkAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAJdnBBZwAAABgAAAAYAHhMpaYAAAIBSURBVDjLtZLLaxNRFMa/O5lXZhi1aag1sRocUxSsUKjFhhpciI8uCoIupODCvf4FxketFJQKZq3QLIqg4ELQjZtO1eLC1o2L1gdNZmoqFSmkNZ1ckxwXCW3TjDULPZsDl+93z8f5DvC/i21+IAEMALFyAwD5IEODBiCPPDgrbTmMZAqbw9IE0khLE/uHKUzylvLBuGQhE7BiqVgqYCEjWYPxeoStOW9VRymQeHHVwQoY9KG2W32UW7y0w/E0Rv6DCUzfvka9HdfhwKF2OjyUwHT0Jvm95AIFtVRojHooig8YxzjtI4WOhsaUR9RCwkatUDXmLximjVks8wfg4ADKmDFtbkCt3eQaLRYWXJSwJD2vAgBlVxV3s5sKQHB3Zey9MACUqoAAw4m02HBBdQArY+VMhjd3n4cGERwcIrQj53hz9ycs12YuVnvh/tvJyLtTvcXXFk0CUGMDU6ex2Pn1j6dByuzZ/q6PnfLPJhtY2sN12ChG5l493j3PXA8AoO2/TiTNh+H0TqB94WL2pDuqj3SJ0sidK1PrSO3xiYjCRBOA70jjR6njUHwmJAbv3b38ntXtaz1EH/kqYZE6fyGSQFJ8kuwhxWOCB77tW/+xts9BMfTyxvEvrLghOO9iudZnb5wDWWEurzc0AQDIWO0ra/pT5Bj9XV1BZFKpga//Tf0Gp9/DBQB2y1wAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjBUMTA6MTU6MTEtMDA6MDB/NVeTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTExLTIwVDEwOjE1OjExLTAwOjAwDmjvLwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=";
 function tt(i) {
   this.point = i, this.contextMenu = null, this.updateContextMenu = () => {
     this.contextMenu && (this.contextMenu.destroy(), this.contextMenu = null), this.initMenu(), this.point.contextMenu = this.contextMenu;
@@ -453,7 +453,7 @@ function tt(i) {
     this.contextMenu.on("click", (t) => {
       switch (t.itemId) {
         case "i" + i.guid + "_delete":
-          r.emit(g.POINT_DELETE_REQUEST, this.point);
+          a.emit(g.POINT_DELETE_REQUEST, this.point);
           break;
         case "i" + i.guid + "_drag_horizontal":
           this.onDragHorizontalClick(t);
@@ -501,9 +501,9 @@ function re() {
     hidden: !1,
     forceDisplay: !1,
     createDOMElement: !1
-  }, this.x = 0, this.y = 0, this.element = null, this.guid = V(), this.subscriptions = {}, this.dragHorizontal = !1, this.dragVertical = !1, this.init = (i, t, e = null) => (this.x = parseInt(i), this.y = parseInt(t), this.setOptions(S({}, e)), this.setEventListeners(), r.emit(g.POINT_ADDED, this), this), this.setOptions = (i) => {
+  }, this.x = 0, this.y = 0, this.element = null, this.guid = V(), this.subscriptions = {}, this.dragHorizontal = !1, this.dragVertical = !1, this.init = (i, t, e = null) => (this.x = parseInt(i), this.y = parseInt(t), this.setOptions(S({}, e)), this.setEventListeners(), a.emit(g.POINT_ADDED, this), this), this.setOptions = (i) => {
     if (i && typeof i == "object" && (m(i.moveDirections) && typeof i.moveDirections == "object" && (this.options.moveDirections = []), this.options = S(this.options, i)), Object.assign(this, new tt(this)), !this.element)
-      (this.options.createDOMElement && this.options.canDrag || this.options.forceDisplay) && (this.element = this.createPointUI(), this.setDOMEventListeners(), this.updateContextMenu(), r.emit(g.POINT_ADDED, this));
+      (this.options.createDOMElement && this.options.canDrag || this.options.forceDisplay) && (this.element = this.createPointUI(), this.setDOMEventListeners(), this.updateContextMenu(), a.emit(g.POINT_ADDED, this));
     else if ((!this.options.createDOMElement || !this.options.canDrag) && !this.options.forceDisplay && this.element)
       try {
         this.element.parentNode.removeChild(this.element), this.element = null;
@@ -528,31 +528,31 @@ function re() {
     const [s, o] = O(i, this.x, this.y, t, e);
     this.x = s, this.y = o;
   }, this.setEventListeners = () => {
-    r.subscribe(W.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange);
+    a.subscribe(W.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange);
   }, this.setDOMEventListeners = () => {
     !this.element || (this.element.addEventListener("mouseup", this.mouseup), this.element.addEventListener("mousedown", this.mousedown), this.element.addEventListener("mouseover", this.mouseover), this.element.addEventListener("mouseout", this.mouseout), this.element.addEventListener("click", this.click), this.element.addEventListener("dblclick", this.doubleclick), this.element.addEventListener("mousemove", this.mousemove));
   }, this.mousedown = (i) => {
-    r.emit(g.POINT_MOUSE_DOWN, this, u(i)), i.buttons === 1 && this.options.canDrag && (r.emit(g.POINT_DRAG_START, this, u(i)), st(i));
+    a.emit(g.POINT_MOUSE_DOWN, this, u(i)), i.buttons === 1 && this.options.canDrag && (a.emit(g.POINT_DRAG_START, this, u(i)), st(i));
   }, this.mousemove = (i) => {
-    if (r.emit(g.POINT_MOUSE_MOVE, this, u(i)), i.buttons !== 1 || !this.options.canDrag || !f.draggedShape || f.draggedShape.draggedPoint !== this)
+    if (a.emit(g.POINT_MOUSE_MOVE, this, u(i)), i.buttons !== 1 || !this.options.canDrag || !f.draggedShape || f.draggedShape.draggedPoint !== this)
       return;
     const t = this.x, e = this.y, s = _(this.element.parentNode, !0);
     if (!this.checkFitBounds(this.x + i.movementX, this.y + i.movementY)) {
-      r.emit(g.POINT_DRAG_MOVE, this, u(i, { oldX: t, oldY: e }));
+      a.emit(g.POINT_DRAG_MOVE, this, u(i, { oldX: t, oldY: e }));
       return;
     }
     let o = i.clientX + window.scrollX - s.left - this.options.width / 2, n = i.clientY + window.scrollY - s.top - this.options.height / 2;
-    [o, n] = this.applyMoveRestrictions(o, n, t, e), this.x = o, this.y = n, this.element.style.left = this.x + "px", this.element.style.top = this.y + "px", r.emit(g.POINT_DRAG_MOVE, this, u(i, { oldX: t, oldY: e }));
+    [o, n] = this.applyMoveRestrictions(o, n, t, e), this.x = o, this.y = n, this.element.style.left = this.x + "px", this.element.style.top = this.y + "px", a.emit(g.POINT_DRAG_MOVE, this, u(i, { oldX: t, oldY: e }));
   }, this.mouseover = (i) => {
-    r.emit(g.POINT_MOUSE_OVER, this, u(i));
+    a.emit(g.POINT_MOUSE_OVER, this, u(i));
   }, this.mouseout = (i) => {
-    r.emit(g.POINT_MOUSE_OUT, this, u(i));
+    a.emit(g.POINT_MOUSE_OUT, this, u(i));
   }, this.click = (i) => {
-    r.emit(g.POINT_MOUSE_CLICK, this, u(i));
+    a.emit(g.POINT_MOUSE_CLICK, this, u(i));
   }, this.doubleclick = (i) => {
-    r.emit(g.POINT_MOUSE_DOUBLE_CLICK, this, u(i));
+    a.emit(g.POINT_MOUSE_DOUBLE_CLICK, this, u(i));
   }, this.checkFitBounds = (i, t) => !(this.options.bounds.left !== -1 && i < this.options.bounds.left || this.options.bounds.right !== -1 && i > this.options.bounds.right || this.options.bounds.top !== -1 && t < this.options.bounds.top || this.options.bounds.bottom !== -1 && t > this.options.bounds.bottom), this.applyMoveRestrictions = (i, t, e, s) => (t > s && this.options.moveDirections.indexOf(E.BOTTOM) === -1 && (t = s), t < s && this.options.moveDirections.indexOf(E.TOP) === -1 && (t = s), i > e && this.options.moveDirections.indexOf(E.RIGHT) === -1 && (i = e), i < e && this.options.moveDirections.indexOf(E.LEFT) === -1 && (i = e), i > this.options.bounds.right && this.options.bounds.right !== -1 && (i = this.options.bounds.right), t > this.options.bounds.bottom && this.options.bounds.bottom !== -1 && (t = this.options.bounds.bottom), i < this.options.bounds.left && this.options.bounds.left !== -1 && (i = this.options.bounds.left), t < this.options.bounds.top && this.options.bounds.top !== -1 && (t = this.options.bounds.top), [i, t]), this.mouseup = (i) => {
-    r.emit(g.POINT_MOUSE_UP, this, u(i)), i.button !== 2 && r.emit(g.POINT_DRAG_END, this, u(i));
+    a.emit(g.POINT_MOUSE_UP, this, u(i)), i.button !== 2 && a.emit(g.POINT_DRAG_END, this, u(i));
   }, this.onBoundsChange = (i) => {
     i.points.find((t) => t === this) && (this.options.bounds = i.bounds);
   }, this.toJSON = () => JSON.stringify(this.getJSON()), this.getJSON = () => ({
@@ -565,19 +565,19 @@ function re() {
       return null;
     this.x = t.x, this.y = t.y;
     let e = !1;
-    return this.element || (e = !0, this.element = document.createElement("div")), this.setOptions(t.options), e && r.emit(g.POINT_ADDED, this), this;
-  }, this.destroy = () => {
-    this.element && (this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), this.element.removeEventListener("mouseover", this.mouseover), this.element.removeEventListener("mouseout", this.mouseout), this.element.removeEventListener("click", this.click), this.element.removeEventListener("dblclick", this.doubleclick), this.element.removeEventListener("mousemove", this.mousemove)), r.unsubscribe(W.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange), r.emit(g.POINT_DESTROYED, this);
-    for (let i in this.subscriptions)
-      this.subscriptions[i].forEach((e) => r.unsubscribe(i, e)), this.subscriptions[i] = [];
+    return this.element || (e = !0, this.element = document.createElement("div")), this.setOptions(t.options), e && a.emit(g.POINT_ADDED, this), this;
+  }, this.destroy = (i = !0) => {
+    this.element && (this.element.removeEventListener("mouseup", this.mouseup), this.element.removeEventListener("mousedown", this.mousedown), this.element.removeEventListener("mouseover", this.mouseover), this.element.removeEventListener("mouseout", this.mouseout), this.element.removeEventListener("click", this.click), this.element.removeEventListener("dblclick", this.doubleclick), this.element.removeEventListener("mousemove", this.mousemove)), i && a.unsubscribe(W.CONTAINER_BOUNDS_CHANGED, this.onBoundsChange), i && a.emit(g.POINT_DESTROYED, this);
+    for (let t in this.subscriptions)
+      this.subscriptions[t].forEach((s) => a.unsubscribe(t, s)), this.subscriptions[t] = [];
   }, this.addEventListener = (i, t) => {
     typeof this.subscriptions[i] > "u" && (this.subscriptions[i] = []);
-    const e = r.subscribe(i, (s) => {
+    const e = a.subscribe(i, (s) => {
       s.target && s.target.guid === this.guid && t(s);
     });
     return this.subscriptions[i].push(e), e;
   }, this.removeEventListener = (i, t) => {
-    this.subscriptions[i] && typeof this.subscriptions[i] < "u" && this.subscriptions[i].splice(this.subscriptions[i].indexOf(t), 1), r.unsubscribe(i, t);
+    this.subscriptions[i] && typeof this.subscriptions[i] < "u" && this.subscriptions[i].splice(this.subscriptions[i].indexOf(t), 1), a.unsubscribe(i, t);
   }, this.distance = (i) => P(this.x, this.y, i.x, i.y), this;
 }
 const g = {
@@ -606,20 +606,20 @@ function ae(i) {
   }, this.initialAngle = 0, this.previousAngle = 0, this.shapeEventListeners = {}, this.run = () => (this.setEventListeners(), this), this.setEventListeners = () => {
     this.interceptEventsFromShape(), this.rotateBox.shape.points.forEach((t) => {
       t.mousemove = this.mousemove, t.mouseDownListener = t.addEventListener(g.POINT_DRAG_START, (e) => {
-        this.onPointMouseDown(e), r.emit(l.POINT_DRAG_START, this.rotateBox, { point: t });
+        this.onPointMouseDown(e), a.emit(l.POINT_DRAG_START, this.rotateBox, { point: t });
       }), t.mouseUpListener = t.addEventListener(g.POINT_DRAG_END, (e) => {
-        this.onPointMouseUp(e), r.emit(l.POINT_DRAG_END, this.rotateBox, { point: t });
+        this.onPointMouseUp(e), a.emit(l.POINT_DRAG_END, this.rotateBox, { point: t });
       });
     });
   }, this.interceptEventsFromShape = () => {
     l.getShapeMouseEvents().forEach((t) => {
       this.shapeEventListeners[t.name] = this.rotateBox.shape.addEventListener(t.name, (e) => {
-        t.key === "SHAPE_MOVE_END" && (this.previousAngle = 0), r.emit(t.name, this.rotateBox, e);
+        t.key === "SHAPE_MOVE_END" && (this.previousAngle = 0), a.emit(t.name, this.rotateBox, e);
       });
     });
   }, this.mousemove = (t) => {
     if (t.buttons !== 1) {
-      r.emit(
+      a.emit(
         l.SHAPE_MOUSE_MOVE,
         this.rotateBox.shape,
         u(t, { clientX: t.clientX, clientY: t.clientY })
@@ -630,14 +630,14 @@ function ae(i) {
     let h = this.calcAngle(e, s, o, n);
     if (h === null)
       return;
-    let a = h;
-    this.previousAngle && (a -= this.previousAngle), this.previousAngle = h, r.emit(G.ROTATE_BOX_ROTATE, this.rotateBox, { angle: a });
+    let r = h;
+    this.previousAngle && (r -= this.previousAngle), this.previousAngle = h, a.emit(G.ROTATE_BOX_ROTATE, this.rotateBox, { angle: r });
   }, this.calcAngle = (t, e, s, o) => {
     const n = this.calcHypotenuse(t, e, s, o);
     if (n <= 0)
       return null;
-    const h = this.calcCathetus(t, e, s, o), a = this.calcStartAngle(t, e, s, o);
-    return Math.round(dt(Math.asin(h / n)) + a + this.initialAngle);
+    const h = this.calcCathetus(t, e, s, o), r = this.calcStartAngle(t, e, s, o);
+    return Math.round(At(Math.asin(h / n)) + r + this.initialAngle);
   }, this.calcHypotenuse = (t, e, s, o) => P(t, e, s, o), this.calcCathetus = (t, e, s, o) => {
     if (t <= s && e <= o)
       return P(t, e, t, o);
@@ -678,15 +678,15 @@ function ae(i) {
     });
   }, this.addEventListener = (t, e) => {
     typeof this.subscriptions[t] > "u" && (this.subscriptions[t] = []);
-    const s = r.subscribe(t, (o) => {
+    const s = a.subscribe(t, (o) => {
       o.target && o.target.shape && o.target.shape.guid === this.rotateBox.shape.guid && e(o);
     });
     return this.subscriptions[t].push(s), s;
   }, this.removeEventListener = (t, e) => {
-    this.subscriptions[t] && typeof this.subscriptions[t] < "u" && this.subscriptions[t].splice(this.subscriptions[t].indexOf(e), 1), r.unsubscribe(t, e);
+    this.subscriptions[t] && typeof this.subscriptions[t] < "u" && this.subscriptions[t].splice(this.subscriptions[t].indexOf(e), 1), a.unsubscribe(t, e);
   }, this.destroy = () => {
     for (let t in this.subscriptions)
-      this.subscriptions[t].forEach((s) => r.unsubscribe(t, s)), this.subscriptions[t] = [];
+      this.subscriptions[t].forEach((s) => a.unsubscribe(t, s)), this.subscriptions[t] = [];
     Object.keys(this.shapeEventListeners).forEach(
       (t) => {
         this.rotateBox.removeEventListener(t, this.shapeEventListeners[t]);
@@ -703,9 +703,9 @@ function le(i) {
   this.resizeBox = i, this.subscriptions = {
     resize: []
   }, this.guid = V(), this.shapeEventListeners = {}, this.run = () => (this.setEventListeners(), this), this.setEventListeners = () => {
-    r.subscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), r.subscribe(g.POINT_DRAG_END, this.onPointDragMove), l.getShapeMouseEvents().forEach((t) => {
+    a.subscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), a.subscribe(g.POINT_DRAG_END, this.onPointDragMove), l.getShapeMouseEvents().forEach((t) => {
       this.shapeEventListeners[t.name] = this.resizeBox.shape.addEventListener(t.name, (e) => {
-        r.emit(t.name, this.resizeBox, e);
+        a.emit(t.name, this.resizeBox, e);
       });
     });
   }, this.onPointDragMove = (t) => {
@@ -741,7 +741,7 @@ function le(i) {
     const e = this.resizeBox.getPosition();
     this.resizeBox.calcPosition();
     const s = this.resizeBox.getPosition();
-    this.resizeBox.redraw(), r.emit(l.POINT_DRAG_END, this.resizeBox, u(t, { point: t.target })), r.emit(I.RESIZE_BOX_RESIZE, this.resizeBox, u(t, { oldPos: e, newPos: s }));
+    this.resizeBox.redraw(), a.emit(l.POINT_DRAG_END, this.resizeBox, u(t, { point: t.target })), a.emit(w.RESIZE_BOX_RESIZE, this.resizeBox, u(t, { oldPos: e, newPos: s }));
   }, this.onLeftTopDragMove = (t) => {
     this.resizeBox.left_center.x = t.target.x, this.resizeBox.left_bottom.x = t.target.x, this.resizeBox.center_top.y = t.target.y, this.resizeBox.right_top.y = t.target.y;
   }, this.onCenterTopDragMove = (t) => {
@@ -760,76 +760,46 @@ function le(i) {
     this.resizeBox.left_bottom.x = t.target.x, this.resizeBox.left_top.x = t.target.x;
   }, this.addEventListener = (t, e) => {
     typeof this.subscriptions[t] > "u" && (this.subscriptions[t] = []);
-    const s = r.subscribe(t, (o) => {
+    const s = a.subscribe(t, (o) => {
       o.target && o.target.guid && o.target.guid === this.resizeBox.guid && e(o);
     });
     return this.subscriptions[t].push(s), s;
   }, this.removeEventListener = (t, e) => {
-    this.subscriptions[t] && typeof this.subscriptions[t] < "u" && this.subscriptions[t].splice(this.subscriptions[t].indexOf(e), 1), r.unsubscribe(t, e);
+    this.subscriptions[t] && typeof this.subscriptions[t] < "u" && this.subscriptions[t].splice(this.subscriptions[t].indexOf(e), 1), a.unsubscribe(t, e);
   }, this.destroy = () => {
     for (let t in this.subscriptions)
-      this.subscriptions[t].forEach((s) => r.unsubscribe(t, s)), this.subscriptions[t] = [];
+      this.subscriptions[t].forEach((s) => a.unsubscribe(t, s)), this.subscriptions[t] = [];
     Object.keys(this.shapeEventListeners).forEach(
       (t) => {
         this.resizeBox.removeEventListener(t, this.shapeEventListeners[t]);
       }
-    ), r.unsubscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), r.unsubscribe(g.POINT_DRAG_END, this.onPointDragMove);
+    ), a.unsubscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), a.unsubscribe(g.POINT_DRAG_END, this.onPointDragMove);
   };
 }
-const I = {
+const w = {
   RESIZE_BOX_RESIZE: "resize"
 };
 function pe() {
   this.draw = async (t) => {
     const e = t.getParent();
-    await this.initSvg(t, e), !(t.points.length < 1) && (t.options.hasContextMenu && t.shapeMenu && !t.shapeMenu.contextMenu && t.shapeMenu.updateContextMenu(), this.updateOptions(t), this.drawShape(t, e), r.emit("show_finish", t));
+    await this.initSvg(t, e), !(t.points.length < 1 && typeof t.options.svgLoadFunc != "function") && (t.options.hasContextMenu && t.shapeMenu && !t.shapeMenu.contextMenu && t.shapeMenu.updateContextMenu(), this.updateOptions(t), this.drawShape(t, e), a.emit("show_finish", t));
   }, this.initSvg = async (t, e) => {
-    !e || e.guid === t.guid || !e.options.groupChildShapes ? typeof t.options.svgLoadFunc == "function" ? await this.loadExternalSvg(t) : this.initRootSvg(t) : this.clearSvg(t);
+    !e || e.guid === t.guid || !e.options.groupChildShapes ? this.initRootSvg(t) : this.clearSvg(t);
   }, this.initRootSvg = (t) => {
-    if (t.points.length) {
+    if (t.points.length || typeof t.options.svgLoadFunc == "function") {
       if (t.svg)
         return;
       t.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), t.svg.ondragstart = function() {
         return !1;
-      }, t.options.visible && r.emit(l.SHAPE_SHOW, t), t.eventListener.setSvgEventListeners(), t.svg.id = t.options.id, t.svg.setAttribute("guid", t.guid), t.root.appendChild(t.svg);
+      }, t.options.visible && a.emit(l.SHAPE_SHOW, t), t.eventListener.setSvgEventListeners(), t.svg.id = t.options.id, t.svg.setAttribute("guid", t.guid), t.root.appendChild(t.svg);
     } else
       try {
         t.eventListener.removeSvgEventListeners(), t.svg.innerHTML = "";
       } catch {
       }
-    if (t.svg && typeof t.svg.appendChild == "function") {
+    if (t.svg && typeof t.svg.appendChild == "function" && typeof t.options.svgLoadFunc != "function") {
       const e = document.createElementNS(t.svg.namespaceURI, "defs");
       t.svg.appendChild(e);
-    }
-  }, this.loadExternalSvg = async (t) => {
-    const e = await t.options.svgLoadFunc(t);
-    if (!e)
-      return;
-    const o = Array.from(e.querySelectorAll("path")).find((a) => a.getAttribute("shape_id") === t.options.id);
-    if (!o)
-      return;
-    this.applyExternalSvg(t, o);
-    const n = !!t.svg;
-    n && t.eventListener.removeSvgEventListeners(), t.svg = e, t.eventListener.setSvgEventListeners();
-    const h = t.getPosition();
-    t.svg.setAttribute("width", h.width + "px"), t.svg.setAttribute("height", h.height + "px"), n || (t.root.appendChild(t.svg), f.addShape(t));
-  };
-  const i = {
-    DOT: 46,
-    COMMA: 44,
-    SPACE: 32,
-    ZERO: 48,
-    NINE: 57
-  };
-  this.applyExternalSvg = (t, e) => {
-    t.polygon ? t.polygon.setAttribute("d", e.getAttribute("d")) : t.polygon = e, t.polygon.setAttribute("shape_guid", t.guid), t.polygon.id = "p" + t.guid + "_polygon", this.addPointsFromShape(t), t.calcPosition();
-  }, this.addPointsFromShape = (t) => {
-    t.deleteAllPoints();
-    const e = t.polygon.getAttribute("d");
-    let s = [], o = null, n = null;
-    for (let h of e) {
-      const a = h.charCodeAt(0);
-      a >= i.ZERO && a <= i.NINE || a === i.DOT ? s.push(h) : (a === i.COMMA || a === i.SPACE) && s.length && (o === null ? o = parseFloat(s.join("")) : (n = parseFloat(s.join("")), t.putPoint(o, n), o = null, n = null), s = []);
     }
   }, this.clearSvg = (t) => {
     t.svg = null;
@@ -843,16 +813,16 @@ function pe() {
     if (t.svg && (!e || !e.options.groupChildShapes) && typeof t.svg.appendChild == "function") {
       this.updateVisible(t), t.svg.id = t.options.id, t.svg.setAttribute("guid", t.guid);
       let s = t.getPosition(t.options.groupChildShapes);
-      t.svg.style.position = "absolute", t.svg.style.cursor = "default", t.svg.style.left = s.left + "px", t.svg.style.top = s.top + "px", t.svg.setAttribute("width", s.width), t.svg.setAttribute("height", s.height), t.svg.style.zIndex = t.options.zIndex;
+      t.svg.style.position = "absolute", t.svg.style.cursor = "default", t.svg.style.left = s.left + "px", t.svg.style.top = s.top + "px", t.svg.setAttribute("width", s.width), t.svg.setAttribute("height", s.height), t.svg.style.width = s.width + "px", t.svg.style.height = s.height + "px", t.svg.style.zIndex = t.options.zIndex;
     } else if (e && e.svg) {
       const s = e.svg.querySelector("#p" + t.guid + "_polygon");
       s && (s.style.zIndex = t.options.zIndex);
     }
   }, this.updateVisible = (t) => {
-    typeof t.options.visible < "u" && (t.svg.style.display !== t.options.visible && (t.options.visible ? (r.emit(l.SHAPE_SHOW, t), t.getChildren(!0).forEach((e) => r.emit(l.SHAPE_SHOW, e))) : (r.emit(l.SHAPE_HIDE, t), t.getChildren(!0).forEach((e) => r.emit(l.SHAPE_HIDE, e)))), t.svg.style.display = t.options.visible ? "" : "none");
-  }, this.drawShape = (t, e) => {
+    typeof t.options.visible < "u" && (t.svg.style.display !== t.options.visible && (t.options.visible ? (a.emit(l.SHAPE_SHOW, t), t.getChildren(!0).forEach((e) => a.emit(l.SHAPE_SHOW, e))) : (a.emit(l.SHAPE_HIDE, t), t.getChildren(!0).forEach((e) => a.emit(l.SHAPE_HIDE, e)))), t.svg.style.display = t.options.visible ? "" : "none");
+  }, this.drawShape = async (t, e) => {
     if (!e || !e.options.displayAsPath) {
-      this.drawPolygon(t), t.svg && f.isNormalShape(t) && this.setupZIndex(t);
+      typeof t.options.svgLoadFunc == "function" ? await this.loadExternalSvg(t) : this.drawPolygon(t), t.svg && f.isNormalShape(t) && this.setupZIndex(t);
       return;
     }
     this.draw(e);
@@ -860,7 +830,7 @@ function pe() {
     t.points[0] && !t.points[0].element && await Rt(1);
     let s = e || t;
     t.points.filter((o) => o.element).forEach((o) => {
-      o.element.parentNode !== t.root && t.root.appendChild(o.element), o.options.zIndex = t.options.zIndex + 2, !t.options.visible && !o.options.forceDisplay ? o.options.visible = !1 : t.options.displayMode !== d.DEFAULT && (o.options.visible = !0), o.redraw(), f.isNormalShape(s) && ((s.options.displayMode === d.SELECTED || o.options.forceDisplay) && s.options.visible ? o.element.style.display = "" : o.element.style.display = "none");
+      o.element.parentNode !== t.root && t.root.appendChild(o.element), o.options.zIndex = t.options.zIndex + 2, !t.options.visible && !o.options.forceDisplay || typeof t.options.svgLoadFunc == "function" ? o.options.visible = !1 : t.options.displayMode !== A.DEFAULT && (o.options.visible = !0), o.redraw(), f.isNormalShape(s) && ((s.options.displayMode === A.SELECTED || o.options.forceDisplay) && s.options.visible && typeof s.options.svgLoadFunc != "function" ? o.element.style.display = "" : o.element.style.display = "none");
     });
   }, this.drawPolygon = (t, e = null) => {
     if (!e && (e = this.getShapeSvg(t), !e || typeof e.appendChild != "function"))
@@ -888,44 +858,74 @@ function pe() {
     const e = t.getParent();
     if (e && e.options.groupChildShapes) {
       const s = e.getPosition(e.options.groupChildShapes);
-      return [
-        this.getPolygonPathForShape(t, s, this.getMaxStrokeWidth(e)),
-        this.getPolygonPathForChildren(t, s)
-      ].join("");
+      let o = this.getPolygonPathForShape(t, s, this.getMaxStrokeWidth(e));
+      return o += this.getPolygonPathForChildren(t, s), o;
     } else {
       const s = t.getPosition(t.options.groupChildShapes);
-      let o = [
-        this.getPolygonPathForShape(t, s, this.getMaxStrokeWidth(t)),
-        this.getPolygonPathForChildren(t, s)
-      ].join("");
-      if (t.options.displayAsPath && t.options.groupChildShapes) {
+      let o = this.getPolygonPathForShape(t, s, this.getMaxStrokeWidth(t));
+      if (o += this.getPolygonPathForChildren(t, s), t.options.displayAsPath && t.options.groupChildShapes) {
         const n = this.getShapeSvg(t);
-        n.setAttribute("width", s.width), n.setAttribute("height", s.height), this.createSVGFilters(t);
+        n.setAttribute("width", s.width), n.setAttribute("height", s.height), n.style.width = s.width + "px", n.style.height = s.height + "px", this.createSVGFilters(t);
       }
       return o;
     }
   }, this.getPolygonPathForChildren = (t, e) => {
-    let s = [];
+    let s = "";
     return t.options.displayAsPath && t.options.groupChildShapes && t.getChildren().forEach((o) => {
-      o.calcPosition(), s.push(this.getPolygonPathForShape(o, e, this.getMaxStrokeWidth(o)));
+      o.calcPosition(), s += this.getPolygonPathForShape(o, e, this.getMaxStrokeWidth(o)).toString();
     }), s;
-  }, this.getPolygonPathForShape = (t, e, s) => ["M ", t.points.map((o) => {
-    let n = o.x - e.left, h = o.y - e.top;
-    return n <= 0 ? n += s : o.x >= e.right && (n -= s), h <= 0 ? h += s : o.y >= e.bottom && (h -= s), [n, ",", h].join("");
-  }), " Z"].join(" "), this.redrawResizeBox = (t) => {
-    if (t.options.displayMode !== d.SCALE || !t.options.canScale) {
+  }, this.getPolygonPathForShape = (t, e, s) => {
+    let o = "M";
+    for (let n of t.points) {
+      let h = n.x - e.left, r = n.y - e.top;
+      h <= 0 ? h += s : n.x >= e.right && (h -= s), r <= 0 ? r += s : n.y >= e.bottom && (r -= s), o += `${h},${r} `;
+    }
+    return o += " Z ", o;
+  }, this.loadExternalSvg = async (t) => {
+    const e = await t.options.svgLoadFunc(t);
+    if (!e)
+      return;
+    const s = Array.from(e.querySelectorAll("path"));
+    if (!s.length)
+      return;
+    let o = null;
+    t.polygon && (o = s.find((h) => h.id === t.polygon.getAttribute("path_id"))), o ? t.polygon.setAttribute("d", o.getAttribute("d")) : (o = s[0], t.polygon = o.cloneNode(!0), t.polygon.setAttribute("path_id", o.id), t.polygon.setAttribute("shape_guid", t.guid), t.svg && t.svg.appendChild(t.polygon)), t.polygon.setAttribute("shape_guid", t.guid), t.polygon.id = "p" + t.guid + "_polygon", this.addPointsFromShape(t), t.calcPosition(), s.splice(s.indexOf(o), 1);
+    for (let h of s) {
+      let r = f.findShapeById(h.id);
+      r ? r.polygon.setAttribute("d", h.getAttribute("d")) : (r = f.createShape(t.root, { hasContextMenu: !1, id: h.id }, [], !1), r.polygon = h, r.polygon.id = "p" + r.guid + "_polygon", r.polygon.setAttribute("shape_guid", r.guid), r.polygon.setAttribute("path_id", h.id), t.svg && t.svg.appendChild(r.polygon), t.addChild(r, !1), f.addShape(r)), this.addPointsFromShape(r);
+    }
+    const n = t.getPosition(!0);
+    t.svg.setAttribute("width", n.width + "px"), t.svg.setAttribute("height", n.height + "px"), t.svg.style.width = n.width + "px", t.svg.style.height = n.height + "px", f.getShapeByGuid(t.guid) || f.addShape(t), t.options.canScale && this.redrawResizeBox(t), t.options.canRotate && this.redrawRotateBox(t);
+  };
+  const i = {
+    DOT: 46,
+    COMMA: 44,
+    SPACE: 32,
+    ZERO: 48,
+    NINE: 57
+  };
+  this.addPointsFromShape = (t) => {
+    t.deleteAllPoints();
+    const e = t.getPosition(), s = t.polygon.getAttribute("d");
+    let o = [], n = null, h = null;
+    for (let r of s) {
+      const p = r.charCodeAt(0);
+      p >= i.ZERO && p <= i.NINE || p === i.DOT ? o.push(r) : (p === i.COMMA || p === i.SPACE) && o.length && (n === null ? n = parseFloat(o.join("")) : (h = parseFloat(o.join("")), t.putPoint(n + e.left, h + e.top), n = null, h = null), o = []);
+    }
+  }, this.redrawResizeBox = (t) => {
+    if (t.options.displayMode !== A.SCALE || !t.options.canScale) {
       t.resizeBox && t.resizeBox.hide();
       return;
     }
     if (!t.resizeBox) {
       t.transformer.setupResizeBox(), t.resizeBox && t.resizeBox.shape.points.forEach((e) => {
-        e.options.zIndex = t.options.zIndex + 2, e.element.style.zIndex = t.options.zIndex + 2;
+        e.options.zIndex = t.resizeBox.shape.options.zIndex + 2, e.element.style.zIndex = t.resizeBox.shape.options.zIndex + 2;
       });
       return;
     }
-    this.setupBox(t, t.resizeBox, d.SCALE);
-  }, this.redrawRotateBox = (t) => {
-    if (t.options.displayMode !== d.ROTATE || !t.options.canRotate) {
+    this.setupBox(t, t.resizeBox, A.SCALE);
+  }, this.getMaxZIndex = (t) => t.getChildren(!0).map((e) => e.options.zIndex).reduce((e, s) => e > s ? e : s, t.options.zIndex), this.redrawRotateBox = (t) => {
+    if (t.options.displayMode !== A.ROTATE || !t.options.canRotate) {
       t.rotateBox && t.rotateBox.hide();
       return;
     }
@@ -935,12 +935,12 @@ function pe() {
       });
       return;
     }
-    this.setupBox(t, t.rotateBox, d.ROTATE);
+    this.setupBox(t, t.rotateBox, A.ROTATE);
   }, this.setupBox = (t, e, s) => {
     const o = t.transformer.getResizeBoxBounds();
     t.options.displayMode === s ? e.options.shapeOptions.visible = t.options.visible : e.options.shapeOptions.visible = !1, e.left = o.left, e.top = o.top, e.width = o.width, e.height = o.height, e.options.zIndex = t.options.zIndex + 1, e.redraw(), setTimeout(() => {
       e.shape.points.forEach((n) => {
-        n.options.zIndex = t.options.zIndex + 2, n.element.style.zIndex = t.options.zIndex + 2;
+        n.options.zIndex = e.shape.options.zIndex + 2, n.element.style.zIndex = e.shape.options.zIndex + 2;
       });
     }, 1);
   }, this.setupShapeFill = (t) => {
@@ -1009,8 +1009,8 @@ function pe() {
     if (!t.svg)
       return null;
     const o = document.createElementNS(t.svg.namespaceURI, e), n = this.getShapeSvg(t), h = t.getPosition(t.options.groupChildShapes);
-    for (let a in s)
-      o.setAttribute(a, s[a].toString()), a === "dx" && n.setAttribute("width", (h.width + parseInt(s.dx) * 2).toString()), a === "dy" && n.setAttribute("height", (h.height + parseInt(s.dy) * 2).toString());
+    for (let r in s)
+      o.setAttribute(r, s[r].toString()), r === "dx" && (n.setAttribute("width", (h.width + parseInt(s.dx) * 2).toString()), n.style.width = (h.width + parseInt(s.dx) * 2).toString()), r === "dy" && (n.setAttribute("height", (h.height + parseInt(s.dy) * 2).toString()), n.style.height = (h.height + parseInt(s.dy) * 2).toString());
     return o;
   }, this.setupPolygonFill = (t, e) => {
     const s = t.options.style.fill || "none";
@@ -1025,8 +1025,8 @@ function pe() {
   }, this.getSvg = (t, e) => {
     let s = t.svg;
     if (!s) {
-      const a = t.getParent();
-      if (a && (s = a.svg), !s)
+      const r = t.getParent();
+      if (r && (s = r.svg), !s)
         return;
     }
     s = s.cloneNode(!0), e && (s = this.addChildrenToSvg(t, s)), s.removeAttribute("style"), s.removeAttribute("width"), s.removeAttribute("height"), s.removeAttribute("id"), s.removeAttribute("guid");
@@ -1040,7 +1040,7 @@ function pe() {
       this.drawPolygon(h, e);
     }), this.drawPolygon(t, e);
     let o = Array.from(e.querySelectorAll("path"));
-    o.sort((h, a) => parseInt(h.style.zIndex) - parseInt(a.style.zIndex));
+    o.sort((h, r) => parseInt(h.style.zIndex) - parseInt(r.style.zIndex));
     const n = e.querySelector("defs");
     return e.innerHTML = "", e.appendChild(n), o.forEach((h) => e.appendChild(h)), s && (t.options.groupChildShapes = !1), e;
   }, this.unZoomSvg = (t, e) => {
@@ -1051,8 +1051,8 @@ function pe() {
         if (h.search(",") === -1)
           o += h + " ";
         else {
-          const a = h.split(",");
-          o += parseFloat(a[0]) / e + "," + parseFloat(a[1]) / e + " ";
+          const r = h.split(",");
+          o += parseFloat(r[0]) / e + "," + parseFloat(r[1]) / e + " ";
         }
       s.setAttribute("d", o);
     });
@@ -1062,32 +1062,32 @@ function pe() {
     let s = parseInt(t.options.style["stroke-width"]);
     return isNaN(s) && (s = 0), t.options.groupChildShapes ? t.getChildren(!0).map((o) => isNaN(parseInt(o.options.style["stroke-width"])) ? 0 : parseInt(o.options.style["stroke-width"])).reduce((o, n) => o > n ? o : n, s) : s;
   }, this.toPng = (t, e = U.DATAURL, s = null, o = null, n = null) => new Promise(async (h) => {
-    const a = t.options.zoomLevel || 1;
+    const r = t.options.zoomLevel || 1;
     t.calcPosition();
     const p = t.getPosition(n || t.options.groupChildShapes);
-    [s, o] = et(s, o, p.width / a, p.height / a);
-    const A = this.getSvg(t, n);
-    A.setAttribute("width", p.width / a), A.setAttribute("height", p.height / a);
-    for (let M of A.querySelectorAll("image"))
+    [s, o] = et(s, o, p.width / r, p.height / r);
+    const d = this.getSvg(t, n);
+    d.setAttribute("width", p.width / r), d.setAttribute("height", p.height / r);
+    for (let M of d.querySelectorAll("image"))
       if (M.getAttribute("href") && M.getAttribute("href").length) {
         const H = await q(await (await fetch(M.getAttribute("href"))).blob());
         M.setAttribute("href", H);
       }
     const c = document.createElement("div");
-    c.appendChild(A);
-    const b = c.innerHTML, y = new Image(), N = new Blob([b], { type: "image/svg+xml" }), z = window.URL || window.webkitURL || window, D = await q(N);
-    y.addEventListener("load", () => {
+    c.appendChild(d);
+    const y = c.innerHTML, b = new Image(), N = new Blob([y], { type: "image/svg+xml" }), z = window.URL || window.webkitURL || window, D = await q(N);
+    b.addEventListener("load", () => {
       const M = document.createElement("canvas");
-      y.width = p.width / a, y.height = p.height / a, M.width = y.width, M.height = y.height;
+      b.width = p.width / r, b.height = p.height / r, M.width = b.width, M.height = b.height;
       const H = M.getContext("2d");
-      H.drawImage(y, 0, 0), H.scale(s, o), z.revokeObjectURL(D);
+      H.drawImage(b, 0, 0), H.scale(s, o), z.revokeObjectURL(D);
       const J = M.toDataURL("image/png");
       if (e === U.BLOB) {
         h(Ot(J));
         return;
       }
       h(J);
-    }), y.src = D;
+    }), b.src = D;
   }), this.moveShapeToTop = (t) => {
     const e = f.getMaxZIndex(t.root);
     t.options.zIndex === e && f.findShapesByOptionValue("zIndex", e).length === 1 || this.changeShapeZIndex(t, e + 1);
@@ -1117,11 +1117,11 @@ const U = {
   DATAURL: "dataurl",
   BLOB: "blob"
 }, v = new pe();
-function Ae(i) {
+function de(i) {
   this.shape = i, this.subscriptions = {
     CONTAINER_BOUNDS_CHANGED: []
   }, this.run = () => (this.shape = i, this.setEventListeners(), this), this.setEventListeners = () => {
-    r.subscribe(g.POINT_DESTROYED, this.onPointDestroyed), r.subscribe(g.POINT_ADDED, this.onPointAdded), r.subscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), r.subscribe(g.POINT_DELETE_REQUEST, this.onPointDeleteRequest), r.subscribe(l.SHAPE_ADD_CHILD, () => {
+    a.subscribe(g.POINT_DESTROYED, this.onPointDestroyed), a.subscribe(g.POINT_ADDED, this.onPointAdded), a.subscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), a.subscribe(g.POINT_DELETE_REQUEST, this.onPointDeleteRequest), a.subscribe(l.SHAPE_ADD_CHILD, () => {
       this.shape.redraw();
     });
   }, this.setSvgEventListeners = () => {
@@ -1143,8 +1143,8 @@ function Ae(i) {
   }, this.removeSvgEventListeners = () => {
     this.shape.svg.removeEventListener("mouseover", this.svg_mouseover), this.shape.svg.removeEventListener("mouseout", this.svg_mouseout), this.shape.svg.removeEventListener("mouseenter", this.svg_mouseenter), this.shape.svg.removeEventListener("mousedown", this.svg_mousedown), this.shape.svg.removeEventListener("click", this.svg_click), this.shape.svg.removeEventListener("dblclick", this.svg_dblclick), this.shape.svg.removeEventListener("wheel", this.svg_wheel);
   }, this.addResizeEventListener = () => {
-    !this.shape.resizeBox || (this.resizeBoxListener = this.shape.resizeBox.addEventListener(I.RESIZE_BOX_RESIZE, this.onResize), this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOVE_START, this.mousedown), this.resizeMouseMoveEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_MOVE, this.mousemove), this.resizeClickEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_CLICK, this.click), this.resizeDblClickEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.svg_dblclick), this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_DOWN, this.svg_mousedown), this.resizeMouseOverEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_OVER, this.svg_mouseover), this.resizeMouseOutEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_OUT, this.svg_mouseout), this.resizeMouseUpEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_UP, (t) => {
-      r.emit(l.SHAPE_MOUSE_UP, this.shape, u(t));
+    !this.shape.resizeBox || (this.resizeBoxListener = this.shape.resizeBox.addEventListener(w.RESIZE_BOX_RESIZE, this.onResize), this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOVE_START, this.mousedown), this.resizeMouseMoveEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_MOVE, this.mousemove), this.resizeClickEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_CLICK, this.click), this.resizeDblClickEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.svg_dblclick), this.resizeMouseDownEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_DOWN, this.svg_mousedown), this.resizeMouseOverEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_OVER, this.svg_mouseover), this.resizeMouseOutEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_OUT, this.svg_mouseout), this.resizeMouseUpEventListener = this.shape.resizeBox.addEventListener(l.SHAPE_MOUSE_UP, (t) => {
+      a.emit(l.SHAPE_MOUSE_UP, this.shape, u(t));
     }), this.resizeBoxContextMenuEventListener = this.shape.resizeBox.shape.svg.addEventListener("contextmenu", (t) => {
       this.shape.contextMenu && this.shape.contextMenu.onEvent(t);
     }), this.resizeBoxWheelEventListener = this.shape.resizeBox.shape.svg.addEventListener("wheel", (t) => {
@@ -1152,7 +1152,7 @@ function Ae(i) {
     }));
   }, this.addRotateEventListener = () => {
     !this.shape.rotateBox || (this.rotateBoxListener = this.shape.rotateBox.addEventListener(G.ROTATE_BOX_ROTATE, this.onRotate), this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOVE_START, this.mousedown), this.rotateMouseMoveEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_MOVE, this.mousemove), this.rotateClickEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_CLICK, this.click), this.rotateDblClickEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.svg_dblclick), this.rotateMouseDownEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_DOWN, this.svg_mousedown), this.rotateMouseUpEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_UP, (t) => {
-      r.emit(l.SHAPE_MOUSE_UP, this.shape, u(t));
+      a.emit(l.SHAPE_MOUSE_UP, this.shape, u(t));
     }), this.rotateMouseOverEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_OVER, this.svg_mouseover), this.rotateMouseOutEventListener = this.shape.rotateBox.addEventListener(l.SHAPE_MOUSE_OUT, this.svg_mouseout), this.rotatePointDragStartEventListener = this.shape.rotateBox.addEventListener(l.POINT_DRAG_START, (t) => {
       this.shape.initCenter = this.shape.getCenter(this.shape.options.groupChildShapes);
     }), this.rotatePointDragEndEventListener = this.shape.rotateBox.addEventListener(l.POINT_DRAG_END, (t) => {
@@ -1162,11 +1162,11 @@ function Ae(i) {
     }), this.rotateBoxWheelEventListener = this.shape.rotateBox.shape.svg.addEventListener("wheel", (t) => {
       this.wheel(t);
     }));
-  }, this.onResize = (t) => {
+  }, this.onResize = async (t) => {
     const e = this.shape.getRootParent(!0);
     if (e) {
-      r.emit(
-        I.RESIZE_BOX_RESIZE,
+      a.emit(
+        w.RESIZE_BOX_RESIZE,
         e.resizeBox,
         u(
           t,
@@ -1175,34 +1175,40 @@ function Ae(i) {
       );
       return;
     }
-    if (t.buttons && this.shape.options.simpleMode)
-      return;
-    const s = t.newPos.left - t.oldPos.left, o = t.newPos.top - t.oldPos.top;
-    this.shape.moveBy(s, o, !1);
-    const [n, h] = this.shape.transformer.getMaxPointSize();
-    this.shape.scaleTo(t.newPos.width - n * 2, t.newPos.height - h * 2), this.shape.redraw(), r.emit(I.RESIZE_BOX_RESIZE, this.shape, t);
+    if (!(t.buttons && this.shape.options.simpleMode))
+      if (t.buttons) {
+        if (!this.oldPos) {
+          const s = v.getMaxZIndex(this.shape);
+          this.shape.resizeBox.setOptions({ zIndex: s }), this.oldPos = t.oldPos;
+        }
+      } else {
+        const s = t.newPos.left - this.oldPos.left, o = t.newPos.top - this.oldPos.top;
+        this.shape.moveBy(s, o, !1);
+        const [n, h] = this.shape.transformer.getMaxPointSize();
+        this.shape.scaleTo(t.newPos.width - n * 2, t.newPos.height - h * 2), await this.shape.redraw(), a.emit(w.RESIZE_BOX_RESIZE, this.shape, t), this.oldPos = null;
+      }
   }, this.onRotate = (t) => {
     const e = this.shape.getRootParent(!0);
     if (e) {
-      r.emit(G.ROTATE_BOX_ROTATE, e.rotateBox, { angle: t.angle });
+      a.emit(G.ROTATE_BOX_ROTATE, e.rotateBox, { angle: t.angle });
       return;
     }
     this.shape.rotateBy(t.angle), v.draw(this.shape), this.shape.options.groupChildShapes && this.shape.getChildren().forEach((s) => {
-      this.shape.options.displayAsPath ? this.shape.options.displayMode === d.SELECTED && s.points.filter((o) => o.element).forEach((o) => o.redraw()) : v.draw(s);
-    }), r.emit(l.SHAPE_ROTATE, this.shape, t);
+      this.shape.options.displayAsPath ? this.shape.options.displayMode === A.SELECTED && s.points.filter((o) => o.element).forEach((o) => o.redraw()) : v.draw(s);
+    }), a.emit(l.SHAPE_ROTATE, this.shape, t);
   }, this.mousedown = (t) => {
-    st(t), r.emit(l.SHAPE_MOUSE_DOWN, this.shape, u(t)), setTimeout(() => {
-      r.emit(
+    st(t), a.emit(l.SHAPE_MOUSE_DOWN, this.shape, u(t)), setTimeout(() => {
+      a.emit(
         l.SHAPE_MOVE_START,
         this.shape,
         u(t, { pos: this.shape.getPosition(this.shape.options.groupChildShapes) })
       );
     }, 100);
   }, this.mousemove = (t) => {
-    if (this.shape.draggedPoint || r.emit(l.SHAPE_MOUSE_MOVE, this.shape, u(t)), t.buttons !== 1)
+    if (this.shape.draggedPoint || a.emit(l.SHAPE_MOUSE_MOVE, this.shape, u(t)), t.buttons !== 1)
       return;
     if (this.shape.draggedPoint) {
-      r.emit(l.POINT_DRAG_MOVE, this.shape, { point: this.shape.draggedPoint }), this.shape.draggedPoint.mousemove(t);
+      a.emit(l.POINT_DRAG_MOVE, this.shape, { point: this.shape.draggedPoint }), this.shape.draggedPoint.mousemove(t);
       return;
     }
     if (!this.shape.options.canDragShape)
@@ -1211,27 +1217,27 @@ function Ae(i) {
     if (e === null || s === null)
       return;
     const o = this.shape.getPosition(this.shape.options.groupChildShapes);
-    this.shape.moveBy(e, s, !0, this.shape.options.simpleMode), this.shape.options.simpleMode || this.shape.redraw();
+    this.shape.moveBy(e, s, !0);
     const n = this.shape.getPosition(this.shape.options.groupChildShapes);
-    r.emit(l.SHAPE_MOVE, this.shape, u(t, { oldPos: o, newPos: n }));
+    a.emit(l.SHAPE_MOVE, this.shape, u(t, { oldPos: o, newPos: n }));
   }, this.mouseenter = (t) => {
-    r.emit(l.SHAPE_MOUSE_ENTER, this.shape, u(t));
+    a.emit(l.SHAPE_MOUSE_ENTER, this.shape, u(t));
   }, this.mouseover = (t) => {
-    f.draggedShape !== this.shape && r.emit(l.SHAPE_MOUSE_OVER, this.shape, u(t));
+    f.draggedShape !== this.shape && a.emit(l.SHAPE_MOUSE_OVER, this.shape, u(t));
   }, this.mouseout = (t) => {
-    r.emit(l.SHAPE_MOUSE_OUT, this.shape, u(t));
+    a.emit(l.SHAPE_MOUSE_OUT, this.shape, u(t));
   }, this.click = (t) => {
-    r.emit(l.SHAPE_MOUSE_CLICK, this.shape, u(t));
+    a.emit(l.SHAPE_MOUSE_CLICK, this.shape, u(t));
   }, this.doubleclick = (t) => {
-    r.emit(l.SHAPE_MOUSE_DOUBLE_CLICK, this.shape, u(t));
+    a.emit(l.SHAPE_MOUSE_DOUBLE_CLICK, this.shape, u(t));
   }, this.wheel = (t) => {
     this.shape.options.zoomable && this.shape.options.id.search("_resizebox") === -1 && this.shape.options.id.search("_rotatebox") === -1 && (t.deltaY < 0 ? this.shape.zoomBy(1 + this.shape.options.zoomStep) : this.shape.zoomBy(1 - this.shape.options.zoomStep), this.shape.redraw());
   }, this.calcMovementOffset = (t) => {
     this.shape.calcPosition();
     const e = this.shape.getPosition(this.shape.options.groupChildShapes);
     let s = t.movementX, o = t.movementY, n = t.clientX + window.scrollX, h = t.clientY + window.scrollY;
-    const a = e.left + s, p = e.top + o, A = _(this.shape.root, !0), c = this.shape.getBounds();
-    return (a < c.left || a + e.width > c.right) && (s = 0), (p < c.top || p + e.height > c.bottom) && (o = 0), n < a + A.left && (s = n - (a + A.left)), h < p + A.top && (o = h - (p + A.top)), n > a + e.width + A.left && (s = n - (e.width + A.left + e.left)), h > p + e.height + A.right && (o = h - (e.height + A.top + e.top)), [s, o];
+    const r = e.left + s, p = e.top + o, d = _(this.shape.root, !0), c = this.shape.getBounds();
+    return (r < c.left || r + e.width > c.right) && (s = 0), (p < c.top || p + e.height > c.bottom) && (o = 0), n < r + d.left && (s = n - (r + d.left)), h < p + d.top && (o = h - (p + d.top)), n > r + e.width + d.left && (s = n - (e.width + d.left + e.left)), h > p + e.height + d.right && (o = h - (e.height + d.top + e.top)), [s, o];
   }, this.onPointAdded = (t) => {
     if (!!this.shape.isShapePoint(t.target)) {
       if (t.target.element)
@@ -1239,7 +1245,7 @@ function Ae(i) {
           this.shape.root.appendChild(t.target.element);
         } catch {
         }
-      r.emit(l.POINT_ADDED, this.shape, { point: t.target });
+      a.emit(l.POINT_ADDED, this.shape, { point: t.target });
     }
   }, this.onPointDragMove = (t) => {
     this.shape.isShapePoint(t.target) && (this.shape.updatePosition(t.target.x, t.target.y), this.shape.redraw());
@@ -1250,22 +1256,22 @@ function Ae(i) {
         this.shape.root.removeChild(t.target.element), this.shape.redraw();
       } catch {
       }
-      r.emit(l.POINT_DESTROYED, this.shape, { point: t.target });
+      a.emit(l.POINT_DESTROYED, this.shape, { point: t.target });
     }
   }, this.onPointDeleteRequest = (t) => {
     !this.shape.isShapePoint(t.target) || this.shape.deletePoint(t.target.x, t.target.y);
   }, this.addEventListener = (t, e) => {
     typeof this.subscriptions[t] > "u" && (this.subscriptions[t] = []);
-    const s = r.subscribe(t, (o) => {
+    const s = a.subscribe(t, (o) => {
       o.target && o.target.guid === this.shape.guid && e(o);
     });
     return this.subscriptions[t].push(s), s;
   }, this.removeEventListener = (t, e) => {
-    this.subscriptions[t] && typeof this.subscriptions[t] < "u" && this.subscriptions[t].splice(this.subscriptions[t].indexOf(e), 1), r.unsubscribe(t, e);
+    this.subscriptions[t] && typeof this.subscriptions[t] < "u" && this.subscriptions[t].splice(this.subscriptions[t].indexOf(e), 1), a.unsubscribe(t, e);
   }, this.destroy = () => {
-    r.unsubscribe(g.POINT_ADDED, this.onPointAdded), r.unsubscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), r.unsubscribe(g.POINT_DESTROYED, this.onPointDestroyed), r.unsubscribe(g.POINT_DELETE_REQUEST, this.onPointDeleteRequest), this.shape.resizeBox && (this.shape.resizeBox.removeEventListener(I.RESIZE_BOX_RESIZE, this.resizeBoxListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_CLICK, this.resizeClickEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_MOVE, this.resizeMouseMoveEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOVE_START, this.resizeMouseDownEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_UP, this.resizeMouseUpEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.resizeDblClickEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_OVER, this.resizeMouseOverEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_OUT, this.resizeMouseOutEventListener), this.shape.resizeBox.removeEventListener("contextmenu", this.resizeBoxContextMenuEventListener), this.shape.resizeBox.removeEventListener("wheel", this.resizeBoxWheelEventListener)), this.shape.rotateBox && (this.shape.rotateBox.removeEventListener(G.ROTATE_BOX_ROTATE, this.rotateBoxListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_CLICK, this.rotateClickEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_MOVE, this.rotateMouseMoveEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOVE_START, this.rotateMouseDownEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOVE_START, this.rotatePointDragStartEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOVE_START, this.rotatePointDragEndEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_UP, this.rotateMouseUpEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.rotateDblClickEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_OVER, this.rotateMouseOverEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_OUT, this.rotateMouseOutEventListener), this.shape.rotateBox.removeEventListener("contextmenu", this.rotateBoxContextMenuEventListener), this.shape.rotateBox.removeEventListener("wheel", this.rotateBoxWheelEventListener));
+    a.unsubscribe(g.POINT_ADDED, this.onPointAdded), a.unsubscribe(g.POINT_DRAG_MOVE, this.onPointDragMove), a.unsubscribe(g.POINT_DESTROYED, this.onPointDestroyed), a.unsubscribe(g.POINT_DELETE_REQUEST, this.onPointDeleteRequest), this.shape.resizeBox && (this.shape.resizeBox.removeEventListener(w.RESIZE_BOX_RESIZE, this.resizeBoxListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_CLICK, this.resizeClickEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_MOVE, this.resizeMouseMoveEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOVE_START, this.resizeMouseDownEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_UP, this.resizeMouseUpEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.resizeDblClickEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_OVER, this.resizeMouseOverEventListener), this.shape.resizeBox.removeEventListener(l.SHAPE_MOUSE_OUT, this.resizeMouseOutEventListener), this.shape.resizeBox.removeEventListener("contextmenu", this.resizeBoxContextMenuEventListener), this.shape.resizeBox.removeEventListener("wheel", this.resizeBoxWheelEventListener)), this.shape.rotateBox && (this.shape.rotateBox.removeEventListener(G.ROTATE_BOX_ROTATE, this.rotateBoxListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_CLICK, this.rotateClickEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_MOVE, this.rotateMouseMoveEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOVE_START, this.rotateMouseDownEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOVE_START, this.rotatePointDragStartEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOVE_START, this.rotatePointDragEndEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_UP, this.rotateMouseUpEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_DOUBLE_CLICK, this.rotateDblClickEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_OVER, this.rotateMouseOverEventListener), this.shape.rotateBox.removeEventListener(l.SHAPE_MOUSE_OUT, this.rotateMouseOutEventListener), this.shape.rotateBox.removeEventListener("contextmenu", this.rotateBoxContextMenuEventListener), this.shape.rotateBox.removeEventListener("wheel", this.rotateBoxWheelEventListener));
     for (let t in this.subscriptions)
-      this.subscriptions[t].forEach((s) => r.unsubscribe(t, s)), this.subscriptions[t] = [];
+      this.subscriptions[t].forEach((s) => a.unsubscribe(t, s)), this.subscriptions[t] = [];
   };
 }
 const l = {
@@ -1295,13 +1301,13 @@ const l = {
   SHAPE_REMOVE_CHILD: "remove_child",
   SHAPE_ACTIVATED: "shape_activated",
   getShapeMouseEvents: () => Object.keys(l).filter((i) => ["SHAPE_CREATE", "SHAPE_DESTROY", "SHAPE_RESIZE", "SHAPE_ROTATE"].indexOf(i) === -1 && typeof l[i] != "function").map((i) => ({ key: i, name: l[i] }))
-}, de = (i, t, e = {}, s = null) => {
+}, Ae = (i, t, e = {}, s = null) => {
   if (!m(t) || typeof t != "object" || (m(t.features) || (t = { features: [t] }), !t.features.length))
     return null;
   const o = [];
   for (let n in t.features) {
-    const h = t.features[n], a = ue(h, n, e, i);
-    s && typeof s == "function" && s(n, t.features.length, a), a && o.push(a);
+    const h = t.features[n], r = ue(h, n, e, i);
+    s && typeof s == "function" && s(n, t.features.length, r), r && o.push(r);
   }
   return o.length === 1 ? o[0] : o;
 }, ue = (i, t, e, s) => {
@@ -1312,32 +1318,32 @@ const l = {
   const n = fe(i);
   if (!n || !n.length)
     return;
-  n.sort((p, A) => A.dims.width * A.dims.height - p.dims.width * p.dims.height);
+  n.sort((p, d) => d.dims.width * d.dims.height - p.dims.width * p.dims.height);
   let h = null;
   for (let p in n) {
-    const A = S({}, o);
+    const d = S({}, o);
     if (p == 0)
       e.onlyData ? h = {
         points: n[p].cords,
-        options: A,
+        options: d,
         children: [],
         ...n[p].dims
-      } : (h = f.createShape(s, A, n[p].cords, !1), h.left = n[p].dims.left, h.top = n[p].dims.top, h.right = n[p].dims.right, h.bottom = n[p].dims.bottom, h.width = n[p].dims.width, h.height = n[p].dims.height);
-    else if (A.id += "_" + p, A.name += " " + p, e.onlyData)
+      } : (h = f.createShape(s, d, n[p].cords, !1), h.left = n[p].dims.left, h.top = n[p].dims.top, h.right = n[p].dims.right, h.bottom = n[p].dims.bottom, h.width = n[p].dims.width, h.height = n[p].dims.height);
+    else if (d.id += "_" + p, d.name += " " + p, e.onlyData)
       h.children.push({
         points: n[p].cords,
-        options: A,
+        options: d,
         ...n[p].dims
       });
     else {
-      const c = f.createShape(s, A, n[p].cords);
+      const c = f.createShape(s, d, n[p].cords);
       c.left = n[p].dims.left, c.top = n[p].dims.top, c.right = n[p].dims.right, c.bottom = n[p].dims.bottom, c.width = n[p].dims.width, c.height = n[p].dims.height, h.addChild(c, !1);
     }
   }
   if (e.onlyData)
     return h;
-  const a = h.getPosition();
-  return (a.left < 0 || a.top < 0) && (e.scale || e.width || e.height) && h.moveTo(0, 0, !1, !1), m(e.scale) ? h.scaleBy(e.scale, e.scale, !0) : (m(e.width) || m(e.height)) && h.scaleTo(e.width, e.height), h;
+  const r = h.getPosition();
+  return (r.left < 0 || r.top < 0) && (e.scale || e.width || e.height) && h.moveTo(0, 0, !1, !1), m(e.scale) ? h.scaleBy(e.scale, e.scale, !0) : (m(e.width) || m(e.height)) && h.scaleTo(e.width, e.height), h;
 }, ge = (i) => {
   if (!m(i.properties) || typeof i.properties != "object")
     return !1;
@@ -1355,22 +1361,22 @@ const l = {
   const e = [];
   for (let s of t) {
     const o = s[0], n = [];
-    let h = 1 / 0, a = -1 / 0, p = 1 / 0, A = -1 / 0;
+    let h = 1 / 0, r = -1 / 0, p = 1 / 0, d = -1 / 0;
     for (let c of o) {
-      const [b, y] = [c[0], -c[1]];
-      b < h && (h = b), b > a && (a = b), y < p && (p = y), y > A && (A = y), n.push({ x: b, y });
+      const [y, b] = [c[0], -c[1]];
+      y < h && (h = y), y > r && (r = y), b < p && (p = b), b > d && (d = b), n.push({ x: y, y: b });
     }
-    e.push({ cords: n, dims: { left: h, top: p, bottom: A, right: a, width: a - h, height: A - p } });
+    e.push({ cords: n, dims: { left: h, top: p, bottom: d, right: r, width: r - h, height: d - p } });
   }
   return e;
 };
 function Ee() {
   this.shapes = {}, this.visibleShapes = {}, this.activeShape = null, this.draggedShape = null, this.shapeOnCursor = null, this.containerEventListeners = [], this.init = () => (this.setEventListeners(), this), this.setEventListeners = () => {
-    r.subscribe(l.SHAPE_CREATE, this.onShapeCreated), r.subscribe(l.SHAPE_DESTROY, this.onShapeDestroy), r.subscribe(l.SHAPE_SHOW, this.onShapeShow), r.subscribe(l.SHAPE_HIDE, this.onShapeHide), r.subscribe(l.SHAPE_MOVE_START, this.onShapeMoveStart), r.subscribe(l.SHAPE_MOUSE_ENTER, this.onShapeMouseEnter), r.subscribe(g.POINT_DRAG_START, this.onPointDragStart), r.subscribe(g.POINT_DRAG_END, this.onPointDragEnd), window.addEventListener("resize", this.onWindowResize);
+    a.subscribe(l.SHAPE_CREATE, this.onShapeCreated), a.subscribe(l.SHAPE_DESTROY, this.onShapeDestroy), a.subscribe(l.SHAPE_SHOW, this.onShapeShow), a.subscribe(l.SHAPE_HIDE, this.onShapeHide), a.subscribe(l.SHAPE_MOVE_START, this.onShapeMoveStart), a.subscribe(l.SHAPE_MOUSE_ENTER, this.onShapeMouseEnter), a.subscribe(g.POINT_DRAG_START, this.onPointDragStart), a.subscribe(g.POINT_DRAG_END, this.onPointDragEnd), window.addEventListener("resize", this.onWindowResize);
   }, this.onWindowResize = (i) => {
     for (let t in this.shapes) {
       const e = this.shapes[t];
-      r.emit(
+      a.emit(
         W.CONTAINER_BOUNDS_CHANGED,
         e,
         { bounds: e.getBounds(), points: e.points }
@@ -1404,7 +1410,7 @@ function Ee() {
     if (t) {
       this.draggedShape = t;
       const e = t.getRootParent(!0);
-      e && e.options.groupChildShapes && (this.draggedShape = e), this.draggedShape.draggedPoint = i.target, r.emit(l.POINT_DRAG_START, t, { point: i.target });
+      e && e.options.groupChildShapes && (this.draggedShape = e), this.draggedShape.draggedPoint = i.target, a.emit(l.POINT_DRAG_START, t, { point: i.target });
     }
   }, this.onPointDragEnd = (i) => {
     this.draggedShape && (this.draggedShape.draggedPoint = null), this.draggedShape = null;
@@ -1444,13 +1450,13 @@ function Ee() {
       this.activeShape.switchDisplayMode(t), i.options.moveToTop && i.moveToTop();
       return;
     }
-    typeof i.id < "u" && (i.id.search("_resizebox") !== -1 || i.id.search("_rotatebox") !== -1) || (this.activeShape && this.deactivateShape(this.activeShape), i.options.moveToTop && i.moveToTop(), this.activeShape = i, r.emit(l.SHAPE_ACTIVATED, this.activeShape), this.activeShape.switchDisplayMode(t));
+    typeof i.id < "u" && (i.id.search("_resizebox") !== -1 || i.id.search("_rotatebox") !== -1) || (this.activeShape && this.deactivateShape(this.activeShape), i.options.moveToTop && i.moveToTop(), this.activeShape = i, a.emit(l.SHAPE_ACTIVATED, this.activeShape), this.activeShape.switchDisplayMode(t));
   }, this.deactivateShape = (i) => {
-    typeof i.options.prevZIndex < "u" && v.updateOptions(i), i.options.displayMode !== d.DEFAULT && i.switchDisplayMode(d.DEFAULT), i.options.groupChildShapes && i.getChildren(!0).forEach((t) => {
-      typeof t.options.prevZIndex < "u" && (v.updateOptions(t), t.options.displayMode !== d.DEFAULT && t.switchDisplayMode(d.DEFAULT));
+    typeof i.options.prevZIndex < "u" && v.updateOptions(i), i.options.displayMode !== A.DEFAULT && i.switchDisplayMode(A.DEFAULT), i.options.groupChildShapes && i.getChildren(!0).forEach((t) => {
+      typeof t.options.prevZIndex < "u" && (v.updateOptions(t), t.options.displayMode !== A.DEFAULT && t.switchDisplayMode(A.DEFAULT));
     });
   }, this.addContainerEvents = (i) => {
-    this.addContainerEvent(i.root, "mousemove", this.mousemove), this.addContainerEvent(i.root, "mouseup", this.mouseup, i.options.id), this.addContainerEvent(i.root, "dblclick", this.doubleclick), this.addContainerEvent(i.root, "contextmenu", this.contextmenu), this.addContainerEvent(i.root, "mouseleave", this.mouseleave), r.emit(me.MANAGER_ADD_CONTAINER_EVENT_LISTENERS, i.root);
+    this.addContainerEvent(i.root, "mousemove", this.mousemove), this.addContainerEvent(i.root, "mouseup", this.mouseup, i.options.id), this.addContainerEvent(i.root, "dblclick", this.doubleclick), this.addContainerEvent(i.root, "contextmenu", this.contextmenu), this.addContainerEvent(i.root, "mouseleave", this.mouseleave), a.emit(me.MANAGER_ADD_CONTAINER_EVENT_LISTENERS, i.root);
   }, this.addContainerEvent = (i, t, e) => {
     this.containerEventListeners.find((s) => s.container === i && s.name === t) || (i.addEventListener(t, e), this.containerEventListeners.push({ id: i.id, container: i, name: t, listener: e }));
   }, this.doubleclick = (i) => {
@@ -1461,7 +1467,7 @@ function Ee() {
     }
     if (!this.activeShape || !this.activeShape.options.canAddPoints || this.activeShape.draggedPoint || this.activeShape.points.length > 2 || this.activeShape.points.length === this.activeShape.options.maxPoints)
       return;
-    this.activeShape.options.displayMode === d.DEFAULT && this.activeShape.switchDisplayMode(d.SELECTED);
+    this.activeShape.options.displayMode === A.DEFAULT && this.activeShape.switchDisplayMode(A.SELECTED);
     const [t, e] = j(u(i, { target: this.activeShape }));
     this.activeShape.addPoint(t, e, { forceDisplay: !1 });
   }, this.contextmenu = (i) => {
@@ -1483,7 +1489,7 @@ function Ee() {
     i.buttons === 1 && t.options.canAddPoints && !t.draggedPoint && (t.options.maxPoints === -1 || t.points.length < t.options.maxPoints) && t.addPoint(
       i.clientX - t.root.offsetLeft,
       i.clientY - t.root.offsetTop
-    ), t.draggedPoint ? (r.emit(l.POINT_DRAG_END, this.draggedShape, { point: t.draggedPoint }), t.draggedPoint.mouseup(i), t.draggedPoint = null) : r.emit(l.SHAPE_MOUSE_UP, t, {}), this.draggedShape = null, r.emit(l.SHAPE_MOVE_END, t, { pos: t.getPosition(!0) });
+    ), t.draggedPoint ? (a.emit(l.POINT_DRAG_END, this.draggedShape, { point: t.draggedPoint }), t.draggedPoint.mouseup(i), t.draggedPoint = null) : a.emit(l.SHAPE_MOUSE_UP, t, {}), this.draggedShape = null, a.emit(l.SHAPE_MOVE_END, t, { pos: t.getPosition(!0) });
   }, this.mousemove = (i) => {
     if (i.buttons !== 1 && (this.draggedShape && (this.draggedShape.draggedPoint = null), this.draggedShape = null), !this.draggedShape) {
       this.processShapesUnderCursor(i);
@@ -1499,7 +1505,7 @@ function Ee() {
   }, this.mouseleave = (i) => {
     if (this.draggedShape && this.draggedShape.draggedPoint && this.draggedShape.options.id.search("_resizebox") !== -1) {
       const t = this.draggedShape.options.id.replace("_resizebox", ""), e = this.findShapeById(t);
-      e && e.options.simpleMode && r.emit(I.RESIZE_BOX_RESIZE, e.resizeBox, u(i, {
+      e && e.options.simpleMode && a.emit(w.RESIZE_BOX_RESIZE, e.resizeBox, u(i, {
         buttons: 0,
         oldPos: e.getPosition(!0),
         newPos: e.resizeBox.getPosition()
@@ -1509,7 +1515,7 @@ function Ee() {
     this.shapeOnCursor && this.shapeOnCursor.eventListener.click(u(i, { target: this.shapeOnCursor }));
   }, this.processShapesUnderCursor = (i) => {
     const [t, e] = [i.clientX, i.clientY], s = this.getShapeOnCursor(t, e);
-    this.shapeOnCursor && this.shapeOnCursor !== s && this.shapeOnCursor.getShapeSvg() && (this.shapeOnCursor.getShapeSvg().style.cursor = "default", this.shapeOnCursor.eventListener.mouseout(u(i, { target: this.shapeOnCursor }))), s && s !== this.shapeOnCursor && s.eventListener.mouseover(u(i, { target: s })), this.shapeOnCursor = s, this.shapeOnCursor && (r.emit(l.SHAPE_MOUSE_MOVE, this.shapeOnCursor, u(i)), this.shapeOnCursor.getShapeSvg().style.cursor = "crosshair");
+    this.shapeOnCursor && this.shapeOnCursor !== s && this.shapeOnCursor.getShapeSvg() && (this.shapeOnCursor.getShapeSvg().style.cursor = "default", this.shapeOnCursor.eventListener.mouseout(u(i, { target: this.shapeOnCursor }))), s && s !== this.shapeOnCursor && s.eventListener.mouseover(u(i, { target: s })), this.shapeOnCursor = s, this.shapeOnCursor && (a.emit(l.SHAPE_MOUSE_MOVE, this.shapeOnCursor, u(i)), this.shapeOnCursor.getShapeSvg().style.cursor = "crosshair");
   }, this.getShapeOnCursor = (i, t) => {
     const e = Object.values(this.visibleShapes);
     if (!e.length)
@@ -1522,8 +1528,8 @@ function Ee() {
       return null;
     const n = [];
     for (let h in o) {
-      const a = o[h];
-      a.options.id && this.findShapeById(a.options.id) || (n.push(new R().fromJSON(i, a, !0, s)), e && typeof e == "function" && e(h / o.length));
+      const r = o[h];
+      r.options.id && this.findShapeById(r.options.id) || (n.push(new R().fromJSON(i, r, !0, s)), e && typeof e == "function" && e(h / o.length));
     }
     return n;
   }, this.findShapesByOptionValue = (i, t) => this.getShapes().filter((e) => e.options[i] === t), this.findShapeById = (i) => {
@@ -1541,7 +1547,7 @@ function Ee() {
       }
     }), this.containerEventListeners = []; Object.values(this.shapes).length; )
       Object.values(this.shapes)[0].destroy();
-  }, this.fromGeoJson = (i, t, e = {}, s = null) => de(i, t, e, s), this.length = () => Object.values(this.shapes).length;
+  }, this.fromGeoJson = (i, t, e = {}, s = null) => Ae(i, t, e, s), this.length = () => Object.values(this.shapes).length;
 }
 const me = {
   MANAGER_ADD_CONTAINER_EVENT_LISTENERS: "manager_add_container_event_listeners",
@@ -1551,13 +1557,13 @@ const me = {
 }, f = new Ee().init();
 function rt(i) {
   this.shape = i, this.addChild = (t, e = !0) => {
-    !this.shouldAddChild(t) || (this.shape.options.displayMode !== t.options.displayMode && (t.svg ? t.switchDisplayMode(this.shape.options.displayMode) : t.options.displayMode = i.options.displayMode), this.shape.children.push(t), e && r.emit(l.SHAPE_ADD_CHILD, this.shape, { child: t }));
+    !this.shouldAddChild(t) || (this.shape.options.displayMode !== t.options.displayMode && (t.svg ? t.switchDisplayMode(this.shape.options.displayMode) : t.options.displayMode = i.options.displayMode), this.shape.children.push(t), e && a.emit(l.SHAPE_ADD_CHILD, this.shape, { child: t }));
   }, this.addChildren = (t = []) => {
     t.forEach((e) => {
       this.addChild(e, !1);
-    }), r.emit(l.SHAPE_ADD_CHILD, this.shape, { children: t });
+    }), a.emit(l.SHAPE_ADD_CHILD, this.shape, { children: t });
   }, this.removeChild = (t) => {
-    this.shape.children.splice(this.shape.children.indexOf(t), 1), r.emit(l.SHAPE_REMOVE_CHILD, this.shape, { child: t });
+    this.shape.children.splice(this.shape.children.indexOf(t), 1), a.emit(l.SHAPE_REMOVE_CHILD, this.shape, { child: t });
   }, this.removeAllChildren = (t = !1) => {
     for (; this.getChildren(t).length; )
       this.removeChild(this.getChildren(t)[0]);
@@ -1619,7 +1625,7 @@ function at() {
       }
     },
     zIndex: 1e3
-  }, this.eventListener = null, this.left_top = null, this.left_bottom = null, this.right_top = null, this.right_bottom = null, this.init = (i, t, e, s, o, n = {}) => (this.left = parseInt(t), this.top = parseInt(e), this.width = parseInt(s), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new R().init(i, S({}, this.options.shapeOptions), []), r.emit(l.SHAPE_CREATE, this.shape, {}), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new ae(this).run(), this), this.setOptions = (i = {}) => {
+  }, this.eventListener = null, this.left_top = null, this.left_bottom = null, this.right_top = null, this.right_bottom = null, this.init = (i, t, e, s, o, n = {}) => (this.left = parseInt(t), this.top = parseInt(e), this.width = parseInt(s), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new R().init(i, S({}, this.options.shapeOptions), []), a.emit(l.SHAPE_CREATE, this.shape, {}), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new ae(this).run(), this), this.setOptions = (i = {}) => {
     !i || typeof i != "object" || (this.options = S(this.options, i), this.options.shapeOptions.zIndex = this.options.zIndex || this.options.zIndex, this.options.shapeOptions.id = this.options.id ? this.options.id : this.options.id, this.shape && this.shape.setOptions(this.options.shapeOptions));
   }, this.addPoints = () => {
     this.left_top = this.shape.addPoint(this.left, this.top, { id: this.shape.guid + "_left_top", style: { backgroundImage: "url('" + _t + "')" } }), this.right_top = this.shape.addPoint(this.right, this.top, { id: this.shape.guid + "_right_top", style: { backgroundImage: "url('" + Ut + "')" } }), this.right_bottom = this.shape.addPoint(this.right, this.bottom, { id: this.shape.guid + "_right_bottom", style: { backgroundImage: "url('" + Vt + "')" } }), this.left_bottom = this.shape.addPoint(this.left, this.bottom, { id: this.shape.guid + "_left_bottom", style: { backgroundImage: "url('" + Nt + "')" } });
@@ -1634,22 +1640,27 @@ function at() {
   }, this.hide = () => {
     this.options.shapeOptions.visible = !1, this.shape.hide();
   }, this.destroy = () => {
-    r.emit(l.SHAPE_DESTROY, this, {}), this.eventListener.destroy(), this.shape.destroy();
+    a.emit(l.SHAPE_DESTROY, this, {}), this.eventListener.destroy(), this.shape.destroy();
   }, this.addEventListener = (i, t) => this.eventListener.addEventListener(i, t), this.removeEventListener = (i, t) => {
     this.eventListener.removeEventListener(i, t);
   };
 }
 function Se(i) {
-  this.shape = i, this.moveTo = (t, e, s = !0, o = !0, n = !1) => {
-    const h = this.shape.getBounds(), a = this.shape.getPosition(this.shape.options.groupChildShapes);
-    let p = t, A = e;
-    o && (p = t + a.width > h.right ? h.right - a.width : t, A = e + a.height > h.bottom ? h.bottom - a.height : e), this.moveBy(p - a.left, A - a.top, s, n);
-  }, this.moveBy = (t, e, s = !0, o = !1) => {
-    for (let h in this.shape.points)
-      this.shape.points[h].x += t, this.shape.points[h].y += e, !this.shape.options.simpleMode && s && typeof this.shape.points[h].redraw == "function" && this.shape.points[h].redraw();
+  this.shape = i, this.moveTo = (t, e, s = !0, o = !0, n = !0) => {
+    const h = this.shape.getBounds(), r = this.shape.getPosition(this.shape.options.groupChildShapes);
+    let p = t, d = e;
+    o && (p = t + r.width > h.right ? h.right - r.width : t, d = e + r.height > h.bottom ? h.bottom - r.height : e), this.moveBy(p - r.left, d - r.top, s, n);
+  }, this.moveBy = (t, e, s = !0, o = !0) => {
+    const n = this.shape.getParent(!0) || this.shape;
+    for (let r of this.shape.points)
+      r.x += t, r.y += e, (n.options.displayMode === SmartShapeDisplayMode.SELECTED || r.options.forceDisplay) && r.redraw();
     this.shape.options.offsetX += t, this.shape.options.offsetY += e, this.shape.left += t, this.shape.top += e, this.shape.right += t, this.shape.bottom += e, this.shape.width = this.shape.right - this.shape.left, this.shape.height = this.shape.bottom - this.shape.top;
-    const n = this.shape.getChildren(!0);
-    s && (o ? this.shape.svg && (this.shape.svg.style.left = this.shape.left + "px", this.shape.svg.style.top = this.shape.top + "px") : this.shape.redraw()), n.length && this.shape.options.groupChildShapes && n.forEach((h) => h.moveBy(t, e, s, o)), o && !this.shape.getParent() && (v.redrawResizeBox(this), v.redrawRotateBox(this));
+    const h = this.shape.getChildren(!0);
+    if (h.length && this.shape.options.groupChildShapes && h.forEach((r) => r.moveBy(t, e, s, o)), s && this.shape.svg) {
+      const r = this.shape.getPosition(!0);
+      this.shape.svg.style.left = r.left + "px", this.shape.svg.style.top = r.top + "px";
+    }
+    this.shape.getParent() || (v.redrawResizeBox(this.shape), v.redrawRotateBox(this.shape));
   }, this.scaleTo = (t = null, e = null, s = null) => {
     const o = this.shape.getBounds();
     if (this.shape.calcPosition(), !t && !e)
@@ -1658,8 +1669,8 @@ function Se(i) {
     if (n.width === t && n.height === e)
       return;
     [t, e] = this.applyScaleRestriction(...et(t, e, n.width, n.height)), n.width >= 10 && t < 10 && (t = 10), n.height >= 10 && e < 10 && (e = 10);
-    let h = C(n.left) + t > o.right && o.right !== -1 ? o.right - C(n.left) : t, a = C(n.top) + e > o.bottom && o.bottom !== -1 ? o.bottom - C(n.top) : e, p = C(h / n.width), A = C(a / n.height);
-    this.shape.scaleBy(p, A, s);
+    let h = C(n.left) + t > o.right && o.right !== -1 ? o.right - C(n.left) : t, r = C(n.top) + e > o.bottom && o.bottom !== -1 ? o.bottom - C(n.top) : e, p = C(h / n.width), d = C(r / n.height);
+    this.shape.scaleBy(p, d, s);
   }, this.scaleBy = (t = null, e = null, s = null) => {
     if (t === 1 && e === 1)
       return;
@@ -1679,8 +1690,8 @@ function Se(i) {
     [e, s] = this.getRotateCenter(e, s), !(o && (!this.shape.isInBounds(...O(t, n.left, n.top, e, s)) || !this.shape.isInBounds(...O(t, n.right, n.top, e, s)) || !this.shape.isInBounds(...O(t, n.left, n.bottom, e, s)) || !this.shape.isInBounds(...O(t, n.right, n.bottom, e, s)))) && (this.shape.points.forEach((h) => {
       typeof h.rotateBy == "function" ? h.rotateBy(t, e, s) : [h.x, h.y] = O(t, h.x, h.y, e, s);
     }), this.shape.options.rotateAngle += t, this.shape.options.groupChildShapes && this.shape.getChildren(!0).forEach((h) => {
-      h.points.forEach((a) => {
-        typeof a.rotateBy == "function" ? a.rotateBy(t, e, s) : [a.x, a.y] = O(t, a.x, a.y, e, s);
+      h.points.forEach((r) => {
+        typeof r.rotateBy == "function" ? r.rotateBy(t, e, s) : [r.x, r.y] = O(t, r.x, r.y, e, s);
       });
     }));
   }, this.getRotateCenter = (t, e) => {
@@ -1696,9 +1707,9 @@ function Se(i) {
   }, this.flipChildren = (t, e, s, o) => {
     let n = o ? this.shape.getChildren(!0) : null;
     n && n.forEach((h) => {
-      t && (h.options.flippedX = !h.options.flippedX, h.options.flippedY = !h.options.flippedY), h.shape.points.forEach((a) => h.shape.flipPoint(a, t, e, s));
+      t && (h.options.flippedX = !h.options.flippedX, h.options.flippedY = !h.options.flippedY), h.shape.points.forEach((r) => h.shape.flipPoint(r, t, e, s));
     });
-  }, this.flipPoint = (t, e, s, o) => ([t.x, t.y] = F(t.x, t.y, e, s, o), t), this.setupResizeBox = () => {
+  }, this.flipPoint = (t, e, s, o) => ([t.x, t.y] = k(t.x, t.y, e, s, o), t), this.setupResizeBox = () => {
     if (!this.shape.points.length)
       return null;
     const t = this.getResizeBoxBounds();
@@ -1746,7 +1757,7 @@ function Se(i) {
     return [t, e];
   };
 }
-function be(i) {
+function ye(i) {
   this.shape = i, this.contextMenu = null, this.updateContextMenu = () => {
     if (this.shape.options.hasContextMenu && !this.contextMenu ? this.init() : this.shape.options.hasContextMenu || (this.contextMenu = null), this.shape.contextMenu = this.contextMenu, this.contextMenu) {
       const t = this.getMenuItems();
@@ -1800,16 +1811,22 @@ function be(i) {
           this.onGetBase64ToClipboardClick(s);
           break;
         case "i" + this.shape.guid + "_group":
-          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ groupChildShapes: !0 }), t.switchDisplayMode(d.DEFAULT);
+          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ groupChildShapes: !0 }), t.switchDisplayMode(A.DEFAULT), t.redraw();
           break;
         case "i" + this.shape.guid + "_ungroup":
-          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ groupChildShapes: !1, displayAsPath: !1 }), t.switchDisplayMode(d.DEFAULT), t.getChildren().forEach((o) => o.switchDisplayMode(d.DEFAULT));
+          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ groupChildShapes: !1, displayAsPath: !1 }), t.switchDisplayMode(A.DEFAULT), t.redraw(), t.getChildren().forEach((o) => {
+            o.switchDisplayMode(A.DEFAULT), o.redraw();
+          });
           break;
         case "i" + this.shape.guid + "_topath":
-          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ groupChildShapes: !0, displayAsPath: !0 }), t.switchDisplayMode(d.SELECTED), t.getChildren().forEach((o) => o.switchDisplayMode(d.SELECTED));
+          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ groupChildShapes: !0, displayAsPath: !0 }), t.switchDisplayMode(A.SELECTED), t.redraw(), t.getChildren().forEach((o) => {
+            o.switchDisplayMode(A.SELECTED), o.redraw();
+          });
           break;
         case "i" + this.shape.guid + "_toshapes":
-          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ displayAsPath: !1 }), t.switchDisplayMode(d.SELECTED), t.getChildren().forEach((o) => o.switchDisplayMode(d.SELECTED));
+          e = this.shape.getRootParent(), t = e || this.shape, t.setOptions({ displayAsPath: !1 }), t.switchDisplayMode(A.SELECTED), t.redraw(), t.getChildren().forEach((o) => {
+            o.switchDisplayMode(A.SELECTED), o.redraw();
+          });
           break;
         case "i" + this.shape.guid + "_move_to_top":
           this.onMoveToTopClick(s);
@@ -1856,7 +1873,7 @@ function be(i) {
         this.shape.getPointIndex(n) > this.shape.getPointIndex(o) && (h = n), this.shape.insertPoint(e, s, h);
       }
     }
-    this.shape.options.displayMode === d.DEFAULT && this.shape.switchDisplayMode(d.SELECTED);
+    this.shape.options.displayMode === A.DEFAULT && this.shape.switchDisplayMode(A.SELECTED);
   }, this.onCloneClick = (t) => {
     let e = this.shape;
     const s = e.getRootParent();
@@ -1949,7 +1966,7 @@ function R() {
     zIndex: 1e3,
     bounds: { left: -1, top: -1, right: -1, bottom: -1 },
     visible: !0,
-    displayMode: d.DEFAULT,
+    displayMode: A.DEFAULT,
     managed: !0,
     minWidth: -1,
     minHeight: -1,
@@ -1971,7 +1988,8 @@ function R() {
     scaleFactorY: 1,
     rotateAngle: 0,
     flippedX: !1,
-    flippedY: !1
+    flippedY: !1,
+    svgLoadFunc: null
   }, this.left = 0, this.top = 0, this.right = 0, this.bottom = 0, this.width = 0, this.height = 0, this.guid = V(), this.children = [], this.resizeBox = null, this.rotateBox = null, this.initCenter = null, this.shapeMenu = null, this.transformer = null, this.init = (i, t = null, e = null, s = !0) => {
     if (!i) {
       console.error("Root HTML node not specified. Could not create shape.");
@@ -1981,7 +1999,7 @@ function R() {
       console.error("This shape already initialized");
       return;
     }
-    return this.root = i, this.root.style.position = "relative", this.shapeMenu = new be(this), this.eventListener = new Ae(this), this.transformer = new Se(this), this.setOptions(t), this.groupHelper = new rt(this), e && e.length && this.setupPoints(e, S({}, this.options.pointOptions)), this.eventListener.run(), s && this.redraw(), (e && e.length || this.options.forceCreateEvent) && r.emit(l.SHAPE_CREATE, this, {}), this;
+    return this.root = i, this.root.style.position = "relative", this.shapeMenu = new ye(this), this.eventListener = new de(this), this.transformer = new Se(this), this.setOptions(t), this.groupHelper = new rt(this), e && e.length && this.setupPoints(e, S({}, this.options.pointOptions)), this.eventListener.run(), s && this.redraw(), (e && e.length || this.options.forceCreateEvent) && a.emit(l.SHAPE_CREATE, this, {}), this;
   }, this.setOptions = (i) => {
     !i || typeof i != "object" || (m(i.visible) && i.visible !== this.options.visible && (this.resizeBox && this.resizeBox.setOptions({ shapeOptions: { visible: i.visible } }), this.rotateBox && this.rotateBox.setOptions({ shapeOptions: { visible: i.visible } })), m(i.fillGradient) && (this.options.fillGradient = {}), m(i.fillImage) && (this.options.fillImage = {}), this.options = S(this.options, i), this.options.simpleMode || this.points.filter((t) => typeof t.setOptions == "function").forEach((t) => {
       t.setOptions(S({}, this.options.pointOptions)), t.options.bounds = this.getBounds(), t.options.visible = i.visible, t.options.zIndex <= this.options.zIndex && (t.options.zIndex = this.options.zIndex + 1), t.redraw();
@@ -1992,7 +2010,7 @@ function R() {
     let s = this.putPoint(i, t, S({}, this.options.pointOptions, e));
     if (!s)
       return null;
-    if (this.options.displayMode !== d.DEFAULT && (e.createDOMElement = !0), s = s.init(i, t, e), s.element) {
+    if (this.options.displayMode !== A.DEFAULT && (e.createDOMElement = !0), s = s.init(i, t, e), s.element) {
       try {
         this.root.appendChild(s.element);
       } catch {
@@ -2004,7 +2022,7 @@ function R() {
     let o = this.putPoint(i, t, S({}, this.options.pointOptions, s), e);
     if (!o)
       return null;
-    this.options.displayMode !== d.DEFAULT && (s.createDOMElement = !0), o = o.init(i, t, s);
+    this.options.displayMode !== A.DEFAULT && (s.createDOMElement = !0), o = o.init(i, t, s);
     try {
       this.root.appendChild(o.element);
     } catch {
@@ -2017,7 +2035,7 @@ function R() {
       else
         for (let e of i) {
           const s = typeof e.x < "u" ? e.x : e[0], o = typeof e.y < "u" ? e.y : e[1];
-          this.options.displayMode !== d.DEFAULT && (t.createDOMElement = !0);
+          this.options.displayMode !== A.DEFAULT && (t.createDOMElement = !0);
           const n = this.putPoint(
             s,
             o,
@@ -2037,7 +2055,7 @@ function R() {
       return null;
     e.bounds = this.getBounds(), e.zIndex = this.options.zIndex + 1;
     const n = new re();
-    return n.x = i, n.y = t, this.options.displayMode !== d.DEFAULT && (e.createDOMElement = !0), n.setOptions(e), s && o !== -1 ? this.points.splice(o, 0, n) : this.points.push(n), n;
+    return n.x = i, n.y = t, this.options.displayMode !== A.DEFAULT && (e.createDOMElement = !0), n.setOptions(e), s && o !== -1 ? this.points.splice(o, 0, n) : this.points.push(n), n;
   }, this.getClosestPoint = (i, t, e = null) => {
     if (e || (e = this.getPointsArray()), !e || !e.length)
       return null;
@@ -2058,11 +2076,9 @@ function R() {
     }
     return !i || !this.isShapePoint(i) ? -1 : this.points.indexOf(i);
   }, this.deleteAllPoints = () => {
-    if (this.options.simpleMode)
-      this.points = [];
-    else
-      for (; this.points.length; )
-        this.points[0].destroy();
+    for (; this.points.length; )
+      this.points[0].destroy(!1), this.points.splice(0, 1);
+    this.points = [];
   }, this.deletePoint = (i, t) => {
     if (this.points.length - 1 < this.options.minPoints)
       return;
@@ -2100,39 +2116,39 @@ function R() {
   }, this.isInBounds = (i, t) => {
     const [e, s] = this.transformer.getMaxPointSize(), o = this.getBounds();
     return i >= o.left + e / 2 && i <= o.right - e / 2 && t >= o.top + s / 2 && t <= o.bottom - s / 2;
-  }, this.redraw = () => {
-    this.applyDisplayMode(), v.draw(this), this.options.groupChildShapes && this.redrawChildren();
+  }, this.redraw = async () => {
+    this.applyDisplayMode(), await v.draw(this), this.options.groupChildShapes && this.redrawChildren();
   }, this.redrawChildren = () => {
     this.getChildren().forEach((i) => {
-      this.options.displayAsPath ? this.options.displayMode === d.SELECTED && i.points.filter((t) => t.element).forEach((t) => t.redraw()) : i.redraw();
+      this.options.displayAsPath ? this.options.displayMode === A.SELECTED && i.points.filter((t) => t.element).forEach((t) => t.redraw()) : i.redraw();
     });
   }, this.applyDisplayMode = () => {
     this.points.filter((i) => typeof i.setOptions == "function").forEach((i) => {
-      const t = { zIndex: this.options.zIndex + 15 };
-      t.createDOMElement = this.options.displayMode !== d.DEFAULT, i.setOptions(t), t.createDOMElement && !i.element && i.redraw(), i.element && (i.element.style.zIndex = i.options.zIndex, this.options.displayMode !== d.SELECTED && !i.options.forceDisplay ? i.element.style.display = "none" : i.element.style.display = "");
+      const t = { zIndex: this.options.zIndex + 1 };
+      t.createDOMElement = this.options.displayMode !== A.DEFAULT, i.setOptions(t), t.createDOMElement && !i.element && i.redraw(), i.element && (i.element.style.zIndex = i.options.zIndex, this.options.displayMode !== A.SELECTED && !i.options.forceDisplay || typeof this.options.svgLoadFunc == "function" ? i.element.style.display = "none" : i.element.style.display = "");
     }), this.options.groupChildShapes && this.applyChildrenDisplayMode();
   }, this.applyChildrenDisplayMode = () => {
     this.getChildren(!0).forEach((i) => {
       i.points.filter((t) => typeof t.setOptions == "function").forEach((t) => {
-        if (t.setOptions({ createDOMElement: this.options.displayMode === d.SELECTED }), t.options.createDOMElement && !t.element)
+        if (t.setOptions({ createDOMElement: this.options.displayMode === A.SELECTED }), t.options.createDOMElement && !t.element)
           t.redraw();
-        else if (t.element && this.options.displayMode !== d.SELECTED)
+        else if (t.element && this.options.displayMode !== A.SELECTED)
           try {
             t.element.parentNode.removeChild(t.element);
           } catch {
           }
-        t.options.visible && !t.options.hidden && t.options.canDrag && t.element ? t.element.style.display = "" : t.element && (t.element.style.display = "none");
+        t.options.visible && !t.options.hidden && t.options.canDrag && t.element && typeof this.options.svgLoadFunc != "function" ? t.element.style.display = "" : t.element && (t.element.style.display = "none");
       }), i.options.displayMode = this.options.displayMode;
     });
   }, this.switchDisplayMode = (i = null) => {
-    i || (i = this.getNextDisplayMode()), (i === d.SCALE && !this.options.canScale || i === d.ROTATE && !this.options.canRotate || i === d.SELECTED && this.points.length && !this.options.pointOptions.canDrag) && (i = d.DEFAULT), this.options.displayMode = i, this.options.simpleMode ? this.applyDisplayMode() : this.redraw(), i === d.DEFAULT && this.options.groupChildShapes && setTimeout(() => {
+    i || (i = this.getNextDisplayMode()), (i === A.SCALE && !this.options.canScale || i === A.ROTATE && !this.options.canRotate || i === A.SELECTED && this.points.length && !this.options.pointOptions.canDrag && typeof this.options.svgLoadFunc != "function") && (i = A.DEFAULT), this.options.displayMode = i, this.applyDisplayMode(), this.options.simpleMode || v.updateOptions(this), i === A.DEFAULT && this.options.groupChildShapes && setTimeout(() => {
       this.getChildren(!0).forEach((t) => {
         t.switchDisplayMode(i);
       });
     }, 10);
   }, this.getNextDisplayMode = () => {
     let i;
-    return this.options.displayMode === d.DEFAULT ? i = d.SELECTED : this.options.displayMode === d.SELECTED ? i = d.SCALE : this.options.displayMode === d.SCALE ? i = d.ROTATE : i = d.DEFAULT, i === d.SELECTED && !this.options.pointOptions.canDrag && (i = d.SCALE), i === d.SCALE && !this.options.canScale && (i = d.ROTATE), i === d.ROTATE && !this.options.canRotate && (i = d.DEFAULT), i;
+    return this.options.displayMode === A.DEFAULT ? i = A.SELECTED : this.options.displayMode === A.SELECTED ? i = A.SCALE : this.options.displayMode === A.SCALE ? i = A.ROTATE : i = A.DEFAULT, i === A.SELECTED && (!this.options.pointOptions.canDrag || typeof this.options.svgLoadFunc == "function") && (i = A.SCALE), i === A.SCALE && !this.options.canScale && (i = A.ROTATE), i === A.ROTATE && !this.options.canRotate && (i = A.DEFAULT), i;
   }, this.calcPosition = () => {
     !this.points.length || Object.assign(this, this.calcPositionFromPointsArray(this.getPointsArray()));
   }, this.updatePosition = (i, t, e = !1) => {
@@ -2172,7 +2188,7 @@ function R() {
       i.options.visible = !1;
     }), this.redraw();
   }, this.destroy = () => {
-    if (r.emit(l.SHAPE_DESTROY, this, {}), this.eventListener && this.eventListener.destroy(), this.resizeBox && this.resizeBox.destroy(), this.rotateBox && this.rotateBox.destroy(), this.root)
+    if (a.emit(l.SHAPE_DESTROY, this, {}), this.eventListener && this.eventListener.destroy(), this.resizeBox && this.resizeBox.destroy(), this.rotateBox && this.rotateBox.destroy(), this.root)
       try {
         this.svg && this.root.removeChild(this.svg), this.points.filter((t) => t.element).forEach((t) => this.root.removeChild(t.element));
       } catch {
@@ -2196,7 +2212,7 @@ function R() {
     const e = {
       options: S({}, this.options)
     };
-    if (e.options.displayMode = d.DEFAULT, t || this.options.compactExport ? e.points = this.points.map((s) => [s.x, s.y]) : e.points = this.points.filter((s) => typeof s.getJSON == "function").map((s) => s.getJSON()), i) {
+    if (e.options.displayMode = A.DEFAULT, t || this.options.compactExport ? e.points = this.points.map((s) => [s.x, s.y]) : e.points = this.points.filter((s) => typeof s.getJSON == "function").map((s) => s.getJSON()), i) {
       let s = this.getChildren();
       s.length && (e.children = s.map(
         (o) => o.getJSON(i, t || this.options.compactExport)
@@ -2211,16 +2227,16 @@ function R() {
       let h;
       n.length ? (h = this.putPoint(n[0], n[1]), h.setOptions(o.options.pointOptions || {})) : h = this.putPoint(n.x, n.y, n.options || o.options.pointOptions), h && h.updateContextMenu();
     }), f.addShape(this), e && typeof o.children < "u" && o.children && (this.getChildren(!0).forEach((n) => n.destroy()), o.children.forEach((n) => {
-      n.parent_guid = this.guid, this.addChild(new R().fromJSON(i, n));
+      n.parent_guid = this.guid, this.addChild(new R().fromJSON(i, n), !1);
     })), s) {
       const n = f.getShapeByGuid(o.parent_guid);
-      r.emit(l.SHAPE_CREATE, this, { parent: n });
+      a.emit(l.SHAPE_CREATE, this, { parent: n });
     }
     return this;
   }, this.addChild = (i, t) => this.groupHelper.addChild(i, t), this.addChildren = (i = []) => this.groupHelper.addChildren(i), this.removeChild = (i) => this.groupHelper.removeChild(i), this.removeAllChildren = (i = !1) => this.groupHelper.removeAllChildren(i), this.getChildren = (i = !1) => this.groupHelper.getChildren(i), this.hasChild = (i, t = !1) => this.groupHelper.hasChild(i, t), this.getParent = () => this.groupHelper.getParent(), this.getRootParent = (i = null) => this.groupHelper.getRootParent(i), this.getParentsList = (i = []) => this.groupHelper.getParentsList(i), this.mapCurrentPointToOriginal = (i, t) => X(
     i,
     t,
-    k.CURRENT_TO_ORIGINAL,
+    F.CURRENT_TO_ORIGINAL,
     {
       ...this.options,
       ...this.getPosition(this.options.groupChildShapes)
@@ -2228,14 +2244,14 @@ function R() {
   ), this.mapOriginalPointToCurrent = (i, t) => X(
     i,
     t,
-    k.ORIGINAL_TO_CURRENT,
+    F.ORIGINAL_TO_CURRENT,
     {
       ...this.options,
       ...this.getPosition(this.options.groupChildShapes)
     }
   );
 }
-const d = {
+const A = {
   DEFAULT: "default",
   SELECTED: "selected",
   SCALE: "scale",
@@ -2268,10 +2284,10 @@ function lt() {
     },
     zIndex: 1e3,
     onlyMove: !1
-  }, this.eventListener = null, this.left_top = null, this.left_center = null, this.left_bottom = null, this.center_top = null, this.center_bottom = null, this.right_top = null, this.right_center = null, this.right_bottom = null, this.init = (i, t, e, s, o, n = {}) => (this.left = parseInt(t), this.top = parseInt(e), this.width = parseInt(s), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new R().init(i, S({}, this.options.shapeOptions), []), r.emit(l.SHAPE_CREATE, this.shape, {}), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new le(this).run(), this), this.setOptions = (i = {}) => {
+  }, this.eventListener = null, this.left_top = null, this.left_center = null, this.left_bottom = null, this.center_top = null, this.center_bottom = null, this.right_top = null, this.right_center = null, this.right_bottom = null, this.init = (i, t, e, s, o, n = {}) => (this.left = parseInt(t), this.top = parseInt(e), this.width = parseInt(s), this.height = parseInt(o), this.right = this.left + this.width, this.bottom = this.top + this.height, this.setOptions(n), this.options.shapeOptions.id = this.options.id, this.options.shapeOptions.canRotate = !1, this.options.shapeOptions.canScale = !1, this.shape = new R().init(i, S({}, this.options.shapeOptions), []), a.emit(l.SHAPE_CREATE, this.shape, {}), this.options.shapeOptions.pointOptions.bounds = this.shape.getBounds(), this.addPoints(), this.eventListener = new le(this).run(), this), this.setOptions = (i = {}) => {
     !i || typeof i != "object" || (this.options = S(this.options, i), this.options.shapeOptions.zIndex = this.options.zIndex || 1e3, this.options.shapeOptions.id = this.options.id || "", this.shape && this.shape.setOptions(this.options.shapeOptions));
   }, this.addPoints = () => {
-    this.left_top = this.shape.putPoint(this.left, this.top, { id: this.shape.guid + "_left_top", style: { backgroundImage: "url('" + Ft + "')" } }), this.center_top = this.shape.putPoint(this.left + this.width / 2, this.top, { id: this.shape.guid + "_center_top", style: { backgroundImage: "url('" + Ht + "')" } }), this.right_top = this.shape.putPoint(this.right, this.top, { id: this.shape.guid + "_right_top", style: { backgroundImage: "url('" + jt + "')" } }), this.right_center = this.shape.putPoint(this.right, this.top + this.height / 2, { id: this.shape.guid + "_right_center", style: { backgroundImage: "url('" + Qt + "')" } }), this.right_bottom = this.shape.putPoint(this.right, this.bottom, { id: this.shape.guid + "_right_bottom", style: { backgroundImage: "url('" + Wt + "')" } }), this.center_bottom = this.shape.putPoint(this.left + this.width / 2, this.bottom, { id: this.shape.guid + "_center_bottom", style: { backgroundImage: "url('" + zt + "')" } }), this.left_bottom = this.shape.putPoint(this.left, this.bottom, { id: this.shape.guid + "_left_bottom", style: { backgroundImage: "url('" + Gt + "')" } }), this.left_center = this.shape.putPoint(this.left, this.top + this.height / 2, { id: this.shape.guid + "_left_center", style: { backgroundImage: "url('" + kt + "')" } }), this.setPointsOptions();
+    this.left_top = this.shape.putPoint(this.left, this.top, { id: this.shape.guid + "_left_top", style: { backgroundImage: "url('" + kt + "')" } }), this.center_top = this.shape.putPoint(this.left + this.width / 2, this.top, { id: this.shape.guid + "_center_top", style: { backgroundImage: "url('" + Ht + "')" } }), this.right_top = this.shape.putPoint(this.right, this.top, { id: this.shape.guid + "_right_top", style: { backgroundImage: "url('" + jt + "')" } }), this.right_center = this.shape.putPoint(this.right, this.top + this.height / 2, { id: this.shape.guid + "_right_center", style: { backgroundImage: "url('" + Qt + "')" } }), this.right_bottom = this.shape.putPoint(this.right, this.bottom, { id: this.shape.guid + "_right_bottom", style: { backgroundImage: "url('" + Wt + "')" } }), this.center_bottom = this.shape.putPoint(this.left + this.width / 2, this.bottom, { id: this.shape.guid + "_center_bottom", style: { backgroundImage: "url('" + zt + "')" } }), this.left_bottom = this.shape.putPoint(this.left, this.bottom, { id: this.shape.guid + "_left_bottom", style: { backgroundImage: "url('" + Gt + "')" } }), this.left_center = this.shape.putPoint(this.left, this.top + this.height / 2, { id: this.shape.guid + "_left_center", style: { backgroundImage: "url('" + Ft + "')" } }), this.setPointsOptions();
   }, this.setPointsOptions = () => {
     this.setPointsMoveDirections(), this.setPointsMoveBounds();
   }, this.setPointsMoveDirections = () => {
@@ -2291,7 +2307,7 @@ function lt() {
   }, this.hide = () => {
     this.options.shapeOptions.visible = !1, this.shape.hide();
   }, this.destroy = () => {
-    r.emit(l.SHAPE_DESTROY, this, {}), this.eventListener.destroy(), this.shape.destroy();
+    a.emit(l.SHAPE_DESTROY, this, {}), this.eventListener.destroy(), this.shape.destroy();
   }, this.addEventListener = (i, t) => this.eventListener.addEventListener(i, t), this.removeEventListener = (i, t) => {
     this.eventListener.removeEventListener(i, t);
   }, this.applyOnlyMove = () => {
@@ -2303,17 +2319,17 @@ function lt() {
   };
 }
 try {
-  window.ResizeBox = lt, window.SmartShape = R, window.RotateBox = at, window.SmartShapeManager = f, window.SmartShapeGroupHelper = rt, window.SmartShapeDisplayMode = d, window.ShapeEvents = l, window.createEvent = u, window.getMousePos = Y, window.getMouseCursorPos = j;
+  window.ResizeBox = lt, window.SmartShape = R, window.RotateBox = at, window.SmartShapeManager = f, window.SmartShapeGroupHelper = rt, window.SmartShapeDisplayMode = A, window.ShapeEvents = l, window.createEvent = u, window.getMousePos = Y, window.getMouseCursorPos = j;
 } catch {
 }
 export {
-  r as EventsManager,
+  a as EventsManager,
   lt as ResizeBox,
   at as RotateBox,
   l as ShapeEvents,
   R as SmartShape,
-  d as SmartShapeDisplayMode,
-  Ae as SmartShapeEventListener,
+  A as SmartShapeDisplayMode,
+  de as SmartShapeEventListener,
   rt as SmartShapeGroupHelper,
   f as SmartShapeManager,
   u as createEvent,
