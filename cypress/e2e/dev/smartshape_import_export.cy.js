@@ -112,7 +112,8 @@ describe('SmartShape import/export tests', () => {
     scaleFactorY: 1,
     rotateAngle: 0,
     flippedX: false,
-    flippedY: false
+    flippedY: false,
+    svgLoadFunc: null,
   }
   it('toJSON basic', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {

@@ -5,9 +5,11 @@ describe('SmartShape Context Menus tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = SmartShapeManager.createShape(app,{},[[0,100],[100,0],[200,100]]);
+      shape.shapeMenu.updateContextMenu();
       assert.isDefined(shape.contextMenu,"contextMenu should be defined");
       assert.isNotNull(shape.contextMenu,"Context menu should be enabled by default");
       shape.setOptions({hasContextMenu:false});
+      shape.shapeMenu.updateContextMenu();
       assert.isNull(shape.contextMenu,"contextMenu should be null after disable");
       shape.setOptions({hasContextMenu:true});
       assert.isNotNull(shape.contextMenu,"Context menu should be enabled after set option");
@@ -17,6 +19,7 @@ describe('SmartShape Context Menus tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape = SmartShapeManager.createShape(app, {hasContextMenu: true}, [[0, 100], [100, 0], [200, 100]]);
+      shape.shapeMenu.updateContextMenu();
       assert.isDefined(shape.contextMenu.items.find(item => item.id === "i" + shape.guid + "_clone"), "Should have 'Clone' command");
       assert.isDefined(shape.contextMenu.items.find(item => item.id === "i" + shape.guid + "_export_json", "Should have 'Export to JSON' command"));
       assert.isDefined(shape.contextMenu.items.find(item => item.id === "i" + shape.guid + "_export_svg", "Should have 'Export to SVG' command"));
@@ -41,6 +44,7 @@ describe('SmartShape Context Menus tests', () => {
     cy.visit('http://localhost:5173/tests/empty.html').then(() => {
       const app = Cypress.$("#app").toArray()[0];
       const shape1 = SmartShapeManager.createShape(app,{},[[0,100],[100,0],[200,100]]);
+      shape1.shapeMenu.updateContextMenu();
       shape1.contextMenu.show();
       assert.isUndefined(shape1.contextMenu.items.find(item=>item.id === "i" + shape1.guid+"_ungroup"),
           "Should not contain 'Group' item if no children");

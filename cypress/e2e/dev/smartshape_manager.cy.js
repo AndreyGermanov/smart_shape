@@ -127,7 +127,7 @@ describe('SmartShape Manager tests', () => {
       shape4.init(div, {id: "shape4", canScale:true, canRotate:true,pointOptions:{canDelete:true}},[[300,100],[400,0],[500,100]]);
       shape4.switchDisplayMode(SmartShapeDisplayMode.SCALE);
       shape4.switchDisplayMode(SmartShapeDisplayMode.ROTATE);
-      assert.equal(SmartShapeManager.length(),4,"Should add shapes and their boxes")
+      assert.equal(SmartShapeManager.length(),12,"Should add shapes and their boxes")
       assert.equal(SmartShapeManager.containerEventListeners.length,10, "Should add global event listeners to containers");
       shape1.destroy();
       shape2.destroy();

@@ -23,7 +23,7 @@ export default function SmartShapeTransformer(shape) {
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
-    this.moveTo = (x,y,redraw= true,respectBounds=true,fast=false) => {
+    this.moveTo = (x,y,redraw= true,respectBounds=true,fast=true) => {
         const bounds = this.shape.getBounds();
         const pos = this.shape.getPosition(this.shape.options.groupChildShapes);
         let newX = x;
@@ -43,12 +43,13 @@ export default function SmartShapeTransformer(shape) {
      * @param redraw {boolean} should the function redraw the shape after move. True by default
      * @param fast {boolean} if true, then only change shape dimensions without recalculate points
      */
-    this.moveBy = (stepX, stepY,redraw=true,fast=false) => {
-        for (let index in this.shape.points) {
-            this.shape.points[index].x += stepX;
-            this.shape.points[index].y += stepY;
-            if (!this.shape.options.simpleMode && redraw && typeof (this.shape.points[index].redraw) === "function") {
-                this.shape.points[index].redraw();
+    this.moveBy = (stepX, stepY,redraw=true,fast=true) => {
+        const shp = this.shape.getParent(true) || this.shape;
+        for (let point of this.shape.points) {
+            point.x += stepX;
+            point.y += stepY;
+            if (shp.options.displayMode === SmartShapeDisplayMode.SELECTED || point.options.forceDisplay) {
+                point.redraw();
             }
         }
         this.shape.options.offsetX += stepX;
@@ -60,20 +61,17 @@ export default function SmartShapeTransformer(shape) {
         this.shape.width = this.shape.right - this.shape.left;
         this.shape.height = this.shape.bottom - this.shape.top;
         const children = this.shape.getChildren(true)
-        if (redraw) {
-            if (!fast) {
-                this.shape.redraw();
-            } else if (this.shape.svg) {
-                this.shape.svg.style.left = this.shape.left + "px";
-                this.shape.svg.style.top = this.shape.top + "px";
-            }
-        }
         if (children.length && this.shape.options.groupChildShapes) {
             children.forEach(child => child.moveBy(stepX,stepY,redraw,fast))
         }
-        if (fast && !this.shape.getParent()) {
-            SmartShapeDrawHelper.redrawResizeBox(this);
-            SmartShapeDrawHelper.redrawRotateBox(this);
+        if (redraw && this.shape.svg) {
+            const pos = this.shape.getPosition(true);
+            this.shape.svg.style.left = pos.left + "px";
+            this.shape.svg.style.top = pos.top + "px";
+        }
+        if (!this.shape.getParent()) {
+            SmartShapeDrawHelper.redrawResizeBox(this.shape);
+            SmartShapeDrawHelper.redrawRotateBox(this.shape);
         }
     }
 
@@ -353,7 +351,7 @@ export default function SmartShapeTransformer(shape) {
             }
         }
         const [pointWidth,pointHeight] = this.getMaxPointSize();
-        return {
+        const result = {
             left: pos.left - pointWidth,
             right: pos.right + pointWidth,
             top: pos.top - pointHeight,
@@ -361,6 +359,7 @@ export default function SmartShapeTransformer(shape) {
             width: pos.width + (pointWidth)*2,
             height: pos.height + (pointHeight)*2,
         }
+        return result;
     }
 
     /**

@@ -170,7 +170,7 @@ function SmartShapeEventListener(shape) {
         })
     }
 
-    this.onResize = (event) => {
+    this.onResize = async(event) => {
         const parent = this.shape.getRootParent(true);
         if (parent) {
             EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,parent.resizeBox,createEvent(event,
@@ -181,13 +181,20 @@ function SmartShapeEventListener(shape) {
         if (event.buttons && this.shape.options.simpleMode) {
             return
         }
-        const diffX = event.newPos.left - event.oldPos.left;
-        const diffY = event.newPos.top - event.oldPos.top;
-        this.shape.moveBy(diffX,diffY,false);
-        const [pointWidth,pointHeight] = this.shape.transformer.getMaxPointSize();
-        this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
-        this.shape.redraw();
-        EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
+        if (!event.buttons) {
+            const diffX = event.newPos.left - this.oldPos.left;
+            const diffY = event.newPos.top - this.oldPos.top;
+            this.shape.moveBy(diffX,diffY,false);
+            const [pointWidth,pointHeight] = this.shape.transformer.getMaxPointSize();
+            this.shape.scaleTo(event.newPos.width-(pointWidth)*2,event.newPos.height-(pointHeight)*2);
+            await this.shape.redraw();
+            EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
+            this.oldPos = null;
+        } else if (!this.oldPos) {
+            const maxZIndex = SmartShapeDrawHelper.getMaxZIndex(this.shape);
+            this.shape.resizeBox.setOptions({zIndex:maxZIndex});
+            this.oldPos = event.oldPos;
+        }
     }
 
     this.onRotate = (event) => {
@@ -249,10 +256,7 @@ function SmartShapeEventListener(shape) {
             return
         }
         const oldPos = this.shape.getPosition(this.shape.options.groupChildShapes);
-        this.shape.moveBy(stepX,stepY,true,this.shape.options.simpleMode);
-        if (!this.shape.options.simpleMode) {
-            this.shape.redraw();
-        }
+        this.shape.moveBy(stepX,stepY,true);
         const newPos = this.shape.getPosition(this.shape.options.groupChildShapes);
         EventsManager.emit(ShapeEvents.SHAPE_MOVE,this.shape,createEvent(event,{oldPos,newPos}));
     }
