@@ -191,6 +191,8 @@ function SmartShapeEventListener(shape) {
             EventsManager.emit(ResizeBoxEvents.RESIZE_BOX_RESIZE,this.shape,event);
             this.oldPos = null;
         } else if (!this.oldPos) {
+            const maxZIndex = SmartShapeDrawHelper.getMaxZIndex(this.shape);
+            this.shape.resizeBox.setOptions({zIndex:maxZIndex});
             this.oldPos = event.oldPos;
         }
     }

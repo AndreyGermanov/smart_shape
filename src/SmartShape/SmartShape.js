@@ -192,6 +192,7 @@ function SmartShape() {
         rotateAngle: 0,
         flippedX: false,
         flippedY: false,
+        svgLoadFunc: null
     };
 
     /**
@@ -809,7 +810,7 @@ function SmartShape() {
      */
     this.applyDisplayMode = () => {
         this.points.filter(point=>typeof(point.setOptions) === "function").forEach(point => {
-            const options = {zIndex: this.options.zIndex + 15}
+            const options = {zIndex: this.options.zIndex + 1}
             options.createDOMElement = this.options.displayMode !== SmartShapeDisplayMode.DEFAULT;
             point.setOptions(options);
             if (options.createDOMElement && !point.element) {
@@ -870,10 +871,7 @@ function SmartShape() {
         }
         this.options.displayMode = mode;
         this.applyDisplayMode();
-        if (this.options.simpleMode) {
-            this.applyDisplayMode();
-        } else {
-            this.applyDisplayMode();
+        if (!this.options.simpleMode) {
             SmartShapeDrawHelper.updateOptions(this);
         }
         if (mode === SmartShapeDisplayMode.DEFAULT && this.options.groupChildShapes) {

@@ -48,7 +48,7 @@ export default function SmartShapeTransformer(shape) {
         for (let point of this.shape.points) {
             point.x += stepX;
             point.y += stepY;
-            if (shp.options.displayMode === SmartShapeDisplayMode.SELECTED) {
+            if (shp.options.displayMode === SmartShapeDisplayMode.SELECTED || point.options.forceDisplay) {
                 point.redraw();
             }
         }

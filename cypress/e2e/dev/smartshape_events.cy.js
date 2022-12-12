@@ -203,8 +203,10 @@ describe('SmartShape and SmartPoint events', () => {
         cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mousedown", {buttons: 1}).then(() => {
           cy.wait(200).then(() => {
             cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mousemove",{buttons:1,movementX:100,movementY:10}).then(() => {
-              assert.isTrue(triggered, "Should trigger resize event");
-              shape.destroy();
+              cy.get("#"+shape.resizeBox.shape.guid+"_right_center").trigger("mouseup",{buttons:0}).then(() => {
+                assert.isTrue(triggered, "Should trigger resize event");
+                shape.destroy();
+              })
             });
           });
         })

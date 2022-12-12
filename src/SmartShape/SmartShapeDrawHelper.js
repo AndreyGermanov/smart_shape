@@ -321,12 +321,48 @@ function SmartShapeDrawHelper() {
         const svg = await shape.options.svgLoadFunc(shape);
         if (!svg) { return }
         const paths = Array.from(svg.querySelectorAll("path"));
-        const path = paths.find(path => path.getAttribute("shape_id") === shape.options.id);
-        if (!path) {
+        if (!paths.length) {
             return
         }
-        this.applyExternalSvg(shape,path);
-        const pos = shape.getPosition();
+        let path = null
+        if (shape.polygon) {
+            path = paths.find(item => item.id === shape.polygon.getAttribute("path_id"))
+        }
+        if (!path) {
+            path = paths[0]
+            shape.polygon = path.cloneNode(true);
+            shape.polygon.setAttribute("path_id",path.id);
+            shape.polygon.setAttribute("shape_guid",shape.guid);
+            if (shape.svg) {
+                shape.svg.appendChild(shape.polygon);
+            }
+        } else {
+            shape.polygon.setAttribute("d",path.getAttribute("d"));
+        }
+        shape.polygon.setAttribute("shape_guid",shape.guid);
+        shape.polygon.id = "p"+shape.guid+"_polygon";
+        this.addPointsFromShape(shape);
+        shape.calcPosition();
+        paths.splice(paths.indexOf(path),1);
+        for (let p of paths) {
+            let child = SmartShapeManager.findShapeById(p.id)
+            if (!child) {
+                child = SmartShapeManager.createShape(shape.root,{hasContextMenu:false,id:p.id},[],false)
+                child.polygon = p;
+                child.polygon.id = "p"+child.guid+"_polygon";
+                child.polygon.setAttribute("shape_guid",child.guid);
+                child.polygon.setAttribute("path_id",p.id);
+                if (shape.svg) {
+                    shape.svg.appendChild(child.polygon);
+                }
+                shape.addChild(child,false);
+                SmartShapeManager.addShape(child);
+            } else {
+                child.polygon.setAttribute("d",p.getAttribute("d"))
+            }
+            this.addPointsFromShape(child);
+        }
+        const pos = shape.getPosition(true);
         shape.svg.setAttribute("width",pos.width+"px");
         shape.svg.setAttribute("height",pos.height+"px");
         shape.svg.style.width = pos.width + "px";
@@ -345,20 +381,6 @@ function SmartShapeDrawHelper() {
         ZERO: 48,
         NINE: 57
 
-    }
-    this.applyExternalSvg = (shape, path) => {
-        if (!shape.polygon) {
-            shape.polygon = path;
-            if (shape.svg) {
-                shape.svg.appendChild(shape.polygon);
-            }
-        } else {
-            shape.polygon.setAttribute("d",path.getAttribute("d"));
-        }
-        shape.polygon.setAttribute("shape_guid",shape.guid);
-        shape.polygon.id = "p"+shape.guid+"_polygon";
-        this.addPointsFromShape(shape);
-        shape.calcPosition();
     }
 
     this.addPointsFromShape = (shape) => {
@@ -402,13 +424,20 @@ function SmartShapeDrawHelper() {
             shape.transformer.setupResizeBox();
             if (shape.resizeBox) {
                 shape.resizeBox.shape.points.forEach(point => {
-                    point.options.zIndex = shape.options.zIndex + 2;
-                    point.element.style.zIndex = shape.options.zIndex + 2;
+                    point.options.zIndex = shape.resizeBox.shape.options.zIndex + 2;
+                    point.element.style.zIndex = shape.resizeBox.shape.options.zIndex + 2;
                 })
             }
             return
         }
         this.setupBox(shape,shape.resizeBox,SmartShapeDisplayMode.SCALE);
+    }
+
+    this.getMaxZIndex = (shape) => {
+        return shape.getChildren(true)
+            .map(child=>child.options.zIndex)
+            .reduce((p1,p2) => p1 > p2 ? p1 : p2,shape.options.zIndex);
+
     }
 
     /**
@@ -452,8 +481,8 @@ function SmartShapeDrawHelper() {
         box.redraw();
         setTimeout(() => {
             box.shape.points.forEach(point => {
-                point.options.zIndex = shape.options.zIndex+2;
-                point.element.style.zIndex = shape.options.zIndex+2;
+                point.options.zIndex = box.shape.options.zIndex+2;
+                point.element.style.zIndex = box.shape.options.zIndex+2;
             })
         },1)
     }
