@@ -408,7 +408,6 @@ function SmartShapeEventListener(shape) {
         }
         this.shape.points.splice(this.shape.points.indexOf(event.target), 1);
         try {
-            this.shape.root.removeChild(event.target.element);
             this.shape.redraw()
         } catch (err) {}
         EventsManager.emit(ShapeEvents.POINT_DESTROYED,this.shape,{point:event.target});
@@ -550,6 +549,7 @@ function SmartShapeEventListener(shape) {
  * @param remove_child {ShapeEvents.SHAPE_REMOVE_CHILD} Child shape removed from this shape. Event object contains a
  * `child` field which is a SmartShape object of removed child.
  * @param shape_activated {ShapeEvents.SHAPE_ACTIVATED} Shape activated
+ * @param shape_loaded {ShapeEvents.SHAPE_LOADED} Shape loaded by external function
  * @enum {string}
  */
 export const ShapeEvents = {
@@ -578,6 +578,7 @@ export const ShapeEvents = {
     SHAPE_ADD_CHILD: "add_child",
     SHAPE_REMOVE_CHILD: "remove_child",
     SHAPE_ACTIVATED: "shape_activated",
+    SHAPE_LOADED: "shape_loaded",
     /**
      * Method returns an object of all ShapeEvents that
      * related to mouse.*

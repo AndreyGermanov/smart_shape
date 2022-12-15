@@ -259,13 +259,15 @@ function SmartShapeDrawHelper() {
         if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
-            path += this.getPolygonPathForChildren(shape,pos);
+            if (parent.options.displayAsPath) {
+                path += this.getPolygonPathForChildren(shape, pos);
+            }
             return path;
         } else {
             const pos = shape.getPosition(shape.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(shape));
-            path += this.getPolygonPathForChildren(shape,pos)
             if (shape.options.displayAsPath && shape.options.groupChildShapes) {
+                path += this.getPolygonPathForChildren(shape,pos)
                 const svg = this.getShapeSvg(shape);
                 svg.setAttribute("width",pos.width);
                 svg.setAttribute("height",pos.height);
@@ -277,14 +279,19 @@ function SmartShapeDrawHelper() {
         }
     }
 
+    /**
+     * @ignore
+     * Returns polygons of all children of specified shape as a single SVG path
+     * @param shape {SmartShape} SmartShape object
+     * @param pos {object} Dimensions of shape. Object with fields `left`,`top`,`bottom`,`right`
+     * @returns {string}
+     */
     this.getPolygonPathForChildren = (shape,pos) => {
         let path = "";
-        if (shape.options.displayAsPath && shape.options.groupChildShapes) {
-            shape.getChildren().forEach(child => {
-                child.calcPosition();
-                path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child)).toString();
-            })
-        }
+        shape.getChildren().forEach(child => {
+            child.calcPosition();
+            path += this.getPolygonPathForShape(child, pos, this.getMaxStrokeWidth(child)).toString();
+        })
         return path;
     }
 
@@ -317,75 +324,59 @@ function SmartShapeDrawHelper() {
         return path;
     }
 
+    /**
+     * @ignore
+     * Method used to load shape polygon and children
+     * using external function, specified in `svgLoadFunc` SmartShape option
+     * @param shape {SmartShape} SmartShape object
+     */
     this.loadExternalSvg = async(shape) => {
+        shape.setOptions({pointOptions:{canDrag:false}})
         const svg = await shape.options.svgLoadFunc(shape);
         if (!svg) { return }
         const paths = Array.from(svg.querySelectorAll("path"));
         if (!paths.length) {
             return
         }
-        let path = null
-        if (shape.polygon) {
-            path = paths.find(item => item.id === shape.polygon.getAttribute("path_id"))
-        }
-        if (!path) {
-            path = paths[0]
-            shape.polygon = path.cloneNode(true);
-            shape.polygon.setAttribute("path_id",path.id);
-            shape.polygon.setAttribute("shape_guid",shape.guid);
-            if (shape.svg) {
-                shape.svg.appendChild(shape.polygon);
-            }
-        } else {
-            shape.polygon.setAttribute("d",path.getAttribute("d"));
-        }
+        const path = this.updateShapeFromPath(shape,paths);
+        this.removeUnusedChildren(shape,paths);
         shape.polygon.setAttribute("shape_guid",shape.guid);
         shape.polygon.id = "p"+shape.guid+"_polygon";
-        this.addPointsFromShape(shape);
+        this.addPointsFromPolygon(shape);
         shape.calcPosition();
         paths.splice(paths.indexOf(path),1);
-        for (let p of paths) {
-            let child = SmartShapeManager.findShapeById(p.id)
-            if (!child) {
-                child = SmartShapeManager.createShape(shape.root,{hasContextMenu:false,id:p.id},[],false)
-                child.polygon = p;
-                child.polygon.id = "p"+child.guid+"_polygon";
-                child.polygon.setAttribute("shape_guid",child.guid);
-                child.polygon.setAttribute("path_id",p.id);
-                if (shape.svg) {
-                    shape.svg.appendChild(child.polygon);
-                }
-                shape.addChild(child,false);
-                SmartShapeManager.addShape(child);
-            } else {
-                child.polygon.setAttribute("d",p.getAttribute("d"))
-            }
-            this.addPointsFromShape(child);
-        }
+        this.addChildShapesFromPaths(shape,paths);
         const pos = shape.getPosition(true);
         shape.svg.setAttribute("width",pos.width+"px");
         shape.svg.setAttribute("height",pos.height+"px");
         shape.svg.style.width = pos.width + "px";
         shape.svg.style.height = pos.height + "px";
-        if (!SmartShapeManager.getShapeByGuid(shape.guid)) {
-            SmartShapeManager.addShape(shape);
-        }
+        SmartShapeManager.addShape(shape);
         shape.options.canScale && this.redrawResizeBox(shape);
         shape.options.canRotate && this.redrawRotateBox(shape);
+        EventsManager.emit(ShapeEvents.SHAPE_LOADED,shape);
     }
 
-    const ASCII = {
-        DOT: 46,
-        COMMA: 44,
-        SPACE: 32,
-        ZERO: 48,
-        NINE: 57
-
-    }
-
-    this.addPointsFromShape = (shape) => {
+    /**
+     * @ignore
+     * Method used to create points of shape based on `d` attribute
+     * of shape path polygon
+     * @param shape {SmartShape} SmartShape object
+     */
+    this.addPointsFromPolygon = (shape) => {
+        shape.setOptions({pointOptions:{canDrag:false}})
+        const parent = shape.getParent(true);
+        const shp = parent || shape;
+        const pos = shp.getPosition(true);
         shape.deleteAllPoints();
-        const pos = shape.getPosition();
+        shape.isNewObject = true;
+        let pointsStr = shape.polygon.getAttribute("points");
+        if (pointsStr && pointsStr.length) {
+            shape.points = JSON.parse(pointsStr);
+            shape.isNewObject = false;
+            shape.calcPosition();
+            return;
+        }
         const d = shape.polygon.getAttribute("d")
         let buffer = [];
         let x = null;
@@ -399,11 +390,149 @@ function SmartShapeDrawHelper() {
                     x = parseFloat(buffer.join(""));
                 } else {
                     y = parseFloat(buffer.join(""));
-                    shape.putPoint(x + pos.left, y + pos.top);
+                    shape.putPoint(x+pos.left,y+pos.top)
                     x = null; y = null;
                 }
                 buffer = [];
             }
+        }
+        shape.isNewObject = false;
+//        this.getPointsFromPolygon(shape.polygon).forEach(point => shape.putPoint(point[0]+pos.left,point[1]+pos.top));
+    }
+
+    const ASCII = {
+        DOT: 46,
+        COMMA: 44,
+        SPACE: 32,
+        ZERO: 48,
+        NINE: 57
+
+    }
+
+    /**
+     * @ignore
+     * Function used to parse "d" attribute of provided <path> node and return
+     * it as an array of [x,y] coordinates
+     * @param polygon {HTMLElement}  Path HTML Node
+     * @returns {array} Array of coordinates [x,y]
+     */
+    this.getPointsFromPolygon = (polygon) => {
+        const result = [];
+        const d = polygon.getAttribute("d")
+        let buffer = [];
+        let x = null;
+        let y = null;
+        for (let char of d) {
+            const code = char.charCodeAt(0);
+            if ((code >= ASCII.ZERO && code <= ASCII.NINE) || code === ASCII.DOT) {
+                buffer.push(char)
+            } else if ((code === ASCII.COMMA || code === ASCII.SPACE) && buffer.length) {
+                if (x === null) {
+                    x = parseFloat(buffer.join(""));
+                } else {
+                    y = parseFloat(buffer.join(""));
+                    result.push([x,y]);
+                    x = null; y = null;
+                }
+                buffer = [];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @ignore
+     * Method used to set the first polygon from specified `paths` as a polygon
+     * of shape
+     * @param shape {SmartShape} SmartShape object
+     * @param paths {array} Array of <path> elements
+     */
+    this.updateShapeFromPath = (shape,paths) => {
+        let path = null
+        if (shape.polygon) {
+            path = paths.find(item => item.id === shape.polygon.getAttribute("path_id"))
+        }
+        if (path) {
+            shape.polygon.setAttribute("d", path.getAttribute("d"));
+            shape.polygon.setAttribute("points", path.getAttribute("points"));
+            return path
+        }
+        path = paths[0]
+        if (shape.polygon) {
+            const shapes = shape.getChildren(true);
+            const child = shapes.find(item => item.polygon &&
+                item.polygon.getAttribute("path_id") === path.id);
+            if (child) {
+                shape.removeChild(child);
+                try {
+                    shape.svg.removeChild(child.polygon)
+                } catch (err) {
+                }
+                child.destroy();
+            }
+        }
+        shape.polygon = path.cloneNode(true);
+        shape.polygon.setAttribute("path_id",path.id);
+        shape.polygon.setAttribute("shape_guid",shape.guid);
+        if (shape.svg) {
+            shape.svg.appendChild(shape.polygon);
+        }
+        return path
+    }
+
+    /**
+     * @ignore
+     * Method used to create child shapes of specified shape
+     * using info from provided array of polygons
+     * @param shape {SmartShape} SmartShape object
+     * @param paths {array} Array of path HTML elements
+     */
+    this.addChildShapesFromPaths = (shape,paths) => {
+        for (let p of paths) {
+            let child = SmartShapeManager.findShapeById(p.id)
+            if (!child) {
+                child = SmartShapeManager.createShape(shape.root,{hasContextMenu:false,id:p.id},[],false)
+                child.polygon = p;
+                child.polygon.setAttribute("path_id",p.id);
+                child.polygon.id = "p"+child.guid+"_polygon";
+                child.polygon.setAttribute("shape_guid",child.guid);
+                if (shape.svg) {
+                    shape.svg.appendChild(child.polygon);
+                }
+                shape.addChild(child,false);
+                SmartShapeManager.addShape(child);
+            } else {
+                child.polygon.setAttribute("d",p.getAttribute("d"))
+                child.polygon.setAttribute("points",p.getAttribute("points"))
+            }
+            this.addPointsFromPolygon(child);
+            child.calcPosition();
+        }
+    }
+
+    /**
+     * @ignore
+     * Method used to remove all children of specified shape
+     * that does not have polygons, specified in `paths` array argument
+     * It removes both shape children and polygons from shape SVG element
+     * @param shape {SmartShape} SmartShape object
+     * @param paths {array} Array of path HTML elements
+     */
+    this.removeUnusedChildren = (shape,paths) => {
+        const origPaths = Array.from(shape.svg.querySelectorAll("path"));
+        for (let path of origPaths) {
+            if (paths.find(p => p.id === path.getAttribute("path_id"))) {
+                continue
+            }
+            const shapes = SmartShapeManager.getShapes();
+            const child = shapes.find(shp => shp.polygon && shp.polygon.getAttribute("path_id") === path.getAttribute("path_id"));
+            if (child) {
+                shape.children.splice(shape.children.indexOf(child),1);
+                child.destroy();
+            }
+            try {
+                shape.svg.removeChild(path);
+            } catch (err) {}
         }
     }
 

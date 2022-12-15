@@ -507,6 +507,9 @@ function SmartPoint() {
             this.element.removeEventListener("click", this.click);
             this.element.removeEventListener("dblclick", this.doubleclick);
             this.element.removeEventListener("mousemove", this.mousemove);
+            try {
+                this.element.parentNode.removeChild(this.element);
+            } catch (err) {}
         }
         sendDestroyEvent && EventsManager.unsubscribe(ContainerEvents.CONTAINER_BOUNDS_CHANGED,this.onBoundsChange);
         sendDestroyEvent && EventsManager.emit(PointEvents.POINT_DESTROYED,this);

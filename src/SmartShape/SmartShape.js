@@ -386,7 +386,7 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
-    this.addPoint = (x,y,pointOptions= {}) => {
+    this.addPoint = async(x,y,pointOptions= {}) => {
         let point = this.putPoint(x, y,mergeObjects({},this.options.pointOptions, pointOptions));
         if (!point) {
             return null;
@@ -401,7 +401,7 @@ function SmartShape() {
             } catch (err) {}
             point.updateContextMenu();
         }
-        this.redraw();
+        await this.redraw();
         if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
             this.shapeMenu.updateContextMenu();
         }
@@ -420,7 +420,7 @@ function SmartShape() {
      * or default options of SmartPoint class itself.
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
-    this.insertPoint = (x,y,beforePoint,pointOptions= {}) => {
+    this.insertPoint = async(x,y,beforePoint,pointOptions= {}) => {
         let point = this.putPoint(x, y,mergeObjects({}, this.options.pointOptions, pointOptions),beforePoint);
         if (!point) {
             return null;
@@ -433,7 +433,7 @@ function SmartShape() {
             this.root.appendChild(point.element);
         } catch (err) {};
         point.updateContextMenu();
-        this.redraw();
+        await this.redraw();
         if (this.options.hasContextMenu && !this.shapeMenu.contextMenu) {
             this.shapeMenu.updateContextMenu();
         }
@@ -499,9 +499,12 @@ function SmartShape() {
      * @returns {object} [SmartPoint](#SmartPoint) object of added point
      */
     this.putPoint = (x,y,pointOptions= {}, beforePoint=null) => {
-        let beforeIndex = this.getPointIndex(beforePoint);
-        if (beforePoint && beforeIndex === -1) {
-            return null;
+        let beforeIndex = -1;
+        if (beforePoint) {
+            beforeIndex = this.getPointIndex(beforePoint);
+            if (beforeIndex === -1) {
+                return null;
+            }
         }
         if (!this.isNewObject && this.findPoint(x,y)) {
             return null;
@@ -511,7 +514,7 @@ function SmartShape() {
         const point = new SmartPoint();
         point.x = x;
         point.y = y;
-        if (this.options.displayMode !== SmartShapeDisplayMode.DEFAULT) {
+        if (this.options.displayMode === SmartShapeDisplayMode.SELECTED && this.options.pointOptions.canDrag) {
             pointOptions.createDOMElement = true;
         }
         point.setOptions(pointOptions);
@@ -599,7 +602,9 @@ function SmartShape() {
      */
     this.deleteAllPoints = () => {
         while (this.points.length) {
-            this.points[0].destroy(false);
+            if (typeof(this.points[0].destroy) === "function") {
+                this.points[0].destroy(false);
+            }
             this.points.splice(0,1);
         }
         this.points = []
@@ -790,7 +795,7 @@ function SmartShape() {
     this.redraw = async() => {
         this.applyDisplayMode();
         await SmartShapeDrawHelper.draw(this);
-        this.options.groupChildShapes && this.redrawChildren();
+        this.options.groupChildShapes && typeof(this.options.svgLoadFunc) !== "function" && this.redrawChildren();
     }
 
     this.redrawChildren = () => {
@@ -809,9 +814,14 @@ function SmartShape() {
      * Depending on this it shows either ResizeBox around it, or RotateBox, or nothing.
      */
     this.applyDisplayMode = () => {
+        const parent = this.getParent(true);
+        const shp = parent || this;
+        if (typeof(shp.options.svgLoadFunc) === "function") {
+            return
+        }
         this.points.filter(point=>typeof(point.setOptions) === "function").forEach(point => {
             const options = {zIndex: this.options.zIndex + 1}
-            options.createDOMElement = this.options.displayMode !== SmartShapeDisplayMode.DEFAULT;
+            options.createDOMElement = this.options.displayMode === SmartShapeDisplayMode.SELECTED;
             point.setOptions(options);
             if (options.createDOMElement && !point.element) {
                 point.redraw();
@@ -1091,23 +1101,23 @@ function SmartShape() {
     /**
      * Method used to show shape if it has hidden
      */
-    this.show = () => {
+    this.show = async() => {
         this.setOptions({visible:true});
         this.getChildren().forEach(child => {
             child.options.visible = true;
         });
-        this.redraw();
+        await this.redraw();
     }
 
     /**
      * Method used to hide the shape
      */
-    this.hide = () => {
+    this.hide = async() => {
         this.setOptions({visible:false});
         this.getChildren().forEach(child => {
             child.options.visible = false;
         });
-        this.redraw();
+        await this.redraw();
     }
 
     /**
