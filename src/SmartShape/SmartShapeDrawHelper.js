@@ -332,6 +332,8 @@ function SmartShapeDrawHelper() {
      */
     this.loadExternalSvg = async(shape) => {
         shape.setOptions({pointOptions:{canDrag:false}})
+        const opacity = shape.svg.style.opacity | 1;
+        shape.svg.style.opacity = 0.1
         const svg = await shape.options.svgLoadFunc(shape);
         if (!svg) { return }
         const paths = Array.from(svg.querySelectorAll("path"));
@@ -354,6 +356,7 @@ function SmartShapeDrawHelper() {
         SmartShapeManager.addShape(shape);
         shape.options.canScale && this.redrawResizeBox(shape);
         shape.options.canRotate && this.redrawRotateBox(shape);
+        shape.svg.style.opacity = opacity;
         EventsManager.emit(ShapeEvents.SHAPE_LOADED,shape);
     }
 
@@ -371,7 +374,7 @@ function SmartShapeDrawHelper() {
         shape.deleteAllPoints();
         shape.isNewObject = true;
         let pointsStr = shape.polygon.getAttribute("points");
-        if (pointsStr && pointsStr.length) {
+        if (pointsStr && !pointsStr.length) {
             shape.points = JSON.parse(pointsStr);
             shape.isNewObject = false;
             shape.calcPosition();
