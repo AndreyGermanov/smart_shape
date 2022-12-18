@@ -259,7 +259,7 @@ function SmartShapeDrawHelper() {
         if (parent && parent.options.groupChildShapes) {
             const pos = parent.getPosition(parent.options.groupChildShapes);
             let path = this.getPolygonPathForShape(shape,pos,this.getMaxStrokeWidth(parent));
-            if (parent.options.displayAsPath) {
+            if (parent.options.displayAsPath || shape.options.displayAsPath) {
                 path += this.getPolygonPathForChildren(shape, pos);
             }
             return path;
